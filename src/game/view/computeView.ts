@@ -18,18 +18,34 @@ export function computeView(input: ComputeViewInput): ViewState {
   if (!portrait) {
     const scale = Math.max(
       1,
-      Math.floor(Math.min(devW / WORLD.w, devH / WORLD.h)),
+      Math.min(
+        Math.floor(devW / MIN_VIEW_W),
+        Math.floor((PORTRAIT_SCENE_MAX_H * devH) / WORLD.h),
+      ),
     );
-    const viewW = WORLD.w;
+
+    const finalScale = Math.min(scale, 2);
+
+    // Số game pixel cần hiển thị để canvas phủ kín vùng chứa
+    const viewW = Math.min(WORLD.w, Math.ceil(devW / finalScale));
+
     const viewH = WORLD.h;
-    const cssW = (viewW * scale) / dpr;
-    const cssH = (viewH * scale) / dpr;
+
+    const camera =
+      input.cameraX !== null ? input.cameraX : focusX - Math.floor(viewW / 2);
+
+    const cameraX = Math.max(0, Math.min(WORLD.w - viewW, Math.round(camera)));
+
+    // Giữ nguyên kích thước CSS của vùng chứa
+    const cssW = areaCssW;
+    const cssH = (WORLD.h * cssW) / viewW;
+
     return {
-      mode: "full",
-      scale,
+      mode: "crop",
+      scale: finalScale,
       viewW,
       viewH,
-      cameraX: 0,
+      cameraX,
       cssW,
       cssH,
       dpr,
@@ -43,18 +59,18 @@ export function computeView(input: ComputeViewInput): ViewState {
       Math.floor((PORTRAIT_SCENE_MAX_H * devH) / WORLD.h),
     ),
   );
-  const viewW = Math.min(WORLD.w, Math.floor(devW / scale));
+  // Use consistent scale logic for all screen sizes, capped at 2x for quality
+  const finalScale = Math.min(scale, 2);
+  const viewW = Math.min(WORLD.w, Math.floor(devW / finalScale));
   const viewH = WORLD.h;
   const camera =
-    input.cameraX !== null
-      ? input.cameraX
-      : focusX - Math.floor(viewW / 2);
+    input.cameraX !== null ? input.cameraX : focusX - Math.floor(viewW / 2);
   const cameraX = Math.max(0, Math.min(WORLD.w - viewW, Math.round(camera)));
-  const cssW = (viewW * scale) / dpr;
-  const cssH = (viewH * scale) / dpr;
+  const cssW = (viewW * finalScale) / dpr;
+  const cssH = (viewH * finalScale) / dpr;
   return {
     mode: "crop",
-    scale,
+    scale: finalScale,
     viewW,
     viewH,
     cameraX,

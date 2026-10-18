@@ -12,7 +12,12 @@ import { hitTestEntries } from "@/game/render/hitTest";
 import { computeView } from "@/game/view/computeView";
 import { focusCameraX } from "@/game/view/camera";
 import { buildSlotIndex, useGameStore } from "@/game/state/store";
-import { phaseById, snapshot, TINT_TRANSITION_MS, type PhaseTint } from "@/game/time";
+import {
+  phaseById,
+  snapshot,
+  TINT_TRANSITION_MS,
+  type PhaseTint,
+} from "@/game/time";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { t } from "@/lib/locale";
@@ -51,12 +56,20 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
   const scene = useMemo(() => {
     if (!atlasRef.current) return null;
     const ownedIds = owned ?? [];
-    const resolved = resolveScene(room, catalog, loadout, atlasRef.current.frameLookup, {
-      showCharacter,
-      slotIndex,
-      suppressItemIds: replacedItemIds(stage, ownedIds),
-    });
-    const desk = resolved.placements.find((placement) => placement.slotId === "desk");
+    const resolved = resolveScene(
+      room,
+      catalog,
+      loadout,
+      atlasRef.current.frameLookup,
+      {
+        showCharacter,
+        slotIndex,
+        suppressItemIds: replacedItemIds(stage, ownedIds),
+      },
+    );
+    const desk = resolved.placements.find(
+      (placement) => placement.slotId === "desk",
+    );
     return {
       entries: sortDrawEntries([
         ...resolved.entries,
@@ -64,7 +77,16 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
       ]),
       placements: resolved.placements,
     };
-  }, [room, catalog, loadout, showCharacter, slotIndex, atlasReady, stage, owned]);
+  }, [
+    room,
+    catalog,
+    loadout,
+    showCharacter,
+    slotIndex,
+    atlasReady,
+    stage,
+    owned,
+  ]);
 
   useEffect(() => {
     let cancelled = false;
@@ -86,7 +108,9 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
     if (!canvas || !atlas) return;
     if (!rendererRef.current) {
       const renderer = createRenderer(canvas, atlas);
-      renderer.setTint(phaseById(snapshot(useGameStore.getState().totalMinutes).phaseId).tint);
+      renderer.setTint(
+        phaseById(snapshot(useGameStore.getState().totalMinutes).phaseId).tint,
+      );
       rendererRef.current = renderer;
     }
   }, [atlasReady]);
@@ -121,7 +145,9 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
     if (canvas) canvas.dataset.phase = phaseId;
     const target = phaseById(phaseId).tint;
     const from = renderer.getTint();
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (!from || reduce || tintsClose(from, target)) {
       renderer.setTint(target);
       return;
@@ -151,7 +177,9 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
         cameraXStore ??
         (selectedSlot
           ? (() => {
-              const p = scene?.placements.find((x) => x.slotId === selectedSlot);
+              const p = scene?.placements.find(
+                (x) => x.slotId === selectedSlot,
+              );
               return p ? focusCameraX(p.anchor[0], 200) : null;
             })()
           : null);
@@ -163,8 +191,17 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
         focusX: room.focusX,
         cameraX: cam,
       });
-      const fitted = canvasCssWithinFrame(view.cssW, view.cssH, rect.width, rect.height);
-      rendererRef.current?.setView({ ...view, cssW: fitted.cssW, cssH: fitted.cssH });
+      const fitted = canvasCssWithinFrame(
+        view.cssW,
+        view.cssH,
+        rect.width,
+        rect.height,
+      );
+      rendererRef.current?.setView({
+        ...view,
+        cssW: fitted.cssW,
+        cssH: fitted.cssH,
+      });
     };
 
     const ro = new ResizeObserver(update);
@@ -195,11 +232,13 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
         areaCssW: el.getBoundingClientRect().width,
         areaCssH: el.getBoundingClientRect().height,
         dpr,
-        portrait: el.getBoundingClientRect().height > el.getBoundingClientRect().width,
+        portrait:
+          el.getBoundingClientRect().height > el.getBoundingClientRect().width,
         focusX: room.focusX,
         cameraX: cameraXStore,
       });
-      const x = ((clientX - rect.left) / rect.width) * view.viewW + view.cameraX;
+      const x =
+        ((clientX - rect.left) / rect.width) * view.viewW + view.cameraX;
       const y = ((clientY - rect.top) / rect.height) * view.viewH;
       return { x: Math.floor(x), y: Math.floor(y) };
     },
@@ -209,7 +248,8 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
   const onPointerDown = (e: React.PointerEvent) => {
     const el = areaRef.current;
     if (!el) return;
-    const portrait = el.getBoundingClientRect().height > el.getBoundingClientRect().width;
+    const portrait =
+      el.getBoundingClientRect().height > el.getBoundingClientRect().width;
     if (portrait) {
       dragRef.current = {
         x: e.clientX,

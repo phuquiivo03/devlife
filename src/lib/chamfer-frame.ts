@@ -51,7 +51,9 @@ export function canvasCssWithinFrame(
   const maxW = Math.max(1, slotW - inset * 2);
   const maxH = Math.max(1, slotH - inset * 2);
   if (cssW <= maxW && cssH <= maxH) return { cssW, cssH };
-  const fit = Math.min(maxW / cssW, maxH / cssH);
+  // Trên mobile, tránh fit quá nhỏ - giữ canvas tối thiểu 80% slot width
+  const minFit = 0.8;
+  const fit = Math.max(minFit, Math.min(maxW / cssW, maxH / cssH));
   return { cssW: cssW * fit, cssH: cssH * fit };
 }
 
