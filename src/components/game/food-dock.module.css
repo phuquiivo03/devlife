@@ -3,6 +3,17 @@
  * floors come from food-dock.config.ts as custom properties.
  * The icon does not translate or scale.
  */
+.button {
+  flex: 0 0 auto;
+}
+
+.icon {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+}
+
 .bowlBlink {
   animation-name: food-bowl-pulse;
   animation-duration: var(--hunger-blink-ms);

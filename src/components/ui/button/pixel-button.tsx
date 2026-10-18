@@ -29,7 +29,7 @@ export function PixelButton({
 }: PixelButtonProps) {
   const classNames = cn(
     styles.pixelButton,
-    "font-galmuri-11 text-galmuri-title",
+    variant === "light" ? styles.light : "font-galmuri-11 text-galmuri-small",
     variant === "icon" && styles.icon,
     className,
   );

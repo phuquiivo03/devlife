@@ -2,9 +2,11 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { hungerLabel } from "@/game/life/hunger";
+import { sleepButtonMetrics } from "@/components/game/sleep-button.config";
 import {
   FOOD_TIP_ACTION,
   HUNGER_BOWL_BLINK,
+  foodButtonMetrics,
   foodHungerTip,
   hungerBowlBlinkStyle,
 } from "@/components/game/food-dock.config";
@@ -58,10 +60,41 @@ describe("food dock hunger blink", () => {
     const globals = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
     expect(globals).not.toContain("hunger-blink");
     expect(globals).not.toContain("hunger-badge");
+    expect(globals).not.toContain(".food-bowl");
     expect(globals).toContain(".ui-tooltip");
     const dock = readFileSync(join(process.cwd(), "src/components/game/FoodPopup.tsx"), "utf8");
     expect(dock).not.toContain("hungerArtFile");
     expect(dock).not.toContain("hunger-icon");
+    expect(dock).not.toContain("hunger-label");
+    expect(dock).not.toContain("hungerLabel");
     expect(dock).toContain("foodHungerTip");
+  });
+
+  it("matches the sleep icon button and sits immediately before it on the HUD bar", () => {
+    for (const scale of [1, 2] as const) {
+      expect(foodButtonMetrics(scale)).toEqual({
+        scale,
+        iconPx: sleepButtonMetrics(scale).iconPx,
+        buttonPx: sleepButtonMetrics(scale).buttonPx,
+      });
+    }
+    const dock = readFileSync(join(process.cwd(), "src/components/game/FoodPopup.tsx"), "utf8");
+    const hud = readFileSync(join(process.cwd(), "src/components/game/PlayerHudCard.tsx"), "utf8");
+    const life = readFileSync(join(process.cwd(), "src/components/game/LifeStage.tsx"), "utf8");
+    expect(dock).toContain('variant="icon"');
+    expect(dock).toContain("foodButtonMetrics");
+    expect(dock).toContain("aria-label={tip}");
+    expect(dock).toContain('data-testid="food-open"');
+    expect(dock).toContain("styles.bowlBlink");
+    expect(dock).toContain("setFoodOpen");
+    const barAt = hud.indexOf('data-testid="hud-icon-bar"');
+    const eatAt = hud.indexOf("<HungerDock");
+    const sleepAt = hud.indexOf("<SleepButton");
+    expect(barAt).toBeGreaterThan(-1);
+    expect(eatAt).toBeGreaterThan(barAt);
+    expect(sleepAt).toBeGreaterThan(eatAt);
+    expect(hud).toContain("flex-wrap");
+    expect(hud).toContain("justify-end");
+    expect(life).not.toContain("HungerDock");
   });
 });

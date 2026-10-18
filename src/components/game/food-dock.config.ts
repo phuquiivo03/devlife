@@ -1,3 +1,5 @@
+import { BUTTON_UI_SCALE, buttonMetrics, type ButtonScale } from "@/components/ui/button/config";
+import { foodDockMetrics } from "@/game/life/m51-art";
 import { hungerLabel, type HungerId } from "@/game/life/hunger";
 
 /**
@@ -41,6 +43,20 @@ export const HUNGER_BOWL_BLINK = {
 } as const;
 
 export type HungerBlinkLevel = keyof typeof HUNGER_BOWL_BLINK;
+
+/**
+ * HUD Ăn button. The bowl sits in a `PixelButton` icon face.
+ * The outer box matches Đi ngủ: the native bowl at this scale, plus the two 9-slice borders.
+ */
+export function foodButtonMetrics(scale: ButtonScale = BUTTON_UI_SCALE) {
+  const iconPx = foodDockMetrics(scale).foodPx;
+  const borderPx = buttonMetrics(scale).slicePx;
+  return {
+    scale,
+    iconPx,
+    buttonPx: iconPx + borderPx * 2,
+  };
+}
 
 /** Leading word on the bowl tooltip. The level comes from `hungerLabel`. */
 export const FOOD_TIP_ACTION = "Ăn";

@@ -86,6 +86,27 @@ function normalizeSkills(value: unknown): PlayerSkill[] {
   );
 }
 
+function deadlineDaysForTier(tier: number): number {
+  if (tier <= 1) return LIFE.job_deadline_easy;
+  if (tier === 2) return LIFE.job_deadline_mid;
+  return LIFE.job_deadline_hard;
+}
+
+/** Offered and in-progress jobs become accepted. Deadline is counted from `today`. */
+function acceptOpenJobs(jobs: readonly PlayerJob[], today: number): PlayerJob[] {
+  return jobs.map((job) => {
+    if (job.status !== "offered" && job.status !== "active") return job;
+    const template = SIM_CATALOG.jobTemplates.find((row) => row.id === job.template_id);
+    const days = deadlineDaysForTier(template?.tier ?? 2);
+    return {
+      ...job,
+      status: "active",
+      accepted_day: job.accepted_day ?? today,
+      deadline_day: today + days,
+    };
+  });
+}
+
 function normalizeJobs(value: unknown): PlayerJob[] {
   if (!Array.isArray(value)) return [];
   const jobs: PlayerJob[] = [];
@@ -555,6 +576,9 @@ export function migrateSave(
       ...career,
       life: { ...career.life, jobNoticeSlots: 0 },
     };
+  }
+  if (version < 18) {
+    career = { ...career, player_jobs: acceptOpenJobs(career.player_jobs, snap.day) };
   }
 
   return {

@@ -20,7 +20,7 @@ describe("modal shell", () => {
       width: "min(calc(100vw - 32px), 420px)",
       "--modal-rise": "4px",
     });
-    expect(modalContentStyle(STORE_MODAL_MAX_PX).width).toBe("min(calc(100vw - 32px), 280px)");
+    expect(modalContentStyle(STORE_MODAL_MAX_PX).width).toBe("min(calc(100vw - 32px), 640px)");
   });
 
   it("traps focus, closes from Escape and the backdrop, and sets aria-modal", () => {

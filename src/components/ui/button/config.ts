@@ -6,7 +6,11 @@ import sliceDoc from "../../../../public/ui/m5_1/slices.json";
  * drawn lower in that sheet; the label moves by the same distance.
  */
 
-export const BUTTON_VARIANTS = ["primary", "secondary", "danger", "icon"] as const;
+/** Variants that ship their own `ui_btn_*` sheets. `light` reuses secondary. */
+export const BUTTON_SKIN_VARIANTS = ["primary", "secondary", "danger", "icon"] as const;
+export type ButtonSkinVariant = (typeof BUTTON_SKIN_VARIANTS)[number];
+
+export const BUTTON_VARIANTS = [...BUTTON_SKIN_VARIANTS, "light"] as const;
 export type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
 
 export const BUTTON_STATES = ["normal", "hover", "pressed"] as const;
@@ -21,6 +25,26 @@ export const BUTTON_ASSET_KEYS = {
   secondary: "ui_btn_secondary",
   danger: "ui_btn_danger",
   icon: "ui_btn_icon",
+  /** Same 9-slice as the notice Ăn / Xem job buttons. */
+  light: "ui_btn_secondary",
+} as const;
+
+/**
+ * Light face shared by notice actions and the other text buttons (M5.2 L4).
+ * The background and border match the secondary sheet (`ui_btn_secondary_normal_x2`:
+ * face `#E8E2F4`, pixel edge `#1E1428`). Ink is the foreground. Weight stays 400:
+ * Galmuri11-Bold has no Vietnamese glyphs, and the notice labels are this face.
+ * `--btn-light-*` in `src/app/globals.css` repeats these values.
+ */
+export const BUTTON_LIGHT = {
+  background: "#E8E2F4",
+  border: "#1E1428",
+  ink: "#2A2548",
+  weight: 400,
+  /** Galmuri7. Same size as the notice action label. */
+  labelPx: 16,
+  /** Integer half of the 44px HUD icons, so the bitmap stays crisp. */
+  iconPx: 22,
 } as const;
 
 /**
@@ -40,9 +64,10 @@ export const BUTTON_FOCUS_PX = 2;
 
 export const BUTTON_INK: Record<ButtonVariant, string> = {
   primary: "#FFFFFF",
-  secondary: "#2A2548",
+  secondary: BUTTON_LIGHT.ink,
   danger: "#FFFFFF",
-  icon: "#2A2548",
+  icon: BUTTON_LIGHT.ink,
+  light: BUTTON_LIGHT.ink,
 };
 
 type ButtonSliceEntry = {
@@ -85,7 +110,7 @@ export function buttonAssetPath(
   return `/ui/m5_1/${buttonAssetFile(variant, state, scale)}`;
 }
 
-export const BUTTON_ASSET_FILES: readonly string[] = BUTTON_VARIANTS.flatMap((variant) =>
+export const BUTTON_ASSET_FILES: readonly string[] = BUTTON_SKIN_VARIANTS.flatMap((variant) =>
   BUTTON_STATES.flatMap((state) => BUTTON_SCALES.map((scale) => buttonAssetFile(variant, state, scale))),
 );
 
@@ -105,6 +130,7 @@ export function pixelButtonStyle(
   scale: ButtonScale = BUTTON_UI_SCALE,
 ): Record<`--${string}`, string> {
   const metrics = buttonMetrics(scale);
+  const light = variant === "light";
   return {
     "--btn-slice": `${metrics.slicePx} fill`,
     "--btn-slice-width": `${metrics.slicePx}px`,
@@ -115,6 +141,10 @@ export function pixelButtonStyle(
     "--btn-gap": `${BUTTON_GAP_PX}px`,
     "--btn-focus": `${BUTTON_FOCUS_PX}px`,
     "--btn-ink": BUTTON_INK[variant],
+    "--btn-weight": `${light ? BUTTON_LIGHT.weight : 400}`,
+    "--btn-bg": light ? BUTTON_LIGHT.background : "transparent",
+    "--btn-border": light ? BUTTON_LIGHT.border : "transparent",
+    "--btn-label-size": light ? `${BUTTON_LIGHT.labelPx}px` : "var(--text-galmuri-title)",
     "--btn-img": `url("${buttonAssetPath(variant, "normal", scale)}")`,
     "--btn-img-hover": `url("${buttonAssetPath(variant, "hover", scale)}")`,
     "--btn-img-pressed": `url("${buttonAssetPath(variant, "pressed", scale)}")`,

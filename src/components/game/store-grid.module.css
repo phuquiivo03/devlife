@@ -1,0 +1,135 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--panel-bg);
+}
+
+.tabs button {
+  min-height: 44px;
+  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-size: var(--text-galmuri-small);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius-panel);
+  background: var(--panel-bg);
+}
+
+.owned {
+  border-color: var(--accent-mint);
+  box-shadow: inset 0 0 0 1px var(--accent-mint);
+}
+
+.locked {
+  background: var(--tab-lavender);
+}
+
+.locked .art {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.locked .name {
+  color: var(--muted-foreground);
+}
+
+.badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
+}
+
+.artWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.name,
+.price,
+.reason,
+.empty {
+  margin: 0;
+  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-size: var(--text-galmuri-small);
+  line-height: 1.25;
+  text-align: center;
+}
+
+.name {
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+
+.price {
+  color: var(--accent-mint);
+}
+
+.reason {
+  color: var(--accent-coral);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  margin-top: auto;
+}
+
+.actions button {
+  width: 100%;
+  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-size: var(--text-galmuri-small);
+}
+
+.actions button.ownedButton {
+  opacity: 1;
+  outline: 2px solid var(--accent-mint);
+  outline-offset: 2px;
+}
+
+.empty {
+  color: var(--muted-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

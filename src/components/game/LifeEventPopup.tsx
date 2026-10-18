@@ -5,7 +5,7 @@
 import { lifeEventById } from "@/game/life/events-content";
 import { m5AssetPath, type M5AssetKey } from "@/game/life/assets";
 import { useGameStore } from "@/game/state/store";
-import { Button } from "@/components/ui/button";
+import { PixelButton } from "@/components/ui/button";
 import { lifeEventPopupStyle } from "./life-event-popup.config";
 import styles from "./life-event-popup.module.css";
 
@@ -39,17 +39,15 @@ export function LifeEventPopup() {
           <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground)]">{event.text}</p>
           <div className="flex flex-wrap gap-2">
             {event.choices.map((choice) => (
-              <Button
+              <PixelButton
                 key={choice.id}
                 type="button"
-                size="sm"
-                showArrow={false}
-                className="min-h-11"
+                variant="light"
                 data-testid={`life-choice-${choice.id}`}
                 onClick={() => chooseLife(choice.id)}
               >
                 {choice.text}
-              </Button>
+              </PixelButton>
             ))}
           </div>
         </div>

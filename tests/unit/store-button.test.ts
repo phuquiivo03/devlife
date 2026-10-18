@@ -52,7 +52,7 @@ describe("store button metrics", () => {
     expect(metrics.buttonPx).toBe(metrics.iconPx + border * 2);
     expect(STORE_LABEL).toBe("Cửa hàng");
     expect(HUD_ICON_GAP_PX).toBe(8);
-    expect(STORE_MODAL_MAX_PX).toBe(280);
+    expect(STORE_MODAL_MAX_PX).toBe(640);
   });
 
   it("puts the shop icon on the room status bar and keeps sleep on the HUD", () => {

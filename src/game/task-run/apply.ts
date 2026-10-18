@@ -127,7 +127,8 @@ export function startTask(
   const job = findJob(state, jobId);
   if (!job) return fail(state, "Không tìm thấy việc");
   if (job.status === "active" && job.task_run) return { state, events: [], minutes: 0, error: null };
-  if (job.status !== "offered") return fail(state, "Việc này không còn nhận được");
+  const continuing = job.status === "active";
+  if (!continuing && job.status !== "offered") return fail(state, "Việc này không còn nhận được");
 
   const template = catalog.jobTemplates.find((row) => row.id === job.template_id);
   if (!template) return fail(state, "Không tìm thấy việc");
@@ -152,14 +153,16 @@ export function startTask(
   const nextJob: PlayerJob = {
     ...job,
     status: "active",
-    accepted_day: state.players.game_day,
-    pay: scaleTraitPay(jobPay(template.pay, template.tier, state.players.reputation), state),
-    hours_required: traitJobHours(template.hours, state),
+    accepted_day: job.accepted_day ?? state.players.game_day,
+    pay: continuing
+      ? job.pay
+      : scaleTraitPay(jobPay(template.pay, template.tier, state.players.reputation), state),
+    hours_required: continuing ? job.hours_required : traitJobHours(template.hours, state),
     task_run: freshRun(taskSeed(job.id)),
   };
   const events: GameEvent[] = [
     { type: "taskStarted", jobId: job.id, templateId: template.id },
-    { type: "jobAccepted", jobId: job.id, templateId: template.id },
+    ...(continuing ? [] : [{ type: "jobAccepted" as const, jobId: job.id, templateId: template.id }]),
     ...spent.events,
   ];
   return {

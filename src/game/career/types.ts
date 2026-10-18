@@ -210,6 +210,7 @@ export type LifeNotice = {
   action: NoticeActionId | null;
   /**
    * Ordered buttons. A job offer is Nhận then Bỏ qua.
+   * A deadline reminder is Làm (`openJobs`).
    * Absent on a notice built before v17; migration fills it from `action`.
    */
   actions?: NoticeActionButton[];

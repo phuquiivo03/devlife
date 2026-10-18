@@ -7,6 +7,7 @@ import type {
   PlayerSkill,
   SkillDef,
 } from "../career/types";
+import { LIFE } from "../life/content";
 import { energyCost } from "../life/logic";
 
 /** Highest freelance milestone, used as the profile bar's full mark. */
@@ -135,6 +136,12 @@ export function selectBoardTemplates(
   return picked;
 }
 
+export function deadlineDaysForTier(tier: number): number {
+  if (tier <= 1) return LIFE.job_deadline_easy;
+  if (tier === 2) return LIFE.job_deadline_mid;
+  return LIFE.job_deadline_hard;
+}
+
 export function offerJob(template: JobTemplate, day: number): PlayerJob {
   return {
     id: `job-${day}-${template.id}`,
@@ -147,7 +154,7 @@ export function offerJob(template: JobTemplate, day: number): PlayerJob {
     pay: template.pay,
     offered_day: day,
     accepted_day: null,
-    deadline_day: day + template.deadline_days,
+    deadline_day: day + deadlineDaysForTier(template.tier),
     finished_day: null,
     missed_days: 0,
     task_run: null,
@@ -163,6 +170,21 @@ export function boardHasToday(
       job.offered_day === day &&
       (job.status === "offered" || job.status === "completed"),
   );
+}
+
+/** Jobs the management board lists. Finished jobs have already left. */
+export function acceptedJobs(jobs: readonly PlayerJob[]): PlayerJob[] {
+  return jobs.filter((job) => job.status === "active");
+}
+
+/** Days remaining until `deadlineDay`. Null when the job has no deadline. */
+export function daysUntilDeadline(deadlineDay: number | null, today: number): number | null {
+  if (deadlineDay == null) return null;
+  return deadlineDay - today;
+}
+
+export function deadlineIsUrgent(daysLeft: number | null, remindDays: number): boolean {
+  return daysLeft != null && daysLeft <= remindDays;
 }
 
 export function visibleBoardJobs(

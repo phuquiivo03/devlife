@@ -65,6 +65,7 @@ describe("life event popup", () => {
     expect(life).not.toContain("life-dialog");
     expect(life).not.toContain("life-dim");
     expect(life).not.toContain("bg-black/45");
+    expect(popup).toContain('variant="light"');
     expect(popup).toContain('data-testid="life-dialog"');
     expect(popup).toContain("life-choice-");
     expect(popup).toContain("chooseLife");

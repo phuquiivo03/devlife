@@ -15,6 +15,10 @@ export default function PixelButtonSpecimenPage() {
         <div className="flex flex-wrap items-center gap-3">
           <PixelButton variant="primary">Bắt đầu</PixelButton>
           <PixelButton variant="secondary">Để sau</PixelButton>
+          <PixelButton variant="light">
+            <PixelIcon name="learn_book" size={22} alt="" />
+            Học
+          </PixelButton>
           <PixelButton variant="danger">Bỏ</PixelButton>
         </div>
         <div className="flex flex-wrap items-center gap-3">

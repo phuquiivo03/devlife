@@ -30,6 +30,12 @@
   --accent-violet: #5a63c4;
   --tab-lavender: #e8e2f4;
   --tab-lavender-active: #f3f1f8;
+  /* Light PixelButton. Same numbers as BUTTON_LIGHT in button/config.ts. */
+  --btn-light-bg: #e8e2f4;
+  --btn-light-border: #1e1428;
+  --btn-light-ink: #2a2548;
+  --btn-light-label: 16px;
+  --btn-light-weight: 400;
   --room-frame: #2d2858;
   --room-frame-glow: rgba(120, 100, 200, 0.45);
 
@@ -210,7 +216,7 @@ body {
   background: #ffffff;
 }
 
-/* Career HUD actions: larger accent tiles under the stat row. */
+/* Career menu: Học / Việc làm / Kỹ năng. The faces are PixelButton light. */
 .hud-actions {
   container-type: inline-size;
   width: 100%;
@@ -222,41 +228,14 @@ body {
   gap: 8px;
 }
 
+.hud-actions-grid > * {
+  width: 100%;
+}
+
 @container (min-width: 28rem) {
   .hud-actions-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-}
-
-.hud-action {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  width: 100%;
-  min-height: 76px;
-  padding: 8px 6px;
-  border: 2px solid var(--foreground);
-  border-radius: var(--radius-panel);
-  font-family: var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
-  font-size: var(--text-galmuri-title);
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 3px 0 rgba(42, 37, 72, 0.28);
-}
-
-.hud-action::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border: 2px solid var(--hud-glow);
-  border-radius: 14px;
-  pointer-events: none;
-  opacity: 0;
-  animation: hud-action-pulse 2.4s steps(4, end) infinite;
 }
 
 .hud-chip {
@@ -346,77 +325,6 @@ body {
   margin: 0;
   accent-color: var(--accent-violet);
   cursor: pointer;
-}
-
-.hud-action-study {
-  --hud-glow: var(--accent-sky);
-  background: var(--accent-sky);
-  color: #fff;
-}
-
-.hud-action-jobs {
-  --hud-glow: var(--hud-job);
-  background: var(--hud-job);
-  color: #fff;
-}
-
-.hud-action-jobs::after {
-  animation-delay: 0.35s;
-}
-
-.hud-action-skills {
-  --hud-glow: #ffffff;
-  background: var(--accent-violet);
-  color: #ffffff;
-}
-
-.hud-action-skills::after {
-  animation-delay: 0.7s;
-}
-
-.hud-action-skills:hover,
-.hud-action-skills:active {
-  --hud-glow: var(--accent-violet);
-}
-
-.hud-action:hover {
-  background: #ffffff;
-  color: var(--foreground);
-  transform: translateY(-2px);
-}
-
-.hud-action:hover::after {
-  opacity: 1;
-  animation: none;
-  inset: -6px;
-  border-width: 3px;
-}
-
-.hud-action:active {
-  background: var(--tab-lavender);
-  color: var(--foreground);
-  transform: translateY(2px);
-  box-shadow: inset 0 3px 0 rgba(42, 37, 72, 0.35);
-}
-
-.hud-action:active::after {
-  opacity: 1;
-  animation: none;
-}
-
-.hud-action:focus-visible {
-  outline: 2px solid var(--foreground);
-  outline-offset: 3px;
-}
-
-@keyframes hud-action-pulse {
-  0%,
-  100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 1;
-  }
 }
 
 .float-gain {
@@ -718,29 +626,6 @@ body {
   animation-fill-mode: forwards, forwards;
 }
 
-.food-bowl {
-  display: block;
-  width: var(--food-px);
-  height: var(--food-px);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  line-height: 0;
-  cursor: pointer;
-}
-
-.food-bowl img {
-  display: block;
-  width: var(--food-px);
-  height: var(--food-px);
-}
-
-.food-bowl:focus-visible {
-  outline: 2px solid var(--accent-violet);
-  outline-offset: 2px;
-}
-
 @keyframes intro-flash {
   0%,
   100% {
@@ -789,16 +674,6 @@ body {
   .transition-opacity,
   .transition-bouncy {
     transition: none !important;
-  }
-
-  .hud-action::after {
-    animation: none;
-    opacity: 1;
-  }
-
-  .hud-action:hover,
-  .hud-action:active {
-    transform: none;
   }
 
   .float-gain,

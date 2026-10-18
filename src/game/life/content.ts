@@ -86,12 +86,17 @@ export type LifeConfig = {
   job_notice_pending_max: number;
   /** Days a job notice stays open. */
   job_notice_expire_days: number;
+  /** Days to finish an easy (tier 1) job. Version 18 counts this from the migration day. */
   job_deadline_easy: number;
+  /** Days to finish a mid (tier 2) job. Version 18 counts this from the migration day. */
   job_deadline_mid: number;
+  /** Days to finish a hard (tier 3+) job. Version 18 counts this from the migration day. */
   job_deadline_hard: number;
+  /** Reputation change when an accepted job misses its deadline. */
   job_late_reputation: number;
+  /** Mood change when an accepted job misses its deadline. */
   job_late_mood: number;
-  /** Days left when the deadline reminder is posted. */
+  /** Reminder fires, and the board deadline turns red, when this many days or fewer remain. */
   job_remind_days: number;
   foods: FoodDef[];
   weekdays: string[];

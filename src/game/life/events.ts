@@ -9,6 +9,7 @@ import { applyEventStats, calendar, holidayOn, isDeployFriday, lifeOf, monthKey,
 import { LIFE } from "./content";
 import { LIFE_EVENTS, lifeEventById, type LifeChoice, type LifeEventDef } from "./events-content";
 import type { PhaseId } from "../time/config";
+import { applyJobDeadlines } from "../jobs/deadlines";
 
 export type LifeStep = {
   state: CareerState;
@@ -473,7 +474,8 @@ export function resolveHackathon(
 }
 
 export function syncLifeSurface(state: CareerState, day: number, minute: number, terminalOpen: boolean): LifeStep {
-  let feed = feedOf(state);
+  const settled = applyJobDeadlines(state, day, minute);
+  let feed = feedOf(settled);
   const warns: string[] = [];
   const add = (notice: LifeNotice) => {
     const before = feed.notices.length;
@@ -481,7 +483,7 @@ export function syncLifeSurface(state: CareerState, day: number, minute: number,
     if (feed.notices.length !== before) warns.push(...warnFor(notice, terminalOpen));
   };
 
-  const sick = state.players.health < LIFE.sick_below;
+  const sick = settled.players.health < LIFE.sick_below;
   if (sick && !feed.sickOpen) {
     feed = { ...feed, sickOpen: true };
     add({
@@ -499,8 +501,8 @@ export function syncLifeSurface(state: CareerState, day: number, minute: number,
     feed = { ...feed, sickOpen: false };
   }
 
-  const burned = feedOf(state).burnoutOpen;
-  const burnout = state.players.mood < LIFE.burnout_below || lifeOf(state).burnoutDay === day;
+  const burned = feedOf(settled).burnoutOpen;
+  const burnout = settled.players.mood < LIFE.burnout_below || lifeOf(settled).burnoutDay === day;
   if (burnout && !burned) {
     feed = { ...feed, burnoutOpen: true };
     add({
@@ -543,7 +545,7 @@ export function syncLifeSurface(state: CareerState, day: number, minute: number,
     });
   }
 
-  const ready = pinReady(state);
+  const ready = pinReady(settled);
   if (ready) {
     add({
       id: `pin-ready-${ready.id}`,
@@ -558,21 +560,9 @@ export function syncLifeSurface(state: CareerState, day: number, minute: number,
   }
 
   const completed = new Set(
-    state.player_jobs.filter((job) => job.status === "completed").map((job) => job.template_id),
+    settled.player_jobs.filter((job) => job.status === "completed").map((job) => job.template_id),
   );
-  for (const job of state.player_jobs) {
-    if (job.status === "active" && job.deadline_day === day + 1) {
-      add({
-        id: `deadline-${job.id}`,
-        day,
-        minute,
-        severity: "warn",
-        icon: "icon_notif_deadline.png",
-        text: "Deadline còn 1 ngày.",
-        action: "viewJobs",
-        read: false,
-      });
-    }
+  for (const job of settled.player_jobs) {
     if (job.status === "offered" && completed.has(job.template_id)) {
       add({
         id: `regular-${job.id}`,
@@ -587,7 +577,7 @@ export function syncLifeSurface(state: CareerState, day: number, minute: number,
     }
   }
 
-  return step(withFeed(state, feed), { warns });
+  return step(withFeed(settled, feed), { warns });
 }
 
 export function noticesForBills(before: CareerState, after: CareerState, day: number, minute: number): LifeStep {

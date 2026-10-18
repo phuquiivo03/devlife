@@ -22,6 +22,7 @@ import {
   xpMultiplier,
 } from "../../src/game/knowledge/logic";
 import {
+  deadlineDaysForTier,
   freelanceGoal,
   jobEligibility,
   selectBoardTemplates,
@@ -422,7 +423,7 @@ describe("study and instant jobs", () => {
     expect(job.bugs).toBe(0);
     expect(job.accepted_day).toBe(1);
     expect(job.finished_day).toBe(1);
-    expect(job.deadline_day).toBe(open.offered_day + template.deadline_days);
+    expect(job.deadline_day).toBe(open.offered_day + deadlineDaysForTier(template.tier));
     expect(done.state.players.money).toBe(
       start.players.money + jobPay(template.pay, template.tier, start.players.reputation),
     );

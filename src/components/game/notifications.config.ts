@@ -1,6 +1,6 @@
 import sliceDoc from "../../../public/ui/m5_1/slices.json";
 import { BUTTON_UI_SCALE, buttonMetrics, type ButtonScale } from "@/components/ui/button/config";
-import type { NoticeAction } from "@/game/career/types";
+import type { NoticeAction, NoticeActionButton, NoticeActionId } from "@/game/career/types";
 
 /**
  * Thông báo panel metrics. The badge size comes from
@@ -86,6 +86,26 @@ export const NOTICE_ACTION_ICONS = {
 
 export type NoticeActionIconKey = (typeof NOTICE_ACTION_ICONS)[keyof typeof NOTICE_ACTION_ICONS];
 
+const NOTICE_ACTION_ICON_KEY_SET = new Set<string>(Object.values(NOTICE_ACTION_ICONS));
+
+/**
+ * Ids that share an existing `icon_action_*` sheet. `openJobs` uses the
+ * job ticket. `acceptJob` and `dismissNotice` have no glyph.
+ */
+export const NOTICE_ACTION_ID_ICONS: Partial<Record<NoticeActionId, NoticeActionIconKey>> = {
+  payRent: NOTICE_ACTION_ICONS.payRent,
+  viewJobs: NOTICE_ACTION_ICONS.viewJobs,
+  openStore: NOTICE_ACTION_ICONS.openStore,
+  eat: NOTICE_ACTION_ICONS.eat,
+  sleep: NOTICE_ACTION_ICONS.sleep,
+  openJobs: NOTICE_ACTION_ICONS.viewJobs,
+};
+
+export type NoticeButtonGlyph = {
+  iconKey: string;
+  file: string;
+};
+
 export type NoticeActionControl =
   | { kind: "icon"; label: string; iconKey: NoticeActionIconKey }
   | { kind: "text"; label: string };
@@ -125,6 +145,40 @@ export function noticeActionButtonMetrics(scale: ButtonScale = BUTTON_UI_SCALE) 
     glyphPx: NOTICE_ACTION_ICON_NATIVE_PX,
     labelPx: NOTICE_ACTION_LABEL_PX,
   };
+}
+
+/** `primary` stays primary. Every other value, including a missing one, is `secondary`. */
+export function noticeButtonVariant(
+  variant: NoticeActionButton["variant"],
+): "primary" | "secondary" {
+  return variant === "primary" ? "primary" : "secondary";
+}
+
+/**
+ * Glyph for one `actions` entry. An explicit `icon` wins. Otherwise the id
+ * map is used, and an id with no sheet returns null.
+ */
+export function noticeButtonGlyph(button: NoticeActionButton): NoticeButtonGlyph | null {
+  const explicit = button.icon?.trim();
+  if (explicit) {
+    const iconKey = explicit.replace(/\.png$/i, "");
+    if (NOTICE_ACTION_ICON_KEY_SET.has(iconKey)) {
+      return { iconKey, file: actionIconFile(iconKey as NoticeActionIconKey) };
+    }
+    return { iconKey, file: explicit.toLowerCase().endsWith(".png") ? explicit : `${explicit}.png` };
+  }
+  const mapped = NOTICE_ACTION_ID_ICONS[button.id];
+  if (!mapped) return null;
+  return { iconKey: mapped, file: actionIconFile(mapped) };
+}
+
+/** Ordered buttons. Null when `actions` is absent or empty, so the single `action` path stays. */
+export function listedNoticeActions(
+  notice: { actions?: readonly NoticeActionButton[] | null },
+): readonly NoticeActionButton[] | null {
+  const actions = notice.actions;
+  if (!actions || actions.length === 0) return null;
+  return actions;
 }
 
 export function resolveNoticeAction(

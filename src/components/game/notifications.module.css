@@ -19,6 +19,16 @@
   overflow-y: auto;
 }
 
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--notice-gap);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
 .action {
   display: inline-flex;
   max-width: 100%;
@@ -61,6 +71,7 @@
 
 .clock {
   color: var(--muted-foreground);
+  font-size: var(--text-galmuri-small);
 }
 
 .offer {
@@ -91,20 +102,21 @@
   min-width: 0;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: 8px;
 }
 
 .offerLine {
   display: flex;
   min-width: 0;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--notice-gap);
+  font-weight: 500;
 }
 
 .jobName {
   min-width: 0;
-  font-size: var(--text-galmuri-body);
+  font-size: var(--text-galmuri-small);
   line-height: 1.2;
   color: var(--foreground);
 }

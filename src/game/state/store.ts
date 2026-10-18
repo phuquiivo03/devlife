@@ -514,11 +514,16 @@ export const useGameStore = create<GameState>()(
           return;
         }
         if (id === "openJobs") {
-          set({ careerPanel: "jobs" });
           const jobId = picked?.payload?.jobId;
-          if (jobId && get().career.player_jobs.some((job) => job.id === jobId && job.status === "active")) {
-            get().openTask(jobId);
+          const job = jobId
+            ? get().career.player_jobs.find((row) => row.id === jobId && row.status === "active")
+            : undefined;
+          if (job) {
+            if (job.task_run) get().openTask(job.id);
+            else get().acceptJob(job.id);
+            return;
           }
+          set({ careerPanel: "jobs" });
           return;
         }
         if (id === "openStore") {

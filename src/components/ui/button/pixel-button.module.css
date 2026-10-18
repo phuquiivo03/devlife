@@ -11,7 +11,7 @@
   border-width: var(--btn-slice-width);
   background: transparent;
   color: var(--btn-ink);
-  font-weight: 400;
+  font-weight: var(--btn-weight, 400);
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
@@ -49,6 +49,16 @@
 .pixelButton:disabled {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* Notice Ăn / Xem job face. The 9-slice paints the pixel border; these tokens match it. */
+.light {
+  background-color: var(--btn-bg, var(--btn-light-bg));
+  border-color: var(--btn-border, var(--btn-light-border));
+  color: var(--btn-ink, var(--btn-light-ink));
+  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-size: var(--btn-label-size, var(--btn-light-label));
+  font-weight: var(--btn-weight, var(--btn-light-weight));
 }
 
 .icon {

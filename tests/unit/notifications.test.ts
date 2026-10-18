@@ -2,6 +2,13 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PNG } from "pngjs";
 import { describe, expect, it } from "vitest";
+import { SIM_CATALOG } from "@/game/career/content";
+import { defaultCareer } from "@/game/career/actions";
+import type { PlayerJob } from "@/game/career/types";
+import { applyJobDeadlines } from "@/game/jobs/deadlines";
+import { offerJob } from "@/game/jobs/logic";
+import { LIFE } from "@/game/life/content";
+import { useGameStore } from "@/game/state/store";
 import { BUTTON_UI_SCALE, buttonMetrics } from "@/components/ui/button/config";
 import {
   NOTICE_ACTION_ICONS,
@@ -17,9 +24,12 @@ import {
   NOTICE_BADGE_SCALE,
   NOTICE_LIST,
   actionIconFile,
+  listedNoticeActions,
   noticeActionButtonMetrics,
   noticeBadgeFile,
   noticeBadgeMetrics,
+  noticeButtonGlyph,
+  noticeButtonVariant,
   noticeChromeStyle,
   resolveNoticeAction,
 } from "@/components/game/notifications.config";
@@ -160,5 +170,104 @@ describe("notification actions", () => {
     expect(css).toContain("line-clamp: var(--notice-lines)");
     expect(css).toContain("@media (prefers-reduced-motion: reduce)");
     expect(css).toMatch(/animation:\s*none/);
+  });
+
+  it("draws one button per actions entry and keeps the single action when that list is empty", () => {
+    expect(noticeButtonVariant("primary")).toBe("primary");
+    expect(noticeButtonVariant("secondary")).toBe("secondary");
+    expect(noticeButtonVariant(undefined)).toBe("secondary");
+
+    expect(noticeButtonGlyph({ id: "openJobs", label: "Làm" })).toEqual({
+      iconKey: "icon_action_view_job",
+      file: "icon_action_view_job.png",
+    });
+    expect(noticeButtonGlyph({ id: "viewJobs", label: "Xem job" })?.iconKey).toBe("icon_action_view_job");
+    expect(noticeButtonGlyph({ id: "payRent", label: "Trả trọ" })?.file).toBe("icon_action_pay_rent.png");
+    expect(noticeButtonGlyph({ id: "acceptJob", label: "Nhận" })).toBeNull();
+    expect(noticeButtonGlyph({ id: "dismissNotice", label: "Bỏ qua" })).toBeNull();
+    expect(noticeButtonGlyph({ id: "acceptJob", label: "Nhận", icon: "icon_action_eat" })).toEqual({
+      iconKey: "icon_action_eat",
+      file: "icon_action_eat.png",
+    });
+    expect(noticeButtonGlyph({ id: "openJobs", label: "Làm", icon: "icon_custom.png" })).toEqual({
+      iconKey: "icon_custom",
+      file: "icon_custom.png",
+    });
+
+    const offer = [
+      { id: "acceptJob" as const, label: "Nhận", variant: "primary" as const },
+      { id: "dismissNotice" as const, label: "Bỏ qua", variant: "secondary" as const },
+    ];
+    expect(listedNoticeActions({ actions: offer })).toEqual(offer);
+    expect(listedNoticeActions({ actions: [] })).toBeNull();
+    expect(listedNoticeActions({})).toBeNull();
+
+    const source = readFileSync(
+      join(process.cwd(), "src/components/game/NotificationsPanel.tsx"),
+      "utf8",
+    );
+    const css = readFileSync(
+      join(process.cwd(), "src/components/game/notifications.module.css"),
+      "utf8",
+    );
+    expect(source).toContain("listedNoticeActions(notice)");
+    expect(source).toContain("noticeButtonVariant(button.variant)");
+    expect(source).toContain("noticeButtonGlyph(button)");
+    expect(source).toContain("runNoticeAction(button.id, notice)");
+    expect(source).toContain("event.stopPropagation()");
+    expect(source).toContain("isHungerNotice");
+    expect(source).toContain('variant="secondary"');
+    expect(source).toContain('data-action-kind="text"');
+    expect(source.indexOf("listedNoticeActions(notice)")).toBeLessThan(source.indexOf("notice.action"));
+    expect(css).toContain("flex-wrap: wrap");
+  });
+
+  it("renders a deadline reminder as Làm and calls runNoticeAction('openJobs', notice)", () => {
+    const base = defaultCareer(1, 8 * 60, "student", SIM_CATALOG);
+    const template = SIM_CATALOG.jobTemplates[0]!;
+    const soon: PlayerJob = {
+      ...offerJob(template, 1),
+      id: "soon-job",
+      status: "active",
+      accepted_day: 1,
+      deadline_day: 4,
+      progress_hours: 1,
+    };
+    const reminded = applyJobDeadlines(
+      { ...base, player_jobs: [soon] },
+      soon.deadline_day! - LIFE.job_remind_days,
+      9 * 60,
+    );
+    const notice = reminded.feed.notices.find((row) => row.id === "deadline-soon-job");
+    expect(notice?.payload).toEqual({ jobId: "soon-job" });
+    expect(notice?.text).toContain("Còn 1 ngày");
+
+    const buttons = listedNoticeActions(notice ?? {});
+    expect(buttons).toEqual([{ id: "openJobs", label: "Làm", variant: "primary" }]);
+    const button = buttons?.[0];
+    if (!button || !notice) throw new Error("deadline reminder missing");
+    expect(noticeButtonVariant(button.variant)).toBe("primary");
+    expect(noticeButtonGlyph(button)).toEqual({
+      iconKey: "icon_action_view_job",
+      file: "icon_action_view_job.png",
+    });
+
+    const source = readFileSync(
+      join(process.cwd(), "src/components/game/NotificationsPanel.tsx"),
+      "utf8",
+    );
+    expect(source).toContain("runNoticeAction(button.id, notice)");
+    expect(source).toContain("listedNoticeActions(notice)");
+
+    useGameStore.setState({
+      career: reminded,
+      careerPanel: null,
+      taskJobId: null,
+    });
+    useGameStore.getState().runNoticeAction(button.id, notice);
+    expect(useGameStore.getState().taskJobId).toBe("soon-job");
+    expect(useGameStore.getState().career.player_jobs.find((row) => row.id === "soon-job")?.task_run?.step).toBe(
+      "ticket",
+    );
   });
 });

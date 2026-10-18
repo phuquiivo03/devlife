@@ -10,7 +10,7 @@ import { timeBus } from "@/game/time";
 import { formatVnd } from "@/lib/format-currency";
 import { Button } from "@/components/ui/button";
 import { PanelCard, PanelCardTitle } from "@/components/ui/panel-card";
-import { JobBoardPanel } from "./JobBoardPanel";
+import { JobManageBoard } from "./JobManageBoard";
 import { RankBadge } from "./RankBadge";
 import { SkillRankPanel } from "./SkillRankPanel";
 import { StudyPanel } from "./StudyPanel";
@@ -107,8 +107,7 @@ export function CareerChrome({
     if (!panel && previous) playCueKey("panelClose");
   }, [panel]);
 
-  const title =
-    panel === "study" ? "Khóa học" : panel === "jobs" ? "Bảng việc" : panel === "skills" ? "Kỹ năng" : "";
+  const title = panel === "study" ? "Khóa học" : panel === "skills" ? "Kỹ năng" : "";
   const popupSkill = SIM_CATALOG.skills.find((row) => row.id === popup?.skillId);
 
   return (
@@ -160,7 +159,9 @@ export function CareerChrome({
         </div>
       ) : null}
 
-      {panel ? (
+      {panel === "jobs" ? <JobManageBoard open onOpenChange={(next) => { if (!next) close(); }} /> : null}
+
+      {panel && panel !== "jobs" ? (
         <div
           className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-[#2A2548]/40 p-4"
           onClick={close}
@@ -184,7 +185,6 @@ export function CareerChrome({
                 </Button>
               </div>
               {panel === "study" ? <StudyPanel iconFiles={iconFiles} /> : null}
-              {panel === "jobs" ? <JobBoardPanel iconFiles={iconFiles} /> : null}
               {panel === "skills" ? <SkillRankPanel iconFiles={iconFiles} /> : null}
             </PanelCard>
           </div>

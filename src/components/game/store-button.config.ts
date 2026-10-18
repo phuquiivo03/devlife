@@ -1,4 +1,5 @@
 import { BUTTON_UI_SCALE, buttonMetrics, type ButtonScale } from "@/components/ui/button/config";
+import { STORE_GRID } from "./store-grid.config";
 
 /**
  * HUD shop control. The icon is `icon_btn_store` (24×24 native, 48×48 at 2×).
@@ -15,9 +16,10 @@ export const STORE_ICON_NATIVE_PX = 24;
 export const HUD_ICON_GAP_PX = 8;
 
 /**
- * Shop dialog width: the 192px card, the store frame, and the modal padding.
+ * Shop dialog width. Four columns from `STORE_GRID`, plus the gaps and the
+ * modal padding. The old single 192px card used 280.
  */
-export const STORE_MODAL_MAX_PX = 280;
+export const STORE_MODAL_MAX_PX = STORE_GRID.modalMaxPx;
 
 export function storeIconFile(scale: ButtonScale = BUTTON_UI_SCALE): string {
   return scale === 2 ? "icon_btn_store_x2.png" : "icon_btn_store.png";

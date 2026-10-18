@@ -7,67 +7,67 @@ import { Modal } from "@/components/ui/modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LIFE } from "@/game/life/content";
 import { m51AssetPath } from "@/game/life/assets";
-import { actionEatArtFile, foodArtFile, foodDockMetrics, foodDockStyle } from "@/game/life/m51-art";
-import { hungerLabel, hungerLevel } from "@/game/life/hunger";
+import { actionEatArtFile, foodArtFile, foodDockMetrics } from "@/game/life/m51-art";
+import { hungerLevel } from "@/game/life/hunger";
 import { lifeOf, mealBlocked } from "@/game/life/logic";
 import { foodPrice } from "@/game/life/traits";
 import { useGameStore } from "@/game/state/store";
 import { cn } from "@/lib/utils";
 import { formatVnd } from "@/lib/format-currency";
-import { foodHungerTip, hungerBowlBlinkStyle } from "./food-dock.config";
+import { foodButtonMetrics, foodHungerTip, hungerBowlBlinkStyle } from "./food-dock.config";
 import styles from "./food-dock.module.css";
 
+/** Icon-only Ăn control. Sits on the HUD icon bar beside Đi ngủ and opens Ăn uống. */
 export function HungerDock() {
   const slots = useGameStore((s) => lifeOf(s.career).slotsSinceMeal);
   const open = useGameStore((s) => s.foodOpen);
   const setOpen = useGameStore((s) => s.setFoodOpen);
   const hunger = hungerLevel(slots);
-  const dock = foodDockMetrics();
+  const metrics = foodButtonMetrics();
   const tip = foodHungerTip(hunger);
   const blinking = hunger !== "full";
 
   return (
     <>
-      <div
-        className="mt-3 flex items-center justify-center gap-3 pt-2"
-        data-testid="hunger"
-        data-hunger={hunger}
-        data-slots={slots}
-      >
-        <div className="food-anchor relative" style={foodDockStyle()}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="inline-flex">
-                <button
-                  type="button"
-                  className="food-bowl"
-                  aria-label={tip}
-                  data-testid="food-open"
-                  onClick={() => setOpen(true)}
-                >
-                  <img
-                    src={m51AssetPath(foodArtFile())}
-                    width={dock.foodPx}
-                    height={dock.foodPx}
-                    alt=""
-                    draggable={false}
-                    data-testid="food-bowl-icon"
-                    data-hunger-blink={hunger}
-                    className={cn("pixel-img", blinking && styles.bowlBlink)}
-                    style={hungerBowlBlinkStyle(hunger)}
-                  />
-                </button>
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top" data-testid="food-tooltip">
-              {tip}
-            </TooltipContent>
-          </Tooltip>
-        </div>
-        <span className="font-galmuri-7 text-galmuri-small text-[var(--foreground)]" data-testid="hunger-label">
-          {hungerLabel(hunger)}
-        </span>
-      </div>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="inline-flex" data-testid="hunger" data-hunger={hunger} data-slots={slots}>
+            <PixelButton
+              variant="icon"
+              aria-label={tip}
+              className={styles.button}
+              style={{
+                width: metrics.buttonPx,
+                height: metrics.buttonPx,
+                minWidth: metrics.buttonPx,
+                minHeight: metrics.buttonPx,
+              }}
+              onClick={() => setOpen(true)}
+              data-testid="food-open"
+            >
+              <img
+                src={m51AssetPath(foodArtFile())}
+                alt=""
+                width={metrics.iconPx}
+                height={metrics.iconPx}
+                draggable={false}
+                data-testid="food-bowl-icon"
+                data-hunger-blink={hunger}
+                data-icon-key="icon_btn_food"
+                className={cn("pixel-img", styles.icon, blinking && styles.bowlBlink)}
+                style={{
+                  width: metrics.iconPx,
+                  height: metrics.iconPx,
+                  ...hungerBowlBlinkStyle(hunger),
+                }}
+              />
+            </PixelButton>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="top" data-testid="food-tooltip">
+          {tip}
+        </TooltipContent>
+      </Tooltip>
       <FoodPopup open={open} onOpenChange={setOpen} />
     </>
   );
