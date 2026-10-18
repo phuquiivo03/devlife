@@ -110,7 +110,7 @@ function commitLife(result: LifeStep, extraCues: readonly CueKey[] = []) {
   // Check for hospital admission
   let hospitalOpen = current.hospitalOpen;
   let hospitalCost = current.hospitalCost;
-  if (result.skipDays > 0 && !hospitalOpen && updatedCareer.players.health < LIFE.hospital_below) {
+  if (result.skipDays > 0 && !hospitalOpen && updatedCareer.players.health <= LIFE.hospital_below) {
     // Hospital admission triggered - open popup, DON'T process skipDays yet
     hospitalOpen = true;
     hospitalCost = LIFE.hospital_cost;
