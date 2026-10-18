@@ -62,7 +62,8 @@ export type CueKey =
   | "salary"
   | "diaryFlip"
   | "sickCough"
-  | "storeBuy";
+  | "storeBuy"
+  | "ambulance";
 
 export const CUE_KEYS = [
   "phaseMorning",
@@ -103,6 +104,7 @@ export const CUE_KEYS = [
   "diaryFlip",
   "sickCough",
   "storeBuy",
+  "ambulance",
 ] as const satisfies readonly CueKey[];
 
 /**
@@ -151,6 +153,8 @@ export const CUE_IDS: Record<CueKey, readonly string[]> = {
   sickCough: ["sfx_sick_cough"],
   /** Successful store purchase. The money-spend cue still plays for the same spend. */
   storeBuy: ["sfx_store_buy"],
+  /** Emergency ambulance siren for hospital admission. */
+  ambulance: ["sfx_ambulance"],
 };
 
 /** Play the low-energy sting only when energy crosses down through this point. */

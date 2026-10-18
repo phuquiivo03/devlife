@@ -507,6 +507,17 @@
       "volume": 0.6,
       "license": "CC0-1.0",
       "description": "Cute chibi double cough 'khụ khụ' with a tiny 'uu' sigh"
+    },
+    {
+      "id": "sfx_ambulance",
+      "type": "sfx",
+      "file": "ogg/sfx/sfx_ambulance.ogg",
+      "category": "life",
+      "duration": 2.0,
+      "loop": false,
+      "volume": 0.7,
+      "license": "CC0-1.0",
+      "description": "Emergency ambulance siren for hospital admission"
     }
   ]
 }

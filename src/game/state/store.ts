@@ -49,8 +49,8 @@ import {
   type PhaseId,
   type SpeedPreset,
 } from "../time";
-import type { FoodId } from "../life/content";
-import { crossWakingSlot, eatMeal, hoursUntilWake, mealBlocked, resolveMorning } from "../life/logic";
+import { LIFE, type FoodId } from "../life/content";
+import { crossWakingSlot, eatMeal, hoursUntilWake, lifeOf, mealBlocked, resolveMorning } from "../life/logic";
 import { rollTrait } from "../life/traits";
 import { LIFE_EVENTS } from "../life/events-content";
 import {
@@ -105,8 +105,23 @@ function commitLife(result: LifeStep, extraCues: readonly CueKey[] = []) {
   const current = useGameStore.getState();
   playLifeTransition(current.career, result, extraCues);
   const warns = current.taskJobId ? result.warns : [];
+  const updatedCareer = result.state;
+
+  // Check for hospital admission
+  let hospitalOpen = current.hospitalOpen;
+  let hospitalCost = current.hospitalCost;
+  if (result.skipDays > 0 && !hospitalOpen && updatedCareer.players.health < LIFE.hospital_below) {
+    // Hospital admission triggered - open popup, DON'T process skipDays yet
+    hospitalOpen = true;
+    hospitalCost = LIFE.hospital_cost;
+    // Override skipDays to prevent immediate time advancement
+    result.skipDays = 0;
+  }
+
   useGameStore.setState({
-    career: result.state,
+    career: updatedCareer,
+    hospitalOpen,
+    hospitalCost,
     terminalLines: warns.length ? [...current.terminalLines, ...warns].slice(-8) : current.terminalLines,
     lifeBubble: result.bubble
       ? { text: result.bubble, until: Date.now() + LIFE_EVENTS.bubble_ms }
@@ -130,8 +145,14 @@ function emitGame(events: readonly GameEvent[]) {
 function maybeHospital(skipDays: number | undefined) {
   if (!skipDays || skipDays <= 0 || handlingHospital) return;
   handlingHospital = true;
+  // Check if hospital is open - if so, just skip time advancement
+  const state = useGameStore.getState();
+  if (state.hospitalOpen) {
+    handlingHospital = false;
+    return;
+  }
   clockSkip = true;
-  const current = useGameStore.getState().totalMinutes;
+  const current = state.totalMinutes;
   const snap = snapshot(current);
   const target = (snap.day - 1 + skipDays) * MINUTES_PER_DAY + SLEEP_WAKE_MINUTE;
   const result = seekMinutes(current, Math.max(target, current + 1));
@@ -140,7 +161,7 @@ function maybeHospital(skipDays: number | undefined) {
   clockSkip = false;
   handlingHospital = false;
   const landed = snapshot(result.totalMinutes);
-  const morning = resolveMorning(useGameStore.getState().career, landed.day);
+  const morning = resolveMorning(state.career, landed.day);
   useGameStore.setState({ career: morning.state });
   emitGame(morning.events);
 }
@@ -204,6 +225,9 @@ type GameState = {
   storeOpen: boolean;
   /** Ăn uống modal. Not persisted. */
   foodOpen: boolean;
+  /** Hospital admission popup. Not persisted. */
+  hospitalOpen: boolean;
+  hospitalCost: number;
   lifeBubble: { text: string; until: number } | null;
   lifeBanner: { label: string; until: number } | null;
   terminalLines: string[];
@@ -214,6 +238,7 @@ type GameState = {
   runNoticeAction: (id: NoticeActionId, notice?: Notice) => void;
   setStoreOpen: (open: boolean) => void;
   setFoodOpen: (open: boolean) => void;
+  dischargeFromHospital: () => void;
   buyStoreItem: (id: string) => void;
   pinStoreItem: (id: string | null) => void;
   debugForceEvent: () => void;
@@ -325,6 +350,8 @@ export const useGameStore = create<GameState>()(
       taskJobId: null,
       storeOpen: false,
       foodOpen: false,
+      hospitalOpen: false,
+      hospitalCost: 0,
       lifeBubble: null,
       lifeBanner: null,
       terminalLines: [],
@@ -555,6 +582,79 @@ export const useGameStore = create<GameState>()(
       },
       setStoreOpen: (open) => set({ storeOpen: open }),
       setFoodOpen: (open) => set({ foodOpen: open }),
+      dischargeFromHospital: () => {
+        const state = get();
+        const career = state.career;
+        const current = state.totalMinutes;
+
+        // Now actually process hospital effects on discharge
+        const before = {
+          energy: career.players.energy,
+          health: career.players.health,
+          mood: career.players.mood,
+          money: career.players.money,
+        };
+
+        // Apply hospital effects
+        let newHealth = LIFE.hospital_discharge_health;
+        let newMoney = career.players.money - LIFE.hospital_cost;
+        let newEnergy = career.players.energy;
+        if (newHealth < LIFE.sick_below) {
+          newEnergy = Math.min(career.players.energy, LIFE.sick_energy_max);
+        }
+
+        // Process hospital discharge time
+        handlingHospital = true;
+        clockSkip = true;
+        const snap = snapshot(current);
+        const skipDays = LIFE.hospital_days;
+        const target = (snap.day - 1 + skipDays) * MINUTES_PER_DAY + SLEEP_WAKE_MINUTE;
+        const result = seekMinutes(current, Math.max(target, current + 1));
+        set({ totalMinutes: result.totalMinutes });
+        for (const event of result.events) timeBus.emit(event);
+        clockSkip = false;
+
+        // Update career state
+        const landed = snapshot(result.totalMinutes);
+        const updatedCareer = {
+          ...career,
+          players: {
+            ...career.players,
+            health: newHealth,
+            money: newMoney,
+            energy: newEnergy,
+          },
+          life: {
+            ...career.life!,
+            workStreak: 0,
+            suppressEndOfDayUntil: career.players.game_day + skipDays,
+          },
+        };
+        const morning = resolveMorning(updatedCareer, landed.day);
+
+        // Emit events for health/money changes
+        if (before.health !== newHealth) {
+          emitGame([{
+            type: "healthChanged",
+            delta: newHealth - before.health,
+            health: newHealth,
+          }]);
+        }
+        if (before.money !== newMoney) {
+          emitGame([{
+            type: "moneyChanged",
+            delta: newMoney - before.money,
+            money: newMoney,
+          }]);
+        }
+
+        set({
+          career: morning.state,
+          hospitalOpen: false,
+          hospitalCost: 0,
+        });
+        handlingHospital = false;
+      },
       buyStoreItem: (id) => {
         const bought = buyShopItem(get().career, id);
         if (bought.error) return;

@@ -21,6 +21,7 @@ import { RoomChamferFrame } from "./RoomChamferFrame";
 import { TimeDebugPanel } from "./TimeDebugPanel";
 import { CareerChrome } from "./career/CareerChrome";
 import { StoreModal } from "./StoreModal";
+import { HospitalPopup } from "./HospitalPopup";
 import { useGameClock } from "./useGameClock";
 import { useGameAudio } from "./useGameAudio";
 import { Button } from "@/components/ui/button";
@@ -63,6 +64,9 @@ export function GameShell({
   useGameAudio();
   const showCharacter = useGameStore((s) => s.showCharacter);
   const setShowCharacter = useGameStore((s) => s.setShowCharacter);
+  const hospitalOpen = useGameStore((s) => s.hospitalOpen);
+  const hospitalCost = useGameStore((s) => s.hospitalCost);
+  const dischargeFromHospital = useGameStore((s) => s.dischargeFromHospital);
   const resetStage = useGameStore((s) => s.resetStage);
   const customizeOpen = useGameStore((s) => s.customizeOpen);
   const setCustomizeOpen = useGameStore((s) => s.setCustomizeOpen);
@@ -219,6 +223,11 @@ export function GameShell({
                 {showTimeDebug ? <TimeDebugPanel /> : null}
                 <CareerChrome iconFiles={iconFiles} showDebug={showTimeDebug} />
                 <StoreModal />
+                <HospitalPopup
+                  open={hospitalOpen}
+                  hospitalCost={hospitalCost}
+                  onDischarge={dischargeFromHospital}
+                />
               </div>
             </div>
             <LifeStage />

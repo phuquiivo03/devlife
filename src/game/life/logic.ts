@@ -206,15 +206,15 @@ function finish(
   }
 
   if (health < LIFE.hospital_below) {
-    health = clampStat(LIFE.hospital_discharge_health);
-    money = applyMoney(money, -LIFE.hospital_cost);
-    if (health < LIFE.sick_below) energy = Math.min(energy, LIFE.sick_energy_max);
+    // Hospital admission triggered - will be processed on discharge
+    // Don't apply health/money changes yet, just set skipDays
     skipDays = LIFE.hospital_days;
     nextLife = {
       ...nextLife,
       workStreak: 0,
       suppressEndOfDayUntil: state.players.game_day + LIFE.hospital_days,
     };
+    // Keep health as is (it will be clamped on discharge)
   }
 
   const after: Vitals = { energy, health, mood, money };
