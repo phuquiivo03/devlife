@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Modal } from "@/components/ui/modal";
 import { PixelButton } from "@/components/ui/button";
 import { PixelIcon } from "./PixelIcon";
-import { formatCurrency } from "@/lib/format-currency";
+import { formatVnd } from "@/lib/format-currency";
 import { playCueKey } from "@/game/audio/client";
 
 export function HospitalPopup({
@@ -43,7 +43,7 @@ export function HospitalPopup({
           </p>
 
           <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground-muted)]">
-            Viện phí: <span className="text-[var(--status-money)]">{formatCurrency(hospitalCost)}</span>
+            Viện phí: <span className="text-[var(--status-money)]">{formatVnd(hospitalCost)}</span>
           </p>
         </div>
 
