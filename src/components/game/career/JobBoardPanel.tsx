@@ -12,6 +12,7 @@ import { formatVnd } from "@/lib/format-currency";
 import { Button } from "@/components/ui/button";
 import { PixelIcon } from "../PixelIcon";
 import { BlockedButton } from "./BlockedButton";
+import { isJobOfferNotice, noticeJobId } from "@/game/jobs/offers";
 
 const names = skillNameMap(SIM_CATALOG.skills);
 
@@ -97,15 +98,44 @@ export function JobBoardPanel({ iconFiles }: { iconFiles: readonly string[] }) {
             </div>
             {done ? (
               <PixelIcon name="task_done" size={22} alt="Xong" files={iconFiles} />
-            ) : active || check.ok ? (
+            ) : active ? (
               <Button
                 type="button"
                 size="sm"
                 showArrow={false}
                 data-testid={`job-accept-${job.template_id}`}
-                onClick={() => (active ? openTask(job.id) : acceptJob(job.id))}
+                onClick={() => openTask(job.id)}
               >
-                {active ? "Tiếp tục" : "Nhận"}
+                Tiếp tục
+              </Button>
+            ) : check.ok ? (
+              <Button
+                type="button"
+                size="sm"
+                showArrow={false}
+                data-testid={`job-accept-${job.template_id}`}
+                onClick={() => {
+                  // Accept the job (make it active) without starting work
+                  const accepted = career.player_jobs.map((j) =>
+                    j.id === job.id && j.status === "offered"
+                      ? { ...j, status: "active" as const, accepted_day: day }
+                      : j
+                  );
+                  // Remove the matching job offer notice
+                  const notices = (career.feed?.notices ?? []).filter(
+                    (notice) => noticeJobId(notice) !== job.id
+                  );
+                  useGameStore.setState({
+                    career: {
+                      ...career,
+                      player_jobs: accepted,
+                      feed: career.feed ? { ...career.feed, notices } : career.feed,
+                    },
+                    careerPanel: "jobs",
+                  });
+                }}
+              >
+                Nhận
               </Button>
             ) : (
               <div className="flex flex-col gap-1">

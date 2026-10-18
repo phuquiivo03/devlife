@@ -480,6 +480,8 @@ export const useGameStore = create<GameState>()(
         const result = startTask(synced, jobId, SIM_CATALOG, force);
         if (result.error) {
           playCueKey("jobFailed");
+          // Show error to user
+          set({ terminalLines: [...current.terminalLines, `❌ ${result.error}`].slice(-8) });
           return;
         }
         set({ career: result.state, careerPanel: null, taskJobId: jobId });
@@ -539,7 +541,10 @@ export const useGameStore = create<GameState>()(
           return;
         }
         if (id === "acceptJob") {
-          set({ career: acceptJobFromNotice(get().career, picked ?? undefined) });
+          const accepted = acceptJobFromNotice(get().career, picked ?? undefined);
+          set({ career: accepted });
+          // Close the notice panel after accepting
+          set({ careerPanel: "jobs" });
           return;
         }
         if (id === "dismissNotice") {
