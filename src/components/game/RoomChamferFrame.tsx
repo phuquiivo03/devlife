@@ -106,17 +106,7 @@ export function RoomChamferFrame({
         </div>
       </div>
 
-      <div className="room-frame-glow mt-2.5 w-max max-w-full">
-        <div
-          className="chamfer-stage-plate font-galmuri-11 text-galmuri-title"
-          style={{
-            ...chamferClipStyle(plate.corner),
-            padding: `${4 * scale}px ${16 * scale}px`,
-          }}
-        >
-          {label}
-        </div>
-      </div>
+      
     </div>
   );
 }

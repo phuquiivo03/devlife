@@ -285,7 +285,7 @@ export function NotificationsPanel() {
   const readNotice = useGameStore((s) => s.readNotice);
   const readAll = useGameStore((s) => s.readAllNotices);
   const runNoticeAction = useGameStore((s) => s.runNoticeAction);
-  const [viewMode, setViewMode] = useState<'new' | 'viewed'>('new');
+  const [viewMode, setViewMode] = useState<"new" | "viewed">("new");
   const runAction = (action: string, notice?: Notice) => {
     // Job buttons pass the notice so the action applies to that specific row.
     runNoticeAction(action as NoticeActionId, notice);
@@ -293,7 +293,7 @@ export function NotificationsPanel() {
   const listed = notices.filter((notice) => !isHungerNotice(notice));
   const unreadNotices = listed.filter((notice) => !notice.read);
   const readNotices = listed.filter((notice) => notice.read);
-  const displayedNotices = viewMode === 'new' ? unreadNotices : readNotices;
+  const displayedNotices = viewMode === "new" ? unreadNotices : readNotices;
   const ordered = [...displayedNotices].reverse();
   const badge = noticeBadgeMetrics();
 
@@ -302,20 +302,27 @@ export function NotificationsPanel() {
       className="flex h-full min-h-0 flex-col gap-3 p-4"
       style={noticeChromeStyle()}
     >
-      <div className="flex items-center justify-between gap-2">
+      <div className="items-center justify-between gap-2">
         <PanelCardTitle>Thông báo</PanelCardTitle>
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            showArrow={false}
-            onClick={() => setViewMode(viewMode === 'new' ? 'viewed' : 'new')}
+        <div className="flex items-center gap-2 mt-2">
+          <PixelButton
+            style={{
+              opacity: viewMode === "new" ? 1 : 0.5,
+            }}
+            variant="light"
+            onClick={() => setViewMode("new")}
             data-testid="notice-view-toggle"
           >
-            {viewMode === 'new' ? 'Đã xem' : 'Mới'}
-          </Button>
-          {unreadNotices.length > 0 && viewMode === 'new' ? (
+            <img
+              src={`/ui/icons/icon_new_notice.png`}
+              width={badge.sizePx}
+              height={badge.sizePx}
+              alt=""
+              data-icon-key={NOTICE_BADGE_KEY}
+              className="pixel-img"
+              style={{ width: badge.sizePx, height: badge.sizePx }}
+            />
+            Mới
             <span
               className={styles.badge}
               data-testid="notice-badge"
@@ -336,10 +343,30 @@ export function NotificationsPanel() {
                   : unreadNotices.length}
               </span>
             </span>
-          ) : null}
+          </PixelButton>
+          <PixelButton
+            style={{
+              opacity: viewMode === "viewed" ? 1 : 0.5,
+            }}
+            className="hover:opacity-100"
+            variant="light"
+            onClick={() => setViewMode("viewed")}
+            data-testid="notice-view-toggle"
+          >
+            <img
+              src={`/ui/icons/icon_read.png`}
+              width={badge.sizePx}
+              height={badge.sizePx}
+              alt=""
+              data-icon-key={NOTICE_BADGE_KEY}
+              className="pixel-img"
+              style={{ width: badge.sizePx, height: badge.sizePx }}
+            />
+            Đã xem
+          </PixelButton>
         </div>
       </div>
-      {unreadNotices.length > 0 && viewMode === 'new' ? (
+      {unreadNotices.length > 0 && viewMode === "new" ? (
         <PixelButton type="button" variant="light" onClick={readAll}>
           Đã đọc
         </PixelButton>
@@ -350,7 +377,9 @@ export function NotificationsPanel() {
             className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]"
             data-testid="notice-empty"
           >
-            {viewMode === 'new' ? 'Chưa có thông báo mới.' : 'Chưa có thông báo đã xem.'}
+            {viewMode === "new"
+              ? "Chưa có thông báo mới."
+              : "Chưa có thông báo đã xem."}
           </p>
         ) : (
           <ul className={styles.list} data-testid="notice-list">
@@ -391,10 +420,12 @@ export function NotificationsPanel() {
                             {notice.text}
                           </span>
                         </button>
-                        <NoticeRowActions
-                          notice={notice}
-                          onRun={runNoticeAction}
-                        />
+                        <span className="mt-2 ml-[18px]">
+                          <NoticeRowActions
+                            notice={notice}
+                            onRun={runNoticeAction}
+                          />
+                        </span>
                       </>
                     )}
                   </PanelCard>

@@ -17,7 +17,11 @@ import { BUTTON_LIGHT } from "@/components/ui/button/config";
 import { PanelCard } from "@/components/ui/panel-card";
 import { StatBar } from "./StatBar";
 import { HUD_ICON_GAP_PX } from "./store-button.config";
-import { ROOM_STATUS_BAR, roomStatusBarVars, roomStatusClockLabel } from "./shell-layout.config";
+import {
+  ROOM_STATUS_BAR,
+  roomStatusBarVars,
+  roomStatusClockLabel,
+} from "./shell-layout.config";
 import shellStyles from "./shell-layout.module.css";
 import { HungerDock } from "./FoodPopup";
 import { SleepButton } from "./SleepButton";
@@ -53,7 +57,11 @@ const CAREER_ACTIONS = [
 }[];
 
 /** Tiền, Ngày/giờ, and Cửa hàng. GameShell places this directly above the room. */
-export function RoomStatusBar({ iconFiles = [] }: { iconFiles?: readonly string[] }) {
+export function RoomStatusBar({
+  iconFiles = [],
+}: {
+  iconFiles?: readonly string[];
+}) {
   const money = useGameStore((s) => s.career.players.money);
   const day = useGameStore((s) => snapshot(s.totalMinutes).day);
   const clockLabel = useGameStore((s) => snapshot(s.totalMinutes).clockLabel);
@@ -71,7 +79,14 @@ export function RoomStatusBar({ iconFiles = [] }: { iconFiles?: readonly string[
     >
       <span className={shellStyles.cluster}>
         <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
-        <span data-testid="hud-money">{formatVnd(money)}</span>
+        <span
+          data-testid="hud-money"
+          style={{
+            color: money > 0 ? "var(--accent-mint)" : "var(--accent-coral)",
+          }}
+        >
+          {formatVnd(money)}
+        </span>
       </span>
       <span
         className={cn(shellStyles.cluster, fastForward && "fast-forward-flash")}
@@ -84,7 +99,9 @@ export function RoomStatusBar({ iconFiles = [] }: { iconFiles?: readonly string[
         data-fast-forward={fastForward ? "1" : "0"}
       >
         <PhaseMark phaseId={phaseId} iconFiles={iconFiles} />
-        <span>{roomStatusClockLabel(day, weekdayLabel, clockLabel, phaseLabel)}</span>
+        <span>
+          {roomStatusClockLabel(day, weekdayLabel, clockLabel, phaseLabel)}
+        </span>
       </span>
       <span className={shellStyles.shop}>
         <StoreButton onOpen={() => setStoreOpen(true)} />
@@ -93,7 +110,11 @@ export function RoomStatusBar({ iconFiles = [] }: { iconFiles?: readonly string[
   );
 }
 
-export function PlayerHudCard({ iconFiles = [] }: { iconFiles?: readonly string[] }) {
+export function PlayerHudCard({
+  iconFiles = [],
+}: {
+  iconFiles?: readonly string[];
+}) {
   const health = useGameStore((s) => s.career.players.health);
   const mood = useGameStore((s) => s.career.players.mood);
   const energy = useGameStore((s) => s.career.players.energy);
@@ -165,8 +186,16 @@ export function PlayerHudCard({ iconFiles = [] }: { iconFiles?: readonly string[
   );
 }
 
-function useVitalFloaters(): { health: string | null; mood: string | null; energy: string | null } {
-  const [notes, setNotes] = useState<{ health: string | null; mood: string | null; energy: string | null }>({
+function useVitalFloaters(): {
+  health: string | null;
+  mood: string | null;
+  energy: string | null;
+} {
+  const [notes, setNotes] = useState<{
+    health: string | null;
+    mood: string | null;
+    energy: string | null;
+  }>({
     health: null,
     mood: null,
     energy: null,
@@ -178,7 +207,10 @@ function useVitalFloaters(): { health: string | null; mood: string | null; energ
     const flush = () => {
       const count = pending.count;
       const next = {
-        health: pending.health === 0 ? null : formatDelta(count > 3 ? pending.health : pending.health),
+        health:
+          pending.health === 0
+            ? null
+            : formatDelta(count > 3 ? pending.health : pending.health),
         mood: pending.mood === 0 ? null : formatDelta(pending.mood),
         energy: pending.energy === 0 ? null : formatDelta(pending.energy),
       };
@@ -189,7 +221,10 @@ function useVitalFloaters(): { health: string | null; mood: string | null; energ
         setNotes(next);
       }
       pending = { health: 0, mood: 0, energy: 0, count: 0 };
-      window.setTimeout(() => setNotes({ health: null, mood: null, energy: null }), 1200);
+      window.setTimeout(
+        () => setNotes({ health: null, mood: null, energy: null }),
+        1200,
+      );
     };
     const push = (key: "health" | "mood" | "energy", delta: number) => {
       if (delta === 0) return;
@@ -239,21 +274,30 @@ function HudVital({
   const shown = Math.round(value);
   return (
     <div
-      className={alert ? "hud-vital stat-blink relative min-w-0" : "hud-vital relative min-w-0"}
+      className={
+        alert
+          ? "hud-vital stat-blink relative min-w-0"
+          : "hud-vital relative min-w-0"
+      }
       data-testid={testId}
       data-value={shown}
       data-max={max}
       data-alert={alert ? "1" : "0"}
     >
       {floater ? (
-        <span className="vital-floater font-galmuri-7 text-galmuri-small" data-testid={`${testId}-floater`}>
+        <span
+          className="vital-floater font-galmuri-7 text-galmuri-small"
+          data-testid={`${testId}-floater`}
+        >
           {floater}
         </span>
       ) : null}
       <div className="hud-vital-head mb-1">
         <PixelIcon name={icon} size={22} alt="" />
         <span className="flex min-w-0 flex-col font-galmuri-7 text-galmuri-small leading-tight">
-          <span className="whitespace-nowrap text-[var(--muted-foreground)]">{label}</span>
+          <span className="whitespace-nowrap text-[var(--muted-foreground)]">
+            {label}
+          </span>
           <span className="whitespace-nowrap text-[var(--foreground)]">
             {shown}/{max}
           </span>
@@ -281,7 +325,12 @@ function CareerHudButton({
       data-icon-key={action.icon}
       onClick={onClick}
     >
-      <PixelIcon name={action.icon} size={BUTTON_LIGHT.iconPx} alt="" files={iconFiles} />
+      <PixelIcon
+        name={action.icon}
+        size={BUTTON_LIGHT.iconPx}
+        alt=""
+        files={iconFiles}
+      />
       <span>{action.label}</span>
     </PixelButton>
   );
@@ -301,7 +350,12 @@ function PhaseMark({
     <span className="inline-flex items-center text-[var(--foreground)]">
       <span data-icon-key={phase.iconKey} className="inline-flex">
         {art ? (
-          <PixelIcon name={phase.iconKey} size={size} alt="" files={iconFiles} />
+          <PixelIcon
+            name={phase.iconKey}
+            size={size}
+            alt=""
+            files={iconFiles}
+          />
         ) : (
           <span
             className="inline-flex items-center justify-center text-[16px] leading-4"
