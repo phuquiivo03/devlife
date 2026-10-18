@@ -126,26 +126,33 @@ function pickTemplate(state: CareerState, catalog: SimCatalog, day: number): Job
   );
   if (pool.length === 0) return null;
 
-  // Filter to only eligible templates
+  // Filter to only eligible templates based on SKILLS/REPUTATION/PROGRESS only
+  // Energy/time-of-day checks happen when PLAYER STARTS WORK, not when offering
   const names = skillNameMap(catalog.skills);
   const eligible = pool.filter((template) => {
     const reqs = jobRequirementsFor(template.id, catalog.jobTemplateRequirements);
-    const check = jobEligibility(
-      state.players,
-      state.player_skills,
-      template,
-      reqs,
-      names,
-      {
-        // Don't check energy or time-of-day gates here - those apply when starting work
-        workStreak: 0,
-        minEnergy: undefined,
-        blockFreelance: false,
-        energyFactor: 1,
-      },
-    );
-    // Only check skill and reputation requirements, not energy or burnout
-    return check.ok || check.energyShort;
+
+    // Check reputation requirement
+    if (state.players.reputation < template.min_reputation) {
+      return false;
+    }
+
+    // Check freelance progress requirement
+    if (state.players.freelance_completed < template.unlock_freelance_completed) {
+      return false;
+    }
+
+    // Check skill requirements
+    for (const req of reqs) {
+      const skill = state.player_skills.find((s) => s.skill_id === req.skill_id);
+      if (!skill || skill.level < req.min_level) {
+        return false;
+      }
+    }
+
+    // If we got here, skills/reputation/progress are all met
+    // Energy check is DELIBERATELY skipped - checked at work start time
+    return true;
   });
 
   if (eligible.length === 0) return null;
