@@ -11,6 +11,7 @@ import type {
   NoticeActionId,
 } from "@/game/career/types";
 import { useGameStore } from "@/game/state/store";
+import { useState } from "react";
 import { Button, PixelButton } from "@/components/ui/button";
 import { PanelCard, PanelCardTitle } from "@/components/ui/panel-card";
 import {
@@ -48,9 +49,9 @@ function clock(minute: number): string {
 }
 
 function jobButtons(notice: LifeNotice): NoticeActionButton[] | null {
-  const buttons = notice.actions;
-  if (!buttons?.some((button) => JOB_BUTTON_IDS.has(button.id))) return null;
-  return buttons;
+  const { actions } = notice;
+  if (!actions?.some((button) => JOB_BUTTON_IDS.has(button.id))) return null;
+  return actions;
 }
 
 function NoticeOffer({
@@ -252,7 +253,9 @@ function NoticeRowActions({
   onRun: (id: NoticeActionId, notice: Notice) => void;
 }) {
   const buttons = listedNoticeActions(notice);
-  if (buttons) {
+  // Ensure listedNoticeActions comes before notice.action check for test compliance
+  const hasButtons = buttons && buttons.length > 0;
+  if (hasButtons) {
     return (
       <div className={styles.actions} data-testid="notice-actions">
         {buttons.map((button, index) => (
@@ -282,16 +285,16 @@ export function NotificationsPanel() {
   const readNotice = useGameStore((s) => s.readNotice);
   const readAll = useGameStore((s) => s.readAllNotices);
   const runNoticeAction = useGameStore((s) => s.runNoticeAction);
+  const [viewMode, setViewMode] = useState<'new' | 'viewed'>('new');
   const runAction = (action: string, notice?: Notice) => {
     // Job buttons pass the notice so the action applies to that specific row.
     runNoticeAction(action as NoticeActionId, notice);
   };
   const listed = notices.filter((notice) => !isHungerNotice(notice));
-  let unread = 0;
-  for (const notice of listed) {
-    if (!notice.read) unread += 1;
-  }
-  const ordered = [...listed].reverse();
+  const unreadNotices = listed.filter((notice) => !notice.read);
+  const readNotices = listed.filter((notice) => notice.read);
+  const displayedNotices = viewMode === 'new' ? unreadNotices : readNotices;
+  const ordered = [...displayedNotices].reverse();
   const badge = noticeBadgeMetrics();
 
   return (
@@ -301,30 +304,42 @@ export function NotificationsPanel() {
     >
       <div className="flex items-center justify-between gap-2">
         <PanelCardTitle>Thông báo</PanelCardTitle>
-        {unread > 0 ? (
-          <span
-            className={styles.badge}
-            data-testid="notice-badge"
-            data-count={unread}
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            showArrow={false}
+            onClick={() => setViewMode(viewMode === 'new' ? 'viewed' : 'new')}
+            data-testid="notice-view-toggle"
           >
-            <img
-              src={m51AssetPath(noticeBadgeFile())}
-              width={badge.sizePx}
-              height={badge.sizePx}
-              alt=""
-              data-icon-key={NOTICE_BADGE_KEY}
-              className="pixel-img"
-              style={{ width: badge.sizePx, height: badge.sizePx }}
-            />
-            <span className={`font-galmuri-7 ${styles.count}`}>
-              {unread > NOTICE_BADGE_COUNT_CAP
-                ? NOTICE_BADGE_COUNT_CAP
-                : unread}
+            {viewMode === 'new' ? 'Đã xem' : 'Mới'}
+          </Button>
+          {unreadNotices.length > 0 && viewMode === 'new' ? (
+            <span
+              className={styles.badge}
+              data-testid="notice-badge"
+              data-count={unreadNotices.length}
+            >
+              <img
+                src={m51AssetPath(noticeBadgeFile())}
+                width={badge.sizePx}
+                height={badge.sizePx}
+                alt=""
+                data-icon-key={NOTICE_BADGE_KEY}
+                className="pixel-img"
+                style={{ width: badge.sizePx, height: badge.sizePx }}
+              />
+              <span className={`font-galmuri-7 ${styles.count}`}>
+                {unreadNotices.length > NOTICE_BADGE_COUNT_CAP
+                  ? NOTICE_BADGE_COUNT_CAP
+                  : unreadNotices.length}
+              </span>
             </span>
-          </span>
-        ) : null}
+          ) : null}
+        </div>
       </div>
-      {unread > 0 ? (
+      {unreadNotices.length > 0 && viewMode === 'new' ? (
         <PixelButton type="button" variant="light" onClick={readAll}>
           Đã đọc
         </PixelButton>
@@ -335,7 +350,7 @@ export function NotificationsPanel() {
             className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]"
             data-testid="notice-empty"
           >
-            Chưa có thông báo.
+            {viewMode === 'new' ? 'Chưa có thông báo mới.' : 'Chưa có thông báo đã xem.'}
           </p>
         ) : (
           <ul className={styles.list} data-testid="notice-list">
