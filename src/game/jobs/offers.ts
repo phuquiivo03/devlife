@@ -12,7 +12,7 @@ import { SIM_CATALOG } from "../career/content";
 import { LIFE } from "../life/content";
 import { lifeOf } from "../life/logic";
 import { formatVnd } from "@/lib/format-currency";
-import { jobRequirementsFor, offerJob, shuffleSeeded, skillNameMap } from "./logic";
+import { jobEligibility, jobRequirementsFor, offerJob, shuffleSeeded, skillNameMap } from "./logic";
 
 export const JOB_OFFER_ICON = "icon_notif_job.png";
 
@@ -125,7 +125,31 @@ function pickTemplate(state: CareerState, catalog: SimCatalog, day: number): Job
     (template) => template.job_type === "freelance" && !busy.has(template.id),
   );
   if (pool.length === 0) return null;
-  const shuffled = shuffleSeeded(pool, day * 997 + state.player_jobs.length);
+
+  // Filter to only eligible templates
+  const names = skillNameMap(catalog.skills);
+  const eligible = pool.filter((template) => {
+    const reqs = jobRequirementsFor(template.id, catalog.jobTemplateRequirements);
+    const check = jobEligibility(
+      state.players,
+      state.player_skills,
+      template,
+      reqs,
+      names,
+      {
+        // Don't check energy or time-of-day gates here - those apply when starting work
+        workStreak: 0,
+        minEnergy: undefined,
+        blockFreelance: false,
+        energyFactor: 1,
+      },
+    );
+    // Only check skill and reputation requirements, not energy or burnout
+    return check.ok || check.energyShort;
+  });
+
+  if (eligible.length === 0) return null;
+  const shuffled = shuffleSeeded(eligible, day * 997 + state.player_jobs.length);
   return shuffled[0] ?? null;
 }
 
