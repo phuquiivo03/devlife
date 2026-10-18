@@ -6,7 +6,7 @@ import { canStudyCourse, studyBlockReason } from "@/game/knowledge/logic";
 import { energyCost } from "@/game/life/logic";
 import { useGameStore } from "@/game/state/store";
 import { formatVnd } from "@/lib/format-currency";
-import { Button } from "@/components/ui/button";
+import { Button, PixelButton } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PixelIcon } from "../PixelIcon";
 import { BlockedButton } from "./BlockedButton";
@@ -21,7 +21,9 @@ export function StudyPanel({ iconFiles }: { iconFiles: readonly string[] }) {
     canStudyCourse(activity, completions),
   );
   const done = completions.flatMap((completion) => {
-    const activity = SIM_CATALOG.studyActivities.find((row) => row.id === completion.activity_id);
+    const activity = SIM_CATALOG.studyActivities.find(
+      (row) => row.id === completion.activity_id,
+    );
     return activity ? [{ activity, completion }] : [];
   });
 
@@ -37,7 +39,10 @@ export function StudyPanel({ iconFiles }: { iconFiles: readonly string[] }) {
       </TabsList>
       <TabsContent value="open" data-testid="courses-open">
         {open.length === 0 ? (
-          <CourseEmpty testId="courses-empty-open" label="Không còn khóa để học." />
+          <CourseEmpty
+            testId="courses-empty-open"
+            label="Không còn khóa để học."
+          />
         ) : (
           <ul className="flex flex-col gap-2">
             {open.map((activity, index) => (
@@ -109,7 +114,10 @@ function CourseOffer({
     .filter((row) => row.activity_id === activity.id)
     .reduce((sum, row) => sum + row.xp, 0);
   const cost = energyCost(activity.energy, workStreak);
-  const reason = studyBlockReason(money, energy, { price: activity.price, energy: cost });
+  const reason = studyBlockReason(money, energy, {
+    price: activity.price,
+    energy: cost,
+  });
   const canForce = money >= activity.price && energy < cost;
   return (
     <li
@@ -119,38 +127,40 @@ function CourseOffer({
     >
       <PixelIcon name={activity.icon} size={44} alt="" files={iconFiles} />
       <div className="min-w-0 flex-1">
-        <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground)]">{activity.name}</p>
+        <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground)]">
+          {activity.name}
+        </p>
         <p className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
-          {skill?.name} · {formatVnd(activity.price)} ·           {activity.hours} giờ · {Math.ceil(cost)}{" "}
-          năng lượng · {xp} XP
+          {skill?.name} · {formatVnd(activity.price)} · {activity.hours} giờ ·{" "}
+          {Math.ceil(cost)} năng lượng · {xp} XP
         </p>
       </div>
       {reason ? (
         <div className="flex flex-col gap-1">
-          <BlockedButton label="Mua" reason={reason} testId={`course-buy-${activity.id}`} />
           {canForce ? (
-            <Button
+            <PixelButton
               type="button"
-              size="sm"
-              showArrow={false}
-              variant="outline"
               data-testid={`course-force-${activity.id}`}
               onClick={() => onBuy(activity.id, true)}
             >
-              Cố làm
-            </Button>
-          ) : null}
+              Cố học
+            </PixelButton>
+          ) : (
+            <BlockedButton
+              label="Học"
+              reason={reason}
+              testId={`course-buy-${activity.id}`}
+            />
+          )}
         </div>
       ) : (
-        <Button
+        <PixelButton
           type="button"
-          size="sm"
-          showArrow={false}
           data-testid={`course-buy-${activity.id}`}
           onClick={() => onBuy(activity.id)}
         >
-          Mua
-        </Button>
+          Học
+        </PixelButton>
       )}
     </li>
   );
@@ -167,7 +177,9 @@ function CourseRecord({
   index: number;
   iconFiles: readonly string[];
 }) {
-  const skill = SIM_CATALOG.skills.find((row) => row.id === completion.skill_id);
+  const skill = SIM_CATALOG.skills.find(
+    (row) => row.id === completion.skill_id,
+  );
   return (
     <li
       data-testid={`course-done-${activity.id}`}
@@ -176,9 +188,12 @@ function CourseRecord({
     >
       <PixelIcon name={activity.icon} size={44} alt="" files={iconFiles} />
       <div className="min-w-0 flex-1">
-        <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground)]">{activity.name}</p>
+        <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground)]">
+          {activity.name}
+        </p>
         <p className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
-          {skill?.name} · {completion.xp_gained} XP · Ngày {completion.completed_day}
+          {skill?.name} · {completion.xp_gained} XP · Ngày{" "}
+          {completion.completed_day}
         </p>
       </div>
     </li>

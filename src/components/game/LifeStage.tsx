@@ -46,23 +46,38 @@ export function LifeStage() {
   return (
     <>
       {showBanner ? (
-        <div className="pointer-events-none fixed inset-0 z-30 overflow-hidden" data-testid="life-banner">
-          <div className="life-banner-dim absolute inset-0" data-testid="life-banner-dim" />
+        <div
+          className="pointer-events-none fixed inset-0 z-30 overflow-hidden"
+          data-testid="life-banner"
+        >
+          <div
+            className="life-banner-dim absolute inset-0"
+            data-testid="life-banner-dim"
+          />
           <div
             className="life-banner relative z-10 mx-auto mt-16 flex w-[min(1200px,calc(100%-1.5rem))] justify-center"
             style={{ animationDuration: `${LIFE_EVENTS.banner_enter_ms}ms` }}
           >
-            <div className="life-banner-plate" data-testid="life-banner-plate" style={bannerPlateStyle()}>
+            <div
+              className="life-banner-plate"
+              data-testid="life-banner-plate"
+              style={bannerPlateStyle()}
+            >
               <img
                 src={m51AssetPath(bannerArtFile())}
                 width={bannerBox.widthPx}
                 height={bannerBox.heightPx}
                 alt=""
                 className="life-banner-sparkle pixel-img"
-                style={{ animationDuration: `${LIFE_EVENTS.banner_spark_ms}ms` }}
+                style={{
+                  animationDuration: `${LIFE_EVENTS.banner_spark_ms}ms`,
+                }}
                 data-testid="life-banner-art"
               />
-              <p className="life-banner-label font-galmuri-11 text-galmuri-title" data-testid="life-banner-label">
+              <p
+                className="life-banner-label font-galmuri-11 text-galmuri-title"
+                data-testid="life-banner-label"
+              >
                 {banner.label}
               </p>
             </div>
@@ -88,33 +103,62 @@ export function LifeStage() {
         </div>
       ) : null}
       {diary ? (
-        <div className="absolute inset-0 z-40 flex items-center justify-center p-3" data-testid="life-diary">
+        <div
+          className="absolute inset-0 z-40 flex items-center justify-center p-3 w-full bg-[#000]/40 max-h-[100vh]"
+          data-testid="life-diary"
+        >
           <div className="life-notepad w-full" style={notepadFrameStyle()}>
-            <p className="life-notepad-title font-galmuri-7 text-galmuri-small" data-testid="diary-title">
+            <p
+              className="life-notepad-title font-galmuri-7 text-galmuri-small"
+              data-testid="diary-title"
+            >
               nhat_ky_ngay_{diary.day}.txt
             </p>
             <div className="life-notepad-chrome">
-              <button type="button" aria-label="Thu nhỏ" data-testid="diary-min" />
-              <button type="button" aria-label="Phóng to" data-testid="diary-max" />
-              <button type="button" aria-label="Đóng" data-testid="life-diary-close" onClick={dismissDiary} />
+              <button
+                type="button"
+                aria-label="Thu nhỏ"
+                data-testid="diary-min"
+              />
+              <button
+                type="button"
+                aria-label="Phóng to"
+                data-testid="diary-max"
+              />
+              <button
+                type="button"
+                aria-label="Đóng"
+                data-testid="life-diary-close"
+                onClick={dismissDiary}
+              />
             </div>
             <ul className="space-y-1 p-3 font-galmuri-7 text-galmuri-small text-[var(--foreground)]">
               <li data-testid="diary-when">{diaryWhen(diary)}</li>
-              <li data-testid="diary-earned" className="text-[var(--accent-mint)]">
+              <li
+                data-testid="diary-earned"
+                className="text-[var(--accent-mint)]"
+              >
                 Kiếm được +{formatVnd(diary.earned)}
               </li>
-              <li data-testid="diary-spent" className="text-[var(--accent-coral)]">
+              <li
+                data-testid="diary-spent"
+                className="text-[var(--accent-coral)]"
+              >
                 Đã tiêu −{formatVnd(diary.spent)}
               </li>
               <DiarySpends diary={diary} />
-              <li data-testid="diary-left">Còn lại {formatVnd(diary.remaining)}</li>
+              <li data-testid="diary-left">
+                Còn lại {formatVnd(diary.remaining)}
+              </li>
               <li data-testid="diary-stats">
-                XP {signed(diary.xp)} · Sức khỏe {signed(diary.health)} · Tinh thần {signed(diary.mood)} · Năng lượng{" "}
-                {signed(diary.energy)}
+                XP {signed(diary.xp)} · Sức khỏe {signed(diary.health)} · Tinh
+                thần {signed(diary.mood)} · Năng lượng {signed(diary.energy)}
               </li>
               <li data-testid="diary-pin">{diary.pin || "Chưa ghim món."}</li>
             </ul>
-            <p className="px-3 pb-3 font-galmuri-7 text-galmuri-small text-[var(--foreground)]">{diary.line}</p>
+            <p className="px-3 pb-3 font-galmuri-7 text-galmuri-small text-[var(--foreground)]">
+              {diary.line}
+            </p>
           </div>
         </div>
       ) : null}
@@ -129,9 +173,12 @@ function signed(value: number): string {
 
 function DiarySpends({ diary }: { diary: LifeDiary }) {
   const parts: { id: string; text: string }[] = [];
-  if (diary.food > 0) parts.push({ id: "diary-food", text: `Ăn −${formatVnd(diary.food)}` });
-  if (diary.rent > 0) parts.push({ id: "diary-rent", text: `Trọ −${formatVnd(diary.rent)}` });
-  if (diary.shop > 0) parts.push({ id: "diary-shop", text: `Mua đồ −${formatVnd(diary.shop)}` });
+  if (diary.food > 0)
+    parts.push({ id: "diary-food", text: `Ăn −${formatVnd(diary.food)}` });
+  if (diary.rent > 0)
+    parts.push({ id: "diary-rent", text: `Trọ −${formatVnd(diary.rent)}` });
+  if (diary.shop > 0)
+    parts.push({ id: "diary-shop", text: `Mua đồ −${formatVnd(diary.shop)}` });
   if (parts.length === 0) return null;
   return (
     <li data-testid="diary-breakdown">
@@ -160,7 +207,13 @@ export function LifeRoomFx() {
   }, [bubble]);
 
   const emote =
-    health < 30 ? "emote_cough.png" : mood < 15 ? "emote_cloud.png" : energy < 15 ? "emote_sweat.png" : null;
+    health < 30
+      ? "emote_cough.png"
+      : mood < 15
+        ? "emote_cloud.png"
+        : energy < 15
+          ? "emote_sweat.png"
+          : null;
   const showBubble = bubble != null && bubble.until > now;
 
   return (
@@ -177,7 +230,10 @@ export function LifeRoomFx() {
         />
       ) : null}
       {showBubble ? (
-        <p className="life-bubble pointer-events-none absolute left-1/2 top-[8%] z-10 max-w-[180px] px-3 py-2 font-galmuri-7 text-galmuri-small text-[var(--foreground)]" data-testid="life-bubble">
+        <p
+          className="life-bubble pointer-events-none absolute left-1/2 top-[8%] z-10 max-w-[180px] px-3 py-2 font-galmuri-7 text-galmuri-small text-[var(--foreground)]"
+          data-testid="life-bubble"
+        >
           {bubble.text}
         </p>
       ) : null}

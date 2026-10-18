@@ -41,7 +41,11 @@ const stageIcons: Record<StageId, React.ReactNode> = {
 
 type SidebarTab = "player" | "edit-room";
 
-export function GameShell({ iconFiles = [] }: { iconFiles?: readonly string[] }) {
+export function GameShell({
+  iconFiles = [],
+}: {
+  iconFiles?: readonly string[];
+}) {
   const areaRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("player");
@@ -138,141 +142,139 @@ export function GameShell({ iconFiles = [] }: { iconFiles?: readonly string[] })
         maxWidth: "100%",
         minHeight: Math.round((ROOM_VIEWPORT_W * 240) / 427),
       }
-    : { width: "100%", maxWidth: ROOM_VIEWPORT_W, minHeight: 200, aspectRatio: "427 / 240" };
+    : {
+        width: "100%",
+        maxWidth: ROOM_VIEWPORT_W,
+        minHeight: 200,
+        aspectRatio: "427 / 240",
+      };
 
   return (
     <div className="flex min-h-screen flex-col lg:h-screen lg:max-h-screen lg:overflow-hidden">
-      <header className="relative z-10 flex min-h-14 shrink-0 items-center gap-3 border-b border-white/15 bg-[var(--panel-bg)]/90 px-3 backdrop-blur-sm md:px-4">
+      <header className="relative z-10 flex min-h-14 justify-between shrink-0 items-center gap-3 border-b border-white/15 bg-[var(--panel-bg)]/90 px-3 backdrop-blur-sm md:px-4">
         <span className="font-galmuri-11 text-galmuri-title-lg text-[var(--foreground)]">
           devlife
         </span>
-        <Tabs
-          value={stage}
-          onValueChange={(v) => setStage(v as StageId)}
-          className="min-w-0 flex-1"
-        >
-          <TabsList className="tabs-lavender h-11 w-full max-w-xl border-0 bg-transparent p-1 md:h-10">
-            {STAGES.map((s) => {
-              const open = s === "student" || (s === "junior" ? juniorOpen : seniorOpen);
-              return (
-                <TabsTrigger
-                  key={s}
-                  value={s}
-                  disabled={!open}
-                  title={open ? STAGE_LABELS[s] : "Chưa mở"}
-                  data-testid={`stage-${s}`}
-                  data-owned={open ? "1" : "0"}
-                  className="gap-1.5 border-0 font-galmuri-11 text-galmuri-title shadow-none data-[state=active]:border-0 data-[state=active]:shadow-[var(--shadow-panel)]"
-                >
-                  {stageIcons[s]}
-                  <span className="hidden sm:inline">{STAGE_LABELS[s]}</span>
-                  <span className="sm:hidden">{STAGE_LABELS[s][0]}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
-        </Tabs>
-        <div className="flex shrink-0 items-center gap-2">
-          <label className="hidden min-h-10 items-center gap-2 sm:flex">
-            <Label className="font-galmuri-9 text-galmuri-body">Nhân vật</Label>
-            <Switch
-              checked={showCharacter}
-              onCheckedChange={setShowCharacter}
-            />
-          </label>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            showArrow={false}
-            onClick={resetStage}
-          >
-            Đặt lại phòng
-          </Button>
-        </div>
+
+        {showTimeDebug && (
+          <div className="flex shrink-0 items-center gap-2">
+            <label className="hidden min-h-10 items-center gap-2 sm:flex">
+              <Label className="font-galmuri-9 text-galmuri-body">
+                Nhân vật
+              </Label>
+              <Switch
+                checked={showCharacter}
+                onCheckedChange={setShowCharacter}
+              />
+            </label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              showArrow={false}
+              onClick={resetStage}
+            >
+              Đặt lại phòng
+            </Button>
+          </div>
+        )}
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:items-center lg:justify-[safe_center] lg:px-4 lg:py-6">
-      <div
-        className="relative flex min-h-0 w-full flex-1 flex-col lg:grid lg:w-full lg:max-w-[1200px] lg:flex-none lg:grid-cols-[320px_minmax(0,1fr)_320px] lg:items-stretch lg:gap-5"
-        style={shellPanelVars()}
-      >
-        <aside
-          className={cn("order-2 flex min-h-0 flex-col p-3 lg:order-1 lg:p-0", shellStyles.column)}
-          data-side-panel="notices"
+        <div
+          className="relative flex min-h-0 w-full flex-1 flex-col lg:grid lg:w-full lg:max-w-[1200px] lg:flex-none lg:grid-cols-[320px_minmax(0,1fr)_320px] lg:items-stretch lg:gap-5"
+          style={shellPanelVars()}
         >
-          <PanelChamferFrame>
-            <NotificationsPanel />
-          </PanelChamferFrame>
-        </aside>
+          <aside
+            className={cn(
+              "order-2 flex min-h-0 flex-col p-3 lg:order-1 lg:p-0",
+              shellStyles.column,
+            )}
+            data-side-panel="notices"
+          >
+            <PanelChamferFrame>
+              <NotificationsPanel />
+            </PanelChamferFrame>
+          </aside>
 
-        <main className="relative order-1 flex min-h-0 flex-col items-center justify-center px-2 py-4 lg:order-2 lg:justify-start lg:px-0 lg:py-0">
-          <div className="room-stage-glow flex w-full flex-col items-center">
-            <RoomStatusBar iconFiles={iconFiles} />
-            <RoomChamferFrame
-              areaRef={areaRef}
-              roomAreaStyle={roomAreaStyle}
-              label={
-                <>
-                  {t(room.title)}
-                  {debug ? " · debug (D)" : ""}
-                </>
-              }
-            >
-              <SceneCanvas areaRef={areaRef} debug={debug} />
-              <LifeRoomFx />
-              <LifeEventPopup />
-            </RoomChamferFrame>
-            <div className="mt-3 flex w-full flex-col items-center gap-3 px-2 lg:px-0">
-              <PlayerHudCard iconFiles={iconFiles} />
-              {showTimeDebug ? <TimeDebugPanel /> : null}
-              <CareerChrome iconFiles={iconFiles} showDebug={showTimeDebug} />
-              <StoreModal />
+          <main className="relative order-1 flex min-h-0 flex-col items-center justify-center px-2 py-4 lg:order-2 lg:justify-start lg:px-0 lg:py-0">
+            <div className="room-stage-glow flex w-full flex-col items-center">
+              <RoomStatusBar iconFiles={iconFiles} />
+              <RoomChamferFrame
+                areaRef={areaRef}
+                roomAreaStyle={roomAreaStyle}
+                label={
+                  <>
+                    {t(room.title)}
+                    {debug ? " · debug (D)" : ""}
+                  </>
+                }
+              >
+                <SceneCanvas areaRef={areaRef} debug={debug} />
+                <LifeRoomFx />
+                <LifeEventPopup />
+              </RoomChamferFrame>
+              <div className="mt-3 flex w-full flex-col items-center gap-3 px-2 lg:px-0">
+                <PlayerHudCard iconFiles={iconFiles} />
+                {showTimeDebug ? <TimeDebugPanel /> : null}
+                <CareerChrome iconFiles={iconFiles} showDebug={showTimeDebug} />
+                <StoreModal />
+              </div>
             </div>
-          </div>
-          <LifeStage />
-          <TaskRunOverlay />
-        </main>
+            <LifeStage />
+            <TaskRunOverlay />
+          </main>
 
-        <aside
-          className={cn("order-3 flex min-h-0 flex-col p-3 lg:p-0", shellStyles.column)}
-          data-side-panel="player"
-        >
-          <PanelChamferFrame>
-            <Tabs
-              value={sidebarTab}
-              onValueChange={(v) => {
-                setSidebarTab(v as SidebarTab);
-                if (v === "edit-room") setCustomizeOpen(true);
-              }}
-              className="flex h-full min-h-0 flex-1 flex-col gap-3 p-3"
-            >
-              <TabsList className="tabs-lavender grid h-11 w-full grid-cols-2">
-                <TabsTrigger
+          <aside
+            className={cn(
+              "order-3 flex min-h-0 flex-col p-3 lg:p-0",
+              shellStyles.column,
+            )}
+            data-side-panel="player"
+          >
+            <PanelChamferFrame>
+              <Tabs
+                value={sidebarTab}
+                onValueChange={(v) => {
+                  setSidebarTab(v as SidebarTab);
+                  if (v === "edit-room") setCustomizeOpen(true);
+                }}
+                className="flex h-full min-h-0 flex-1 flex-col gap-3 p-3"
+              >
+                <TabsList className="tabs-lavender grid h-11 w-full grid-cols-2">
+                  <TabsTrigger
+                    value="player"
+                    className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
+                  >
+                    Nhân vật
+                  </TabsTrigger>
+                  {showTimeDebug && (
+                    <TabsTrigger
+                      value="edit-room"
+                      className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
+                    >
+                      Sửa phòng
+                    </TabsTrigger>
+                  )}
+                </TabsList>
+                <TabsContent
                   value="player"
-                  className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
+                  className="mt-0 min-h-0 flex-1 overflow-hidden"
                 >
-                  Nhân vật
-                </TabsTrigger>
-                <TabsTrigger
+                  <PlayerInfoPanel iconFiles={iconFiles} />
+                </TabsContent>
+                <TabsContent
                   value="edit-room"
-                  className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
+                  className="mt-0 min-h-0 flex-1 overflow-hidden"
                 >
-                  Sửa phòng
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="player" className="mt-0 min-h-0 flex-1 overflow-hidden">
-                <PlayerInfoPanel iconFiles={iconFiles} />
-              </TabsContent>
-              <TabsContent value="edit-room" className="mt-0 min-h-0 flex-1 overflow-hidden">
-                <div className="flex max-h-[min(50vh,520px)] min-h-[240px] flex-col lg:h-full lg:max-h-full lg:min-h-0">
-                  <CustomizePanel />
-                </div>
-              </TabsContent>
-            </Tabs>
-          </PanelChamferFrame>
-        </aside>
-      </div>
+                  <div className="flex max-h-[min(50vh,520px)] min-h-[240px] flex-col lg:h-full lg:max-h-full lg:min-h-0">
+                    <CustomizePanel />
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </PanelChamferFrame>
+          </aside>
+        </div>
       </div>
       <CharacterIntro />
     </div>

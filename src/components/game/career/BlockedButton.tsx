@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, PixelButton } from "@/components/ui/button";
 
 export function BlockedButton({
   label,
@@ -16,11 +16,8 @@ export function BlockedButton({
 
   return (
     <div className="flex flex-col items-end gap-1">
-      <Button
+      <PixelButton
         type="button"
-        size="sm"
-        showArrow={false}
-        variant="outline"
         aria-disabled
         data-testid={testId}
         title={reason}
@@ -32,7 +29,7 @@ export function BlockedButton({
         onAnimationEnd={() => setShake(false)}
       >
         {label}
-      </Button>
+      </PixelButton>
       <span className="max-w-40 text-right font-galmuri-7 text-galmuri-small text-[var(--accent-coral)]">
         {reason}
       </span>

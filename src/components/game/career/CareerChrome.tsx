@@ -8,7 +8,7 @@ import type { GameEvent } from "@/game/events/types";
 import { useGameStore } from "@/game/state/store";
 import { timeBus } from "@/game/time";
 import { formatVnd } from "@/lib/format-currency";
-import { Button } from "@/components/ui/button";
+import { Button, PixelButton } from "@/components/ui/button";
 import { PanelCard, PanelCardTitle } from "@/components/ui/panel-card";
 import { JobManageBoard } from "./JobManageBoard";
 import { RankBadge } from "./RankBadge";
@@ -71,12 +71,21 @@ export function CareerChrome({
     });
     const offMoney = gameBus.on("moneyChanged", (event) => {
       if (event.delta === 0) return;
-      push(event.delta > 0 ? `+${formatVnd(event.delta)}` : formatVnd(event.delta));
+      push(
+        event.delta > 0 ? `+${formatVnd(event.delta)}` : formatVnd(event.delta),
+      );
     });
-    const offLevel = gameBus.on("skillLevelUp", (event: GameEvent & { type: "skillLevelUp" }) => {
-      playCueKey("toast");
-      setPopup({ skillId: event.skillId, level: event.level, rankId: event.rankId });
-    });
+    const offLevel = gameBus.on(
+      "skillLevelUp",
+      (event: GameEvent & { type: "skillLevelUp" }) => {
+        playCueKey("toast");
+        setPopup({
+          skillId: event.skillId,
+          level: event.level,
+          rankId: event.rankId,
+        });
+      },
+    );
     return () => {
       offXp();
       offMoney();
@@ -107,8 +116,11 @@ export function CareerChrome({
     if (!panel && previous) playCueKey("panelClose");
   }, [panel]);
 
-  const title = panel === "study" ? "Khóa học" : panel === "skills" ? "Kỹ năng" : "";
-  const popupSkill = SIM_CATALOG.skills.find((row) => row.id === popup?.skillId);
+  const title =
+    panel === "study" ? "Khóa học" : panel === "skills" ? "Kỹ năng" : "";
+  const popupSkill = SIM_CATALOG.skills.find(
+    (row) => row.id === popup?.skillId,
+  );
 
   return (
     <>
@@ -119,7 +131,13 @@ export function CareerChrome({
               Kỹ năng (debug)
             </p>
             <div className="flex flex-wrap gap-2">
-              <Button type="button" size="sm" showArrow={false} variant="outline" onClick={debugAddMoney}>
+              <Button
+                type="button"
+                size="sm"
+                showArrow={false}
+                variant="outline"
+                onClick={debugAddMoney}
+              >
                 Thêm tiền
               </Button>
               <Button
@@ -159,7 +177,14 @@ export function CareerChrome({
         </div>
       ) : null}
 
-      {panel === "jobs" ? <JobManageBoard open onOpenChange={(next) => { if (!next) close(); }} /> : null}
+      {panel === "jobs" ? (
+        <JobManageBoard
+          open
+          onOpenChange={(next) => {
+            if (!next) close();
+          }}
+        />
+      ) : null}
 
       {panel && panel !== "jobs" ? (
         <div
@@ -180,12 +205,14 @@ export function CareerChrome({
                 <PanelCardTitle>
                   <span id="career-panel-title">{title}</span>
                 </PanelCardTitle>
-                <Button type="button" size="sm" showArrow={false} variant="outline" onClick={close}>
+                <PixelButton variant="light" type="button" onClick={close}>
                   Đóng
-                </Button>
+                </PixelButton>
               </div>
               {panel === "study" ? <StudyPanel iconFiles={iconFiles} /> : null}
-              {panel === "skills" ? <SkillRankPanel iconFiles={iconFiles} /> : null}
+              {panel === "skills" ? (
+                <SkillRankPanel iconFiles={iconFiles} />
+              ) : null}
             </PanelCard>
           </div>
         </div>
@@ -200,7 +227,9 @@ export function CareerChrome({
           aria-label="Lên cấp"
         >
           <PanelCard className="w-full max-w-sm p-5 text-center">
-            <p className="font-galmuri-11 text-galmuri-title text-[var(--foreground)]">Lên cấp</p>
+            <p className="font-galmuri-11 text-galmuri-title text-[var(--foreground)]">
+              Lên cấp
+            </p>
             <div className="my-3 flex justify-center">
               <span className="badge-bounce inline-flex">
                 <RankBadge rankId={popup.rankId} />
@@ -209,7 +238,12 @@ export function CareerChrome({
             <p className="mb-3 font-galmuri-9 text-galmuri-body text-[var(--foreground)]">
               {popupSkill?.name ?? popup.skillId} · cấp {popup.level}
             </p>
-            <Button type="button" size="sm" showArrow={false} onClick={() => setPopup(null)}>
+            <Button
+              type="button"
+              size="sm"
+              showArrow={false}
+              onClick={() => setPopup(null)}
+            >
               Đóng
             </Button>
           </PanelCard>
