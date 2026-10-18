@@ -4,6 +4,14 @@
   box-shadow: 0 8px 24px rgba(30, 20, 80, 0.25);
 }
 
+* {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox, Safari 18.2+, Chromium 121+ */
+}
+
+*::-webkit-scrollbar {
+  display: none; /* Older Safari and Chromium */
+}
 :root {
   --text-galmuri-body: 20px;
   --text-galmuri-title: 24px;
@@ -95,12 +103,16 @@ body {
     linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
     var(--background-gradient);
-  background-size: 24px 24px, 24px 24px, auto;
+  background-size:
+    24px 24px,
+    24px 24px,
+    auto;
   background-attachment: fixed;
 }
 
 .font-galmuri-7 {
-  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family:
+    var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
 }
 
 .font-galmuri-9 {
@@ -108,7 +120,8 @@ body {
 }
 
 .font-galmuri-11 {
-  font-family: var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family:
+    var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
 }
 
 .text-galmuri-body {
@@ -208,7 +221,8 @@ body {
   border-radius: var(--radius-panel);
   background: var(--panel-bg);
   box-shadow: var(--shadow-panel);
-  font-family: var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family:
+    var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
   font-size: var(--text-galmuri-title);
 }
 
@@ -533,19 +547,13 @@ body {
 @keyframes life-banner-spark {
   0%,
   49% {
-    filter:
-      drop-shadow(2px 0 0 #e0a020)
-      drop-shadow(-2px 0 0 #e0a020)
-      drop-shadow(0 2px 0 #e0a020)
-      drop-shadow(0 -2px 0 #e0a020);
+    filter: drop-shadow(2px 0 0 #e0a020) drop-shadow(-2px 0 0 #e0a020)
+      drop-shadow(0 2px 0 #e0a020) drop-shadow(0 -2px 0 #e0a020);
   }
   50%,
   100% {
-    filter:
-      drop-shadow(2px 0 0 #fff6c8)
-      drop-shadow(-2px 0 0 #fff6c8)
-      drop-shadow(0 2px 0 #fff6c8)
-      drop-shadow(0 -2px 0 #fff6c8);
+    filter: drop-shadow(2px 0 0 #fff6c8) drop-shadow(-2px 0 0 #fff6c8)
+      drop-shadow(0 2px 0 #fff6c8) drop-shadow(0 -2px 0 #fff6c8);
   }
 }
 
@@ -553,11 +561,8 @@ body {
   display: block;
   width: 100%;
   height: 100%;
-  filter:
-    drop-shadow(2px 0 0 #e0a020)
-    drop-shadow(-2px 0 0 #e0a020)
-    drop-shadow(0 2px 0 #e0a020)
-    drop-shadow(0 -2px 0 #e0a020);
+  filter: drop-shadow(2px 0 0 #e0a020) drop-shadow(-2px 0 0 #e0a020)
+    drop-shadow(0 2px 0 #e0a020) drop-shadow(0 -2px 0 #e0a020);
   animation-name: life-banner-spark;
   animation-timing-function: steps(2, end);
   animation-iteration-count: infinite;
@@ -739,7 +744,11 @@ body {
   --terminal-bug-red: #ff4b4b;
   font-family: var(--font-terminal), ui-monospace, monospace;
   background:
-    radial-gradient(ellipse at 30% 20%, rgba(57, 255, 122, 0.08), transparent 60%),
+    radial-gradient(
+      ellipse at 30% 20%,
+      rgba(57, 255, 122, 0.08),
+      transparent 60%
+    ),
     var(--terminal-bg);
   color: var(--terminal-phosphor);
   position: relative;
@@ -792,9 +801,15 @@ body {
   display: block;
 }
 
-.terminal-lights i:nth-child(1) { background: #ff5f57; }
-.terminal-lights i:nth-child(2) { background: #febc2e; }
-.terminal-lights i:nth-child(3) { background: #28c840; }
+.terminal-lights i:nth-child(1) {
+  background: #ff5f57;
+}
+.terminal-lights i:nth-child(2) {
+  background: #febc2e;
+}
+.terminal-lights i:nth-child(3) {
+  background: #28c840;
+}
 
 .terminal-nav {
   margin-left: auto;
@@ -837,9 +852,11 @@ body {
 .terminal-event-warn {
   color: var(--terminal-amber);
   animation-name: terminal-event-blink, terminal-event-shake;
-  animation-duration: var(--terminal-blink-ms, 360ms), var(--terminal-shake-ms, 280ms);
+  animation-duration:
+    var(--terminal-blink-ms, 360ms), var(--terminal-shake-ms, 280ms);
   animation-timing-function: steps(2, end), steps(2, end);
-  animation-iteration-count: var(--terminal-blinks, 3), var(--terminal-blinks, 3);
+  animation-iteration-count:
+    var(--terminal-blinks, 3), var(--terminal-blinks, 3);
 }
 
 .terminal-event-error {
@@ -965,7 +982,9 @@ body {
 }
 
 @keyframes terminal-blink {
-  50% { opacity: 0; }
+  50% {
+    opacity: 0;
+  }
 }
 
 @keyframes terminal-event-blink {

@@ -170,7 +170,7 @@ function StoreCard({
             Mua
           </PixelButton>
         ) : null}
-        {item.action.pin ? (
+        {/* {item.action.pin ? (
           <PixelButton
             variant="secondary"
             aria-pressed={item.pinned}
@@ -180,7 +180,7 @@ function StoreCard({
           >
             {item.pinned ? "Đang ghim" : "Ghim"}
           </PixelButton>
-        ) : null}
+        ) : null} */}
       </div>
     </li>
   );
