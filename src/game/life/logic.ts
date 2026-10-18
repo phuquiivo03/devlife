@@ -186,11 +186,11 @@ function finish(
   events: GameEvent[],
 ): LifeResult {
   let energy = clampStat(next.energy);
-  let health = clampStat(next.health);
+  const health = clampStat(next.health);
   let mood = clampStat(next.mood);
   const floor = traitMoodFloor(state);
   if (floor != null) mood = Math.max(mood, floor);
-  let money = applyMoney(0, next.money);
+  const money = applyMoney(0, next.money);
   const beforeHospital = money;
   let skipDays = 0;
   let nextLife = life;

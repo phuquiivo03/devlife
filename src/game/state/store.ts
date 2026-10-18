@@ -50,7 +50,7 @@ import {
   type SpeedPreset,
 } from "../time";
 import { LIFE, type FoodId } from "../life/content";
-import { crossWakingSlot, eatMeal, hoursUntilWake, lifeOf, mealBlocked, resolveMorning } from "../life/logic";
+import { crossWakingSlot, eatMeal, hoursUntilWake, mealBlocked, resolveMorning } from "../life/logic";
 import { rollTrait } from "../life/traits";
 import { LIFE_EVENTS } from "../life/events-content";
 import {
@@ -596,8 +596,8 @@ export const useGameStore = create<GameState>()(
         };
 
         // Apply hospital effects
-        let newHealth = LIFE.hospital_discharge_health;
-        let newMoney = career.players.money - LIFE.hospital_cost;
+        const newHealth = LIFE.hospital_discharge_health;
+        const newMoney = career.players.money - LIFE.hospital_cost;
         let newEnergy = career.players.energy;
         if (newHealth < LIFE.sick_below) {
           newEnergy = Math.min(career.players.energy, LIFE.sick_energy_max);
