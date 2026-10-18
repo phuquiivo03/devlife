@@ -39,7 +39,7 @@
   "hospital_below": 10,
   "hospital_days": 2,
   "hospital_cost": 1000000,
-  "hospital_discharge_health": 10,
+  "hospital_discharge_health": 50,
   "low_energy_job": 15,
   "mood_xp_below": 30,
   "mood_xp_multiplier": 0.7,
