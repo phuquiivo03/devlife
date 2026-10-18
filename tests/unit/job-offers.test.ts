@@ -50,6 +50,9 @@ describe("job offer notices", () => {
     ]);
     expect(first[0]?.action).toBe("acceptJob");
     expect(first[0]?.payload).toEqual({ jobId: expect.any(String) });
+    expect(first[0]?.title?.length).toBeGreaterThan(0);
+    expect(first[0]?.detail).toMatch(/· (Dễ|Vừa|Khó) · /);
+    expect(first[0]?.detail).toMatch(/\d+ ngày/);
     expect(first[0]?.text).toMatch(/· (Dễ|Vừa|Khó) · /);
     expect(first[0]?.text).toMatch(/hạn \d+ ngày/);
     const job = state.player_jobs.find((row) => row.id === first[0]?.payload?.jobId);
@@ -101,6 +104,8 @@ describe("job offer notices", () => {
               {
                 id: "offer",
                 text: "Landing page HTML",
+                title: "Landing page HTML",
+                detail: "Frontend · Dễ · 180.000đ · 2 ngày",
                 action: "acceptJob",
                 actions: ["acceptJob", "dismissNotice"],
                 jobId: "job-1-landing-html-0",
@@ -130,6 +135,10 @@ describe("job offer notices", () => {
       ],
       ["nope", [], null],
     ]);
+    expect(saved.career.feed.notices.find((notice) => notice.id === "offer")).toMatchObject({
+      title: "Landing page HTML",
+      detail: "Frontend · Dễ · 180.000đ · 2 ngày",
+    });
   });
 });
 

@@ -202,6 +202,10 @@ export type LifeNotice = {
   severity: NoticeSeverity;
   icon: string;
   text: string;
+  /** Job name, drawn above the detail line. Other notices leave this empty. */
+  title?: string;
+  /** Skill, difficulty, pay, and days left. Drawn under `title`. */
+  detail?: string;
   /** Legacy single id. A panel that reads one action uses this. */
   action: NoticeActionId | null;
   /**

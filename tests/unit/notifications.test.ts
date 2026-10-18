@@ -159,6 +159,8 @@ describe("notification actions", () => {
     expect(source).toContain("TooltipContent");
     expect(source).toContain('data-action-kind="icon-label"');
     expect(source).toContain("runNoticeAction");
+    expect(source).toContain("onRun(button.id, notice)");
+    expect(source).toContain("notice.detail");
     expect(source).toContain("noticeBadgeFile()");
     expect(source).toContain('data-action-kind="text"');
     expect(source).not.toContain("title=");

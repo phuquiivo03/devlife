@@ -70,6 +70,12 @@ function skillLine(template: JobTemplate, catalog: SimCatalog): string {
   return labels.length > 0 ? labels.join(", ") : "—";
 }
 
+export function jobOfferDetail(template: JobTemplate, catalog: SimCatalog): string {
+  const days = deadlineDaysForTier(template.tier);
+  const kind = DIFFICULTY_LABEL[difficultyForTier(template.tier)];
+  return `${skillLine(template, catalog)} · ${kind} · ${formatVnd(template.pay)} · ${days} ngày`;
+}
+
 export function jobOfferText(template: JobTemplate, catalog: SimCatalog): string {
   const days = deadlineDaysForTier(template.tier);
   const kind = DIFFICULTY_LABEL[difficultyForTier(template.tier)];
@@ -142,6 +148,8 @@ function postOffer(state: CareerState, template: JobTemplate, day: number, minut
     severity: "info",
     icon: JOB_OFFER_ICON,
     text: jobOfferText(template, catalog),
+    title: template.name,
+    detail: jobOfferDetail(template, catalog),
     action: "acceptJob",
     actions,
     payload: { jobId: job.id },

@@ -71,6 +71,66 @@
 
 .clock {
   color: var(--muted-foreground);
+  font-size: var(--text-galmuri-small);
+}
+
+.offer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--notice-gap);
+}
+
+.offerHead {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: flex-start;
+  gap: var(--notice-gap);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.offerCopy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.offerLine {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--notice-gap);
+  font-weight: 500;
+}
+
+.jobName {
+  min-width: 0;
+  font-size: var(--text-galmuri-small);
+  line-height: 1.2;
+  color: var(--foreground);
+}
+
+.detail {
+  font-size: var(--notice-text);
+  line-height: var(--notice-line);
+  color: var(--muted-foreground);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--notice-gap);
 }
 
 .badge {

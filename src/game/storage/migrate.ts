@@ -453,6 +453,8 @@ function normalizeNotices(value: unknown): LifeNotice[] {
       read: row.read === true,
       cue: typeof row.cue === "string" && row.cue.length > 0 ? row.cue : null,
     };
+    if (typeof row.title === "string" && row.title.length > 0) notice.title = row.title;
+    if (typeof row.detail === "string" && row.detail.length > 0) notice.detail = row.detail;
     if (jobId) notice.payload = { jobId };
     notices.push(notice);
   }
