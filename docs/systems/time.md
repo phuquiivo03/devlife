@@ -91,6 +91,7 @@ Version 0 and 1 saves have no clock. `migrate` sets `totalMinutes` to `DEFAULT_S
 ## UI
 
 - Room status bar (above the canvas): phase icon and `Ngày N · weekday · HH:MM phase` (for example `Ngày 1 · T2 · 08:12 Sáng`). The HUD card keeps an icon-only **Đi ngủ** button (bed icon, tooltip “Đi ngủ”, no text label). Money is on that same bar, not repeated on the card.
+- **UI Display-only fast-forward**: state jumps instantly (sleep, buyCourse, commitLife skipMinutes, hospital, jumpToPhase, playGame); status bar displays minutes rolling from old to new in 0,6s (≤4h) or 1,2s (longer), with "+Nh" pill, phase icon/label crossfade 0,4s, data-time/data-day/data-phase remain real values, data-display-time shows displayed value; reduced motion snaps.
 - Đi ngủ is disabled during Sáng and Chiều. During Tối and Đêm it is enabled and `fx_zzz` floats above the bed (the first frame, still, when `prefers-reduced-motion` is set). Frame size, count, and the 900ms loop come from `public/ui/m5_1/anim.json` via `src/components/game/sleep-button.config.ts`.
 - Room tint crossfades over `TINT_TRANSITION_MS` (snaps when reduced motion is set). The canvas itself stays pixelated; the wash is a flat fill before the integer upscale.
 - Debug controls (development, or `?debug=1` in production): speed ×1 / ×10 / ×60, Tạm dừng / Tiếp tục, and a jump to each phase.

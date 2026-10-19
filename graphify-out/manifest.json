@@ -96,9 +96,9 @@
     "semantic_hash": ""
   },
   "config/life_sim.json": {
-    "mtime": 1792340649.7903426,
-    "seen": 1792402586.2981253,
-    "ast_hash": "a09b83538180a4dc973c3237f2b950ac",
+    "mtime": 1792406708.195116,
+    "seen": 1792411577.149311,
+    "ast_hash": "3b0b15ea6f79fd588369367e663d87b3",
     "semantic_hash": ""
   },
   "config/skill_level_xp.json": {
@@ -336,15 +336,15 @@
     "semantic_hash": ""
   },
   "src/components/game/FoodPopup.tsx": {
-    "mtime": 1792315760.2304273,
-    "seen": 1792402586.2982173,
-    "ast_hash": "4d248072b9fb59b71365635c94742768",
+    "mtime": 1792403760.255114,
+    "seen": 1792411577.1513326,
+    "ast_hash": "7e5b4aa9c61539916fc4541ecf46bb14",
     "semantic_hash": ""
   },
   "src/components/game/GameShell.tsx": {
-    "mtime": 1792339586.0103502,
-    "seen": 1792402586.2982187,
-    "ast_hash": "a4525fbc17d5dfcd2f1486fc2a573e0a",
+    "mtime": 1792409914.3151183,
+    "seen": 1792411577.1513398,
+    "ast_hash": "d91a5024331b1017406c39b5065f797c",
     "semantic_hash": ""
   },
   "src/components/game/HospitalPopup.tsx": {
@@ -396,15 +396,15 @@
     "semantic_hash": ""
   },
   "src/components/game/PlayerHudCard.tsx": {
-    "mtime": 1792331540.170362,
-    "seen": 1792402586.2982335,
-    "ast_hash": "75a4808610aa4914c506ffa2531750dd",
+    "mtime": 1792409826.2951171,
+    "seen": 1792411577.1519406,
+    "ast_hash": "96e4316d3eb84c141b24575b7f92be27",
     "semantic_hash": ""
   },
   "src/components/game/PlayerInfoPanel.tsx": {
-    "mtime": 1792301951.8704185,
-    "seen": 1792402586.298235,
-    "ast_hash": "01f10fd9ef334cccb7b811ce3933221b",
+    "mtime": 1792410239.965118,
+    "seen": 1792411577.1519477,
+    "ast_hash": "087f6181c6853234737483f7ab89631e",
     "semantic_hash": ""
   },
   "src/components/game/RoomChamferFrame.tsx": {
@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "src/components/game/StatBar.tsx": {
-    "mtime": 1792301951.8704185,
-    "seen": 1792402586.2982411,
-    "ast_hash": "30db81cac54c0d72a7fb8b320e27a6c1",
+    "mtime": 1792409541.5251179,
+    "seen": 1792411577.1521277,
+    "ast_hash": "2f007d3d8d79782d8ee4eeba713e5dd8",
     "semantic_hash": ""
   },
   "src/components/game/StoreButton.tsx": {
@@ -462,9 +462,9 @@
     "semantic_hash": ""
   },
   "src/components/game/career/CareerChrome.tsx": {
-    "mtime": 1792320871.65043,
-    "seen": 1792402586.2982512,
-    "ast_hash": "66c10a04526c79e8c4fa4abced21987d",
+    "mtime": 1792410126.5551183,
+    "seen": 1792411577.1524212,
+    "ast_hash": "1dc7e22ad3fca4bd5b8342537db3792a",
     "semantic_hash": ""
   },
   "src/components/game/career/JobBoardPanel.tsx": {
@@ -834,9 +834,9 @@
     "semantic_hash": ""
   },
   "src/game/life/content.ts": {
-    "mtime": 1792315760.2304273,
-    "seen": 1792402586.2983599,
-    "ast_hash": "cb1ced30b4fbea18c91deed1d79f0b8a",
+    "mtime": 1792406721.645116,
+    "seen": 1792411577.1560087,
+    "ast_hash": "2fd5c4afdc999ff38e21cfe1eb1b910b",
     "semantic_hash": ""
   },
   "src/game/life/events-content.ts": {
@@ -864,9 +864,9 @@
     "semantic_hash": ""
   },
   "src/game/life/logic.ts": {
-    "mtime": 1792342105.3003535,
-    "seen": 1792402586.2983692,
-    "ast_hash": "6d828a2b707deffb44a00de49894cd8c",
+    "mtime": 1792406785.1851163,
+    "seen": 1792411577.1562257,
+    "ast_hash": "588088b6f4856392d8931ab1aa93334b",
     "semantic_hash": ""
   },
   "src/game/life/m51-art.ts": {
@@ -936,9 +936,9 @@
     "semantic_hash": ""
   },
   "src/game/state/store.ts": {
-    "mtime": 1792342127.990354,
-    "seen": 1792402586.298389,
-    "ast_hash": "78699706d3035b3c241ab76d642c2fde",
+    "mtime": 1792406877.8851163,
+    "seen": 1792411577.1568203,
+    "ast_hash": "be4a102c6a1fb82b6d438a92ab2cd27a",
     "semantic_hash": ""
   },
   "src/game/storage/adapter.ts": {
@@ -1860,9 +1860,9 @@
     "semantic_hash": ""
   },
   "docs/ART_TODO.md": {
-    "mtime": 1792301951.7704184,
-    "seen": 1792402586.2986763,
-    "ast_hash": "331cae166c8c9f5638258e8e43ff6846",
+    "mtime": 1792408069.2451088,
+    "seen": 1792411577.165761,
+    "ast_hash": "88a739bfdd8d24a567e23770efb706ed",
     "semantic_hash": ""
   },
   "docs/PLAN.md": {
@@ -1902,9 +1902,9 @@
     "semantic_hash": ""
   },
   "docs/systems/buttons.md": {
-    "mtime": 1792315760.2304273,
-    "seen": 1792402586.298688,
-    "ast_hash": "48753b7df3713c90cbf904a786502487",
+    "mtime": 1792408035.4151092,
+    "seen": 1792411577.1660738,
+    "ast_hash": "e68eefda5fb5e7a765c5f94a5b8901b3",
     "semantic_hash": ""
   },
   "docs/systems/jobs.md": {
@@ -1920,9 +1920,9 @@
     "semantic_hash": ""
   },
   "docs/systems/life.md": {
-    "mtime": 1792315760.2304273,
-    "seen": 1792402586.298693,
-    "ast_hash": "484c519d58d22907fd296a8a939abb12",
+    "mtime": 1792408085.885109,
+    "seen": 1792411577.1661787,
+    "ast_hash": "bb6975a8c067f34b51974033369cb1fc",
     "semantic_hash": ""
   },
   "docs/systems/notifications.md": {
@@ -5481,6 +5481,84 @@
     "mtime": 1792301951.8504186,
     "seen": 1792402586.29972,
     "ast_hash": "c3c22285121cb7d5bd782201ebcfab18",
+    "semantic_hash": ""
+  },
+  "src/components/game/GameButton.tsx": {
+    "mtime": 1792407944.855105,
+    "seen": 1792411577.1513362,
+    "ast_hash": "67b324d63bbe4395ef5c50ab8a822ebc",
+    "semantic_hash": ""
+  },
+  "src/components/game/StatFx.tsx": {
+    "mtime": 1792409528.5051177,
+    "seen": 1792411577.1521308,
+    "ast_hash": "eac6a960c36e2e8d8ec10ac2468c3e62",
+    "semantic_hash": ""
+  },
+  "src/components/game/food-grid.config.ts": {
+    "mtime": 1792403386.3151002,
+    "seen": 1792411577.1527767,
+    "ast_hash": "d65fb5cfd83d05131ec29624a83a9414",
+    "semantic_hash": ""
+  },
+  "src/components/game/game-button.config.ts": {
+    "mtime": 1792407903.6751118,
+    "seen": 1792411577.1527793,
+    "ast_hash": "54aebcc37f874116e4c764c99a3fb3ab",
+    "semantic_hash": ""
+  },
+  "src/components/game/stat-fx-store.ts": {
+    "mtime": 1792411344.595111,
+    "seen": 1792411577.1531317,
+    "ast_hash": "669d5aae9e7588bdb743e677378486a2",
+    "semantic_hash": ""
+  },
+  "src/components/game/stat-fx.config.ts": {
+    "mtime": 1792409267.0151172,
+    "seen": 1792411577.1531353,
+    "ast_hash": "1f29eaae72eb3578795cbc9cb4846de5",
+    "semantic_hash": ""
+  },
+  "src/components/game/stat-fx.ts": {
+    "mtime": 1792411199.0151129,
+    "seen": 1792411577.153138,
+    "ast_hash": "68c9588fd974e28283fd5ca3389bba88",
+    "semantic_hash": ""
+  },
+  "src/components/game/useStatFx.ts": {
+    "mtime": 1792411349.555111,
+    "seen": 1792411577.1534703,
+    "ast_hash": "2468ee08a9dbc55b2c4865ba66334b13",
+    "semantic_hash": ""
+  },
+  "src/components/game/useTweenedNumber.ts": {
+    "mtime": 1792409466.0751178,
+    "seen": 1792411577.1534743,
+    "ast_hash": "6d4a92b05e6e4516ddcc9a90bb29edb4",
+    "semantic_hash": ""
+  },
+  "src/lib/reduced-motion.ts": {
+    "mtime": 1792411236.2051115,
+    "seen": 1792411577.1580894,
+    "ast_hash": "7ba9932a2d2181e108760724c54ba637",
+    "semantic_hash": ""
+  },
+  "tests/unit/choi-game.test.ts": {
+    "mtime": 1792411453.5051093,
+    "seen": 1792411577.1584468,
+    "ast_hash": "8b44e0dd336635d33e9d02a9690e5ee7",
+    "semantic_hash": ""
+  },
+  "tests/unit/game-button.test.ts": {
+    "mtime": 1792408096.395109,
+    "seen": 1792411577.1585522,
+    "ast_hash": "35b0dce5b8aec4a3b4d975dbf19481cf",
+    "semantic_hash": ""
+  },
+  "tests/unit/stat-fx.test.ts": {
+    "mtime": 1792410275.505118,
+    "seen": 1792411577.15957,
+    "ast_hash": "9653cfe77e0178936ac7565291804884",
     "semantic_hash": ""
   }
 }

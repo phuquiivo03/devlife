@@ -17,6 +17,9 @@ import { RankBadge } from "./career/RankBadge";
 import { PixelIcon } from "./PixelIcon";
 import { PixelAvatar } from "./PixelAvatar";
 import { StatBar } from "./StatBar";
+import { statFxVars } from "./stat-fx.config";
+import { useTweenedNumber } from "./useTweenedNumber";
+import { StatFlash, StatFloaters } from "./StatFx";
 
 const goal = freelanceGoal(SIM_CATALOG.milestones);
 
@@ -42,9 +45,11 @@ export function PlayerInfoPanel({ iconFiles = [] }: { iconFiles?: readonly strin
   const sick = career.players.health < LIFE.sick_below;
   const burned = life.burnoutDay === day;
 
+  const tweenedRep = useTweenedNumber(reputation, 500);
+
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1">
-      <PanelCard className="flex flex-col items-center p-3">
+      <PanelCard className="flex flex-col items-center p-3" style={statFxVars()}>
         <div className="mb-2 flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border-2 border-[var(--room-frame)] bg-[#b8d9f0]">
           <PixelAvatar role="player" size={96} alt={p.name} />
         </div>
@@ -98,7 +103,7 @@ export function PlayerInfoPanel({ iconFiles = [] }: { iconFiles?: readonly strin
             Hôm nay kiệt sức, chưa nhận freelance
           </p>
         ) : null}
-        <div className="mt-3 flex w-full items-center gap-2 text-left">
+        <div className="mt-3 flex w-full items-center gap-2 text-left relative">
           <PixelIcon name="reputation_medal" size={22} alt="" files={iconFiles} />
           <span className="flex-1 font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
             Danh tiếng
@@ -107,8 +112,10 @@ export function PlayerInfoPanel({ iconFiles = [] }: { iconFiles?: readonly strin
             className="font-galmuri-9 text-galmuri-body text-[var(--foreground)]"
             data-testid="player-reputation"
           >
-            {reputation}
+            {Math.round(tweenedRep)}
           </span>
+          <StatFlash statKey="reputation" />
+          <StatFloaters statKey="reputation" />
         </div>
         <div className="mt-2 flex w-full items-center gap-2 text-left">
           <PixelIcon name="job_freelance" size={22} alt="" files={iconFiles} />

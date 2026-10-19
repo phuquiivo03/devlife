@@ -1,0 +1,108 @@
+.layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.pill {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  white-space: nowrap;
+  padding: 1px 6px;
+  border: 1px solid var(--fx-border);
+  border-radius: 4px;
+  color: var(--fx-ink);
+  opacity: 0;
+  animation: fx-float var(--fx-float-ms) var(--fx-float-ease) forwards;
+}
+
+.anchorStart {
+  left: 0;
+}
+
+.gain {
+  background: var(--fx-gain);
+}
+
+.loss {
+  background: var(--fx-loss);
+}
+
+.time {
+  background: var(--fx-time);
+  color: var(--fx-time-ink);
+}
+
+.big {
+  padding: 2px 8px;
+  border-width: 2px;
+}
+
+@keyframes fx-float {
+  0% { transform: translate(-50%, 0); opacity: 0; }
+  12% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(-50%, calc(-1 * var(--fx-rise))); opacity: 0; }
+}
+
+@keyframes fx-float-start {
+  0% { transform: translate(0, 0); opacity: 0; }
+  12% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(0, calc(-1 * var(--fx-rise))); opacity: 0; }
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: fx-flash var(--fx-flash-ms) ease-out forwards;
+}
+
+.flashGain {
+  --fx-flash-color: var(--fx-gain-flash);
+}
+
+.flashLoss {
+  --fx-flash-color: var(--fx-loss-flash);
+}
+
+@keyframes fx-flash {
+  0% { background: var(--fx-flash-color); }
+  100% { background: transparent; }
+}
+
+.shake {
+  display: inline-block;
+  animation: fx-shake var(--fx-shake-ms) linear;
+}
+
+@keyframes fx-shake {
+  0%, 100% { translate: 0 0; }
+  20% { translate: calc(-1 * var(--fx-shake-px)) 0; }
+  40% { translate: var(--fx-shake-px) 0; }
+  60% { translate: calc(-0.66 * var(--fx-shake-px)) 0; }
+  80% { translate: calc(0.66 * var(--fx-shake-px)) 0; }
+}
+
+.phaseIn {
+  animation: fx-fade-in var(--fx-xfade-ms) ease-out both;
+}
+
+@keyframes fx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill, .flash, .shake, .phaseIn {
+    display: none;
+    animation: none;
+  }
+}

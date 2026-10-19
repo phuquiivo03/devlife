@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useRef } from "react";
 import { SIM_CATALOG } from "@/game/career/content";
-import { gameBus } from "@/game/events/bus";
 import { VITAL_MAX } from "@/game/state/playerStats";
 import { calendar, holidayOn } from "@/game/life/logic";
 import { useGameStore, type CareerPanel } from "@/game/state/store";
@@ -27,6 +26,10 @@ import { HungerDock } from "./FoodPopup";
 import { GameButton } from "./GameButton";
 import { SleepButton } from "./SleepButton";
 import { StoreButton } from "./StoreButton";
+import { statFxVars } from "./stat-fx.config";
+import { useTweenedNumber } from "./useTweenedNumber";
+import { StatFlash, StatFloaters } from "./StatFx";
+import { tweenMsFor } from "./stat-fx";
 
 /** Native icon for the Kỹ năng button. Swap this name when a new file ships. */
 export const SKILL_MENU_ICON = "skills";
@@ -64,6 +67,13 @@ export function RoomStatusBar({
   iconFiles?: readonly string[];
 }) {
   const money = useGameStore((s) => s.career.players.money);
+  const prevMoneyRef = useRef(money);
+  const moneyDelta = money - prevMoneyRef.current;
+  prevMoneyRef.current = money;
+
+  const tweenedMoney = useTweenedNumber(money, tweenMsFor("money", moneyDelta));
+  const shownMoney = Math.round(tweenedMoney);
+
   const day = useGameStore((s) => snapshot(s.totalMinutes).day);
   const clockLabel = useGameStore((s) => snapshot(s.totalMinutes).clockLabel);
   const phaseId = useGameStore((s) => snapshot(s.totalMinutes).phaseId);
@@ -75,19 +85,21 @@ export function RoomStatusBar({
   return (
     <PanelCard
       className={cn(shellStyles.statusBar, "font-galmuri-7 text-galmuri-small")}
-      style={roomStatusBarVars()}
+      style={{ ...roomStatusBarVars(), ...statFxVars() }}
       data-testid="room-status-bar"
     >
-      <span className={shellStyles.cluster}>
+      <span className={shellStyles.cluster} style={{ position: "relative" }}>
         <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
         <span
           data-testid="hud-money"
           style={{
-            color: money > 0 ? "var(--accent-mint)" : "var(--accent-coral)",
+            color: shownMoney > 0 ? "var(--accent-mint)" : "var(--accent-coral)",
           }}
         >
-          {formatVnd(money)}
+          {formatVnd(shownMoney)}
         </span>
+        <StatFlash statKey="money" />
+        <StatFloaters statKey="money" />
       </span>
       <span
         className={cn(shellStyles.cluster, fastForward && "fast-forward-flash")}
@@ -124,10 +136,9 @@ export function PlayerHudCard({
   const openCareerPanel = useGameStore((s) => s.openCareerPanel);
 
   const energyMax = SIM_CATALOG.config.energy_max;
-  const floaters = useVitalFloaters();
 
   return (
-    <PanelCard className="w-full max-w-[520px] p-3">
+    <PanelCard className="w-full max-w-[520px] p-3" style={statFxVars()}>
       <div className="grid grid-cols-3 gap-2">
         <HudVital
           icon="health"
@@ -137,7 +148,7 @@ export function PlayerHudCard({
           tone="coral"
           testId="hud-health"
           alert={health < 30}
-          floater={floaters.health}
+          statKey="health"
         />
         <HudVital
           icon="mood"
@@ -147,7 +158,7 @@ export function PlayerHudCard({
           tone="mint"
           testId="hud-mood"
           alert={mood < 15}
-          floater={floaters.mood}
+          statKey="mood"
         />
         <HudVital
           icon="energy"
@@ -157,7 +168,7 @@ export function PlayerHudCard({
           tone="sky"
           testId="hud-energy"
           alert={energy < 15}
-          floater={floaters.energy}
+          statKey="energy"
         />
       </div>
       <div className="mt-3 flex items-center">
@@ -188,71 +199,6 @@ export function PlayerHudCard({
   );
 }
 
-function useVitalFloaters(): {
-  health: string | null;
-  mood: string | null;
-  energy: string | null;
-} {
-  const [notes, setNotes] = useState<{
-    health: string | null;
-    mood: string | null;
-    energy: string | null;
-  }>({
-    health: null,
-    mood: null,
-    energy: null,
-  });
-
-  useEffect(() => {
-    let pending = { health: 0, mood: 0, energy: 0, count: 0 };
-    let timer = 0;
-    const flush = () => {
-      const count = pending.count;
-      const next = {
-        health:
-          pending.health === 0
-            ? null
-            : formatDelta(count > 3 ? pending.health : pending.health),
-        mood: pending.mood === 0 ? null : formatDelta(pending.mood),
-        energy: pending.energy === 0 ? null : formatDelta(pending.energy),
-      };
-      if (count > 3) {
-        const merged = pending.health + pending.mood + pending.energy;
-        setNotes({ health: formatDelta(merged), mood: null, energy: null });
-      } else {
-        setNotes(next);
-      }
-      pending = { health: 0, mood: 0, energy: 0, count: 0 };
-      window.setTimeout(
-        () => setNotes({ health: null, mood: null, energy: null }),
-        1200,
-      );
-    };
-    const push = (key: "health" | "mood" | "energy", delta: number) => {
-      if (delta === 0) return;
-      pending[key] += delta;
-      pending.count += 1;
-      window.clearTimeout(timer);
-      timer = window.setTimeout(flush, 40);
-    };
-    const offs = [
-      gameBus.on("healthChanged", (event) => push("health", event.delta)),
-      gameBus.on("moodChanged", (event) => push("mood", event.delta)),
-      gameBus.on("energyChanged", (event) => push("energy", event.delta)),
-    ];
-    return () => {
-      window.clearTimeout(timer);
-      offs.forEach((off) => off());
-    };
-  }, []);
-
-  return notes;
-}
-
-function formatDelta(value: number): string {
-  const shown = Math.round(value);
-  return shown > 0 ? `+${shown}` : `${shown}`;
-}
 
 function HudVital({
   icon,
@@ -262,7 +208,7 @@ function HudVital({
   tone,
   testId,
   alert = false,
-  floater = null,
+  statKey,
 }: {
   icon: string;
   label: string;
@@ -271,9 +217,11 @@ function HudVital({
   tone: "coral" | "mint" | "sky";
   testId: string;
   alert?: boolean;
-  floater?: string | null;
+  statKey: "health" | "mood" | "energy";
 }) {
+  const tweened = useTweenedNumber(value, 500);
   const shown = Math.round(value);
+  const tweenedShown = Math.round(tweened);
   return (
     <div
       className={
@@ -286,14 +234,8 @@ function HudVital({
       data-max={max}
       data-alert={alert ? "1" : "0"}
     >
-      {floater ? (
-        <span
-          className="vital-floater font-galmuri-7 text-galmuri-small"
-          data-testid={`${testId}-floater`}
-        >
-          {floater}
-        </span>
-      ) : null}
+      <StatFlash statKey={statKey} />
+      <StatFloaters statKey={statKey} />
       <div className="hud-vital-head mb-1">
         <PixelIcon name={icon} size={22} alt="" />
         <span className="flex min-w-0 flex-col font-galmuri-7 text-galmuri-small leading-tight">
@@ -301,11 +243,11 @@ function HudVital({
             {label}
           </span>
           <span className="whitespace-nowrap text-[var(--foreground)]">
-            {shown}/{max}
+            {tweenedShown}/{max}
           </span>
         </span>
       </div>
-      <StatBar value={value} max={max} tone={tone} />
+      <StatBar value={tweened} max={max} tone={tone} instant />
     </div>
   );
 }

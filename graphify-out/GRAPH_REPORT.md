@@ -1,22 +1,22 @@
 # Graph Report - devlife  (2026-10-19)
 
 ## Corpus Check
-- 325 files · ~583,564 words
+- 338 files · ~588,371 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 22 file(s) not represented in the graph (top: .css 10, .woff2 6, .mdc 1)
+- Unclassified: 25 file(s) not represented in the graph (top: .css 13, .woff2 6, .mdc 1)
 
 ## Summary
-- 2118 nodes · 5471 edges · 177 communities (98 shown, 79 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 134 edges (avg confidence: 0.95)
+- 2190 nodes · 5727 edges · 182 communities (103 shown, 79 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 143 edges (avg confidence: 0.94)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d6da446d`
+- Built from commit: `3700af49`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- store.ts
+- events.ts
 - time/index.ts
 - offers.ts
 - life/logic.ts
@@ -26,11 +26,11 @@
 - index.tsx
 - StorePanel.tsx
 - audio.test.ts
-- SceneCanvas.tsx
+- DebugCanvas.tsx
 - apply.ts
 - migrate.ts
 - career/types.ts
-- game/config.ts
+- SceneCanvas.tsx
 - createAudioEngine
 - m51-art.ts
 - package.json
@@ -38,33 +38,33 @@
 - engine.ts
 - Button
 - actions.ts
-- cues.ts
+- store.ts
 - sleep-button.test.ts
 - FoodPopup.tsx
 - devDependencies
 - chamfer-frame.ts
 - build-sfx-sprite.mjs
-- PlayerInfoPanel.tsx
+- traits.test.ts
 - knowledge/logic.ts
 - settings.ts
-- PixelButton
+- Life sim (M5)
 - dependencies
 - compilerOptions
-- JobBoardPanel.tsx
+- jobs/logic.ts
 - Commands
-- CareerChrome.tsx
+- game/config.ts
 - 5. Re-render Optimization
-- PixelIcon
+- PlayerHudCard.tsx
 - CRT Terminal UI — design doc
 - 7. JavaScript Performance
 - Quick Reference
 - Customization & Theming
-- devlife UI — PRIMARY design system (Galmuri / soft gradient)
+- PixelButton
 - modal.tsx
-- PlayerHudCard.tsx
+- career/content.ts
 - Styling & Customization
 - scripts
-- StudyPanel.tsx
+- GameShell.tsx
 - 6. Rendering Performance
 - Design Systems from DESIGN.md
 - Tools
@@ -81,7 +81,7 @@
 - devlife — Milestone 1 implementation plan
 - React Best Practices
 - Sections
-- pixel-assets.ts
+- PixelAvatar.tsx
 - render
 - build-atlas.ts
 - sprite.ts
@@ -89,9 +89,9 @@
 - with_server.py
 - Registry Authoring and Addresses
 - ref_node_path
-- 7. Effects & motion
-- LifeNotice
-- CustomizePanel.tsx
+- store-button.config.ts
+- LocalStorageAdapter
+- task-run/types.ts
 - shell-layout.config.ts
 - manifest.ts
 - Step 4: Map Tokens to the Theme
@@ -104,15 +104,15 @@
 - 2. Bundle Size Optimization
 - write-m5-placeholders.mjs
 - React Best Practices
-- color-pair.tsx
-- 6. Design tokens
+- GameButton.tsx
+- motion.ts
 - devlife M5.1: UI polish (síp yêu cầu 2026-10-17)
 - devlife M5.2: layout fix + job management (síp 2026-10-17 21:06)
-- ref_node_fs
+- @playwright/test
 - manifest.json
 - 8. Advanced Patterns
 - Icons
-- 4. Where the terminal appears
+- choi-game.test.ts
 - 2. Scale & coordinate system
 - 7. UI
 - async-cheap-condition-before-await.md
@@ -188,18 +188,23 @@
 - _template.md
 - skills/README.md
 - postcss.config.mjs
+- assets.ts
+- resolveHackathon
+- events-content.ts
+- eslint.config.mjs
+- Jobs
 
 ## God Nodes (most connected - your core abstractions)
-1. `useGameStore` - 116 edges
-2. `cn()` - 56 edges
-3. `PixelButton()` - 49 edges
+1. `useGameStore` - 123 edges
+2. `cn()` - 60 edges
+3. `PixelButton()` - 52 edges
 4. `createAudioEngine()` - 49 edges
-5. `GameShell()` - 43 edges
-6. `react` - 39 edges
-7. `snapshot()` - 37 edges
-8. `vitest` - 32 edges
-9. `lifeOf()` - 30 edges
-10. `PixelIcon()` - 29 edges
+5. `GameShell()` - 44 edges
+6. `react` - 43 edges
+7. `snapshot()` - 39 edges
+8. `vitest` - 35 edges
+9. `lifeOf()` - 33 edges
+10. `LIFE` - 31 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Inputs to Confirm` --references--> `render()`  [INFERRED]
@@ -216,79 +221,79 @@
 ## Import Cycles
 - 2-file cycle: `src/game/career/actions.ts -> src/game/task-run/apply.ts -> src/game/career/actions.ts`
 
-## Communities (177 total, 79 thin omitted)
+## Communities (182 total, 79 thin omitted)
 
-### Community 0 - "store.ts"
-Cohesion: 0.05
-Nodes (95): Save, zustand, art(), LifeEventPopup(), playCueKey(), CUE_KEYS, CueKey, syncPlayerClock() (+87 more)
+### Community 0 - "events.ts"
+Cohesion: 0.12
+Nodes (50): applyChoiceEffects(), applyPayRent(), askStore(), bannerForDay(), captureSnapshot(), chooseLifeEvent(), lifeEventById(), defaultFeed() (+42 more)
 
 ### Community 1 - "time/index.ts"
-Cohesion: 0.07
-Nodes (61): Courses, Energy, Events, Knowledge, Multipliers, Ranks, Skills, Add a phase (+53 more)
+Cohesion: 0.05
+Nodes (81): Courses, Energy, Events, Knowledge, Multipliers, Ranks, Skills, Add a phase (+73 more)
 
 ### Community 2 - "offers.ts"
-Cohesion: 0.08
-Nodes (38): vitest, defaultCareer(), SIM_CATALOG, NOTICE_ACTION_DEFAULT_LABEL, NoticeActionButton, PlayerJob, SimCatalog, applyJobDeadlines() (+30 more)
+Cohesion: 0.20
+Nodes (22): acceptJobFromNotice(), deadlineDaysForTier(), DIFFICULTY_LABEL, difficultyForTier(), dismissNoticeById(), expireJobOffers(), isJobOfferNotice(), JOB_OFFER_ICON (+14 more)
 
 ### Community 3 - "life/logic.ts"
-Cohesion: 0.10
-Nodes (47): applyWake(), SkillId, TRAIT_IDS, TraitId, XpSource, foodById(), applyActionStats(), applyDirect() (+39 more)
+Cohesion: 0.16
+Nodes (29): applyWake(), foodById(), GameOutcomeDef, applyActionStats(), applyDirect(), applyEventStats(), applySleepRest(), clampStat() (+21 more)
 
 ### Community 4 - "GameShell.tsx"
-Cohesion: 0.09
-Nodes (37): defaultStates, previewState(), StateMatrix(), Helpers, States Without Interaction, TabsTrigger must be inside TabsList, Component Structure → [composition.md](./rules/composition.md), lucide-react (+29 more)
+Cohesion: 0.10
+Nodes (30): ColorPair(), contrast(), luminance(), toHex(), toRgb(), defaultStates, previewState(), StateMatrix() (+22 more)
 
 ### Community 5 - "TaskRunOverlay.tsx"
-Cohesion: 0.08
-Nodes (42): 12. Implementation phases (suggested), BuildStep(), EventFlash(), flashStyle(), ResultStep(), skillLabel(), TaskRunOverlay(), TestStep() (+34 more)
+Cohesion: 0.17
+Nodes (19): 12. Implementation phases (suggested), BuildStep(), EventFlash(), flashStyle(), ResultStep(), skillLabel(), TaskRunOverlay(), TicketStep() (+11 more)
 
 ### Community 6 - "NotificationsPanel.tsx"
-Cohesion: 0.09
-Nodes (44): art(), actionIconFile(), BadgeSlice, listedNoticeActions(), NOTICE_ACTION_ICON_KEY_SET, NOTICE_ACTION_ICON_NATIVE_PX, NOTICE_ACTION_ICONS, NOTICE_ACTION_ID_ICONS (+36 more)
+Cohesion: 0.10
+Nodes (41): actionIconFile(), BadgeSlice, listedNoticeActions(), NOTICE_ACTION_ICON_KEY_SET, NOTICE_ACTION_ICON_NATIVE_PX, NOTICE_ACTION_ICONS, NOTICE_ACTION_ID_ICONS, NOTICE_ACTION_LABEL_PX (+33 more)
 
 ### Community 7 - "index.tsx"
-Cohesion: 0.08
-Nodes (39): class-variance-authority, pngjs, @radix-ui/react-slot, HUD_ICON_GAP_PX, STORE_ICON_NATIVE_PX, STORE_LABEL, STORE_MODAL_MAX_PX, storeButtonMetrics() (+31 more)
+Cohesion: 0.10
+Nodes (28): pngjs, @radix-ui/react-slot, BUTTON_ASSET_FILES, BUTTON_ASSET_KEYS, BUTTON_FOCUS_PX, BUTTON_GAP_PX, BUTTON_INK, BUTTON_LIGHT (+20 more)
 
 ### Community 8 - "StorePanel.tsx"
-Cohesion: 0.11
-Nodes (38): Store grid, STORE_GRID, storeGridCss(), storeIconSize(), storeModalMaxPx(), filterStoreItems(), STORE_TABS, storeCardAction() (+30 more)
+Cohesion: 0.08
+Nodes (51): TabsTrigger must be inside TabsList, Component Structure → [composition.md](./rules/composition.md), BlockedButton(), CourseEmpty(), CourseOffer(), CourseRecord(), StudyPanel(), storeGridCss() (+43 more)
 
 ### Community 9 - "audio.test.ts"
-Cohesion: 0.06
-Nodes (23): AudioBufferLike, AudioContextLike, AudioNodeLike, BufferSourceLike, GainNodeLike, SfxElementLike, Broken, CLICK (+15 more)
+Cohesion: 0.05
+Nodes (26): bgmBedForPhase(), bgmIdForPhase(), shouldCrossfadeBgm(), AudioBufferLike, AudioContextLike, AudioNodeLike, BufferSourceLike, GainNodeLike (+18 more)
 
-### Community 10 - "SceneCanvas.tsx"
-Cohesion: 0.09
-Nodes (35): 3.1 `GameShell` layout (as implemented), 9.1 State & data hooks (proposal), 8.1 Unit (vitest), 8.2 E2E (Playwright, Chromium + WebKit), 8.3 Milestone 1 acceptance criteria, 8. Tests & acceptance criteria, nextConfig, next (+27 more)
+### Community 10 - "DebugCanvas.tsx"
+Cohesion: 0.27
+Nodes (8): nextConfig, next, DebugCanvas(), DebugPage(), getCatalog(), getRoom(), createRenderer(), buildSlotIndex()
 
 ### Community 11 - "apply.ts"
-Cohesion: 0.15
-Nodes (39): TaskBuildChoice, TaskRun, TaskTicketChoice, moodBugBonus(), traitBugCount(), applyAccept(), beginTest(), catchBug() (+31 more)
+Cohesion: 0.19
+Nodes (34): JobGate, jobEnergyFactor(), jobPay(), moodBugBonus(), applyAccept(), beginTest(), catchBug(), chooseBuild() (+26 more)
 
 ### Community 12 - "migrate.ts"
-Cohesion: 0.12
-Nodes (41): defaultFeed(), normalizeShop(), emptyPurse(), isTraitId(), rollTrait(), acceptOpenJobs(), BUILD_CHOICES, careerFromUnknown() (+33 more)
+Cohesion: 0.11
+Nodes (44): defaultCareer(), LifeSnapshot, LifeState, LOCAL_PLAYER_ID, NoticeActionId, PlayerStudyCompletion, SKILL_IDS, SkillId (+36 more)
 
 ### Community 13 - "career/types.ts"
-Cohesion: 0.07
-Nodes (36): deadlineLabel(), difficultyLabel(), JobManageBoard(), CareerMilestone, GameConfig, JobStatus, JobTemplate, JobTemplateRequirement (+28 more)
+Cohesion: 0.08
+Nodes (26): isHungerNotice(), CareerMilestone, DiaryPurse, JobStatus, JobTemplate, JobTemplateRequirement, JobTemplateXp, JobType (+18 more)
 
-### Community 14 - "game/config.ts"
-Cohesion: 0.09
-Nodes (32): ATLAS_JSON_URL, ATLAS_URL, CHAR_DOWNSCALE, CHAR_KEY, CHAR_POSE_SIT_BACK, DEFAULT_LETTERBOX, FLOOR_SIT_OFFSET_Y, MIN_VIEW_W (+24 more)
+### Community 14 - "SceneCanvas.tsx"
+Cohesion: 0.08
+Nodes (35): lerpTint(), Props, tintsClose(), ATLAS_JSON_URL, ATLAS_URL, CHAR_POSE_SIT_BACK, Catalog, drawPos() (+27 more)
 
 ### Community 15 - "createAudioEngine"
 Cohesion: 0.13
-Nodes (33): bgmIdForPhase(), createAudioEngine(), beginLoopBuffer(), beginLoopElement(), busFor(), cueForKey(), fallBackToElements(), flushQueued() (+25 more)
+Nodes (32): resolveCueKey(), createAudioEngine(), beginLoopBuffer(), beginLoopElement(), busFor(), cueForKey(), fallBackToElements(), flushQueued() (+24 more)
 
 ### Community 16 - "m51-art.ts"
 Cohesion: 0.11
-Nodes (31): DiarySpends(), LifeStage(), signed(), LifeDiary, ACTION_EAT_NATIVE_PX, BANNER_TEXT_BOX, bannerArtFile(), BannerEntry (+23 more)
+Nodes (32): DiarySpends(), LifeStage(), signed(), ACTION_EAT_NATIVE_PX, BANNER_TEXT_BOX, bannerArtFile(), BannerEntry, bannerMetrics() (+24 more)
 
 ### Community 17 - "package.json"
-Cohesion: 0.06
-Nodes (31): compat, __dirname, eslintConfig, __filename, name, private, version, clsx (+23 more)
+Cohesion: 0.07
+Nodes (27): name, private, version, class-variance-authority, clsx, eslint, eslint-config-next, jsdom (+19 more)
 
 ### Community 18 - "content/index.ts"
 Cohesion: 0.09
@@ -296,55 +301,55 @@ Nodes (24): zod, ATLAS_JSON, ATLAS_PNG, checkHardAlpha(), fail(), main(), ROOT, 
 
 ### Community 19 - "engine.ts"
 Cohesion: 0.09
-Nodes (25): AudioEngineOptions, AudioFetch, AudioResponseLike, GainParamLike, KeepAliveHandle, LiveBed, LiveLoop, SFX_CATEGORIES (+17 more)
+Nodes (26): AudioEngine, AudioEngineOptions, AudioFetch, AudioResponseLike, GainParamLike, KeepAliveHandle, LiveBed, LiveLoop (+18 more)
 
 ### Community 20 - "Button"
-Cohesion: 0.13
-Nodes (24): Step 5: Map Component Recipes to Variants, Buttons inside inputs use InputGroup + InputGroupAddon, Contents, Field validation and disabled states, FieldSet + FieldLegend for grouping related fields, Forms & Inputs, Forms use FieldGroup + Field, InputGroup requires InputGroupInput/InputGroupTextarea (+16 more)
+Cohesion: 0.16
+Nodes (18): Step 5: Map Component Recipes to Variants, Buttons inside inputs use InputGroup + InputGroupAddon, Contents, Field validation and disabled states, FieldSet + FieldLegend for grouping related fields, Forms & Inputs, Forms use FieldGroup + Field, InputGroup requires InputGroupInput/InputGroupTextarea (+10 more)
 
 ### Community 21 - "actions.ts"
-Cohesion: 0.15
-Nodes (24): ActionResult, applyDayStarted(), applyStudy(), changeMoney(), draft(), fail(), fillEnergy(), grantRawXp() (+16 more)
+Cohesion: 0.14
+Nodes (27): ActionResult, applyDayStarted(), applyStudy(), changeMoney(), draft(), ensureTodayBoard(), fail(), fillEnergy() (+19 more)
 
-### Community 22 - "cues.ts"
+### Community 22 - "store.ts"
 Cohesion: 0.13
-Nodes (23): controlElement(), describePointerTarget(), useGameAudio(), attachAudioEngine(), BGM_DAY_ID, BGM_NIGHT_ID, BgmBed, bgmBedForPhase() (+15 more)
+Nodes (28): playCueKey(), CUE_KEYS, CueKey, xpNeededForNextLevel(), LifeStep, slotCanRoll(), gameBubbleText(), hoursUntilWake() (+20 more)
 
 ### Community 23 - "sleep-button.test.ts"
 Cohesion: 0.19
-Nodes (15): FX_ZZZ, fxZzz, SLEEP_ICON_NATIVE_PX, SLEEP_LABEL, sleepButtonMetrics(), sleepIconFile(), sleepZzzFile(), sleepZzzStyle() (+7 more)
+Nodes (14): FX_ZZZ, fxZzz, SLEEP_ICON_NATIVE_PX, SLEEP_LABEL, sleepButtonMetrics(), sleepIconFile(), sleepZzzFile(), sleepZzzStyle() (+6 more)
 
 ### Community 24 - "FoodPopup.tsx"
-Cohesion: 0.22
-Nodes (17): Meals, FOOD_TIP_ACTION, foodButtonMetrics(), foodHungerTip(), HUNGER_BOWL_BLINK, HungerBlinkLevel, hungerBowlBlinkStyle(), FoodPopup() (+9 more)
+Cohesion: 0.15
+Nodes (21): Meals, FOOD_TIP_ACTION, foodButtonMetrics(), foodHungerTip(), HUNGER_BOWL_BLINK, HungerBlinkLevel, hungerBowlBlinkStyle(), FOOD_GRID (+13 more)
 
 ### Community 25 - "devDependencies"
 Cohesion: 0.10
 Nodes (21): devDependencies, eslint, eslint-config-next, @eslint/eslintrc, jsdom, maxrects-packer, pixelmatch, @playwright/test (+13 more)
 
 ### Community 26 - "chamfer-frame.ts"
-Cohesion: 0.22
-Nodes (16): Chamfered game frame, Room viewport, LayerProps, PanelChamferFrame(), PanelChamferLayer(), ChamferLayer(), LayerProps, Props (+8 more)
+Cohesion: 0.23
+Nodes (15): Chamfered game frame, LayerProps, PanelChamferFrame(), PanelChamferLayer(), ChamferLayer(), LayerProps, Props, RoomChamferFrame() (+7 more)
 
 ### Community 27 - "build-sfx-sprite.mjs"
 Cohesion: 0.11
 Nodes (11): bgm, decodeToWav(), GAP_SAMPLES, MANIFEST, OUT_DIR, ROOT, run(), seconds() (+3 more)
 
-### Community 28 - "PlayerInfoPanel.tsx"
-Cohesion: 0.19
-Nodes (16): CharacterIntro(), PixelAvatar(), goal, PlayerInfoPanel(), PlayerSkillRow(), barTone, Props, StatBar() (+8 more)
+### Community 28 - "traits.test.ts"
+Cohesion: 0.14
+Nodes (28): CharacterIntro(), TRAIT_IDS, BY_ID, extrovertHomeMood(), foodPrice(), INTRO_FLASH_MS, INTRO_SPIN_MS, introIndex() (+20 more)
 
 ### Community 29 - "knowledge/logic.ts"
-Cohesion: 0.22
-Nodes (18): addSkillXp(), canStudyCourse(), formatRankLabel(), formatSkillXpLine(), grantedXp(), hasCompletedCourse(), isRepeatableCourse(), levelProgressPercent() (+10 more)
+Cohesion: 0.19
+Nodes (19): GameConfig, XpSource, freelanceGoal(), canStudyCourse(), formatRankLabel(), formatSkillXpLine(), grantedXp(), hasCompletedCourse() (+11 more)
 
 ### Community 30 - "settings.ts"
-Cohesion: 0.15
-Nodes (17): applyGains(), clamp01(), mixGain(), AUDIO_SETTINGS_VERSION, AUDIO_STORAGE_KEY, AudioLevels, AudioSettingsStorage, configuredVolume() (+9 more)
+Cohesion: 0.16
+Nodes (16): applyGains(), clamp01(), AUDIO_SETTINGS_VERSION, AUDIO_STORAGE_KEY, AudioLevels, AudioSettingsStorage, configuredVolume(), DEFAULT_AUDIO_LEVELS (+8 more)
 
-### Community 31 - "PixelButton"
-Cohesion: 0.12
-Nodes (19): Light, Notice actions, Pixel buttons, Press, Skins, Sleep, Store, Try it (+11 more)
+### Community 31 - "Life sim (M5)"
+Cohesion: 0.22
+Nodes (9): Bills, Calendar, Events, Life sim (M5), Personality, Save, Stats, Store (+1 more)
 
 ### Community 32 - "dependencies"
 Cohesion: 0.11
@@ -354,29 +359,29 @@ Nodes (19): dependencies, class-variance-authority, clsx, lucide-react, next, @r
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
-### Community 34 - "JobBoardPanel.tsx"
-Cohesion: 0.23
-Nodes (17): JobBoardPanel(), names, ensureTodayBoard(), refreshBoard(), jobEligibility(), jobRequirementsFor(), selectBoardTemplates(), shuffleSeeded() (+9 more)
+### Community 34 - "jobs/logic.ts"
+Cohesion: 0.14
+Nodes (24): vitest, JobBoardPanel(), names, deadlineLabel(), difficultyLabel(), JobManageBoard(), SIM_CATALOG, PlayerJob (+16 more)
 
 ### Community 35 - "Commands"
 Cohesion: 0.12
 Nodes (17): `add` — Add components, `apply` — Apply a preset to an existing project, `build` — Build a custom registry, Commands, Contents, `diff` — Check for updates, `docs` — Get component documentation URLs, Dry-Run Mode (+9 more)
 
-### Community 36 - "CareerChrome.tsx"
-Cohesion: 0.20
-Nodes (11): FloatNote, LevelPopup, useCareerSim(), RankBadge(), goal, SkillRankPanel(), gameBus, Handler (+3 more)
+### Community 36 - "game/config.ts"
+Cohesion: 0.10
+Nodes (21): 8.1 Unit (vitest), 8.2 E2E (Playwright, Chromium + WebKit), 8.3 Milestone 1 acceptance criteria, 8. Tests & acceptance criteria, CHAR_DOWNSCALE, CHAR_KEY, DEFAULT_LETTERBOX, FLOOR_SIT_OFFSET_Y (+13 more)
 
 ### Community 37 - "5. Re-render Optimization"
 Cohesion: 0.12
 Nodes (16): 5.10 Subscribe to Derived State, 5.11 Use Functional setState Updates, 5.12 Use Lazy State Initialization, 5.13 Use Transitions for Non-Urgent Updates, 5.14 Use useDeferredValue for Expensive Derived Renders, 5.15 Use useRef for Transient Values, 5.1 Calculate Derived State During Rendering, 5.2 Defer State Reads to Usage Point (+8 more)
 
-### Community 38 - "PixelIcon"
-Cohesion: 0.26
-Nodes (14): Icons (`public/ui/icons/`), Pixel art, Phases, AudioControls(), AudioSlider(), VolumeMark(), PixelIcon(), Props (+6 more)
+### Community 38 - "PlayerHudCard.tsx"
+Cohesion: 0.05
+Nodes (76): Icons (`public/ui/icons/`), Pixel art, Model, Phases, zustand, PixelButtonSpecimenPage(), AudioControls(), AudioSlider() (+68 more)
 
 ### Community 39 - "CRT Terminal UI — design doc"
-Cohesion: 0.12
-Nodes (16): 10. Navigation model (proposal), 11. Open questions, 1. Summary, 2.1 Non-goals, 2. Goals, 3.2 Placeholder panels, 3.3 Room interaction (proposal), 3. Context: current architecture (+8 more)
+Cohesion: 0.06
+Nodes (36): 10. Navigation model (proposal), 11. Open questions, 1. Summary, 2.1 Non-goals, 2. Goals, 3.2 Placeholder panels, 3.3 Room interaction (proposal), 3. Context: current architecture (+28 more)
 
 ### Community 40 - "7. JavaScript Performance"
 Cohesion: 0.13
@@ -390,17 +395,17 @@ Nodes (14): 1. Eliminating Waterfalls (CRITICAL), 2. Bundle Size Optimization (C
 Cohesion: 0.14
 Nodes (14): 1. Built-in variants, 2. Tailwind classes via `className`, 3. Add a new variant, 4. Wrapper components, Adding Custom Colors, Border Radius, Changing the Theme, Checking for Updates (+6 more)
 
-### Community 43 - "devlife UI — PRIMARY design system (Galmuri / soft gradient)"
-Cohesion: 0.14
-Nodes (14): Background, Canvas exception, Color tokens, devlife UI — PRIMARY design system (Galmuri / soft gradient), Event popup, HUD & stat bars, Layout (desktop), Modal (+6 more)
+### Community 43 - "PixelButton"
+Cohesion: 0.08
+Nodes (29): Background, Canvas exception, Color tokens, devlife UI — PRIMARY design system (Galmuri / soft gradient), HUD & stat bars, Layout (desktop), Modal, Motion & a11y (+21 more)
 
 ### Community 44 - "modal.tsx"
-Cohesion: 0.31
-Nodes (8): LIFE_EVENT_POPUP, lifeEventPopupLayerOk(), lifeEventPopupStyle(), SHELL_LAYOUT, MODAL, modalContentStyle(), modalOverlayStyle(), Modal()
+Cohesion: 0.35
+Nodes (6): LIFE_EVENT_POPUP, lifeEventPopupLayerOk(), lifeEventPopupStyle(), MODAL, modalContentStyle(), modalOverlayStyle()
 
-### Community 45 - "PlayerHudCard.tsx"
-Cohesion: 0.20
-Nodes (11): CAREER_ACTIONS, CareerHudButton(), formatDelta(), HudVital(), PlayerHudCard(), SKILL_MENU_ICON, useVitalFloaters(), PlayerStats (+3 more)
+### Community 45 - "career/content.ts"
+Cohesion: 0.14
+Nodes (9): NOTICE_ACTION_DEFAULT_LABEL, NoticeActionButton, SimCatalog, applyJobDeadlines(), jobName(), pushNotice(), deadlineDaysForTier(), offerJob() (+1 more)
 
 ### Community 46 - "Styling & Customization"
 Cohesion: 0.15
@@ -410,17 +415,17 @@ Nodes (13): Built-in variants first, className for layout only, Contents, No man
 Cohesion: 0.15
 Nodes (13): scripts, assets, assets:atlas, assets:check, assets:cut, audio:sprite, build, dev (+5 more)
 
-### Community 48 - "StudyPanel.tsx"
-Cohesion: 0.24
-Nodes (9): BlockedButton(), CourseEmpty(), CourseOffer(), CourseRecord(), HospitalPopup(), PlayerStudyCompletion, StudyActivity, studyBlockReason() (+1 more)
+### Community 48 - "GameShell.tsx"
+Cohesion: 0.18
+Nodes (17): 3.1 `GameShell` layout (as implemented), 9.1 State & data hooks (proposal), Home(), CustomizePanel(), GameShell(), SidebarTab, stageIcons, HospitalPopup() (+9 more)
 
 ### Community 49 - "6. Rendering Performance"
 Cohesion: 0.17
 Nodes (12): 6.10 Use React DOM Resource Hints, 6.11 Use useTransition Over Manual Loading States, 6.1 Animate SVG Wrapper Instead of SVG Element, 6.2 CSS content-visibility for Long Lists, 6.3 Hoist Static JSX Elements, 6.4 Optimize SVG Precision, 6.5 Prevent Hydration Mismatch Without Flickering, 6.6 Suppress Expected Hydration Mismatches (+4 more)
 
 ### Community 50 - "Design Systems from DESIGN.md"
-Cohesion: 0.17
-Nodes (12): Contents, Coverage check, Design Systems from DESIGN.md, Inputs to Confirm, Known traps, Picking a style, Report Back, Step 1: Scaffold (+4 more)
+Cohesion: 0.18
+Nodes (11): Contents, Coverage check, Design Systems from DESIGN.md, Inputs to Confirm, Known traps, Picking a style, Report Back, Step 1: Scaffold (+3 more)
 
 ### Community 51 - "Tools"
 Cohesion: 0.17
@@ -435,16 +440,16 @@ Cohesion: 0.17
 Nodes (12): Avatar always needs AvatarFallback, Button has no isPending or isLoading prop, Callouts use Alert, Card structure, Choosing between overlay components, Component Composition, Contents, Dialog, Sheet, and Drawer always need a Title (+4 more)
 
 ### Community 54 - "Art backlog (from Milestone 1 plan)"
-Cohesion: 0.17
-Nodes (10): Art backlog (from Milestone 1 plan), Constraints, Redraw at native scale (priority), Resample quality, Asset pipeline, Debug overlay, devlife, Folder map (+2 more)
+Cohesion: 0.15
+Nodes (11): Art backlog (from Milestone 1 plan), Constraints, M5.4 Chơi game, Redraw at native scale (priority), Resample quality, Asset pipeline, Debug overlay, devlife (+3 more)
 
 ### Community 56 - "devlife M5: Life sim (ngày, chỉ số, sự kiện, thông báo, store, cá tính)"
-Cohesion: 0.17
+Cohesion: 0.15
 Nodes (12): 1. Thời gian, 2. Chỉ số & thuật toán (statConfig), 3. Tiền (tháng, đóng ngày 1; lương ngày 10), 4. Sự kiện ngẫu nhiên (eventConfig), 5. Thông báo (tab Thông báo panel trái - đang bỏ trống), 6. UX hiển thị, 7. Store, 8. Cá tính (random 1 khi tạo nhân vật) (+4 more)
 
 ### Community 57 - "Task run"
-Cohesion: 0.17
-Nodes (10): Board, Jobs, Milestones, Nhận, Bug count, Events, Save, Steps (+2 more)
+Cohesion: 0.33
+Nodes (5): Bug count, Events, Save, Steps, Task run
 
 ### Community 58 - "cut-character.ts"
 Cohesion: 0.26
@@ -474,9 +479,9 @@ Nodes (9): 4.1 Deduplicate Global Event Listeners, 4.2 Use Passive Event Listene
 Cohesion: 0.20
 Nodes (9): 1. Eliminating Waterfalls (async), 2. Bundle Size Optimization (bundle), 3. Server-Side Performance (server), 4. Client-Side Data Fetching (client), 5. Re-render Optimization (rerender), 6. Rendering Performance (rendering), 7. JavaScript Performance (js), 8. Advanced Patterns (advanced) (+1 more)
 
-### Community 66 - "pixel-assets.ts"
-Cohesion: 0.24
-Nodes (8): Avatars (`public/ui/avatars/`), Props, AVATAR_NATIVE_PX, AVATAR_X4_PX, FramedAvatarRole, ICON_NATIVE_PX, ICON_X4_PX, resolveAvatarAsset()
+### Community 66 - "PixelAvatar.tsx"
+Cohesion: 0.60
+Nodes (4): Avatars (`public/ui/avatars/`), PixelAvatar(), Props, resolveAvatarAsset()
 
 ### Community 67 - "render"
 Cohesion: 0.31
@@ -487,12 +492,12 @@ Cohesion: 0.24
 Nodes (9): maxrects-packer, sharp, ASSETS, listSprites(), loadTrimmed(), main(), OUT_DIR, PackInput (+1 more)
 
 ### Community 69 - "sprite.ts"
-Cohesion: 0.27
-Nodes (9): asBgm(), asCue(), asFormat(), AudioFormat, BgmLead, parseSpriteMap(), SpriteCue, SpriteFormat (+1 more)
+Cohesion: 0.21
+Nodes (12): cueUrls(), publicAudioUrl(), asBgm(), asCue(), asFormat(), AudioFormat, BgmLead, parseSpriteMap() (+4 more)
 
 ### Community 70 - "placement.ts"
-Cohesion: 0.24
-Nodes (8): MATTRESS_SHADOW, notSold(), PLACEMENT, PlacementRow, Shadow, shadowFor(), spriteFile(), storeDrawEntries()
+Cohesion: 0.22
+Nodes (9): MATTRESS_SHADOW, notSold(), PLACEMENT, PlacementRow, replacedItemIds(), Shadow, shadowFor(), spriteFile() (+1 more)
 
 ### Community 72 - "Registry Authoring and Addresses"
 Cohesion: 0.22
@@ -502,21 +507,21 @@ Nodes (9): Address Schemes, Build and Verify, GitHub Registries, Include, Item D
 Cohesion: 0.22
 Nodes (6): components, missing, source, [uiArg, ...roots], uiDir, walk()
 
-### Community 74 - "7. Effects & motion"
+### Community 74 - "store-button.config.ts"
 Cohesion: 0.22
-Nodes (9): 7.1 CRT scanline overlay, 7.2 Phosphor glow, 7.3 Blinking block cursor, 7.4 `[x]` bullets, 7.5 Text selection, 7.6 Background radial glow, 7.7 `prefers-reduced-motion`, 7.8 Accessibility & contrast (+1 more)
+Nodes (13): HUD_ICON_GAP_PX, STORE_ICON_NATIVE_PX, STORE_LABEL, STORE_MODAL_MAX_PX, storeButtonMetrics(), storeIconFile(), STORE_GRID, storeModalMaxPx() (+5 more)
 
-### Community 75 - "LifeNotice"
-Cohesion: 0.31
-Nodes (6): Actions, Rows, Thông báo, Unread badge, isHungerNotice(), LifeNotice
+### Community 75 - "LocalStorageAdapter"
+Cohesion: 0.19
+Nodes (5): Save, LocalStorageAdapter, MemoryStorageAdapter, StorageAdapter, toStateStorage()
 
-### Community 76 - "CustomizePanel.tsx"
-Cohesion: 0.28
-Nodes (6): ItemThumb(), Props, LoadedAtlas, Localized, AppLocale, DEFAULT_LOCALE
+### Community 76 - "task-run/types.ts"
+Cohesion: 0.18
+Nodes (13): TaskBuildChoice, TaskTicketChoice, bugSpots(), mulberry32(), BugBody, BugFormula, BugMotionConfig, BugSizeId (+5 more)
 
 ### Community 77 - "shell-layout.config.ts"
-Cohesion: 0.44
-Nodes (7): CENTER_COLUMN_MAX_PX, ROOM_STATUS_BAR, ROOM_VIEWPORT_W, roomStatusBarVars(), roomStatusClockLabel(), shellPanelMaxHeight(), shellPanelVars()
+Cohesion: 0.40
+Nodes (8): CENTER_COLUMN_MAX_PX, ROOM_STATUS_BAR, ROOM_VIEWPORT_W, roomStatusBarVars(), roomStatusClockLabel(), SHELL_LAYOUT, shellPanelMaxHeight(), shellPanelVars()
 
 ### Community 78 - "manifest.ts"
 Cohesion: 0.31
@@ -539,8 +544,8 @@ Cohesion: 0.25
 Nodes (7): Best Practices, Common Pitfall, Decision Tree: Choosing Your Approach, Example: Using with_server.py, Reconnaissance-Then-Action Pattern, Reference Files, Web Application Testing
 
 ### Community 83 - "tooltip.tsx"
-Cohesion: 0.29
-Nodes (5): @radix-ui/react-tooltip, TOOLTIP, TooltipProvider(), TouchContext, TouchHandlers
+Cohesion: 0.25
+Nodes (6): Step 2: Install Everything, @radix-ui/react-tooltip, TOOLTIP, TooltipProvider(), TouchContext, TouchHandlers
 
 ### Community 84 - "layout.tsx"
 Cohesion: 0.25
@@ -555,20 +560,20 @@ Cohesion: 0.29
 Nodes (7): 2.1 Avoid Barrel File Imports, 2.2 Conditional Module Loading, 2.3 Defer Non-Critical Third-Party Libraries, 2.4 Dynamic Imports for Heavy Components, 2.5 Prefer Statically Analyzable Paths, 2.6 Preload Based on User Intent, 2. Bundle Size Optimization
 
 ### Community 87 - "write-m5-placeholders.mjs"
-Cohesion: 0.38
+Cohesion: 0.24
 Nodes (5): chunk(), crc32(), keys, png(), root
 
 ### Community 88 - "React Best Practices"
 Cohesion: 0.33
 Nodes (5): Creating a New Rule, Getting Started, React Best Practices, Rule File Structure, Structure
 
-### Community 89 - "color-pair.tsx"
-Cohesion: 0.60
-Nodes (5): ColorPair(), contrast(), luminance(), toHex(), toRgb()
+### Community 89 - "GameButton.tsx"
+Cohesion: 0.32
+Nodes (10): Game, GAME_ICON_FALLBACK, GAME_ICON_KEY, GAME_LABEL, gameButtonMetrics(), gameButtonTip(), gameEnergyDisplay(), GameButton() (+2 more)
 
-### Community 91 - "6. Design tokens"
-Cohesion: 0.33
-Nodes (6): 6.1 Color, 6.2 Typography, 6.3 Glow (text-shadow), 6.4 Spacing & layout, 6.5 Tailwind 4 integration (suggested), 6. Design tokens
+### Community 91 - "motion.ts"
+Cohesion: 0.29
+Nodes (13): TestStep(), useReducedMotion(), bounds(), bugHitPx(), bugMotionRand(), mulberry32(), pickSize(), scaleOf() (+5 more)
 
 ### Community 92 - "devlife M5.1: UI polish (síp yêu cầu 2026-10-17)"
 Cohesion: 0.33
@@ -590,9 +595,9 @@ Nodes (5): 8.1 Do Not Put Effect Events in Dependency Arrays, 8.2 Initialize App
 Cohesion: 0.40
 Nodes (4): Icons, Icons in Button use data-icon attribute, No sizing classes on icons inside components, Pass icons as component objects, not string keys
 
-### Community 98 - "4. Where the terminal appears"
-Cohesion: 0.40
-Nodes (5): 4.1 Recommended shell pattern (proposal), 4.2 Alternatives (not recommended for v1), 4.3 Desktop vs mobile, 4.4 Coexistence with pixel canvas, 4. Where the terminal appears
+### Community 98 - "choi-game.test.ts"
+Cohesion: 0.21
+Nodes (6): gameMoodGain(), gameOutcomeMood(), pickGameOutcome(), playGameSlot(), base, free
 
 ### Community 99 - "2. Scale & coordinate system"
 Cohesion: 0.40
@@ -610,25 +615,45 @@ Nodes (3): File-System Paths, Import Paths, Prefer Statically Analyzable Paths
 Cohesion: 0.50
 Nodes (3): Credits — devlife audio, batch 1, Exception: typing loops (not procedural, not CC0), M5 life sim (procedural, CC0)
 
+### Community 177 - "assets.ts"
+Cohesion: 0.29
+Nodes (7): Event popup, art(), LifeEventPopup(), art(), M5_ASSET_KEYS, M5AssetKey, m5AssetPath()
+
+### Community 178 - "resolveHackathon"
+Cohesion: 0.29
+Nodes (10): addSkillXp(), skillXpEvents(), grantSoftXp(), hackathonWinChance(), highestSkill(), maxLevel(), resolveHackathon(), scaleXpForMood() (+2 more)
+
+### Community 179 - "events-content.ts"
+Cohesion: 0.25
+Nodes (5): byId, LIFE_EVENTS, LifeChoice, LifeEventDef, LifeEventsConfig
+
+### Community 180 - "eslint.config.mjs"
+Cohesion: 0.25
+Nodes (5): compat, __dirname, eslintConfig, __filename, @eslint/eslintrc
+
+### Community 181 - "Jobs"
+Cohesion: 0.40
+Nodes (4): Board, Jobs, Milestones, Nhận
+
 ## Knowledge Gaps
 - **18 isolated node(s):** `@radix-ui/react-label`, `@radix-ui/react-separator`, `@radix-ui/react-toggle-group`, `react-dom`, `@tailwindcss/postcss` (+13 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 876 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 899 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **79 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useGameStore` connect `store.ts` to `time/index.ts`, `offers.ts`, `life/logic.ts`, `GameShell.tsx`, `TaskRunOverlay.tsx`, `NotificationsPanel.tsx`, `StorePanel.tsx`, `SceneCanvas.tsx`, `apply.ts`, `migrate.ts`, `career/types.ts`, `m51-art.ts`, `Button`, `actions.ts`, `cues.ts`, `FoodPopup.tsx`, `PlayerInfoPanel.tsx`, `JobBoardPanel.tsx`, `CareerChrome.tsx`, `PlayerHudCard.tsx`, `StudyPanel.tsx`, `CustomizePanel.tsx`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+- **Why does `Button()` connect `Button` to `Icons`, `jobs/logic.ts`, `time/index.ts`, `GameShell.tsx`, `PlayerHudCard.tsx`, `NotificationsPanel.tsx`, `StorePanel.tsx`, `index.tsx`, `PixelButton`, `SceneCanvas.tsx`, `GameShell.tsx`, `Design Systems from DESIGN.md`, `Base vs Radix`?**
+  _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **Are the 4 inferred relationships involving `cn()` (e.g. with `Helpers` and `Type scale`) actually correct?**
   _`cn()` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `@radix-ui/react-label`, `@radix-ui/react-separator`, `@radix-ui/react-toggle-group` to the rest of the system?**
   _18 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `store.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.050103153551429414 - nodes in this community are weakly interconnected._
-- **Why does `Button()` connect `Button` to `Icons`, `JobBoardPanel.tsx`, `CareerChrome.tsx`, `GameShell.tsx`, `NotificationsPanel.tsx`, `index.tsx`, `SceneCanvas.tsx`, `devlife UI — PRIMARY design system (Galmuri / soft gradient)`, `StudyPanel.tsx`, `Design Systems from DESIGN.md`, `Base vs Radix`, `PixelButton`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
-- **Are the 11 inferred relationships involving `PixelButton()` (e.g. with `Chamfered game frame` and `HUD & stat bars`) actually correct?**
-  _`PixelButton()` has 11 INFERRED edges - model-reasoned connections that need verification._
+- **Should `events.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.12019566736547868 - nodes in this community are weakly interconnected._
+- **Why does `vitest` connect `jobs/logic.ts` to `events.ts`, `time/index.ts`, `offers.ts`, `life/logic.ts`, `NotificationsPanel.tsx`, `index.tsx`, `StorePanel.tsx`, `audio.test.ts`, `DebugCanvas.tsx`, `apply.ts`, `career/types.ts`, `m51-art.ts`, `package.json`, `content/index.ts`, `store.ts`, `sleep-button.test.ts`, `FoodPopup.tsx`, `chamfer-frame.ts`, `traits.test.ts`, `knowledge/logic.ts`, `game/config.ts`, `PlayerHudCard.tsx`, `modal.tsx`, `career/content.ts`, `ref_node_path`, `store-button.config.ts`, `shell-layout.config.ts`, `GameButton.tsx`, `choi-game.test.ts`?**
+  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Are the 12 inferred relationships involving `PixelButton()` (e.g. with `Chamfered game frame` and `HUD & stat bars`) actually correct?**
+  _`PixelButton()` has 12 INFERRED edges - model-reasoned connections that need verification._
 - **Should `time/index.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.07412008281573498 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.051096491228070175 - nodes in this community are weakly interconnected._

@@ -24,6 +24,7 @@ import { StoreModal } from "./StoreModal";
 import { HospitalPopup } from "./HospitalPopup";
 import { useGameClock } from "./useGameClock";
 import { useGameAudio } from "./useGameAudio";
+import { useStatFx } from "./useStatFx";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -62,6 +63,7 @@ export function GameShell({
   const hydrated = useGameStore((s) => s._hasHydrated);
   useGameClock(hydrated);
   useGameAudio();
+  useStatFx(hydrated);
   const showCharacter = useGameStore((s) => s.showCharacter);
   const setShowCharacter = useGameStore((s) => s.setShowCharacter);
   const hospitalOpen = useGameStore((s) => s.hospitalOpen);

@@ -6,7 +6,7 @@ import { gameBlocked, gameBubbleText, gameMoodGain, gameOutcomeMood, pickGameOut
 
 const WIN = () => 0.1, NORMAL = () => 0.5, TROLL = () => 0.8, LOSE = () => 0.97;
 const base = defaultCareer(1, 20 * 60, "student", SIM_CATALOG, "careful");
-const at = (s, patch) => ({ ...s, players: { ...s.players, ...patch } });
+const at = (s: any, patch: any) => ({ ...s, players: { ...s.players, ...patch } });
 const free = { minuteOfDay: 20 * 60, hospitalOpen: false, taskOpen: false };
 
 describe("Chơi game logic", () => {

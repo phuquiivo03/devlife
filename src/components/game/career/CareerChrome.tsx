@@ -57,23 +57,16 @@ export function CareerChrome({
   const [popup, setPopup] = useState<LevelPopup | null>(null);
 
   useEffect(() => {
-    const push = (label: string) => {
-      playCueKey("toast");
-      floatSeq += 1;
-      const id = floatSeq;
-      setFloats((current) => [...current, { id, label }]);
-      window.setTimeout(() => {
-        setFloats((current) => current.filter((note) => note.id !== id));
-      }, 1000);
-    };
     const offXp = gameBus.on("skillXpGained", (event) => {
-      if (event.amount > 0) push(`+${event.amount} XP`);
-    });
-    const offMoney = gameBus.on("moneyChanged", (event) => {
-      if (event.delta === 0) return;
-      push(
-        event.delta > 0 ? `+${formatVnd(event.delta)}` : formatVnd(event.delta),
-      );
+      if (event.amount > 0) {
+        playCueKey("toast");
+        floatSeq += 1;
+        const id = floatSeq;
+        setFloats((current) => [...current, { id, label: `+${event.amount} XP` }]);
+        window.setTimeout(() => {
+          setFloats((current) => current.filter((note) => note.id !== id));
+        }, 1000);
+      }
     });
     const offLevel = gameBus.on(
       "skillLevelUp",
@@ -88,7 +81,6 @@ export function CareerChrome({
     );
     return () => {
       offXp();
-      offMoney();
       offLevel();
     };
   }, []);

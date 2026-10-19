@@ -15,7 +15,7 @@ type Props = {
   stepped?: boolean;
 };
 
-export function StatBar({ value, max = 100, tone, className, stepped = false }: Props) {
+export function StatBar({ value, max = 100, tone, className, stepped = false, instant = false }: Props & { instant?: boolean }) {
   const pct = Math.max(0, Math.min(100, max > 0 ? (value / max) * 100 : 0));
   return (
     <div
@@ -25,7 +25,7 @@ export function StatBar({ value, max = 100, tone, className, stepped = false }: 
       )}
     >
       <div
-        className={cn("h-full", stepped ? "xp-fill" : "transition-[width] duration-300", barTone[tone])}
+        className={cn("h-full", stepped ? "xp-fill" : instant ? "" : "transition-[width] duration-300", barTone[tone])}
         style={{ width: `${pct}%` }}
       />
     </div>
