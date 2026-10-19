@@ -70,8 +70,11 @@
   "job_remind_days": 1,
   "foods": [
     { "id": "noodles", "label": "Mì", "price": 8000, "health": -3 },
+    { "id": "banh_mi", "label": "Bánh mì", "price": 15000, "health": -1 },
     { "id": "home_rice", "label": "Cơm nhà", "price": 25000, "health": 0 },
-    { "id": "com_tam", "label": "Cơm tấm", "price": 35000, "health": 0 }
+    { "id": "com_tam", "label": "Cơm tấm", "price": 35000, "health": 0 },
+    { "id": "bun_bo", "label": "Bún bò", "price": 40000, "health": 1 },
+    { "id": "ga_chien", "label": "Gà chiên", "price": 50000, "health": -2 }
   ],
   "weekdays": ["T2", "T3", "T4", "T5", "T6", "T7", "CN"],
   "holidays": [

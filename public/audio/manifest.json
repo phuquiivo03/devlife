@@ -513,7 +513,7 @@
       "type": "sfx",
       "file": "ogg/sfx/sfx_ambulance.ogg",
       "category": "life",
-      "duration": 2.0,
+      "duration": 3.0,
       "loop": false,
       "volume": 0.7,
       "license": "CC0-1.0",

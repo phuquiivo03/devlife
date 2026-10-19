@@ -1,7 +1,7 @@
 import lifeSim from "../../../config/life_sim.json";
 import type { StageId } from "../config";
 
-export type FoodId = "noodles" | "home_rice" | "com_tam";
+export type FoodId = "noodles" | "banh_mi" | "home_rice" | "com_tam" | "bun_bo" | "ga_chien";
 
 export type FoodDef = {
   id: FoodId;
