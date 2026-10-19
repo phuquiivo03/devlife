@@ -17,6 +17,8 @@ export type HolidayDef = {
   length: number;
 };
 
+export type GameOutcomeDef = { id: string; label: string; weight: number; mood_mult?: number; mood_delta?: number };
+
 export type LifeConfig = {
   slot_hours: number;
   weekday_slots: number;
@@ -98,6 +100,18 @@ export type LifeConfig = {
   job_late_mood: number;
   /** Reminder fires, and the board deadline turns red, when this many days or fewer remain. */
   job_remind_days: number;
+  /** Mood per Chơi game slot while today's count is under `game_daily_full`. */ game_mood: number;
+  /** Energy cost per slot (positive). The work-streak ×1.2 applies via energyCost. */ game_energy: number;
+  /** Full-value slots per calendar day. From the next slot the mood is × game_extra_mood_multiplier. */ game_daily_full: number;
+  game_extra_mood_multiplier: number;
+  /** Phases where Chơi game is allowed. */ game_phases: string[];
+  game_label: string;
+  game_block_phase: string;
+  game_block_energy: string;
+  game_block_hospital: string;
+  game_block_task: string;
+  /** Word before the mood change in the result bubble, e.g. "Tinh thần +12". */ game_bubble_mood: string;
+  /** Weighted Chơi game results. Energy is the same for every row. */ game_outcomes: GameOutcomeDef[];
   foods: FoodDef[];
   weekdays: string[];
   holidays: HolidayDef[];

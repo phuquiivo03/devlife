@@ -24,6 +24,7 @@ import {
 } from "./shell-layout.config";
 import shellStyles from "./shell-layout.module.css";
 import { HungerDock } from "./FoodPopup";
+import { GameButton } from "./GameButton";
 import { SleepButton } from "./SleepButton";
 import { StoreButton } from "./StoreButton";
 
@@ -166,6 +167,7 @@ export function PlayerHudCard({
           style={{ marginLeft: "auto", gap: HUD_ICON_GAP_PX }}
         >
           <HungerDock />
+          <GameButton />
           <SleepButton canSleep={canSleep} onSleep={sleep} />
         </div>
       </div>

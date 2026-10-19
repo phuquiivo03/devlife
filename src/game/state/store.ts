@@ -50,7 +50,7 @@ import {
   type SpeedPreset,
 } from "../time";
 import { LIFE, type FoodId } from "../life/content";
-import { crossWakingSlot, eatMeal, hoursUntilWake, mealBlocked, resolveMorning } from "../life/logic";
+import { crossWakingSlot, eatMeal, gameBlocked, gameBubbleText, hoursUntilWake, mealBlocked, playGameSlot, resolveMorning } from "../life/logic";
 import { rollTrait } from "../life/traits";
 import { LIFE_EVENTS } from "../life/events-content";
 import {
@@ -210,6 +210,8 @@ type GameState = {
   onHour: (hour: number, totalMinutes: number) => void;
   buyCourse: (activityId: string, force?: boolean) => void;
   eat: (foodId: FoodId) => void;
+  /** One 2-hour Chơi game slot. No-op when gameBlocked. */
+  playGame: () => void;
   /** Job whose CRT task is on screen. Not persisted. */
   taskJobId: string | null;
   acceptJob: (jobId: string, force?: boolean) => void;
@@ -468,6 +470,31 @@ export const useGameStore = create<GameState>()(
         emitGame(result.events);
         maybeHospital(result.skipDays);
         get().syncLifeSurface();
+      },
+      playGame: () => {
+        const current = get();
+        const snapNow = snapshot(current.totalMinutes);
+        const synced = syncPlayerClock(current.career, snapNow.day, snapNow.minuteOfDay, current.stage);
+        const blocked = gameBlocked(synced, {
+          minuteOfDay: snapNow.minuteOfDay,
+          hospitalOpen: current.hospitalOpen,
+          taskOpen: current.taskJobId != null,
+        });
+        if (blocked) return;
+        const result = playGameSlot(synced, Math.random);
+        const advanced = advanceMinutes(current.totalMinutes, LIFE.slot_hours * 60);
+        // Keep game_day on the start day until dayStarted has run, so endOfDay closes the right day.
+        set({
+          totalMinutes: advanced.totalMinutes,
+          career: result.state,
+          fastForward: true,
+          lifeBubble: { text: gameBubbleText(result.outcome, result.moodDelta), until: Date.now() + LIFE_EVENTS.bubble_ms },
+        });
+        emitGame(result.events);
+        for (const event of advanced.events) timeBus.emit(event);
+        const snap = snapshot(advanced.totalMinutes);
+        set({ career: syncPlayerClock(get().career, snap.day, snap.minuteOfDay, get().stage) });
+        maybeHospital(result.skipDays);
       },
       buyCourse: (activityId, force = false) => {
         const current = get();

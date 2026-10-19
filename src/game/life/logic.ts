@@ -363,6 +363,75 @@ export function mealBlocked(state: CareerState, foodId: FoodId): string | null {
   return null;
 }
 
+import { phaseAtMinuteOfDay } from "../time/clock";
+import type { PhaseId } from "../time/config";
+import type { GameOutcomeDef } from "./content";
+
+export type GameGuard = { minuteOfDay: number; hospitalOpen: boolean; taskOpen: boolean };
+
+/** Base mood of the next slot after the daily halving, before the outcome, clamp, and the Lạc quan floor. */
+export function gameMoodGain(state: CareerState): number {
+  const played = lifeOf(state).funSlotsToday;
+  return played < LIFE.game_daily_full ? LIFE.game_mood : LIFE.game_mood * LIFE.game_extra_mood_multiplier;
+}
+
+/** Vietnamese reason the Chơi game action is blocked, or null. Order: hospital, task, phase, energy. */
+export function gameBlocked(state: CareerState, guard: GameGuard): string | null {
+  if (guard.hospitalOpen) return LIFE.game_block_hospital;
+  if (guard.taskOpen) return LIFE.game_block_task;
+  if (!LIFE.game_phases.includes(phaseAtMinuteOfDay(guard.minuteOfDay).id as PhaseId)) return LIFE.game_block_phase;
+  if (state.players.energy < energyCost(LIFE.game_energy, lifeOf(state).workStreak)) return LIFE.game_block_energy;
+  return null;
+}
+
+/** Used only when the table has no positive weight. Neutral: base gain × 1. */
+const GAME_OUTCOME_FALLBACK: GameOutcomeDef = { id: "normal", label: "", weight: 1, mood_mult: 1 };
+
+/** Weighted pick, same algorithm as pickWeighted in events.ts. Rows with a weight that is not finite or ≤ 0 are skipped. */
+export function pickGameOutcome(rng: () => number, table: readonly GameOutcomeDef[] = LIFE.game_outcomes): GameOutcomeDef {
+  const rows = table.filter((row) => Number.isFinite(row.weight) && row.weight > 0);
+  const total = rows.reduce((sum, row) => sum + row.weight, 0);
+  if (rows.length === 0 || total <= 0) return GAME_OUTCOME_FALLBACK;
+  let cursor = rng() * total;
+  for (const row of rows) {
+    cursor -= row.weight;
+    if (cursor < 0) return row;
+  }
+  return rows[rows.length - 1]!;              // rng() === 1 or float drift
+}
+/** Order: base → daily halving → outcome mult, rounded once to a whole number. A `mood_delta` row is flat and skips both. */
+export function gameOutcomeMood(state: CareerState, outcome: GameOutcomeDef): number {
+  if (outcome.mood_delta != null && Number.isFinite(outcome.mood_delta)) return Math.round(outcome.mood_delta);
+  const mult = outcome.mood_mult != null && Number.isFinite(outcome.mood_mult) ? outcome.mood_mult : 1;
+  return Math.round(gameMoodGain(state) * mult);
+}
+
+export type GameSlotResult = LifeResult & {
+  outcome: GameOutcomeDef;
+  /** Mood actually applied after clamp and the Lạc quan floor (after − before). */
+  moodDelta: number;
+};
+
+/** One Chơi game slot: rolled outcome mood, energy cost, +1 fun slot (any outcome). No money. The caller advances the clock. */
+export function playGameSlot(state: CareerState, rng: () => number): GameSlotResult {
+  const life = lifeOf(state);
+  const outcome = pickGameOutcome(rng);
+  // Use applyDirect (not applyActionStats) to avoid diminishing mood (0.6^positiveMoodApplies) and positiveMoodApplies increment.
+  // Chơi game has its own daily halving rule via gameMoodGain, so we skip diminishing.
+  const result = applyDirect(
+    state,
+    { mood: gameOutcomeMood(state, outcome), energy: -energyCost(LIFE.game_energy, life.workStreak) },
+    { ...life, funSlotsToday: life.funSlotsToday + 1 },
+  );
+  return { ...result, outcome, moodDelta: result.state.players.mood - state.players.mood };
+}
+
+/** Bubble text, e.g. "Thắng streak liên tục, sướng ghê! · Tinh thần +12". Zero shows "+0". */
+export function gameBubbleText(outcome: GameOutcomeDef, moodDelta: number): string {
+  const shown = Math.round(moodDelta);
+  return `${outcome.label} · ${LIFE.game_bubble_mood} ${shown < 0 ? "−" + Math.abs(shown) : "+" + shown}`;
+}
+
 function endOfDay(state: CareerState): LifeResult {
   const life = lifeOf(state);
   const day = state.players.game_day;
