@@ -6,6 +6,8 @@ import { sampleCareer, diffStats } from "./stat-fx";
 import { useStatFxStore } from "./stat-fx-store";
 import { STAT_FX } from "./stat-fx.config";
 
+import { GameState } from "@/game/state/store";
+
 export function useStatFx(active: boolean): void {
   const store = useGameStore();
   const push = useStatFxStore((s) => s.push);
@@ -27,8 +29,8 @@ export function useStatFx(active: boolean): void {
       return;
     }
 
-    const storeApi = useGameStore as unknown as { subscribe: (listener: (state: any, prev: any) => void) => () => void };
-    const unsubscribe = storeApi.subscribe((state: any, prevState: any) => {
+    const storeApi = useGameStore as unknown as { subscribe: (listener: (state: GameState, prev: GameState) => void) => () => void };
+    const unsubscribe = storeApi.subscribe((state: GameState, prevState: GameState) => {
       if (!state._hasHydrated) return;
 
       const prevCareer = prevState?.career;

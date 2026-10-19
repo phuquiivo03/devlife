@@ -1,5 +1,7 @@
 export const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+import { useSyncExternalStore } from "react";
+
 /** False on the server. */
 export function prefersReducedMotion(): boolean {
   if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
@@ -10,7 +12,6 @@ export function prefersReducedMotion(): boolean {
 
 /** Live value; listens to the media query "change" event. */
 export function usePrefersReducedMotion(): boolean {
-  const { useSyncExternalStore } = require("react") as { useSyncExternalStore: typeof import("react").useSyncExternalStore };
   return useSyncExternalStore(
     (onStoreChange) => {
       if (typeof window === "undefined" || typeof window.matchMedia !== "function") {

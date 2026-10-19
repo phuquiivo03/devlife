@@ -168,7 +168,7 @@ function maybeHospital(skipDays: number | undefined) {
 
 export type CareerPanel = "study" | "jobs" | "skills";
 
-type GameState = {
+export type GameState = {
   stage: StageId;
   loadouts: Record<StageId, Loadout>;
   showCharacter: boolean;
