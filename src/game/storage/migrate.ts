@@ -580,6 +580,11 @@ export function migrateSave(
   if (version < 18) {
     career = { ...career, player_jobs: acceptOpenJobs(career.player_jobs, snap.day) };
   }
+  if (version < 19) {
+    // v19: furniture placement overhaul - overlay items can appear in all rooms, replacement items use loadouts across rooms
+    // No save-breaking data migration needed as placement data is in JSON files
+    // Ensure shop normalization handles owned items properly
+  }
 
   return {
     stage,

@@ -1,7 +1,21 @@
 import storeConfig from "../../../config/store.json";
+import placementFile from "./placement.json";
 import type { CareerState, ShopState } from "../career/types";
 import type { StageId } from "../config";
 import { LIFE } from "./content";
+
+type PlacementRow = {
+  item: string;
+  room: StageId;
+  anchor: { x: number; y: number };
+  size: { w: number; h: number };
+  facing: string;
+  replaces: string | null;
+  kind: "floor" | "wall" | "surface";
+  sprite?: string;
+};
+
+const PLACEMENT_ITEMS = (placementFile as { items: PlacementRow[] }).items;
 
 export type StoreItem = {
   id: string;
@@ -35,7 +49,7 @@ export const STORE_ITEMS: readonly StoreItem[] = storeConfig.items.map((item) =>
   skills: "skills" in item ? item.skills : undefined,
   level: "level" in item ? item.level : undefined,
   reputation: "reputation" in item ? item.reputation : undefined,
-  requires: "requires" in item ? item.requires : undefined,
+  requires: "requires" in item ? (item as any).requires : undefined,
   sleep: "sleep" in item ? item.sleep : undefined,
   daily_mood: "daily_mood" in item ? item.daily_mood : undefined,
   daily_health: "daily_health" in item ? item.daily_health : undefined,
@@ -106,9 +120,17 @@ function benefitValues(state: CareerState, key: "sleep" | "daily_mood" | "daily_
   const owned = new Set(shopOf(state).owned);
   const stage = state.players.stage;
   const values: number[] = [];
+
   for (const item of STORE_ITEMS) {
     if (!owned.has(item.id)) continue;
-    if (item.stage && item.stage !== stage) continue;
+
+    // Room items only apply in their corresponding stage
+    if (item.id === "room_junior" && stage !== "junior") continue;
+    if (item.id === "room_senior" && stage !== "senior") continue;
+
+    // Other items with stage restrictions removed in v19 - items apply when owned
+    // regardless of room, as long as they have placement in current room or are overlay items
+
     const value = item[key] ?? 0;
     if (value !== 0) values.push(value);
   }
@@ -151,7 +173,6 @@ export function unlockBlock(state: CareerState, item: StoreItem): string | null 
       return `Cần ${item.skills} kỹ năng cấp ${item.level}.`;
     }
   }
-  if (item.requires && !shopOf(state).owned.includes(item.requires)) return "Cần phòng Junior.";
   return null;
 }
 

@@ -5,12 +5,18 @@
  * grid in the store mockup.
  */
 
+export const STORE_MODE_TABS = [
+  { id: "store", label: "Cửa hàng" },
+  { id: "owned", label: "Đã sở hữu" },
+] as const;
+
 export const STORE_TABS = [
   { id: "furniture", label: "Nội thất" },
   { id: "room", label: "Phòng" },
   { id: "all", label: "Tất cả" },
 ] as const;
 
+export type StoreModeId = (typeof STORE_MODE_TABS)[number]["id"];
 export type StoreTabId = (typeof STORE_TABS)[number]["id"];
 export type StoreShelf = "furniture" | "room";
 

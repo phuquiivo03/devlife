@@ -4,6 +4,12 @@
   gap: 8px;
 }
 
+.subPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .tabs {
   position: sticky;
   top: 0;

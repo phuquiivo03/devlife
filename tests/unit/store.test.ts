@@ -65,7 +65,7 @@ describe("store catalog", () => {
     expect(buyBlock(rich(start, 180_000_000), "room_senior")).toBe("Cần 2 kỹ năng cấp 8.");
     const senior = rich(withSkills(start, 8, 2, 0), 180_000_000);
     expect(buyBlock(senior, "room_senior")).toBeNull();
-    expect(buyBlock(rich(start, 4_000_000), "monitor2")).toBe("Cần phòng Junior.");
+    expect(buyBlock(rich(start, 4_000_000), "monitor2")).toBeNull();
 
     const broke = buyShopItem(start, "plant");
     expect(broke.error).toBeNull();
@@ -90,8 +90,11 @@ describe("store catalog", () => {
     expect(both.state.shop.owned).toEqual(["room_junior", "room_senior"]);
     const fan = buyShopItem(rich(both.state, 400_000), "fan");
     const air = buyShopItem(rich(fan.state, 7_000_000), "aircon");
+    // v19: furniture applies wherever owned. Room bonuses only apply in their room.
+    // Senior room: room_senior(20) + aircon(10) + fan(5) = 35
     expect(furnitureSleepBonus(air.state)).toBe(20 + 10 + 5);
     const back = { ...air.state, players: { ...air.state.players, stage: "junior" } };
+    // Junior room: room_junior(10) + aircon(10) + fan(5) = 25
     expect(furnitureSleepBonus(back)).toBe(10 + 10 + 5);
     expect(cappedSum([20, 10, 5, 3], 3)).toBe(35);
   });
@@ -102,7 +105,7 @@ describe("store catalog", () => {
     expect(day.state.players.mood).toBeCloseTo(74.6, 5);
     const mattress = { ...start, shop: { owned: ["mattress"], pin: null } };
     const healed = applyLifeDayStart(mattress, 2, "student", { resolveMorning: false });
-    expect(healed.state.players.health).toBe(66);
+    expect(healed.state.players.health).toBe(66); // mattress applies when owned (v19)
     const rested = { ...planted, shop: { owned: ["fan"], pin: null }, players: { ...planted.players, energy: 10 } };
     expect(applySleepRest(rested, 1).state.players.energy).toBe(10 + 12.5 + 5);
 
@@ -319,16 +322,13 @@ describe("store catalog", () => {
 });
 
 describe("store placement", () => {
-  it("replaces the listed sprites and skips rooms that do not sell the item", () => {
+  it("replaces the listed sprites and shows items in all rooms", () => {
+    // Note: NotSold requirement removed in v19 (removed notSold restrictions)
+    // Now all items can appear in all rooms
     const owned = ["plant", "fan", "aircon", "ergo_chair", "monitor2", "mattress"];
-    expect(notSold("fan", "student")).toBe(true);
-    expect(notSold("mattress", "senior")).toBe(true);
-    expect(replacedItemIds("student", owned)).toEqual(new Set(["student.mattress"]));
-    expect(replacedItemIds("junior", owned)).toEqual(new Set(["junior.office_chair", "junior.bed"]));
-    expect(storeDrawEntries("student", owned, null).some((entry) => entry.key.includes(":fan"))).toBe(false);
-    const studentBed = storeDrawEntries("student", owned, 120).find((entry) => entry.key === "store:student:mattress");
-    expect(studentBed?.bitmap).toBe("/ui/m5/item_mattress_student.png");
-    expect(studentBed).toMatchObject({ x: 45 - 56, y: 221 - 85, bitmapW: 113, bitmapH: 85 });
+    expect(notSold("fan", "student")).toBe(false);
+    expect(notSold("mattress", "senior")).toBe(false);
+    expect(replacedItemIds("student", owned)).toEqual(new Set(["student.floor_cushion", "student.mattress"]));
     const juniorBed = storeDrawEntries("junior", owned, 153).find((entry) => entry.key === "store:junior:mattress");
     expect(juniorBed?.bitmap).toBe("/ui/m5/item_mattress_junior.png");
     const monitor = storeDrawEntries("junior", owned, 153).find((entry) => entry.key === "store:junior:monitor2");

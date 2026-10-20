@@ -59,8 +59,7 @@
       "id": "monitor2",
       "label": "Màn hình thứ 2",
       "price": 4000000,
-      "icon": "icon_store_monitor2.png",
-      "requires": "room_junior"
+      "icon": "icon_store_monitor2.png"
     },
     {
       "id": "mattress",
