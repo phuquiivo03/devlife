@@ -68,6 +68,7 @@ The game is built around several interconnected systems in `src/game/`:
 ### State Management Pattern
 
 All game state lives in a single Zustand store (`src/game/state/store.ts`):
+
 - State is normalized (IDs reference entities)
 - Actions are defined as store methods
 - State persists to localStorage
@@ -106,8 +107,9 @@ src/components/
 ### When Working with Game State
 
 Always use the Zustand store methods rather than direct state mutation:
+
 ```typescript
-const { advanceTime, applyStudy, buyFurniture } = useGameStore()
+const { advanceTime, applyStudy, buyFurniture } = useGameStore();
 ```
 
 ### When Adding New Game Systems
@@ -160,6 +162,7 @@ Source art lives in `public/assets/`, generated atlas outputs in `public/atlas/`
 This project uses graphify for codebase navigation. The knowledge graph is at `graphify-out/graph.json`.
 
 Before searching raw files, query the graph:
+
 ```bash
 graphify query "your question about the codebase"
 graphify path "ComponentA" "ComponentB"    # Find relationships
@@ -167,6 +170,7 @@ graphify explain "concept"                  # Focused explanation
 ```
 
 After code changes, update the graph:
+
 ```bash
 graphify update .    # AST-only update, no API cost
 ```
@@ -174,26 +178,34 @@ graphify update .    # AST-only update, no API cost
 ## Common Tasks
 
 ### Adding a New Furniture Item
+
 1. Add sprite PNG to `public/assets/furniture/<stage>/`
 2. Define item in content JSON
 3. Run `pnpm assets:atlas` to rebuild atlas
 4. Add to furniture catalog in `src/game/life/content.ts`
 
 ### Adding a New Job
+
 1. Define job data in `src/game/career/content.ts` (SIM_CATALOG)
 2. Implement eligibility logic in `src/game/jobs/logic.ts`
 3. Add offer generation logic in `src/game/jobs/offers.ts`
 4. Wire up UI in `src/components/game/career/JobBoardPanel.tsx`
 
 ### Modifying Time System
+
 - Clock logic: `src/game/time/clock.ts`
 - Phase configuration: `src/game/time/config.ts`
 - Event loop: `src/game/time/loop.ts`
 - UI: `src/components/game/TimeDebugPanel.tsx`
 
 ### Adding Audio
+
 1. Add sound file to `public/audio/`
 2. Update `public/audio/manifest.json`
 3. Run `pnpm audio:sprite` to rebuild sprite
 4. Add cue definition in `src/game/audio/cues.ts`
 5. Use via `useGameAudio()` hook
+
+### Build check
+
+Always run build command to check code build, then fix if error

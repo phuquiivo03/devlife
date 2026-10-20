@@ -15,7 +15,8 @@ type PlacementRow = {
   sprite?: string;
 };
 
-const PLACEMENT_ITEMS = (placementFile as { items: PlacementRow[] }).items;
+// PLACEMENT_ITEMS kept for potential future use
+const _PLACEMENT_ITEMS = (placementFile as { items: PlacementRow[] }).items;
 
 export type StoreItem = {
   id: string;
@@ -49,7 +50,7 @@ export const STORE_ITEMS: readonly StoreItem[] = storeConfig.items.map((item) =>
   skills: "skills" in item ? item.skills : undefined,
   level: "level" in item ? item.level : undefined,
   reputation: "reputation" in item ? item.reputation : undefined,
-  requires: "requires" in item ? (item as any).requires : undefined,
+  requires: "requires" in item ? (item as { requires?: string }).requires : undefined,
   sleep: "sleep" in item ? item.sleep : undefined,
   daily_mood: "daily_mood" in item ? item.daily_mood : undefined,
   daily_health: "daily_health" in item ? item.daily_health : undefined,
