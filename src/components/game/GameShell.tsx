@@ -22,6 +22,7 @@ import { TimeDebugPanel } from "./TimeDebugPanel";
 import { CareerChrome } from "./career/CareerChrome";
 import { StoreModal } from "./StoreModal";
 import { HospitalPopup } from "./HospitalPopup";
+import { LoadingScreen } from "./LoadingScreen";
 import { useGameClock } from "./useGameClock";
 import { useGameAudio } from "./useGameAudio";
 import { useStatFx } from "./useStatFx";
@@ -51,6 +52,7 @@ export function GameShell({
   const areaRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("player");
+  const [assetsLoaded, setAssetsLoaded] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
   const debug = searchParams.get("debug") === "1";
@@ -61,9 +63,9 @@ export function GameShell({
   const juniorOpen = useGameStore((s) => roomOwned(s.career, "junior"));
   const seniorOpen = useGameStore((s) => roomOwned(s.career, "senior"));
   const hydrated = useGameStore((s) => s._hasHydrated);
-  useGameClock(hydrated);
+  useGameClock(hydrated && assetsLoaded);
   useGameAudio();
-  useStatFx(hydrated);
+  useStatFx(hydrated && assetsLoaded);
   const showCharacter = useGameStore((s) => s.showCharacter);
   const setShowCharacter = useGameStore((s) => s.setShowCharacter);
   const hospitalOpen = useGameStore((s) => s.hospitalOpen);
@@ -133,6 +135,11 @@ export function GameShell({
   ]);
 
   const room = getRoom(stage);
+
+  // Show loading screen until assets are preloaded
+  if (!assetsLoaded) {
+    return <LoadingScreen onComplete={() => setAssetsLoaded(true)} />;
+  }
 
   if (!hydrated) {
     return (
