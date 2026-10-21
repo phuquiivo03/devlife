@@ -562,20 +562,20 @@ export function syncLifeSurface(state: CareerState, day: number, minute: number,
   const completed = new Set(
     settled.player_jobs.filter((job) => job.status === "completed").map((job) => job.template_id),
   );
-  for (const job of settled.player_jobs) {
-    if (job.status === "offered" && completed.has(job.template_id)) {
-      add({
-        id: `regular-${job.id}`,
-        day,
-        minute,
-        severity: "info",
-        icon: "icon_notif_job.png",
-        text: "Khách quen có job.",
-        action: "viewJobs",
-        read: false,
-      });
-    }
-  }
+  // for (const job of settled.player_jobs) {
+  //   if (job.status === "offered" && completed.has(job.template_id)) {
+  //     add({
+  //       id: `regular-${job.id}`,
+  //       day,
+  //       minute,
+  //       severity: "info",
+  //       icon: "icon_notif_job.png",
+  //       text: "Khách quen có job.",
+  //       action: "viewJobs",
+  //       read: false,
+  //     });
+  //   }
+  // }
 
   return step(withFeed(settled, feed), { warns });
 }

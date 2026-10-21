@@ -23,6 +23,7 @@ import { CareerChrome } from "./career/CareerChrome";
 import { StoreModal } from "./StoreModal";
 import { HospitalPopup } from "./HospitalPopup";
 import { LoadingScreen } from "./LoadingScreen";
+import { SleepTransition } from "./SleepTransition";
 import { useGameClock } from "./useGameClock";
 import { useGameAudio } from "./useGameAudio";
 import { useStatFx } from "./useStatFx";
@@ -226,6 +227,7 @@ export function GameShell({
                 <SceneCanvas areaRef={areaRef} debug={debug} />
                 <LifeRoomFx />
                 <LifeEventPopup />
+                <SleepTransition />
               </RoomChamferFrame>
               <div className="mt-3 flex w-full flex-col items-center gap-3 px-2 lg:px-0">
                 <PlayerHudCard iconFiles={iconFiles} />

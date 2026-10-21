@@ -83,6 +83,15 @@ import { acceptJobFromNotice, dismissNoticeById, noticeForAction, tickJobOffers 
 let clockSkip = false;
 let handlingHospital = false;
 
+// Helper functions to access clockSkip from outside
+export function setClockSkip(value: boolean): void {
+  clockSkip = value;
+}
+
+export function getClockSkip(): boolean {
+  return clockSkip;
+}
+
 function playLifeTransition(previous: CareerState, result: LifeStep, extra: readonly CueKey[] = []) {
   const before = feedOf(previous);
   const after = feedOf(result.state);
@@ -233,6 +242,13 @@ export type GameState = {
   lifeBubble: { text: string; until: number } | null;
   lifeBanner: { label: string; until: number } | null;
   terminalLines: string[];
+  /** Sleep transition state. Not persisted. */
+  sleepTransition: {
+    active: boolean;
+    startTime: number;
+    fromMinutes: number;
+    toMinutes: number;
+  } | null;
   chooseLife: (choiceId: string) => void;
   readNotice: (id: string) => void;
   readAllNotices: () => void;
@@ -333,12 +349,34 @@ export const useGameStore = create<GameState>()(
       setClockPaused: (paused) => set({ clockPaused: paused }),
       sleep: () => {
         const current = get().totalMinutes;
-        if (!canSleepAt(current)) return;
+        console.log('[SLEEP] Button clicked, current minutes:', current);
+        console.log('[SLEEP] Can sleep?', canSleepAt(current));
+
+        if (!canSleepAt(current)) {
+          console.log('[SLEEP] Cannot sleep at this time');
+          return;
+        }
+
         const result = sleepToNextMorning(current);
-        clockSkip = true;
-        set({ totalMinutes: result.totalMinutes });
-        for (const event of result.events) timeBus.emit(event);
-        clockSkip = false;
+        console.log('[SLEEP] Sleep transition starting:', {
+          fromMinutes: current,
+          toMinutes: result.totalMinutes,
+          startTime: Date.now(),
+        });
+
+        // Start sleep transition (10 seconds real time)
+        set({
+          sleepTransition: {
+            active: true,
+            startTime: Date.now(),
+            fromMinutes: current,
+            toMinutes: result.totalMinutes,
+          },
+        });
+
+        console.log('[SLEEP] Transition state set');
+        // Transition will be handled by SleepTransition component
+        // Events will be fired at the end of the transition
       },
       jumpToPhase: (phaseId) => {
         const current = get().totalMinutes;
@@ -357,6 +395,7 @@ export const useGameStore = create<GameState>()(
       lifeBubble: null,
       lifeBanner: null,
       terminalLines: [],
+      sleepTransition: null,
       fastForward: false,
       openCareerPanel: (panel) => set({ careerPanel: panel }),
       closeCareerPanel: () => set({ careerPanel: null }),

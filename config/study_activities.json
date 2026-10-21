@@ -78,5 +78,205 @@
     "energy": 30,
     "skill_id": "backend",
     "repeatable": false
+  },
+  {
+    "id": "js-advanced",
+    "name": "JavaScript nâng cao",
+    "icon": "learn_course",
+    "price": 420000,
+    "hours": 3,
+    "energy": 18,
+    "skill_id": "frontend",
+    "repeatable": false
+  },
+  {
+    "id": "vue",
+    "name": "Vue.js cơ bản",
+    "icon": "learn_project",
+    "price": 480000,
+    "hours": 4,
+    "energy": 20,
+    "skill_id": "frontend",
+    "repeatable": false
+  },
+  {
+    "id": "typescript",
+    "name": "TypeScript căn bản",
+    "icon": "learn_course",
+    "price": 550000,
+    "hours": 3,
+    "energy": 22,
+    "skill_id": "frontend",
+    "repeatable": false
+  },
+  {
+    "id": "nextjs",
+    "name": "Next.js framework",
+    "icon": "learn_project",
+    "price": 800000,
+    "hours": 5,
+    "energy": 28,
+    "skill_id": "frontend",
+    "repeatable": false
+  },
+  {
+    "id": "responsive",
+    "name": "Responsive design",
+    "icon": "learn_course",
+    "price": 320000,
+    "hours": 2,
+    "energy": 14,
+    "skill_id": "frontend",
+    "repeatable": false
+  },
+  {
+    "id": "express",
+    "name": "Express.js API",
+    "icon": "learn_project",
+    "price": 520000,
+    "hours": 3,
+    "energy": 20,
+    "skill_id": "backend",
+    "repeatable": false
+  },
+  {
+    "id": "graphql",
+    "name": "GraphQL API",
+    "icon": "learn_course",
+    "price": 680000,
+    "hours": 4,
+    "energy": 24,
+    "skill_id": "backend",
+    "repeatable": false
+  },
+  {
+    "id": "microservices",
+    "name": "Microservices",
+    "icon": "learn_book",
+    "price": 1800000,
+    "hours": 6,
+    "energy": 32,
+    "skill_id": "backend",
+    "repeatable": false
+  },
+  {
+    "id": "auth-security",
+    "name": "Authentication & Security",
+    "icon": "learn_course",
+    "price": 750000,
+    "hours": 4,
+    "energy": 25,
+    "skill_id": "backend",
+    "repeatable": false
+  },
+  {
+    "id": "mongodb",
+    "name": "MongoDB NoSQL",
+    "icon": "learn_course",
+    "price": 380000,
+    "hours": 3,
+    "energy": 16,
+    "skill_id": "database",
+    "repeatable": false
+  },
+  {
+    "id": "postgres",
+    "name": "PostgreSQL nâng cao",
+    "icon": "learn_course",
+    "price": 580000,
+    "hours": 4,
+    "energy": 20,
+    "skill_id": "database",
+    "repeatable": false
+  },
+  {
+    "id": "redis",
+    "name": "Redis caching",
+    "icon": "learn_course",
+    "price": 420000,
+    "hours": 2,
+    "energy": 15,
+    "skill_id": "database",
+    "repeatable": false
+  },
+  {
+    "id": "db-optimization",
+    "name": "Database optimization",
+    "icon": "learn_book",
+    "price": 1200000,
+    "hours": 5,
+    "energy": 28,
+    "skill_id": "database",
+    "repeatable": false
+  },
+  {
+    "id": "kubernetes",
+    "name": "Kubernetes basics",
+    "icon": "learn_course",
+    "price": 950000,
+    "hours": 4,
+    "energy": 26,
+    "skill_id": "devops",
+    "repeatable": false
+  },
+  {
+    "id": "cicd",
+    "name": "CI/CD pipelines",
+    "icon": "learn_project",
+    "price": 650000,
+    "hours": 3,
+    "energy": 22,
+    "skill_id": "devops",
+    "repeatable": false
+  },
+  {
+    "id": "aws",
+    "name": "AWS cloud basics",
+    "icon": "learn_course",
+    "price": 1100000,
+    "hours": 5,
+    "energy": 30,
+    "skill_id": "devops",
+    "repeatable": false
+  },
+  {
+    "id": "monitoring",
+    "name": "Monitoring & Logging",
+    "icon": "learn_course",
+    "price": 720000,
+    "hours": 3,
+    "energy": 20,
+    "skill_id": "devops",
+    "repeatable": false
+  },
+  {
+    "id": "agile",
+    "name": "Agile & Scrum",
+    "icon": "learn_book",
+    "price": 280000,
+    "hours": 2,
+    "energy": 10,
+    "skill_id": "soft",
+    "repeatable": false
+  },
+  {
+    "id": "leadership",
+    "name": "Tech leadership",
+    "icon": "learn_book",
+    "price": 850000,
+    "hours": 4,
+    "energy": 18,
+    "skill_id": "soft",
+    "repeatable": false
+  },
+  {
+    "id": "presentation",
+    "name": "Presentation skills",
+    "icon": "learn_course",
+    "price": 320000,
+    "hours": 2,
+    "energy": 12,
+    "skill_id": "soft",
+    "repeatable": false
   }
 ]
