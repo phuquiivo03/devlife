@@ -237,6 +237,8 @@ export type GameState = {
   notificationOpen: boolean;
   /** Ăn uống modal. Not persisted. */
   foodOpen: boolean;
+  /** Audio settings popup. Not persisted. */
+  audioPopupOpen: boolean;
   /** Hospital admission popup. Not persisted. */
   hospitalOpen: boolean;
   hospitalCost: number;
@@ -257,6 +259,7 @@ export type GameState = {
   runNoticeAction: (id: NoticeActionId, notice?: Notice) => void;
   setStoreOpen: (open: boolean) => void;
   setNotificationOpen: (open: boolean) => void;
+  setAudioPopupOpen: (open: boolean) => void;
   setFoodOpen: (open: boolean) => void;
   dischargeFromHospital: () => void;
   buyStoreItem: (id: string) => void;
@@ -393,6 +396,7 @@ export const useGameStore = create<GameState>()(
       storeOpen: false,
       notificationOpen: false,
       foodOpen: false,
+      audioPopupOpen: false,
       hospitalOpen: false,
       hospitalCost: 0,
       lifeBubble: null,
@@ -656,6 +660,7 @@ export const useGameStore = create<GameState>()(
       setStoreOpen: (open) => set({ storeOpen: open }),
       setNotificationOpen: (open) => set({ notificationOpen: open }),
       setFoodOpen: (open) => set({ foodOpen: open }),
+      setAudioPopupOpen: (open) => set({ audioPopupOpen: open }),
       dischargeFromHospital: () => {
         const state = get();
         const career = state.career;

@@ -8,8 +8,8 @@ import { useGameStore, type CareerPanel } from "@/game/state/store";
 import { canSleepAt, phaseById, snapshot, type PhaseId } from "@/game/time";
 import { resolveShippedIcon } from "@/lib/pixel-assets";
 import { cn } from "@/lib/utils";
-import { AudioControls } from "./AudioControls";
 import { PixelIcon } from "./PixelIcon";
+import { AudioButton } from "./AudioButton";
 import {
   Tooltip,
   TooltipContent,
@@ -85,6 +85,7 @@ export function RoomStatusBar({
   const phaseId = useGameStore((s) => snapshot(s.totalMinutes).phaseId);
   const fastForward = useGameStore((s) => s.fastForward);
   const setStoreOpen = useGameStore((s) => s.setStoreOpen);
+  const setAudioPopupOpen = useGameStore((s) => s.setAudioPopupOpen);
   const weekdayLabel = calendar(day).weekdayLabel;
   const phaseLabel = phaseById(phaseId).label;
 
@@ -153,7 +154,10 @@ export function RoomStatusBar({
               </span>
             </span>
           </div>
-          <div className="">
+          <div className="flex items-center gap-2">
+            <span className={shellStyles.shop}>
+              <AudioButton iconFiles={iconFiles} onOpen={() => setAudioPopupOpen(true)} />
+            </span>
             <span className={shellStyles.shop}>
               <StoreButton onOpen={() => setStoreOpen(true)} />
             </span>
@@ -292,7 +296,6 @@ export function PlayerHudCard({
           <SleepButton canSleep={canSleep} onSleep={sleep} />
         </div>
       </div>
-      <AudioControls iconFiles={iconFiles} />
     </PanelCard>
   );
 }
