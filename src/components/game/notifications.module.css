@@ -168,3 +168,19 @@
     animation: none;
   }
 }
+
+.buttonBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  background: var(--accent-coral);
+  border-radius: 9px;
+  pointer-events: none;
+  z-index: 1;
+}

@@ -22,6 +22,7 @@ import { TimeDebugPanel } from "./TimeDebugPanel";
 import { CareerChrome } from "./career/CareerChrome";
 import { StoreModal } from "./StoreModal";
 import { AudioPopup } from "./AudioPopup";
+import { NotificationsPopup } from "./NotificationsPopup";
 import { HospitalPopup } from "./HospitalPopup";
 import { LoadingScreen } from "./LoadingScreen";
 import { SleepTransition } from "./SleepTransition";
@@ -217,6 +218,7 @@ export function GameShell({
                 <CareerChrome iconFiles={iconFiles} showDebug={showTimeDebug} />
                 <StoreModal />
                 <AudioPopup iconFiles={iconFiles} />
+                <NotificationsPopup />
                 <HospitalPopup
                   open={hospitalOpen}
                   hospitalCost={hospitalCost}

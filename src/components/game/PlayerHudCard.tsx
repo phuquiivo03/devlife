@@ -10,6 +10,7 @@ import { resolveShippedIcon } from "@/lib/pixel-assets";
 import { cn } from "@/lib/utils";
 import { PixelIcon } from "./PixelIcon";
 import { AudioButton } from "./AudioButton";
+import { NotificationsButton } from "./NotificationsButton";
 import {
   Tooltip,
   TooltipContent,
@@ -86,6 +87,7 @@ export function RoomStatusBar({
   const fastForward = useGameStore((s) => s.fastForward);
   const setStoreOpen = useGameStore((s) => s.setStoreOpen);
   const setAudioPopupOpen = useGameStore((s) => s.setAudioPopupOpen);
+  const setNotificationOpen = useGameStore((s) => s.setNotificationOpen);
   const weekdayLabel = calendar(day).weekdayLabel;
   const phaseLabel = phaseById(phaseId).label;
 
@@ -155,6 +157,9 @@ export function RoomStatusBar({
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <span className={shellStyles.shop}>
+              <NotificationsButton iconFiles={iconFiles} onOpen={() => setNotificationOpen(true)} />
+            </span>
             <span className={shellStyles.shop}>
               <AudioButton iconFiles={iconFiles} onOpen={() => setAudioPopupOpen(true)} />
             </span>
