@@ -30,7 +30,7 @@ export function scaledChamfer(
   };
 }
 
-const FRAME_PAD_PER_SIDE =
+export const FRAME_PAD_PER_SIDE =
   CHAMFER_LAYERS.f1.paddingPx +
   CHAMFER_LAYERS.f2.paddingPx +
   CHAMFER_LAYERS.f3.paddingPx;

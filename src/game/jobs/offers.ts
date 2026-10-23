@@ -25,6 +25,7 @@ const NOTICE_ACTION_IDS: readonly NoticeActionId[] = [
   "acceptJob",
   "dismissNotice",
   "openJobs",
+  "openNotification",
 ];
 
 const DIFFICULTY_LABEL = {

@@ -12,14 +12,14 @@ Numbers live in `src/components/game/notifications.config.ts`.
 
 ## Rows
 
-| | Before | Now |
-|---|--------|-----|
-| Card padding | 12px | `NOTICE_LIST.paddingPx` (8) |
-| Icon / copy gap | 10px | `NOTICE_LIST.gapPx` (8) |
-| List gap | 8px | `NOTICE_LIST.listGapPx` (6) |
-| Row icon | 32px | `NOTICE_LIST.rowIconPx` (16, the native notice icon) |
-| Message | Galmuri9 at 20px | Galmuri7 at `NOTICE_LIST.textPx` (16) |
-| Lines | open | `NOTICE_LIST.lines` (2). A short notice stays on one line |
+|                 | Before           | Now                                                       |
+| --------------- | ---------------- | --------------------------------------------------------- |
+| Card padding    | 12px             | `NOTICE_LIST.paddingPx` (8)                               |
+| Icon / copy gap | 10px             | `NOTICE_LIST.gapPx` (8)                                   |
+| List gap        | 8px              | `NOTICE_LIST.listGapPx` (6)                               |
+| Row icon        | 32px             | `NOTICE_LIST.rowIconPx` (16, the native notice icon)      |
+| Message         | Galmuri9 at 20px | Galmuri7 at `NOTICE_LIST.textPx` (16)                     |
+| Lines           | open             | `NOTICE_LIST.lines` (2). A short notice stays on one line |
 
 The clock sits on the first line, in the muted color, inside the same clamp.
 
@@ -29,16 +29,16 @@ When `actions` has entries, the row draws one `PixelButton` per entry, in that o
 
 The glyph is the entry's `icon` when that names a sheet. Otherwise the id map below is used. `openJobs` uses `icon_action_view_job`. `acceptJob` and `dismissNotice` have no glyph.
 
-| Action | Label | Glyph |
-|--------|-------|-------|
-| `payRent` | Trả trọ | `icon_action_pay_rent` (money stack) |
-| `viewJobs` | Xem job | `icon_action_view_job` (ticket) |
-| `openStore` | Mở store | `icon_action_open_store` (bag). Still `runNoticeAction("openStore")`, which opens the store modal |
-| `eat` | Ăn | `icon_action_eat` (rice bowl) |
-| `sleep` | Ngủ | `icon_action_sleep` (bed) |
-| `acceptJob` | Nhận | none. A job offer sets variant `primary` |
-| `dismissNotice` | Bỏ qua | none. A job offer sets variant `secondary` |
-| `openJobs` | Làm | `icon_action_view_job` (ticket) |
+| Action          | Label    | Glyph                                                                                             |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `payRent`       | Trả trọ  | `icon_action_pay_rent` (money stack)                                                              |
+| `viewJobs`      | Xem job  | `icon_action_view_job` (ticket)                                                                   |
+| `openStore`     | Mở store | `icon_action_open_store` (bag). Still `runNoticeAction("openStore")`, which opens the store modal |
+| `eat`           | Ăn       | `icon_action_eat` (rice bowl)                                                                     |
+| `sleep`         | Ngủ      | `icon_action_sleep` (bed)                                                                         |
+| `acceptJob`     | Nhận     | none. A job offer sets variant `primary`                                                          |
+| `dismissNotice` | Bỏ qua   | none. A job offer sets variant `secondary`                                                        |
+| `openJobs`      | Làm      | `icon_action_view_job` (ticket)                                                                   |
 
 A click calls `runNoticeAction(button.id, notice)` and `stopPropagation`, so the row's mark-read click does not also run. The button does not mark the row read. `payRent` pays outstanding rent. `eat` opens the Ăn uống modal, the same shape as `openStore`. Hunger rows are still written to the feed; this list does not draw them. `sleep` calls the HUD sleep control and stays on the low Sức khỏe row. `acceptJob` accepts that row's job. `dismissNotice` closes that row. `openJobs` opens the job board and, when `payload.jobId` is an accepted job, the terminal. Any other id logs `Unknown notice action "…"` and does nothing.
 
@@ -49,7 +49,7 @@ A notice may carry several buttons. The persisted shape after version 17 is:
 ```ts
 type NoticeActionId =
   | "payRent" | "viewJobs" | "openStore" | "eat" | "sleep"
-  | "acceptJob" | "dismissNotice" | "openJobs"
+  | "acceptJob" | "dismissNotice" | "openJobs" | "openNotification"
 
 type Notice = {
   id: string

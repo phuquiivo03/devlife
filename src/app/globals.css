@@ -160,7 +160,7 @@ body {
 }
 
 .chamfer-frame-f1 {
-  background: #1c1745;
+  background: rgba(180, 150, 255, 0.6);
 }
 
 .chamfer-frame-f2 {
@@ -168,7 +168,7 @@ body {
 }
 
 .chamfer-frame-f3 {
-  background: linear-gradient(160deg, #4a3f8c, #2d2763 60%, #3a2f78);
+  background: #fff;
 }
 
 .room-canvas-slot {

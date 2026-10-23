@@ -51,7 +51,6 @@ export function GameShell({
   iconFiles?: readonly string[];
 }) {
   const areaRef = useRef<HTMLDivElement>(null);
-  const [isDesktop, setIsDesktop] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("player");
   const [assetsLoaded, setAssetsLoaded] = useState(false);
   const searchParams = useSearchParams();
@@ -66,7 +65,7 @@ export function GameShell({
   const hydrated = useGameStore((s) => s._hasHydrated);
   useGameClock(hydrated && assetsLoaded);
   useGameAudio();
-  useStatFx(hydrated && assetsLoaded);
+  useStatFx(hydrated && assetsLoaded); // useStatFx(hydrated)
   const showCharacter = useGameStore((s) => s.showCharacter);
   const setShowCharacter = useGameStore((s) => s.setShowCharacter);
   const hospitalOpen = useGameStore((s) => s.hospitalOpen);
@@ -89,14 +88,6 @@ export function GameShell({
     params.set("stage", stage);
     router.replace(`?${params.toString()}`, { scroll: false });
   }, [stage, router, searchParams]);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const onChange = () => setIsDesktop(mq.matches);
-    onChange();
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
 
   useEffect(() => {
     if (customizeOpen) setSidebarTab("edit-room");
@@ -150,27 +141,18 @@ export function GameShell({
     );
   }
 
-  const roomAreaStyle = isDesktop
-    ? {
-        width: ROOM_VIEWPORT_W,
-        maxWidth: "100%",
-        minHeight: Math.round((ROOM_VIEWPORT_W * 240) / 427),
-      }
-    : {
-        width: "100%",
-        maxWidth: ROOM_VIEWPORT_W,
-        minHeight: 200,
-        aspectRatio: "427 / 240",
-      };
+  const roomAreaStyle = {
+    width: "100%",
+    maxWidth: "100%",
+    minHeight: Math.round((ROOM_VIEWPORT_W * 240) / 427),
+  };
 
   return (
-    <div className="flex min-h-screen flex-col lg:h-screen lg:max-h-screen lg:overflow-hidden">
-      <header className="relative z-10 flex min-h-14 justify-between shrink-0 items-center gap-3 border-b border-white/15 bg-[var(--panel-bg)]/90 px-3 backdrop-blur-sm md:px-4">
-        <span className="font-galmuri-11 text-galmuri-title-lg text-[var(--foreground)]">
-          devlife
-        </span>
+    <div className="flex min-h-screen flex-col lg:h-screen lg:max-h-screen lg:overflow-hidden lg:max-w-[1280px] mx-auto">
+      <header className="px-4">
+        <RoomStatusBar iconFiles={iconFiles} />
 
-        {showTimeDebug && (
+        {/* {showTimeDebug && (
           <div className="flex shrink-0 items-center gap-2">
             <label className="hidden min-h-10 items-center gap-2 sm:flex">
               <Label className="font-galmuri-9 text-galmuri-body">
@@ -191,15 +173,15 @@ export function GameShell({
               Đặt lại phòng
             </Button>
           </div>
-        )}
+        )} */}
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:items-center lg:justify-[safe_center] lg:px-4 lg:py-6">
         <div
-          className="relative flex min-h-0 w-full flex-1 flex-col lg:grid lg:w-full lg:max-w-[1200px] lg:flex-none lg:grid-cols-[320px_minmax(0,1fr)_320px] lg:items-stretch lg:gap-5"
+          className="relative flex min-h-0 w-full flex-1 flex-col lg:grid lg:w-full lg:max-w-[1280px] lg:flex-none lg:grid-cols-[minmax(0,65fr)_minmax(300px,35fr)] lg:items-stretch lg:gap-5"
           style={shellPanelVars()}
         >
-          <aside
+          {/* <aside
             className={cn(
               "order-2 flex min-h-0 flex-col p-3 lg:order-1 lg:p-0",
               shellStyles.column,
@@ -209,12 +191,12 @@ export function GameShell({
             <PanelChamferFrame>
               <NotificationsPanel />
             </PanelChamferFrame>
-          </aside>
+          </aside> */}
 
-          <main className="relative order-1 flex min-h-0 flex-col items-center justify-center px-2 py-4 lg:order-2 lg:justify-start lg:px-0 lg:py-0">
+          <main className="relative order-1 flex min-h-0 w-full flex-col items-center justify-center px-2 py-4 lg:order-2 lg:justify-start lg:px-0 lg:py-0">
             <div className="room-stage-glow flex w-full flex-col items-center">
-              <RoomStatusBar iconFiles={iconFiles} />
               <RoomChamferFrame
+                canvas={<SceneCanvas areaRef={areaRef} debug={debug} />}
                 areaRef={areaRef}
                 roomAreaStyle={roomAreaStyle}
                 label={
@@ -224,13 +206,12 @@ export function GameShell({
                   </>
                 }
               >
-                <SceneCanvas areaRef={areaRef} debug={debug} />
                 <LifeRoomFx />
                 <LifeEventPopup />
                 <SleepTransition />
+                <PlayerHudCard iconFiles={iconFiles} />
               </RoomChamferFrame>
               <div className="mt-3 flex w-full flex-col items-center gap-3 px-2 lg:px-0">
-                <PlayerHudCard iconFiles={iconFiles} />
                 {showTimeDebug ? <TimeDebugPanel /> : null}
                 <CareerChrome iconFiles={iconFiles} showDebug={showTimeDebug} />
                 <StoreModal />

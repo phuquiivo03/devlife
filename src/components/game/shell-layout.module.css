@@ -11,8 +11,8 @@
   align-self: center;
   box-sizing: border-box;
   width: 100%;
-  max-width: var(--room-status-max);
-  margin-bottom: var(--room-status-gap);
+  max-width: 100%;
+  /* margin-bottom: var(--room-status-gap); */
   padding: var(--room-status-pad-y) var(--room-status-pad-x);
   column-gap: var(--room-status-cluster);
   row-gap: var(--room-status-wrap);

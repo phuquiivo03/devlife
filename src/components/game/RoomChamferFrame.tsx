@@ -23,7 +23,13 @@ type LayerProps = {
   children: ReactNode;
 };
 
-function ChamferLayer({ layer, scale, className, style, children }: LayerProps) {
+export function ChamferLayer({
+  layer,
+  scale,
+  className,
+  style,
+  children,
+}: LayerProps) {
   const { corner, padding } = scaledChamfer(CHAMFER_LAYERS[layer], scale);
   return (
     <div
@@ -44,6 +50,7 @@ type Props = {
   roomAreaStyle: CSSProperties | undefined;
   label: ReactNode;
   children: ReactNode;
+  canvas: ReactNode;
 };
 
 export function RoomChamferFrame({
@@ -51,6 +58,7 @@ export function RoomChamferFrame({
   roomAreaStyle,
   label,
   children,
+  canvas,
 }: Props) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -79,19 +87,20 @@ export function RoomChamferFrame({
     <div className="flex w-full flex-col items-center">
       <div
         ref={setRefs}
-        className="room-canvas-slot flex items-center justify-center"
+        className="room-canvas-slot flex w-full items-center justify-center"
         style={roomAreaStyle}
       >
-        <div className="room-frame-glow w-max max-w-full">
-          <ChamferLayer layer="f1" scale={scale} className="chamfer-frame-f1">
-            <ChamferLayer layer="f2" scale={scale} className="chamfer-frame-f2">
-              <ChamferLayer layer="f3" scale={scale} className="chamfer-frame-f3">
+        <div className="room-frame-glow w-full max-w-full">
+          <ChamferLayer layer="f1" scale={scale} className="panel-frame-f1">
+            <ChamferLayer layer="f2" scale={scale} className="panel-frame-f2">
+              <ChamferLayer layer="f3" scale={scale} className="panel-frame-f3">
                 <div
                   ref={frameRef}
-                  className="chamfer-frame-f5 relative w-max bg-transparent"
-                  style={chamferClipStyle(f5.corner)}
+                  className=" relative w-full bg-white flex items-center flex-col"
+                  style={chamferClipStyle(CHAMFER_LAYERS.f1.cornerPx)}
                 >
-                  {children}
+                  {canvas}
+                  <div className="mt-3 w-full">{children}</div>
                   <div
                     className="pointer-events-none absolute inset-0"
                     style={{
@@ -105,8 +114,6 @@ export function RoomChamferFrame({
           </ChamferLayer>
         </div>
       </div>
-
-      
     </div>
   );
 }

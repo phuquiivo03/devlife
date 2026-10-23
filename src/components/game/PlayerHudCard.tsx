@@ -10,6 +10,11 @@ import { resolveShippedIcon } from "@/lib/pixel-assets";
 import { cn } from "@/lib/utils";
 import { AudioControls } from "./AudioControls";
 import { PixelIcon } from "./PixelIcon";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { formatVnd } from "@/lib/format-currency";
 import { PixelButton } from "@/components/ui/button";
 import { BUTTON_LIGHT } from "@/components/ui/button/config";
@@ -30,6 +35,7 @@ import { statFxVars } from "./stat-fx.config";
 import { useTweenedNumber } from "./useTweenedNumber";
 import { StatFlash, StatFloaters } from "./StatFx";
 import { tweenMsFor } from "./stat-fx";
+import { chamferClipStyle } from "@/lib/chamfer-frame";
 
 /** Native icon for the Kỹ năng button. Swap this name when a new file ships. */
 export const SKILL_MENU_ICON = "skills";
@@ -83,43 +89,131 @@ export function RoomStatusBar({
   const phaseLabel = phaseById(phaseId).label;
 
   return (
-    <PanelCard
-      className={cn(shellStyles.statusBar, "font-galmuri-7 text-galmuri-small")}
-      style={{ ...roomStatusBarVars(), ...statFxVars() }}
-      data-testid="room-status-bar"
-    >
-      <span className={shellStyles.cluster} style={{ position: "relative" }}>
-        <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
-        <span
-          data-testid="hud-money"
-          style={{
-            color: shownMoney > 0 ? "var(--accent-mint)" : "var(--accent-coral)",
-          }}
-        >
-          {formatVnd(shownMoney)}
-        </span>
-        <StatFlash statKey="money" />
-        <StatFloaters statKey="money" />
-      </span>
-      <span
-        className={cn(shellStyles.cluster, fastForward && "fast-forward-flash")}
-        data-testid="game-clock"
-        data-day={day}
-        data-weekday={weekdayLabel}
-        data-holiday={holidayOn(day) ?? ""}
-        data-time={clockLabel}
-        data-phase={phaseId}
-        data-fast-forward={fastForward ? "1" : "0"}
+    <div className="">
+      <div
+        className=" mt-6 chamfer-frame-f2 p-[2px] flex justify-center"
+        style={{ ...chamferClipStyle(8) }}
       >
-        <PhaseMark phaseId={phaseId} iconFiles={iconFiles} />
-        <span>
-          {roomStatusClockLabel(day, weekdayLabel, clockLabel, phaseLabel)}
-        </span>
-      </span>
-      <span className={shellStyles.shop}>
-        <StoreButton onOpen={() => setStoreOpen(true)} />
-      </span>
-    </PanelCard>
+        <PanelCard
+          className={cn(
+            shellStyles.statusBar,
+            "font-galmuri-7 text-galmuri-small flex justify-between",
+          )}
+          style={{
+            ...roomStatusBarVars(),
+            ...statFxVars(),
+            ...chamferClipStyle(8),
+          }}
+          data-testid="room-status-bar"
+        >
+          <span className="font-galmuri-11 text-galmuri-title-lg text-[var(--foreground)] font-bold">
+            devlife
+          </span>
+          <div className="hidden lg:flex gap-6 ">
+            <span
+              className={shellStyles.cluster}
+              style={{ position: "relative" }}
+            >
+              <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
+              <span
+                data-testid="hud-money"
+                style={{
+                  color:
+                    shownMoney > 0
+                      ? "var(--accent-mint)"
+                      : "var(--accent-coral)",
+                }}
+              >
+                {formatVnd(shownMoney)}
+              </span>
+              <StatFlash statKey="money" />
+              <StatFloaters statKey="money" />
+            </span>
+            <span
+              className={cn(
+                shellStyles.cluster,
+                fastForward && "fast-forward-flash",
+              )}
+              data-testid="game-clock"
+              data-day={day}
+              data-weekday={weekdayLabel}
+              data-holiday={holidayOn(day) ?? ""}
+              data-time={clockLabel}
+              data-phase={phaseId}
+              data-fast-forward={fastForward ? "1" : "0"}
+            >
+              <PhaseMark phaseId={phaseId} iconFiles={iconFiles} />
+              <span>
+                {roomStatusClockLabel(
+                  day,
+                  weekdayLabel,
+                  clockLabel,
+                  phaseLabel,
+                )}
+              </span>
+            </span>
+          </div>
+          <div className="">
+            <span className={shellStyles.shop}>
+              <StoreButton onOpen={() => setStoreOpen(true)} />
+            </span>
+          </div>
+        </PanelCard>
+      </div>
+      <div
+        className="p-[2px] flex justify-center  lg:hidden!  items-center  chamfer-frame-f2 mt-6 my-4!"
+        style={{ ...chamferClipStyle(8) }}
+      >
+        <PanelCard
+          className={cn(
+            shellStyles.statusBar,
+            "font-galmuri-7 text-galmuri-small flex gap-6   mb-0",
+          )}
+          style={{
+            ...roomStatusBarVars(),
+            ...statFxVars(),
+            ...chamferClipStyle(8),
+          }}
+          data-testid="room-status-bar"
+        >
+          <span
+            className={shellStyles.cluster}
+            style={{ position: "relative" }}
+          >
+            <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
+            <span
+              data-testid="hud-money"
+              style={{
+                color:
+                  shownMoney > 0 ? "var(--accent-mint)" : "var(--accent-coral)",
+              }}
+            >
+              {formatVnd(shownMoney)}
+            </span>
+            <StatFlash statKey="money" />
+            <StatFloaters statKey="money" />
+          </span>
+          <span
+            className={cn(
+              shellStyles.cluster,
+              fastForward && "fast-forward-flash",
+            )}
+            data-testid="game-clock"
+            data-day={day}
+            data-weekday={weekdayLabel}
+            data-holiday={holidayOn(day) ?? ""}
+            data-time={clockLabel}
+            data-phase={phaseId}
+            data-fast-forward={fastForward ? "1" : "0"}
+          >
+            <PhaseMark phaseId={phaseId} iconFiles={iconFiles} />
+            <span>
+              {roomStatusClockLabel(day, weekdayLabel, clockLabel, phaseLabel)}
+            </span>
+          </span>
+        </PanelCard>
+      </div>
+    </div>
   );
 }
 
@@ -138,7 +232,15 @@ export function PlayerHudCard({
   const energyMax = SIM_CATALOG.config.energy_max;
 
   return (
-    <PanelCard className="w-full max-w-[520px] p-3" style={statFxVars()}>
+    <PanelCard
+      className="w-full  p-3"
+      style={{
+        ...statFxVars(),
+        boxShadow: "none",
+        border: "none",
+        backgroundColor: "transparent",
+      }}
+    >
       <div className="grid grid-cols-3 gap-2">
         <HudVital
           icon="health"
@@ -177,28 +279,23 @@ export function PlayerHudCard({
           data-testid="hud-icon-bar"
           style={{ marginLeft: "auto", gap: HUD_ICON_GAP_PX }}
         >
-          <HungerDock />
-          <GameButton />
-          <SleepButton canSleep={canSleep} onSleep={sleep} />
-        </div>
-      </div>
-      <div className="hud-actions mt-3">
-        <div className="hud-actions-grid">
           {CAREER_ACTIONS.map((action) => (
-            <CareerHudButton
+            <CareerIconButton
               key={action.id}
               action={action}
               iconFiles={iconFiles}
               onClick={() => openCareerPanel(action.id)}
             />
           ))}
+          <HungerDock />
+          <GameButton />
+          <SleepButton canSleep={canSleep} onSleep={sleep} />
         </div>
       </div>
       <AudioControls iconFiles={iconFiles} />
     </PanelCard>
   );
 }
-
 
 function HudVital({
   icon,
@@ -252,7 +349,7 @@ function HudVital({
   );
 }
 
-function CareerHudButton({
+function CareerIconButton({
   action,
   iconFiles,
   onClick,
@@ -261,22 +358,37 @@ function CareerHudButton({
   iconFiles: readonly string[];
   onClick: () => void;
 }) {
+  const metrics = { buttonPx: 80, iconPx: 32 }; // Match other icon buttons
+
   return (
-    <PixelButton
-      type="button"
-      variant="light"
-      data-testid={action.testId}
-      data-icon-key={action.icon}
-      onClick={onClick}
-    >
-      <PixelIcon
-        name={action.icon}
-        size={BUTTON_LIGHT.iconPx}
-        alt=""
-        files={iconFiles}
-      />
-      <span>{action.label}</span>
-    </PixelButton>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className="inline-flex">
+          <PixelButton
+            type="button"
+            variant="icon"
+            data-testid={action.testId}
+            data-icon-key={action.icon}
+            onClick={onClick}
+            aria-label={action.label}
+            style={{
+              width: metrics.buttonPx,
+              height: metrics.buttonPx,
+              minWidth: metrics.buttonPx,
+              minHeight: metrics.buttonPx,
+            }}
+          >
+            <PixelIcon
+              name={action.icon}
+              size={metrics.iconPx}
+              alt=""
+              files={iconFiles}
+            />
+          </PixelButton>
+        </span>
+      </TooltipTrigger>
+      <TooltipContent side="top">{action.label}</TooltipContent>
+    </Tooltip>
   );
 }
 

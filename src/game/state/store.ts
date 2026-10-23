@@ -234,6 +234,7 @@ export type GameState = {
   retryTaskRun: () => void;
   /** Ephemeral life UI. Not persisted. */
   storeOpen: boolean;
+  notificationOpen: boolean;
   /** Ăn uống modal. Not persisted. */
   foodOpen: boolean;
   /** Hospital admission popup. Not persisted. */
@@ -255,6 +256,7 @@ export type GameState = {
   dismissDiary: () => void;
   runNoticeAction: (id: NoticeActionId, notice?: Notice) => void;
   setStoreOpen: (open: boolean) => void;
+  setNotificationOpen: (open: boolean) => void;
   setFoodOpen: (open: boolean) => void;
   dischargeFromHospital: () => void;
   buyStoreItem: (id: string) => void;
@@ -389,6 +391,7 @@ export const useGameStore = create<GameState>()(
       careerPanel: null,
       taskJobId: null,
       storeOpen: false,
+      notificationOpen: false,
       foodOpen: false,
       hospitalOpen: false,
       hospitalCost: 0,
@@ -621,10 +624,14 @@ export const useGameStore = create<GameState>()(
           set({ careerPanel: "jobs" });
           return;
         }
-        if (id === "openStore") {
-          set({ storeOpen: true, career: askStore(get().career) });
-          return;
-        }
+          if (id === "openStore") {
+            set({ storeOpen: true, career: askStore(get().career) });
+            return;
+          }
+          if (id === "openNotification") {
+            set({ notificationOpen: true });
+            return;
+          }
         if (id === "eat") {
           set({ foodOpen: true });
           return;
@@ -647,6 +654,7 @@ export const useGameStore = create<GameState>()(
         console.warn(`Unknown notice action "${id}"`);
       },
       setStoreOpen: (open) => set({ storeOpen: open }),
+      setNotificationOpen: (open) => set({ notificationOpen: open }),
       setFoodOpen: (open) => set({ foodOpen: open }),
       dischargeFromHospital: () => {
         const state = get();

@@ -1,4 +1,10 @@
-export const SKILL_IDS = ["frontend", "backend", "database", "devops", "soft"] as const;
+export const SKILL_IDS = [
+  "frontend",
+  "backend",
+  "database",
+  "devops",
+  "soft",
+] as const;
 
 export type SkillId = (typeof SKILL_IDS)[number];
 
@@ -104,7 +110,14 @@ export type GameConfig = {
   rank_brackets: RankBracket[];
 };
 
-export const TRAIT_IDS = ["night_owl", "diligent", "extrovert", "frugal", "careful", "optimist"] as const;
+export const TRAIT_IDS = [
+  "night_owl",
+  "diligent",
+  "extrovert",
+  "frugal",
+  "careful",
+  "optimist",
+] as const;
 export type TraitId = (typeof TRAIT_IDS)[number];
 
 export type PlayerRow = {
@@ -163,10 +176,20 @@ export type LifeState = {
 };
 
 /** Ids the notice panel already maps. Job ids are added on `NoticeActionId`. */
-export type NoticeAction = "payRent" | "viewJobs" | "openStore" | "eat" | "sleep";
+export type NoticeAction =
+  | "payRent"
+  | "viewJobs"
+  | "openStore"
+  | "eat"
+  | "sleep";
 
 /** Every id `runNoticeAction` understands. Unknown ids warn and do nothing. */
-export type NoticeActionId = NoticeAction | "acceptJob" | "dismissNotice" | "openJobs";
+export type NoticeActionId =
+  | NoticeAction
+  | "acceptJob"
+  | "dismissNotice"
+  | "openJobs"
+  | "openNotification";
 
 export type NoticeActionVariant = "primary" | "secondary";
 
@@ -191,6 +214,7 @@ export const NOTICE_ACTION_DEFAULT_LABEL: Record<NoticeActionId, string> = {
   acceptJob: "Nhận",
   dismissNotice: "Bỏ qua",
   openJobs: "Làm",
+  openNotification: "Mở notification",
 };
 
 export type NoticeSeverity = "info" | "warn" | "urgent";

@@ -1,12 +1,17 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { WORLD } from "@/game/config";
 import { getCatalog, getRoom } from "@/game/content";
 import { resolveScene } from "@/game/layout/resolveScene";
 import { sortDrawEntries } from "@/game/layout/sort";
 import { replacedItemIds, storeDrawEntries } from "@/game/life/placement";
 import { loadAtlas, type LoadedAtlas } from "@/game/render/atlas";
-import { canvasCssWithinFrame } from "@/lib/chamfer-frame";
+import {
+  canvasCssWithinFrame,
+  chamferScale,
+  FRAME_PAD_PER_SIDE,
+} from "@/lib/chamfer-frame";
 import { createRenderer } from "@/game/render/canvasRenderer";
 import { hitTestEntries } from "@/game/render/hitTest";
 import { computeView } from "@/game/view/computeView";
@@ -183,9 +188,15 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
               return p ? focusCameraX(p.anchor[0], 200) : null;
             })()
           : null);
+      const scale = chamferScale(rect.width);
+      const inset = FRAME_PAD_PER_SIDE * scale;
+      const expectedSlotH = Math.round(
+        ((rect.width - inset * 2) * WORLD.h) / WORLD.w + inset * 2,
+      );
+      const slotH = Math.max(rect.height, expectedSlotH);
       const view = computeView({
         areaCssW: rect.width,
-        areaCssH: rect.height,
+        areaCssH: slotH,
         dpr,
         portrait,
         focusX: room.focusX,
@@ -195,7 +206,7 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
         view.cssW,
         view.cssH,
         rect.width,
-        rect.height,
+        slotH,
       );
       rendererRef.current?.setView({
         ...view,
@@ -355,7 +366,7 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
     <div className="relative flex w-max items-center justify-center">
       {portrait && (
         <>
-          <Button
+          {/* <Button
             type="button"
             variant="outline"
             size="icon"
@@ -374,7 +385,7 @@ export function SceneCanvas({ areaRef, debug = false }: Props) {
             aria-label="Kéo sang phải"
           >
             <ChevronRight className="h-4 w-4" />
-          </Button>
+          </Button> */}
         </>
       )}
       <canvas
