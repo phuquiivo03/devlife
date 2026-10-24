@@ -328,6 +328,26 @@
       "mp3LeadSeconds": 0.025057,
       "mp3SkipSamples": 1105,
       "oggLeadSeconds": 0
+    },
+    "bgm_morning": {
+      "mp3LeadSeconds": 0.025057,
+      "mp3SkipSamples": 1105,
+      "oggLeadSeconds": 0
+    },
+    "bgm_afternoon": {
+      "mp3LeadSeconds": 0.025057,
+      "mp3SkipSamples": 1105,
+      "oggLeadSeconds": 0
+    },
+    "bgm_evening": {
+      "mp3LeadSeconds": 0.025057,
+      "mp3SkipSamples": 1105,
+      "oggLeadSeconds": 0
+    },
+    "bgm_night": {
+      "mp3LeadSeconds": 0.025057,
+      "mp3SkipSamples": 1105,
+      "oggLeadSeconds": 0
     }
   }
 }

@@ -518,6 +518,54 @@
       "volume": 0.7,
       "license": "CC0-1.0",
       "description": "Emergency ambulance siren for hospital admission"
+    },
+    {
+      "id": "bgm_morning",
+      "type": "bgm",
+      "file": "ogg/bgm/bgm_morning.ogg",
+      "mp3": "mp3/bgm/bgm_morning.mp3",
+      "wav": "masters/bgm/bgm_morning.wav",
+      "category": "bgm",
+      "duration": 101.053,
+      "loop": true,
+      "volume": 0.5,
+      "description": "Bright-ish cozy lo-fi: rounded EP chords/arps, soft pad, brushed drums, vinyl hiss; window daylight. 76 BPM, 32 bars, seamless at bar boundary (tails wrapped). Loop the OGG (MP3 not gapless)."
+    },
+    {
+      "id": "bgm_afternoon",
+      "type": "bgm",
+      "file": "ogg/bgm/bgm_afternoon.ogg",
+      "mp3": "mp3/bgm/bgm_afternoon.mp3",
+      "wav": "masters/bgm/bgm_afternoon.wav",
+      "category": "bgm",
+      "duration": 93.333,
+      "loop": true,
+      "volume": 0.5,
+      "description": "Warm laid-back lo-fi groove: EP comping, round bass, brushed kit, a touch darker than morning. 72 BPM, 28 bars, seamless at bar boundary (tails wrapped). Loop the OGG (MP3 not gapless)."
+    },
+    {
+      "id": "bgm_evening",
+      "type": "bgm",
+      "file": "ogg/bgm/bgm_evening.ogg",
+      "mp3": "mp3/bgm/bgm_evening.mp3",
+      "wav": "masters/bgm/bgm_evening.wav",
+      "category": "bgm",
+      "duration": 84.706,
+      "loop": true,
+      "volume": 0.5,
+      "description": "Mellow string-lights mood: softer EP arps, warmer pad, light brushes, darker filter. 68 BPM, 24 bars, seamless at bar boundary (tails wrapped). Loop the OGG (MP3 not gapless)."
+    },
+    {
+      "id": "bgm_night",
+      "type": "bgm",
+      "file": "ogg/bgm/bgm_night.ogg",
+      "mp3": "mp3/bgm/bgm_night.mp3",
+      "wav": "masters/bgm/bgm_night.wav",
+      "category": "bgm",
+      "duration": 80.0,
+      "loop": true,
+      "volume": 0.55,
+      "description": "Calmest: slow sustained EP and wide pad, no drums (rare soft shaker), deep reverb, quiet vinyl. 60 BPM, 20 bars, seamless at bar boundary (tails wrapped). Loop the OGG (MP3 not gapless)."
     }
   ]
 }
