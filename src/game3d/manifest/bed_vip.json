@@ -1,0 +1,173 @@
+{
+ "key": "bed_vip",
+ "version": "v2",
+ "category": "furniture",
+ "tier": "vip",
+ "file": "bed_vip_v2/bed_vip.glb",
+ "blend": "bed_vip_v2/bed_vip.blend",
+ "design": "premium floor mattress: 0.25 thick body with rounded corners and piping at top and bottom, plus a 0.06 pillow-top topper with its own piping; 2 pillows, bolster, folded mustard throw. No frame, headboard, LED or rug.",
+ "units": "m",
+ "up_axis": "+Y",
+ "forward": "-Z (foot end)",
+ "pivot": "bottom-centre, at the origin",
+ "position_gltf_yup": [
+  -0.26,
+  0.02,
+  -1.44
+ ],
+ "position_blender_zup": [
+  -0.26,
+  1.44,
+  0.02
+ ],
+ "rotation_euler_gltf_rad": [
+  0,
+  -1.570796,
+  0
+ ],
+ "rotation_y_deg": -90.0,
+ "scale": [
+  1,
+  1,
+  1
+ ],
+ "triangles": 1472,
+ "mesh_tris": {
+  "bed_vip_Mattress": 188,
+  "bed_vip_Topper": 188,
+  "bed_vip_Pillow": 376,
+  "bed_vip_Throw": 336,
+  "bed_vip_Piping": 384
+ },
+ "bbox_size_gltf_m": [
+  1.088,
+  0.604,
+  2.088
+ ],
+ "dims_m": {
+  "mattress_thickness": 0.25,
+  "topper": 0.06,
+  "sleep_surface_y_local": 0.31,
+  "sleep_surface_y_world": 0.33,
+  "footprint": [
+   1.08,
+   2.08
+  ]
+ },
+ "materials": {
+  "BedVip_Mattress": [
+   0.84,
+   0.78,
+   0.71
+  ],
+  "BedVip_Topper": [
+   0.95,
+   0.92,
+   0.87
+  ],
+  "BedVip_Piping": [
+   0.66,
+   0.43,
+   0.55
+  ],
+  "BedVip_Pillow": [
+   0.93,
+   0.89,
+   0.83
+  ],
+  "BedVip_Throw": [
+   0.82,
+   0.56,
+   0.22
+  ]
+ },
+ "verified_reimport": {
+  "tris": 1472,
+  "bbox_min": [
+   -0.544,
+   0.0,
+   -1.044
+  ],
+  "bbox_max": [
+   0.544,
+   0.604,
+   1.044
+  ],
+  "materials": [
+   "BedVip_Mattress",
+   "BedVip_Pillow",
+   "BedVip_Piping",
+   "BedVip_Throw",
+   "BedVip_Topper"
+  ],
+  "root": [
+   [
+    "bed_vip",
+    [
+     0.0,
+     0.0,
+     0.0
+    ]
+   ]
+  ],
+  "lights": 0,
+  "cameras": 0
+ },
+ "placed_world_bbox_blender": [
+  [
+   -1.304,
+   0.896,
+   0.02
+  ],
+  [
+   0.784,
+   1.984,
+   0.624
+  ]
+ ],
+ "clearance_m_bvh": {
+  "desk": 0.136,
+  "chair_plastic": 0.069,
+  "fan_standing": 0.047,
+  "nightstand": 0.541,
+  "window": 0.451,
+  "walls": 0.046,
+  "wall_tiles": 0.016,
+  "player": 0.229,
+  "cat": -1.0,
+  "keyboard": 0.647,
+  "monitor": 0.926,
+  "fairy_lights": 1.295,
+  "floor_base": -1.0
+ },
+ "clearance_note": "-1 = contact: floor_base (sits on floor, intended) and cat (rests on the topper).",
+ "cat_new_position": {
+  "position_gltf_yup": [
+   -0.025,
+   0.33,
+   -1.2875
+  ],
+  "position_blender_zup": [
+   -0.025,
+   1.2875,
+   0.33
+  ],
+  "note": "moved 0.20 toward the desk (-X) to stay clear of the throw; bottom sits on the topper top at y 0.33"
+ },
+ "rug": "omitted: there is no free floor around the slot (chair 0.069 m, fan 0.047 m, wall 0.016 m), so a rug would run under the chair/fan legs",
+ "contrast_ref": {
+  "file": "wave2/mattress.glb",
+  "triangles": 684,
+  "thickness": 0.218
+ },
+ "renders": [
+  "views/bed_vip_room.png",
+  "views/bed_vip_closeup_iso.png",
+  "views/bed_vip_closeup_foot.png",
+  "views/compare_wave2_vs_bed_vip_v2.png"
+ ],
+ "build_scripts": [
+  "scripts/build_bed_vip_v2.py",
+  "scripts/render_bed_vip_v2.py"
+ ]
+}
