@@ -76,7 +76,7 @@ describe("store button metrics", () => {
     expect(shell.indexOf("<ActionsCard")).toBeGreaterThan(-1);
     expect(shell.indexOf("<SceneCard")).toBeGreaterThan(-1);
     expect(button).toContain('variant="icon"');
-    expect(button).toContain('data-icon-key="icon_btn_store"');
+    expect(button).toContain('data-icon-key="icon_store"');
     expect(button).toContain("aria-label={STORE_LABEL}");
     expect(button).toContain("TooltipContent");
     expect(button).not.toContain("title=");

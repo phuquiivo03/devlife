@@ -2,11 +2,10 @@
 
 import { PixelButton } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { m51AssetPath } from "@/game/life/assets";
+import { PixelIcon } from "./PixelIcon";
 import {
   SLEEP_LABEL,
   sleepButtonMetrics,
-  sleepIconFile,
   sleepZzzStyle,
 } from "./sleep-button.config";
 import styles from "./sleep-button.module.css";
@@ -38,7 +37,7 @@ export function SleepButton({
             className={clay ? "clay-tile-inner w-full" : styles.button}
             style={
               clay
-                ? { width: "100%", height: 40, minHeight: 40 }
+                ? { width: "100%", height: "100%", minHeight: 40 }
                 : {
                     width: metrics.buttonPx,
                     height: metrics.buttonPx,
@@ -50,16 +49,11 @@ export function SleepButton({
             data-testid="sleep-button"
             data-sleep-ready={canSleep ? "1" : "0"}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- pixel bed stays unoptimized */}
-            <img
-              src={m51AssetPath(sleepIconFile())}
+            <PixelIcon
+              name="sleep"
+              size={iconPx}
               alt=""
-              width={iconPx}
-              height={iconPx}
-              draggable={false}
-              data-icon-key="icon_btn_sleep"
               className={styles.icon}
-              style={{ width: iconPx, height: iconPx }}
             />
             {canSleep ? (
               <span

@@ -3,9 +3,9 @@
 import type React from "react";
 import { PixelButton } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { m51AssetPath } from "@/game/life/assets";
 import { cn } from "@/lib/utils";
-import { STORE_LABEL, storeButtonMetrics, storeIconFile } from "./store-button.config";
+import { PixelIcon } from "./PixelIcon";
+import { STORE_LABEL, storeButtonMetrics } from "./store-button.config";
 
 /**
  * Shop control. Icon-only by default; `wide` renders the amber
@@ -58,17 +58,14 @@ export function StoreButton({
       onClick={onOpen}
       data-testid="open-store"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- pixel shop icon stays unoptimized */}
-      <img
-        src={m51AssetPath(storeIconFile())}
-        alt=""
-        width={iconPx}
-        height={iconPx}
-        draggable={false}
-        data-icon-key="icon_btn_store"
-        className="pixelated block"
-        style={{ width: iconPx, height: iconPx }}
-      />
+      <span data-icon-key="icon_store" className="inline-flex">
+        <PixelIcon
+          name="store"
+          size={iconPx}
+          alt=""
+          className="block"
+        />
+      </span>
       {wide ? (
         <span className="font-galmuri-9 text-galmuri-body">{STORE_LABEL}</span>
       ) : null}

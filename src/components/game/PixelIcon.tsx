@@ -27,7 +27,9 @@ export function PixelIcon({ name, size = 22, className, alt = "", files }: Props
       width={displayPx}
       height={displayPx}
       className={cn(
-        "pixelated size-auto max-w-none shrink-0",
+        // 3D icon set is 256px smooth art — render with default sampling,
+        // nearest-neighbor (`pixelated`) crunches the downscaled icons.
+        "size-auto max-w-none shrink-0",
         className,
       )}
       style={{

@@ -839,12 +839,15 @@ body {
    money, the pastel stat fills and the action-tile faces.
    ============================================================ */
 .theme-clay {
-  --clay-bg: #efeaf6;
   --clay-card: #fbf9fd;
   --clay-text: #3d3550;
   --clay-text-muted: #7a7290;
   --clay-chip: #f0eaf8;
   --clay-gap: 12px;
+  /* 3D shell metrics: header pill height + the vertical budget of the 4:3
+     room frame (header pad-top 20 + pill 46 + content pad-top 20 + pad-bottom 24). */
+  --clay-topbar-h: 46px;
+  --clay-frame-reserved-y: 110px;
   /* action tile faces */
   --btn-eat: #d8f3e6;
   --btn-game: #ffe6d2;
@@ -862,8 +865,18 @@ body {
   --foreground: var(--clay-text);
   --muted-foreground: var(--clay-text-muted);
 
-  background: var(--clay-bg);
+  /* 3D page: light pastel lavender, top slightly deeper than the bottom. */
+  background-color: #d4c6e0;
+  background-image: linear-gradient(180deg, #cbbcdb 0%, #e1ddee 100%);
   color: var(--clay-text);
+}
+
+/* Wider than the 1280px shell, the body itself keeps the same lavender
+   wash so the page reads as one surface (the default pink gradient of
+   .devlife-page-bg only suits the 2D shell). */
+body:has(.theme-clay) {
+  background-color: #d4c6e0;
+  background-image: linear-gradient(180deg, #cbbcdb 0%, #e1ddee 100%);
 }
 
 .theme-clay [data-side-panel="player"] {
@@ -872,11 +885,159 @@ body {
 
 .theme-clay [data-testid="open-notifications"],
 .theme-clay [data-testid="open-audio"] {
-  width: 40px !important;
-  height: 40px !important;
-  min-width: 40px !important;
-  min-height: 40px !important;
+  width: var(--clay-topbar-h) !important;
+  height: var(--clay-topbar-h) !important;
+  min-width: var(--clay-topbar-h) !important;
+  min-height: var(--clay-topbar-h) !important;
 }
+
+/* --- 3D shell layout: pill top bar, 4:3 room frame, aligned sidebar --- */
+
+/* Top bar: transparent strip, three floating pill clusters (logo · clock ·
+   money + round controls). Narrow viewports wrap it into rows instead. */
+.clay-status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  color: var(--foreground);
+  line-height: 1;
+}
+
+.clay-status-bar .hud-chip {
+  height: var(--clay-topbar-h);
+  gap: 8px;
+  padding: 0 16px;
+  font-size: 17px;
+}
+
+.clay-logo-pill {
+  display: inline-flex;
+  align-items: center;
+  height: var(--clay-topbar-h);
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--panel-bg);
+  box-shadow: var(--clay-shadow-chip);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 1024px) {
+  .clay-status-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    column-gap: 12px;
+  }
+}
+
+/* Room frame: transparent 4:3 slot floating on the lavender page. The
+   width caps so a short viewport never overflows the shell height. */
+.theme-clay .scene-bare {
+  width: min(100%, calc((100vh - var(--clay-frame-reserved-y)) * 4 / 3));
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+}
+
+/* The div wrapping the 3D canvas: deep purple gradient (darkest top-left),
+   borderless, no inner shadow — the room floats on it. */
+.theme-clay .clay-scene-well {
+  overflow: hidden;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #807090 0%, #9a88a4 45%, #b8a0bc 100%);
+}
+
+/* 3D load hint: sits on the well gradient, so light ink for contrast. */
+.clay-scene-loadhint {
+  color: #f6f0fa;
+}
+
+/* Sidebar mirrors the room frame top and bottom (--shell-panel-h, set from
+   the measured frame). The whole column is ONE cream block: the profile
+   header sits straight on it, stats + actions are two ivory cards inside. */
+@media (min-width: 1024px) {
+  .theme-clay [data-side-panel="player"] {
+    gap: 10px;
+    height: var(--shell-panel-h, auto);
+  }
+}
+
+.clay-side-block {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+  background: #f6edf0;
+  box-shadow: 0 6px 20px rgba(80, 60, 110, 0.12);
+}
+
+@media (min-width: 1024px) {
+  .theme-clay .clay-side-block {
+    --clay-stat-h: 26px;
+  }
+}
+
+/* The two inner cards: ivory, softly rounded, no border or shadow stack. */
+.theme-clay .clay-inner-card {
+  padding: 10px;
+  border-radius: 12px;
+  background: #fdf6f2;
+  box-shadow: none;
+}
+
+/* Stats card: flat warm-gray tracks with 10px corners (the fills keep
+   their pastel tones). */
+.theme-clay .clay-stats-card ul {
+  row-gap: 10px;
+}
+
+.theme-clay .clay-stats-card .clay-stat-track {
+  background: #eee6e4;
+  border-radius: 10px;
+}
+
+.theme-clay .clay-stats-card .clay-stat-fill {
+  border-radius: 10px;
+}
+
+/* Actions card absorbs the leftover height: the tile grid stretches
+   (2 equal rows of 3), so the buttons grow taller instead of leaving a
+   gap at the bottom of the block. */
+.theme-clay .clay-actions-card {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.theme-clay .clay-actions-grid {
+  display: grid;
+  min-height: 0;
+  flex: 1 1 auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+}
+
+.theme-clay .clay-actions-grid .clay-tile {
+  border-radius: 10px;
+}
+
+.theme-clay .clay-actions-grid .clay-tile > *:first-child {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* PixelButton's own class is a CSS-module hash; [data-variant] is the
+   stable hook for its radius token. */
+.theme-clay .clay-actions-card [data-variant] {
+  --btn-radius: 10px;
+}
+
 
 /* Action tiles: the pastel face sits on the wrapper; the PixelButton
    inside goes chromeless so all six tiles read as one family. */

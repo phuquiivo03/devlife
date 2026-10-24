@@ -136,7 +136,7 @@ describe("pixel button chrome", () => {
     const popup = readFileSync(join(process.cwd(), "src/components/game/LifeEventPopup.tsx"), "utf8");
     const board = readFileSync(join(process.cwd(), "src/components/game/career/JobManageBoard.tsx"), "utf8");
     expect(hud).toContain('variant="light"');
-    expect(hud).toContain('icon: "learn_book"');
+    expect(hud).toContain('icon: "study"');
     expect(hud).toContain('icon: "job"');
     expect(hud).toContain("SKILL_MENU_ICON");
     expect(hud).toContain("BUTTON_LIGHT.iconPx");

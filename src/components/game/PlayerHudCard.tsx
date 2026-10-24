@@ -45,7 +45,7 @@ const CAREER_ACTIONS = [
     id: "study",
     testId: "open-study",
     label: "Học",
-    icon: "learn_book",
+    icon: "study",
   },
   {
     id: "jobs",
@@ -67,13 +67,16 @@ const CAREER_ACTIONS = [
 }[];
 
 /**
- * White top bar: devlife logo, Tiền chip, Ngày/giờ chip, notifications and
- * audio round buttons. The shop control moved to the ActionsCard.
+ * Top bar. 2D keeps the single white card; the clay (3D) variant is a
+ * transparent strip of three floating pills: logo · clock · money + the
+ * round notification/audio controls.
  */
 export function TopBar({
   iconFiles = [],
+  clay = false,
 }: {
   iconFiles?: readonly string[];
+  clay?: boolean;
 }) {
   const money = useGameStore((s) => s.career.players.money);
   const prevMoneyRef = useRef(money);
@@ -91,6 +94,88 @@ export function TopBar({
   const setNotificationOpen = useGameStore((s) => s.setNotificationOpen);
   const weekdayLabel = calendar(day).weekdayLabel;
   const phaseLabel = phaseById(phaseId).label;
+
+  const moneyChip = (
+    <span className="hud-chip relative whitespace-nowrap" style={{ position: "relative" }}>
+      <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
+      <span
+        data-testid="hud-money"
+        style={{
+          color:
+            shownMoney > 0
+              ? "var(--accent-mint)"
+              : "var(--accent-coral)",
+        }}
+      >
+        {formatVnd(shownMoney)}
+      </span>
+      <StatFlash statKey="money" />
+      <StatFloaters statKey="money" />
+    </span>
+  );
+  const clockChip = (
+    <span
+      className={cn("hud-chip whitespace-nowrap", fastForward && "fast-forward-flash")}
+      data-testid="game-clock"
+      data-day={day}
+      data-weekday={weekdayLabel}
+      data-holiday={holidayOn(day) ?? ""}
+      data-time={clockLabel}
+      data-phase={phaseId}
+      data-fast-forward={fastForward ? "1" : "0"}
+    >
+      <PhaseMark phaseId={phaseId} iconFiles={iconFiles} />
+      <span>
+        {roomStatusClockLabel(day, weekdayLabel, clockLabel, phaseLabel)}
+      </span>
+    </span>
+  );
+  const roundControls = (
+    <>
+      <NotificationsButton
+        iconFiles={iconFiles}
+        compact
+        onOpen={() => setNotificationOpen(true)}
+      />
+      <AudioButton
+        iconFiles={iconFiles}
+        compact
+        onOpen={() => setAudioPopupOpen(true)}
+      />
+    </>
+  );
+
+  if (clay) {
+    return (
+      <div
+        className="clay-status-bar"
+        style={statFxVars()}
+        data-testid="room-status-bar"
+      >
+        <div className="flex min-w-0 items-center justify-self-start">
+          <span className="clay-logo-pill">
+            {/* eslint-disable-next-line @next/next/no-img-element -- 3D logo icon stays unoptimized */}
+            <img
+              src="/ui/icons/icon_logo.png"
+              alt="devlife"
+              width={34}
+              height={34}
+              draggable={false}
+              className="block size-auto"
+              style={{ width: 34, height: 34 }}
+            />
+          </span>
+        </div>
+        <div className="flex min-w-0 items-center justify-self-center">
+          {clockChip}
+        </div>
+        <div className="flex min-w-0 items-center justify-self-end gap-2.5">
+          {moneyChip}
+          {roundControls}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <PanelCard
@@ -112,56 +197,26 @@ export function TopBar({
         devlife
       </span>
       <div className="flex min-w-0 flex-1 flex-wrap items-center justify-center gap-2">
-        <span className="hud-chip relative whitespace-nowrap" style={{ position: "relative" }}>
-          <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
-          <span
-            data-testid="hud-money"
-            style={{
-              color:
-                shownMoney > 0
-                  ? "var(--accent-mint)"
-                  : "var(--accent-coral)",
-            }}
-          >
-            {formatVnd(shownMoney)}
-          </span>
-          <StatFlash statKey="money" />
-          <StatFloaters statKey="money" />
-        </span>
-        <span
-          className={cn("hud-chip whitespace-nowrap", fastForward && "fast-forward-flash")}
-          data-testid="game-clock"
-          data-day={day}
-          data-weekday={weekdayLabel}
-          data-holiday={holidayOn(day) ?? ""}
-          data-time={clockLabel}
-          data-phase={phaseId}
-          data-fast-forward={fastForward ? "1" : "0"}
-        >
-          <PhaseMark phaseId={phaseId} iconFiles={iconFiles} />
-          <span>
-            {roomStatusClockLabel(day, weekdayLabel, clockLabel, phaseLabel)}
-          </span>
-        </span>
+        {moneyChip}
+        {clockChip}
       </div>
-      <div className="flex shrink-0 items-center gap-2">
-        <NotificationsButton
-          iconFiles={iconFiles}
-          compact
-          onOpen={() => setNotificationOpen(true)}
-        />
-        <AudioButton
-          iconFiles={iconFiles}
-          compact
-          onOpen={() => setAudioPopupOpen(true)}
-        />
-      </div>
+      <div className="flex shrink-0 items-center gap-2">{roundControls}</div>
     </PanelCard>
   );
 }
 
-/** The four vitals as pill rows: label chip, current/max, progress bar. */
-export function StatsCard({ clay = false }: { clay?: boolean }) {
+/**
+ * The four vitals as pill rows: label chip, current/max, progress bar.
+ * `embedded` (3D sidebar block): the card sits inside the cream block as
+ * an ivory tile instead of a standalone panel.
+ */
+export function StatsCard({
+  clay = false,
+  embedded = false,
+}: {
+  clay?: boolean;
+  embedded?: boolean;
+}) {
   const health = useGameStore((s) => s.career.players.health);
   const mood = useGameStore((s) => s.career.players.mood);
   const energy = useGameStore((s) => s.career.players.energy);
@@ -169,7 +224,13 @@ export function StatsCard({ clay = false }: { clay?: boolean }) {
   const energyMax = SIM_CATALOG.config.energy_max;
 
   return (
-    <PanelCard className="shrink-0 p-4" style={statFxVars()}>
+    <PanelCard
+      className={cn(
+        "shrink-0",
+        embedded ? "clay-inner-card clay-stats-card" : "p-4",
+      )}
+      style={statFxVars()}
+    >
       <ul className="flex flex-col gap-3">
         <StatRow
           icon="health"
@@ -205,7 +266,7 @@ export function StatsCard({ clay = false }: { clay?: boolean }) {
           clay={clay}
         />
         <StatRow
-          icon="food"
+          icon="fullness"
           label="No bụng"
           value={fullness}
           max={VITAL_MAX}
@@ -330,10 +391,20 @@ export function ActionsCard({
   const setStoreOpen = useGameStore((s) => s.setStoreOpen);
 
   return (
-    <PanelCard className="flex shrink-0 flex-col gap-3 p-4" style={statFxVars()}>
+    <PanelCard
+      className={cn(
+        clay
+          ? "clay-inner-card clay-actions-card"
+          : "flex shrink-0 flex-col gap-3 p-4",
+      )}
+      style={statFxVars()}
+    >
       <div
-        className="flex flex-wrap justify-end"
-        style={{ gap: clay ? 10 : HUD_ICON_GAP_PX }}
+        className={cn(
+          "flex flex-wrap justify-end",
+          clay && "clay-actions-grid",
+        )}
+        style={{ gap: HUD_ICON_GAP_PX }}
         data-testid="hud-icon-bar"
       >
         <ActionTile label="Ăn" tone="eat" clay={clay}>
@@ -376,9 +447,7 @@ function ActionTile({
     <div
       className={cn(
         "flex min-w-[88px] flex-col items-center gap-1",
-        clay
-          ? "clay-tile w-[calc((100%-20px)/3)] py-1.5"
-          : "w-[calc((100%-16px)/3)]",
+        clay ? "clay-tile py-1.5" : "w-[calc((100%-16px)/3)]",
       )}
       data-clay-tone={clay ? tone : undefined}
     >
@@ -410,9 +479,7 @@ function CareerTile({
     <div
       className={cn(
         "flex min-w-[88px]",
-        clay
-          ? "clay-tile w-[calc((100%-20px)/3)] py-1.5"
-          : "w-[calc((100%-16px)/3)]",
+        clay ? "clay-tile py-1.5" : "w-[calc((100%-16px)/3)]",
       )}
       data-clay-tone={clay ? action.id : undefined}
     >

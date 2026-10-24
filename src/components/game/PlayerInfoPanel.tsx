@@ -65,10 +65,11 @@ export function ProfileCard({
 
   // Clay (3D) variant: round avatar + name row, one XP line, and the
   // reputation/freelance/rent rows folded into small chips. Same data,
-  // same data-testids as the 2D card.
+  // same data-testids as the 2D card. No card chrome — the header sits
+  // straight on the cream sidebar block.
   if (clay) {
     return (
-      <PanelCard className="flex shrink-0 flex-col p-4" style={statFxVars()}>
+      <div className="flex flex-none flex-col" style={statFxVars()}>
         <div className="flex items-center gap-3">
           <div className="clay-avatar">
             <PixelAvatar role="player" size={56} alt={p.name} />
@@ -88,7 +89,7 @@ export function ProfileCard({
           </div>
         </div>
         <div
-          className="mt-3 w-full"
+          className="mt-2 w-full"
           style={{ "--clay-stat-h": "10px" } as CSSProperties}
         >
           <p className="clay-xp-label">
@@ -103,7 +104,7 @@ export function ProfileCard({
             className="mt-1"
           />
         </div>
-        <div className="clay-chip-row mt-3">
+        <div className="clay-chip-row mt-2">
           <Tooltip>
             <TooltipTrigger
               className="clay-chip cursor-pointer border-0 bg-transparent p-0 font-inherit text-inherit pointer-coarse:min-h-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2"
@@ -117,7 +118,7 @@ export function ProfileCard({
                 height={TRAIT_ICON_PX}
                 alt=""
                 draggable={false}
-                className="pixelated size-auto max-w-none shrink-0"
+                className="size-auto max-w-none shrink-0"
                 style={{
                   width: TRAIT_ICON_PX,
                   height: TRAIT_ICON_PX,
@@ -170,7 +171,7 @@ export function ProfileCard({
             Hôm nay kiệt sức, chưa nhận freelance
           </p>
         ) : null}
-      </PanelCard>
+      </div>
     );
   }
 
@@ -212,7 +213,7 @@ export function ProfileCard({
             height={TRAIT_ICON_PX}
             alt=""
             draggable={false}
-            className="pixelated size-auto max-w-none shrink-0"
+            className="size-auto max-w-none shrink-0"
             style={{
               width: TRAIT_ICON_PX,
               height: TRAIT_ICON_PX,

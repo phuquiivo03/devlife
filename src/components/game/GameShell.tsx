@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
 import { STAGES, type StageId } from "@/game/config";
@@ -47,6 +47,9 @@ export function GameShell({
   const areaRef = useRef<HTMLDivElement>(null);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("player");
   const [assetsLoaded, setAssetsLoaded] = useState(false);
+  // 3D: measured room-frame height, mirrored into --shell-panel-h so the
+  // sidebar's top and bottom edges align with the frame.
+  const [panelHeightPx, setPanelHeightPx] = useState<number | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const debug = searchParams.get("debug") === "1";
@@ -95,6 +98,23 @@ export function GameShell({
     }
   }, []);
 
+  // 3D: track the room frame height so the sidebar can match it. Re-runs
+  // once the shell actually renders (past loading/hydration gates).
+  useEffect(() => {
+    if (!is3d) return;
+    const el = areaRef.current;
+    if (!el) return;
+    const measure = () => setPanelHeightPx(el.getBoundingClientRect().height);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [is3d, hydrated, assetsLoaded]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "1") setStage("student");
@@ -130,14 +150,24 @@ export function GameShell({
 
   const room = getRoom(stage);
 
-  // Show loading screen until assets are preloaded
+  // Show loading screen until assets are preloaded. The 3D theme wraps
+  // even these gates so the lavender page bg is there from first paint.
   if (!assetsLoaded) {
-    return <LoadingScreen onComplete={() => setAssetsLoaded(true)} />;
+    return (
+      <div className={cn("min-h-screen", is3d && "theme-clay")}>
+        <LoadingScreen onComplete={() => setAssetsLoaded(true)} />
+      </div>
+    );
   }
 
   if (!hydrated) {
     return (
-      <div className="flex min-h-screen items-center justify-center font-galmuri-11 text-galmuri-title text-[var(--foreground)]">
+      <div
+        className={cn(
+          "flex min-h-screen items-center justify-center font-galmuri-11 text-galmuri-title text-[var(--foreground)]",
+          is3d && "theme-clay",
+        )}
+      >
         Đang tải phòng của bạn…
       </div>
     );
@@ -157,7 +187,7 @@ export function GameShell({
       )}
     >
       <header className="px-3 pt-3 lg:px-6 lg:pt-5">
-        <TopBar iconFiles={iconFiles} />
+        <TopBar iconFiles={iconFiles} clay={is3d} />
       </header>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3 lg:grid lg:min-h-0 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-5 lg:overflow-hidden lg:p-6 lg:pt-5">
@@ -172,11 +202,15 @@ export function GameShell({
             }
             areaRef={areaRef}
             roomAreaStyle={roomAreaStyle}
+            bare={is3d}
             label={
-              <>
-                {t(room.title)}
-                {debug ? " · debug (D)" : ""}
-              </>
+              // 3D prod drops the room label; debug keeps it.
+              is3d && !debug ? null : (
+                <>
+                  {t(room.title)}
+                  {debug ? " · debug (D)" : ""}
+                </>
+              )
             }
           >
             <LifeRoomFx is3d={is3d} />
@@ -202,46 +236,72 @@ export function GameShell({
         <aside
           className="order-2 flex min-h-0 w-full flex-col gap-4 lg:overflow-y-auto"
           data-side-panel="player"
+          style={
+            is3d && panelHeightPx
+              ? ({ "--shell-panel-h": `${panelHeightPx}px` } as CSSProperties)
+              : undefined
+          }
         >
-          <Tabs
-            value={sidebarTab}
-            onValueChange={(v) => {
-              setSidebarTab(v as SidebarTab);
-              if (v === "edit-room") setCustomizeOpen(true);
-            }}
-            className="flex flex-none flex-col gap-4"
-          >
-            {showTimeDebug && (
-              <TabsList className="tabs-lavender grid h-11 w-full grid-cols-2">
-                <TabsTrigger
-                  value="player"
-                  className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
-                >
-                  Nhân vật
-                </TabsTrigger>
-                <TabsTrigger
-                  value="edit-room"
-                  className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
-                >
-                  Sửa phòng
-                </TabsTrigger>
-              </TabsList>
-            )}
-            <TabsContent value="player" className="mt-0 min-h-0">
-              <ProfileCard iconFiles={iconFiles} clay={is3d} />
-            </TabsContent>
-            <TabsContent
-              value="edit-room"
-              className="mt-0 min-h-0"
-            >
-              <div className="flex max-h-[min(70vh,720px)] min-h-[320px] flex-col">
+          {is3d ? (
+            /* 3D sidebar: ONE cream block aligned to the room frame —
+               profile header straight on it, stats + actions as two ivory
+               cards. Room editing takes the block over in place. */
+            <div className="clay-side-block w-full">
+              {customizeOpen ? (
                 <CustomizePanel />
-              </div>
-            </TabsContent>
-          </Tabs>
-          <StatsCard clay />
-          <ActionsCard iconFiles={iconFiles} clay={is3d} />
-          <SkillsCard iconFiles={iconFiles} />
+              ) : (
+                <>
+                  <ProfileCard iconFiles={iconFiles} clay />
+                  <StatsCard clay embedded />
+                  <ActionsCard iconFiles={iconFiles} clay />
+                </>
+              )}
+            </div>
+          ) : (
+            <>
+              <Tabs
+                value={sidebarTab}
+                onValueChange={(v) => {
+                  setSidebarTab(v as SidebarTab);
+                  if (v === "edit-room") setCustomizeOpen(true);
+                }}
+                className="flex flex-none flex-col gap-4"
+              >
+                {showTimeDebug && (
+                  <TabsList className="tabs-lavender grid h-11 w-full grid-cols-2">
+                    <TabsTrigger
+                      value="player"
+                      className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
+                    >
+                      Nhân vật
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="edit-room"
+                      className="border-0 font-galmuri-11 text-galmuri-title data-[state=active]:border-0"
+                    >
+                      Sửa phòng
+                    </TabsTrigger>
+                  </TabsList>
+                )}
+                <TabsContent value="player" className="mt-0 min-h-0">
+                  <ProfileCard iconFiles={iconFiles} clay={is3d} />
+                </TabsContent>
+                <TabsContent
+                  value="edit-room"
+                  className="mt-0 min-h-0"
+                >
+                  <div className="flex max-h-[min(70vh,720px)] min-h-[320px] flex-col">
+                    <CustomizePanel />
+                  </div>
+                </TabsContent>
+              </Tabs>
+              <StatsCard clay />
+              <ActionsCard iconFiles={iconFiles} clay={is3d} />
+            </>
+          )}
+          {/* 3D keeps the skills card out of the sidebar block (debug-only
+              there) so the column never outgrows the room frame. */}
+          {!is3d || debug ? <SkillsCard iconFiles={iconFiles} /> : null}
         </aside>
       </div>
       <CharacterIntro />

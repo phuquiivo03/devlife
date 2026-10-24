@@ -6,11 +6,9 @@ import { useGameStore } from "@/game/state/store";
 import { snapshot } from "@/game/time";
 import { LIFE } from "@/game/life/content";
 import { energyCost, gameBlocked, gameMoodGain } from "@/game/life/logic";
-import { m51AssetPath } from "@/game/life/assets";
+import { PixelIcon } from "./PixelIcon";
 import {
   GAME_LABEL,
-  GAME_ICON_FALLBACK,
-  GAME_ICON_KEY,
   gameButtonMetrics,
   gameButtonTip,
 } from "./game-button.config";
@@ -40,10 +38,6 @@ export function GameButton({ clay = false }: { clay?: boolean }) {
 
   const metrics = gameButtonMetrics();
 
-  // Try to load actual icon, fallback to emoji
-  const iconExists = false; // TODO: check public/ui/m5_1/icon_btn_game.png existence at build time
-  const iconSrc = iconExists ? m51AssetPath(`${GAME_ICON_KEY}.png`) : null;
-
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -55,7 +49,7 @@ export function GameButton({ clay = false }: { clay?: boolean }) {
             className={clay ? "clay-tile-inner w-full" : styles.button}
             style={
               clay
-                ? { width: "100%", height: 40, minHeight: 40 }
+                ? { width: "100%", height: "100%", minHeight: 40 }
                 : {
                     width: metrics.buttonPx,
                     height: metrics.buttonPx,
@@ -67,26 +61,12 @@ export function GameButton({ clay = false }: { clay?: boolean }) {
             data-testid="game-button"
             data-game-ready={blocked ? "0" : "1"}
           >
-            {iconSrc ? (
-              <img
-                src={iconSrc}
-                alt=""
-                width={clay ? 24 : metrics.iconPx}
-                height={clay ? 24 : metrics.iconPx}
-                draggable={false}
-                data-icon-key={GAME_ICON_KEY}
-                className={styles.icon}
-                style={{ width: clay ? 24 : metrics.iconPx, height: clay ? 24 : metrics.iconPx }}
-              />
-            ) : (
-              <span
-                className={styles.emoji}
-                style={{ fontSize: (clay ? 24 : metrics.iconPx) * 0.8 }}
-                aria-hidden="true"
-              >
-                {GAME_ICON_FALLBACK}
-              </span>
-            )}
+            <PixelIcon
+              name="game"
+              size={clay ? 24 : metrics.iconPx}
+              alt=""
+              className={styles.icon}
+            />
           </PixelButton>
         </span>
       </TooltipTrigger>

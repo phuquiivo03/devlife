@@ -7,12 +7,13 @@ import { Modal } from "@/components/ui/modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LIFE, type FoodId } from "@/game/life/content";
 import { m51AssetPath } from "@/game/life/assets";
-import { actionEatArtFile, foodArtFile, foodDockMetrics } from "@/game/life/m51-art";
+import { actionEatArtFile, foodDockMetrics } from "@/game/life/m51-art";
 import { lifeOf, mealBlocked } from "@/game/life/logic";
 import { foodPrice } from "@/game/life/traits";
 import { useGameStore } from "@/game/state/store";
 import { cn } from "@/lib/utils";
 import { formatVnd } from "@/lib/format-currency";
+import { PixelIcon } from "./PixelIcon";
 import {
   foodButtonMetrics,
   foodDockTip,
@@ -51,7 +52,7 @@ export function HungerDock({ clay = false }: { clay?: boolean }) {
               className={clay ? "clay-tile-inner w-full" : styles.button}
               style={
                 clay
-                  ? { width: "100%", height: 40, minHeight: 40 }
+                  ? { width: "100%", height: "100%", minHeight: 40 }
                   : {
                       width: metrics.buttonPx,
                       height: metrics.buttonPx,
@@ -62,19 +63,11 @@ export function HungerDock({ clay = false }: { clay?: boolean }) {
               onClick={() => setOpen(true)}
               data-testid="food-open"
             >
-              <img
-                src={m51AssetPath(foodArtFile())}
+              <PixelIcon
+                name="eat"
+                size={iconPx}
                 alt=""
-                width={iconPx}
-                height={iconPx}
-                draggable={false}
-                data-testid="food-bowl-icon"
-                data-icon-key="icon_btn_food"
-                className={cn("pixel-img", styles.icon)}
-                style={{
-                  width: iconPx,
-                  height: iconPx,
-                }}
+                className={styles.icon}
               />
             </PixelButton>
             {ready && <span className={styles.readyDot} data-testid="food-ready-dot" />}

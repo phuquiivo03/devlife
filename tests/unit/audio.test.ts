@@ -455,13 +455,21 @@ describe("sound icons", () => {
     }
   });
 
-  it("ships each sound icon as a 44×44 png", () => {
+  it("ships the 3D set at 256px and the volume marks at 44px", () => {
+    // 3D icon swap: sound_on/sound_off moved to the 256px rendered set;
+    // volume_low/volume_high keep the 44px pixel art until new art lands.
+    const dims: Record<(typeof names)[number], number> = {
+      sound_on: 256,
+      sound_off: 256,
+      volume_low: 44,
+      volume_high: 44,
+    };
     for (const name of names) {
       const file = path.join(process.cwd(), "public/ui/icons", `icon_${name}.png`);
       const bytes = fs.readFileSync(file);
       expect(bytes.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
-      expect(bytes.readUInt32BE(16)).toBe(44);
-      expect(bytes.readUInt32BE(20)).toBe(44);
+      expect(bytes.readUInt32BE(16)).toBe(dims[name]);
+      expect(bytes.readUInt32BE(20)).toBe(dims[name]);
       expect(
         fs.existsSync(path.join(process.cwd(), "public/ui/icons", `icon_${name}_x4.png`)),
       ).toBe(false);
