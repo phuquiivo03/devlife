@@ -1,0 +1,319 @@
+{
+ "version": "student_merged_1",
+ "character_scale": 1.4,
+ "items": [
+  {
+   "key": "floor_base",
+   "category": "room_shell",
+   "position": [
+    0.015,
+    -0.32,
+    0.015
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "walls",
+   "category": "room_shell",
+   "position": [
+    -0.08,
+    0,
+    -0.12
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "wall_tiles",
+   "category": "room_shell",
+   "position": [
+    0.03,
+    0,
+    -0.01
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "bed",
+   "category": "furniture",
+   "position": [
+    -0.315,
+    0.02,
+    -1.445
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "nightstand",
+   "category": "furniture",
+   "position": [
+    1.6,
+    0.02,
+    -1.6475
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "chair_plastic",
+   "category": "furniture",
+   "position": [
+    -0.8239,
+    0.02,
+    -0.2
+   ],
+   "rotationY": 1.5708
+  },
+  {
+   "key": "desk",
+   "category": "furniture",
+   "position": [
+    -1.62,
+    0,
+    0.025
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "fan_standing",
+   "category": "furniture",
+   "position": [
+    1,
+    0.01,
+    -1.64
+   ],
+   "rotationY": 2.0944
+  },
+  {
+   "key": "plant_big",
+   "category": "decor",
+   "position": [
+    -1.7028,
+    0.02,
+    1.7811
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "plant_small",
+   "category": "decor",
+   "position": [
+    -1.7974,
+    0.74,
+    0.669
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "books_stack",
+   "category": "decor",
+   "position": [
+    -1.0491,
+    0.02,
+    1.65
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "cup",
+   "category": "decor",
+   "position": [
+    1.45,
+    0.64,
+    -1.55
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "kettle",
+   "category": "decor",
+   "position": [
+    1.6981,
+    0.64,
+    -1.72
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "keyboard",
+   "category": "decor",
+   "position": [
+    -1.384,
+    0.745,
+    -0.2
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "lamp_desk",
+   "category": "decor",
+   "position": [
+    -1.86,
+    0.74,
+    0.3
+   ],
+   "rotationY": -1.5708
+  },
+  {
+   "key": "monitor",
+   "category": "decor",
+   "position": [
+    -1.76,
+    0.74,
+    -0.12
+   ],
+   "rotationY": -1.7802
+  },
+  {
+   "key": "mug",
+   "category": "decor",
+   "position": [
+    -1.48,
+    0.745,
+    0.3725
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "poster_vn",
+   "category": "decor",
+   "position": [
+    -1.963,
+    1.32,
+    1.35
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "window",
+   "category": "decor",
+   "position": [
+    -0.35,
+    1.075,
+    -1.985
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "fairy_lights",
+   "category": "decor",
+   "position": [
+    0.1375,
+    1.8226,
+    -0.1378
+   ],
+   "rotationY": 0
+  },
+  {
+   "key": "ergo_chair",
+   "category": "furniture",
+   "position": [
+    -0.8239,
+    0.02,
+    -0.2
+   ],
+   "rotationY": 1.5708,
+   "note": "replaces chair_plastic at the rot2 seat when owned; wave2 spot was provisional",
+   "missing": true
+  },
+  {
+   "key": "monitor2",
+   "category": "decor",
+   "position": [
+    -1.74,
+    0.74,
+    -0.64
+   ],
+   "rotationY": -1.361356816555577,
+   "note": "secondary screen next to the main monitor; owned only",
+   "missing": true
+  },
+  {
+   "key": "mattress",
+   "category": "furniture",
+   "position": [
+    -0.255,
+    0.28,
+    -1.465
+   ],
+   "rotationY": 0,
+   "note": "overlay on the bed; owned only",
+   "missing": true
+  },
+  {
+   "key": "aircon",
+   "category": "decor",
+   "position": [
+    1.35,
+    1.55,
+    -1.89
+   ],
+   "rotationY": 3.141592653589793,
+   "note": "wall mounted, right wall; owned only",
+   "missing": true
+  }
+ ],
+ "stage0": {
+  "items": [
+   {
+    "key": "table_folding",
+    "category": "furniture",
+    "position": [
+     -1.6,
+     0.02,
+     -0.1
+    ],
+    "rotationY": 1.5708
+   },
+   {
+    "key": "laptop",
+    "category": "decor",
+    "position": [
+     -1.535,
+     0.32,
+     -0.1
+    ],
+    "rotationY": -1.5708
+   }
+  ],
+  "hide": [
+   "desk",
+   "chair_plastic",
+   "monitor",
+   "keyboard",
+   "lamp_desk",
+   "mug",
+   "plant_small"
+  ]
+ },
+ "poses": {
+  "sit": {
+   "key": "player",
+   "category": "character",
+   "position": [
+    -0.958,
+    0.236,
+    -0.2
+   ],
+   "rotationY": 1.5708
+  },
+  "stand": {
+   "key": "player_standing",
+   "category": "character",
+   "position": [
+    -0.95,
+    0.02,
+    0.5
+   ],
+   "rotationY": 1.5708
+  },
+  "floor": {
+   "key": "player_floor",
+   "category": "character",
+   "position": [
+    -1,
+    0.02,
+    -0.1
+   ],
+   "rotationY": 1.5708
+  }
+ }
+}

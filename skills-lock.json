@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/animate/SKILL.md",
       "computedHash": "7598d33e7f60dd5c24531eaaa897621cc3bdb48e8050324211627973bc59c4ce"
+    },
+    "r3f-best-practices": {
+      "source": "emalorenzo/three-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/r3f-best-practices/SKILL.md",
+      "computedHash": "d15cf5c47c35125afb4bfb079c3da515a34152f9839985065270a85e6bf36fb5"
     }
   }
 }

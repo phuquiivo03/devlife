@@ -6,3 +6,5 @@ node_modules/
 .next/
 test-results/
 playwright-report/
+graphify-out/
+*.tsbuildinfo

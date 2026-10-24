@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Backpack, Coffee, Monitor } from "lucide-react";
 import { STAGES, type StageId } from "@/game/config";
@@ -47,6 +48,12 @@ const stageIcons: Record<StageId, React.ReactNode> = {
 
 type SidebarTab = "player" | "edit-room";
 
+// three/R3F only enters the bundle when the ?3d=1 canvas actually renders.
+const Scene3DLazy = dynamic(() => import("@/game3d/Scene3D"), {
+  ssr: false,
+  loading: () => null,
+});
+
 export function GameShell({
   iconFiles = [],
 }: {
@@ -59,6 +66,7 @@ export function GameShell({
   const searchParams = useSearchParams();
   const router = useRouter();
   const debug = searchParams.get("debug") === "1";
+  const is3d = searchParams.get("3d") === "1";
   const showTimeDebug = debug || process.env.NODE_ENV !== "production";
 
   const stage = useGameStore((s) => s.stage);
@@ -95,6 +103,13 @@ export function GameShell({
   useEffect(() => {
     if (customizeOpen) setSidebarTab("edit-room");
   }, [customizeOpen]);
+
+  // Dev handle for driving poses/ownership from the console (see /debug).
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      (window as unknown as { __store: typeof useGameStore }).__store = useGameStore;
+    }
+  }, []);
 
   // The side panel matches the center room card's height. The card is content
   // driven (canvas aspect + HUD), so its slot element is measured and published
@@ -215,7 +230,13 @@ export function GameShell({
           <main className="relative order-1 flex min-h-0 w-full flex-col items-center justify-center px-2 py-4 lg:order-2 lg:justify-start lg:px-0 lg:py-0">
             <div className="room-stage-glow flex w-full flex-col items-center">
               <RoomChamferFrame
-                canvas={<SceneCanvas areaRef={areaRef} debug={debug} />}
+                canvas={
+                  is3d ? (
+                    <Scene3DLazy debug={debug} />
+                  ) : (
+                    <SceneCanvas areaRef={areaRef} debug={debug} />
+                  )
+                }
                 areaRef={areaRef}
                 roomAreaStyle={roomAreaStyle}
                 label={
