@@ -12,7 +12,7 @@ const buttonVariants = cva(
         secondary: "btn-soft bg-[var(--panel-bg)] text-[var(--foreground)]",
         outline: "btn-soft bg-transparent text-[var(--foreground)]",
         ghost:
-          "rounded-[var(--radius-panel)] border border-transparent text-[var(--foreground)] hover:bg-white/40",
+          "rounded-[var(--radius-ctrl)] border border-transparent text-[var(--foreground)] hover:bg-white/40",
       },
       size: {
         default: "h-10 px-4 py-2",

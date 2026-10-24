@@ -35,7 +35,7 @@ export function SkillRankPanel({ iconFiles }: { iconFiles: readonly string[] }) 
             data-xp={skill.xp}
             data-need={skill.xpToNext}
             data-rank={skill.rankId}
-            className="flex items-center gap-3 rounded-[var(--radius-panel)] border border-[var(--panel-border)] bg-white/50 p-2"
+            className="flex items-center gap-3 rounded-[var(--radius-tile)] bg-white/70 p-2 shadow-chip"
           >
             <PixelIcon name={skill.icon} size={44} alt="" files={iconFiles} />
             <div className="min-w-0 flex-1">

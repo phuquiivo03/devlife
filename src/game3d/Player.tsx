@@ -7,25 +7,22 @@ import { ItemModel } from "./ItemModel";
 export type PlayerPose = "floor" | "sit" | "stand" | "sleep";
 
 /**
- * Pose precedence (task spec order):
+ * Pose precedence:
  * 1. sleeping → player hidden (`sleepTransition` runs its own overlay)
  *    // TODO lying pose when a lying GLB lands
  * 2. fresh student room (no monitor2/ergo_chair yet) → sits on the floor at
  *    the folding table + laptop (stage0 set)
- * 3. working (CRT task open, taskJobId) → sits at the desk chair
- * 4. otherwise → standing by the desk
+ * 3. otherwise (working or idle) → seated on the chair at the desk
  */
 export function usePlayerPose(): PlayerPose {
   const stage = useGameStore((s) => s.stage);
   const hasMonitor2 = useGameStore((s) => s.career.shop?.owned.includes("monitor2") ?? false);
   const hasErgoChair = useGameStore((s) => s.career.shop?.owned.includes("ergo_chair") ?? false);
-  const working = useGameStore((s) => s.taskJobId != null);
   const sleeping = useGameStore((s) => s.sleepTransition?.active ?? false);
 
   if (sleeping) return "sleep";
   if (stage === "student" && !hasMonitor2 && !hasErgoChair) return "floor";
-  if (working) return "sit";
-  return "stand";
+  return "sit";
 }
 
 /** The three pose models stay mounted; visibility toggles per current pose. */

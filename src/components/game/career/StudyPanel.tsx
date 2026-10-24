@@ -122,7 +122,7 @@ function CourseOffer({
   return (
     <li
       data-testid={`course-card-${activity.id}`}
-      className="card-slide flex items-center gap-3 rounded-[var(--radius-panel)] border border-[var(--panel-border)] bg-white/50 p-2"
+      className="card-slide flex items-center gap-3 rounded-[var(--radius-tile)] bg-white/70 p-2 shadow-chip"
       style={{ animationDelay: `${index * 70}ms` }}
     >
       <PixelIcon name={activity.icon} size={44} alt="" files={iconFiles} />
@@ -183,7 +183,7 @@ function CourseRecord({
   return (
     <li
       data-testid={`course-done-${activity.id}`}
-      className="card-slide flex items-center gap-3 rounded-[var(--radius-panel)] border border-[var(--panel-border)] bg-white/50 p-2"
+      className="card-slide flex items-center gap-3 rounded-[var(--radius-tile)] bg-white/70 p-2 shadow-chip"
       style={{ animationDelay: `${index * 70}ms` }}
     >
       <PixelIcon name={activity.icon} size={44} alt="" files={iconFiles} />

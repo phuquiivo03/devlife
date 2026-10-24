@@ -36,33 +36,24 @@ describe("desktop side panels", () => {
     expect(tooltip).toContain("z-40");
   });
 
-  it("sticks and caps only at the desktop breakpoint", () => {
+  it("builds the desktop shell as a top bar over a scene column and a sidebar", () => {
     const css = readFileSync(
       join(process.cwd(), "src/components/game/shell-layout.module.css"),
       "utf8",
     );
     const shell = readFileSync(join(process.cwd(), "src/components/game/GameShell.tsx"), "utf8");
-    const [before, desktop = ""] = css.split(`@media (min-width: ${SHELL_LAYOUT.desktopMinPx}px)`);
-    expect(before).not.toContain("position: sticky");
-    expect(before).not.toContain("max-height");
-    expect(desktop).toContain("position: sticky");
-    expect(desktop).toContain("top: var(--shell-panel-top)");
-    expect(desktop).toContain("max-height: var(--shell-panel-max)");
-    expect(desktop).toContain("height: var(--shell-panel-max)");
-    expect(desktop).toContain("z-index: var(--shell-panel-z)");
-    expect(shell).toContain('data-side-panel="notices"');
+    // Pastel redesign: no sticky panel measurement, the sidebar scrolls itself.
+    expect(css).not.toContain("position: sticky");
+    expect(shell).not.toContain("shellPanelVars");
     expect(shell).toContain('data-side-panel="player"');
-    expect(shell).toContain("shellPanelVars()");
     expect(shell).toContain("lg:h-screen");
     expect(shell).toContain("lg:overflow-hidden");
-    const player = readFileSync(
-      join(process.cwd(), "src/components/game/PlayerInfoPanel.tsx"),
-      "utf8",
-    );
-    expect(player).toContain("overflow-y-auto");
+    expect(shell).toContain("lg:grid-cols-[minmax(0,1fr)_360px]");
+    expect(shell).toContain("<SceneCard");
+    expect(shell).toContain("lg:overflow-y-auto");
   });
 
-  it("sizes the room status bar from the room cap and keeps it out of the sticky rules", () => {
+  it("keeps the top bar metrics and the full-bleed shell", () => {
     expect(ROOM_VIEWPORT_W).toBe(480);
     expect(CENTER_COLUMN_MAX_PX).toBe(520);
     expect(ROOM_STATUS_BAR.maxWidthPx).toBe(CENTER_COLUMN_MAX_PX);
@@ -77,14 +68,12 @@ describe("desktop side panels", () => {
       join(process.cwd(), "src/components/game/shell-layout.module.css"),
       "utf8",
     );
-    const [before, desktop = ""] = css.split(`@media (min-width: ${SHELL_LAYOUT.desktopMinPx}px)`);
-    expect(before).toContain(".statusBar");
-    expect(before).toContain("flex-wrap");
-    expect(before).toContain("margin-left: auto");
-    expect(before).not.toContain("max-height");
-    expect(desktop).not.toContain(".statusBar");
+    expect(css).toContain(".statusBar");
+    expect(css).toContain("flex-wrap");
+    expect(css).toContain("margin-left: auto");
+    expect(css).not.toContain("max-height");
     const shell = readFileSync(join(process.cwd(), "src/components/game/GameShell.tsx"), "utf8");
-    expect(shell).toContain("ROOM_VIEWPORT_W");
+    expect(shell).toContain("<TopBar");
     expect(shell).not.toContain("const ROOM_VIEWPORT_W");
   });
 });

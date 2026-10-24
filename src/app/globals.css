@@ -1,7 +1,11 @@
 @import "tailwindcss";
 
 @utility shadow-panel {
-  box-shadow: 0 8px 24px rgba(30, 20, 80, 0.25);
+  box-shadow: var(--clay-shadow-panel);
+}
+
+@utility shadow-chip {
+  box-shadow: var(--clay-shadow-chip);
 }
 
 * {
@@ -18,39 +22,111 @@
   --text-galmuri-title-lg: 28px;
   --text-galmuri-small: 16px;
 
+  /* Pastel lavender page: light violet fading into soft pink. */
   --background-gradient: linear-gradient(
     135deg,
-    #3b3f8f 0%,
-    #5a63c4 45%,
-    #9a78cc 75%,
-    #d08fcb 100%
+    #e9e4f6 0%,
+    #f3ecf9 45%,
+    #f9eef5 75%,
+    #fdf0f5 100%
   );
   --foreground: #2a2548;
-  --muted-foreground: #5c5678;
-  --panel-bg: #f3f1f8;
-  --panel-border: #d9d4e6;
-  --radius-panel: 12px;
-  --shadow-panel: 0 8px 24px rgba(30, 20, 80, 0.25);
+  --muted-foreground: #6b6390;
+  --panel-bg: #ffffff;
+  /* Hairline/divider color only. Clay cards are borderless — their
+     edge is defined by the shadow stacks below, never by a border. */
+  --panel-border: #e7dff2;
+  --radius-panel: 24px;
+  --radius-ctrl: 20px;
+  --radius-tile: 18px;
+  --radius-chip: 999px;
+
+  /*
+   * High-fidelity clay material. Every surface is a 4-layer light
+   * stack (drop shadow + top-left light + inner bounce + inner rim)
+   * tinted with the project's violet-gray, not neutral black. Scaled
+   * down from the reference claymorphism values to fit the compact
+   * game HUD. See docs/design/DESIGN_SYSTEM.md ("Clay material").
+   */
+  --clay-shadow-panel:
+    10px 12px 26px rgba(124, 107, 217, 0.16),
+    -6px -8px 18px rgba(255, 255, 255, 0.85),
+    inset 4px 4px 10px rgba(124, 107, 217, 0.04),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+  --clay-shadow-panel-hover:
+    14px 18px 32px rgba(124, 107, 217, 0.24),
+    -8px -10px 22px rgba(255, 255, 255, 0.95),
+    inset 4px 4px 10px rgba(124, 107, 217, 0.04),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+  --clay-shadow-chip:
+    3px 4px 10px rgba(124, 107, 217, 0.16),
+    -2px -3px 8px rgba(255, 255, 255, 0.9),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.55),
+    inset -2px -2px 5px rgba(124, 107, 217, 0.06);
+  --clay-shadow-ctrl:
+    6px 8px 16px rgba(124, 107, 217, 0.22),
+    -4px -5px 12px rgba(255, 255, 255, 0.65),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.45),
+    inset -3px -3px 6px rgba(42, 37, 72, 0.08);
+  --clay-shadow-ctrl-hover:
+    8px 11px 20px rgba(124, 107, 217, 0.3),
+    -5px -7px 14px rgba(255, 255, 255, 0.8),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.5),
+    inset -3px -3px 6px rgba(42, 37, 72, 0.06);
+  /* Pressed-in surfaces (active buttons, inputs): inner shadow on the
+     top-left, light catching the bottom lip. */
+  --clay-pressed:
+    inset 5px 5px 12px rgba(124, 107, 217, 0.2),
+    inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+  /* Softer recess for tracks and wells that are not controls. */
+  --clay-recessed:
+    inset 3px 3px 7px rgba(124, 107, 217, 0.14),
+    inset -2px -2px 6px rgba(255, 255, 255, 0.8);
+  --shadow-panel: var(--clay-shadow-panel);
+  /* Nunito is the UI face everywhere; Galmuri stays as the fallback
+     (and the art inside the canvas). `--font-galmuri-*` classes below
+     resolve to this stack so existing markup keeps working. */
+  --font-ui: var(--font-nunito), var(--font-galmuri-9), system-ui, sans-serif;
   --accent-coral: #f0625f;
   --accent-mint: #5ccb9a;
   --hud-job: #3fb487;
   --accent-sky: #4a90e2;
   --accent-amber: #f5a623;
-  --accent-violet: #5a63c4;
-  --tab-lavender: #e8e2f4;
-  --tab-lavender-active: #f3f1f8;
-  /* Light PixelButton. Same numbers as BUTTON_LIGHT in button/config.ts. */
+  --accent-violet: #7c6bd9;
+  --tab-lavender: #efeaf8;
+  --tab-lavender-active: #ffffff;
+  /* Tinted stat pill fills (label chips on the stats card). */
+  --pill-coral: #fde7e6;
+  --pill-mint: #e3f6ee;
+  --pill-sky: #e4effa;
+  --pill-amber: #fceed4;
+  --chip-bg: #f6f2fb;
+  /* Soft inner plate behind the room canvas. */
+  --scene-plate: #f1ecf9;
+  --store-amber-border: #d9941a;
+  /* Light PixelButton face. Same numbers as BUTTON_LIGHT in button/config.ts. */
   --btn-light-bg: #e8e2f4;
   --btn-light-border: #1e1428;
   --btn-light-ink: #2a2548;
   --btn-light-label: 16px;
   --btn-light-weight: 400;
-  --room-frame: #2d2858;
-  --room-frame-glow: rgba(120, 100, 200, 0.45);
+  --room-frame: #d9cdef;
+  /* Clay stat pill fills — shared by both shells (`.clay-stat-*`).
+     Mapping: coral→health, mint→mood, sky→energy, amber→full, exp→xp. */
+  --stat-health: #f48fb1;
+  --stat-health-bg: #fce4ec;
+  --stat-mood: #ffd166;
+  --stat-mood-bg: #fff6da;
+  --stat-energy: #8fd9b6;
+  --stat-energy-bg: #e3f6ec;
+  --stat-full: #ffb37c;
+  --stat-full-bg: #ffebdc;
+  --stat-xp: #7fa8f5;
+  --stat-xp-bg: #e4ecfc;
 
   /* shadcn token bridge (avoid white page shell) */
-  --background: #5a63c4;
-  --muted: #e8e2f4;
+  --background: #ece6f7;
+  --muted: #efeaf8;
   --accent: var(--accent-violet);
   --accent-foreground: #ffffff;
   --secondary: var(--accent-coral);
@@ -77,9 +153,9 @@
   --color-panel-border: var(--panel-border);
   --color-ring: var(--ring);
   --color-input: var(--input);
-  --radius-panel: 12px;
-  --font-sans: var(--font-galmuri-9);
-  --font-heading: var(--font-galmuri-11);
+  --radius-panel: 24px;
+  --font-sans: var(--font-ui);
+  --font-heading: var(--font-ui);
 }
 
 html,
@@ -89,40 +165,49 @@ body {
 
 body {
   color: var(--foreground);
-  font-family: var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: var(--text-galmuri-body);
   line-height: 1.45;
 }
 
 /**
- * Full-viewport shell: gradient + grid in ONE declaration.
- * Do NOT split into two classes — the second background-image wins and hides the gradient.
+ * Full-viewport shell: pastel gradient + soft glows in ONE declaration.
+ * Do NOT split into two classes — the second background-image wins and hides
+ * the gradient.
  */
 .devlife-page-bg {
-  background-color: #3b3f8f;
+  background-color: #ece6f7;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    radial-gradient(
+      ellipse 60% 50% at 12% 6%,
+      rgba(255, 255, 255, 0.55) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 55% 45% at 90% 94%,
+      rgba(255, 255, 255, 0.45) 0%,
+      transparent 60%
+    ),
     var(--background-gradient);
   background-size:
-    24px 24px,
-    24px 24px,
+    auto,
+    auto,
     auto;
   background-attachment: fixed;
 }
 
+/* The class names keep the size semantics they always had; the face is
+   the clay UI stack (Nunito first, Galmuri fallback) project-wide. */
 .font-galmuri-7 {
-  font-family:
-    var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 
 .font-galmuri-9 {
-  font-family: var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 
 .font-galmuri-11 {
-  font-family:
-    var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 
 .text-galmuri-body {
@@ -146,121 +231,119 @@ body {
   image-rendering: crisp-edges;
 }
 
+/* Soft halo behind the room canvas inside the scene card. */
 .room-stage-glow {
   background: radial-gradient(
     ellipse 70% 55% at 50% 42%,
-    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.35) 0%,
     transparent 65%
   );
 }
 
-/* Chamfered room viewport (clip-path glow via filter on wrapper) */
-.room-frame-glow {
-  filter: drop-shadow(0 0 14px rgba(180, 150, 255, 0.6))
-    drop-shadow(0 10px 18px rgba(20, 10, 60, 0.5));
-}
-
-.chamfer-frame-f1 {
-  background: rgba(180, 150, 255, 0.6);
-}
-
-.chamfer-frame-f2 {
-  background: linear-gradient(180deg, #a99cf0, #7e70d0);
-}
-
-.chamfer-frame-f3 {
-  background: #fff;
-}
-
-.room-canvas-slot {
-  background: transparent;
-}
-
-.chamfer-stage-plate {
-  background: #e9e4f5;
-  color: #3b3466;
-  text-align: center;
-}
-
-/* Side panels: same chamfer thickness as the room, softer rose so the canvas stays the focus. */
-.panel-frame-glow {
-  filter: drop-shadow(0 0 10px rgba(208, 143, 203, 0.45))
-    drop-shadow(0 8px 14px rgba(60, 30, 70, 0.28));
-}
-
-.panel-frame-f1 {
-  background: #6a4a66;
-}
-
-.panel-frame-f2 {
-  background: linear-gradient(180deg, #f8e4f2, #e3b4d8);
-}
-
-.panel-frame-f3 {
-  background: linear-gradient(160deg, #e7c6e2, #d08fcb 60%, #e4b7d8);
-}
-
-.panel-frame-well {
-  background: var(--panel-bg);
-}
-
+/* Tab track: a recessed clay well; the active tab is a raised pill. */
 .tabs-lavender {
   background: var(--tab-lavender);
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius-panel);
+  border: 1px solid transparent;
+  border-radius: 16px;
+  box-shadow: var(--clay-recessed);
   padding: 4px;
 }
 
 .tabs-lavender [data-state="active"] {
   background: var(--tab-lavender-active);
-  box-shadow: var(--shadow-panel);
-  border-radius: 8px;
+  box-shadow: var(--clay-shadow-chip);
+  border-radius: 12px;
 }
 
 .btn-soft {
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius-panel);
+  border: 1px solid transparent;
+  border-radius: var(--radius-ctrl);
   background: var(--panel-bg);
-  box-shadow: var(--shadow-panel);
-  font-family:
-    var(--font-galmuri-11), var(--font-galmuri-9), system-ui, sans-serif;
+  box-shadow: var(--clay-shadow-ctrl);
+  font-family: var(--font-ui);
   font-size: var(--text-galmuri-title);
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
 .btn-soft:hover:not(:disabled) {
   background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: var(--clay-shadow-ctrl-hover);
 }
 
-/* Career menu: Học / Việc làm / Kỹ năng. The faces are PixelButton light. */
-.hud-actions {
-  container-type: inline-size;
-  width: 100%;
+.btn-soft:active:not(:disabled) {
+  transform: none;
+  box-shadow: var(--clay-pressed);
 }
 
-.hud-actions-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-}
-
-.hud-actions-grid > * {
-  width: 100%;
-}
-
-@container (min-width: 28rem) {
-  .hud-actions-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
+/* Clay pill chip (top-bar money/clock, HUD chips): borderless, the
+   shadow stack defines it. */
 .hud-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius-panel);
-  background: #fff;
-  padding: 2px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-chip);
+  background: var(--panel-bg);
+  box-shadow: var(--clay-shadow-chip);
+  padding: 2px 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Recessed clay track for the default StatBar: a soft well the fill
+   slides inside. Replaces the old bordered hairline track. */
+.stat-track {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border-radius: var(--radius-chip);
+  background: var(--tab-lavender);
+  box-shadow: var(--clay-recessed);
+}
+
+/* Thin-track fill: the same button-like clay edge as .clay-stat-fill,
+   scaled down for 10px bars. */
+.stat-fill {
+  box-shadow:
+    inset 1px 1px 2px rgba(255, 255, 255, 0.45),
+    inset -1px -1px 2px rgba(42, 37, 72, 0.07),
+    0 1px 2px rgba(124, 107, 217, 0.15);
+}
+
+/*
+ * Clay control physics, project-wide. Every PixelButton (and anything
+ * else carrying data-variant) lifts toward the viewer on hover and
+ * squishes into the surface when pressed. The pixel-era label press
+ * drop is cancelled here (specificity beats the module rule) so only
+ * the scale squish reads.
+ */
+[data-variant] {
+  border-width: 0;
+  border-radius: var(--btn-radius, var(--radius-ctrl));
+  box-shadow: var(--clay-shadow-ctrl);
+  transition:
+    background-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease,
+    opacity 140ms ease;
+}
+
+[data-variant]:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: var(--clay-shadow-ctrl-hover);
+}
+
+[data-variant]:active:not(:disabled) {
+  transform: scale(0.95);
+  box-shadow: var(--clay-pressed);
+}
+
+:root [data-variant]:active:not(:disabled) > * {
+  transform: none;
 }
 
 .hud-vital {
@@ -304,11 +387,24 @@ body {
   width: 44px;
   height: 44px;
   flex: 0 0 44px;
-  border: 1px solid var(--panel-border);
-  border-radius: var(--radius-panel);
+  border: 1px solid transparent;
+  border-radius: var(--radius-chip);
   background: #fff;
+  box-shadow: var(--clay-shadow-chip);
   color: var(--foreground);
   cursor: pointer;
+  transition:
+    box-shadow 140ms ease,
+    transform 140ms ease;
+}
+
+.audio-mute:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    4px 6px 13px rgba(124, 107, 217, 0.2),
+    -3px -4px 10px rgba(255, 255, 255, 0.9),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.55),
+    inset -2px -2px 5px rgba(124, 107, 217, 0.06);
 }
 
 .audio-mute[aria-pressed="true"] {
@@ -431,15 +527,6 @@ body {
 .pixel-img {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-}
-
-.vital-floater {
-  position: absolute;
-  top: -14px;
-  left: 0;
-  z-index: 2;
-  pointer-events: none;
-  color: var(--accent-coral);
 }
 
 @keyframes stat-blink {
@@ -712,6 +799,16 @@ body {
     box-shadow: inset 0 0 0 2px var(--accent-coral);
   }
 
+  .clay-stat-fill[data-alert="1"] {
+    animation: none;
+  }
+
+  [data-variant],
+  .btn-soft,
+  .clay-tile {
+    transition: none;
+  }
+
   .life-banner,
   .life-banner-sparkle,
   .life-confetti-piece {
@@ -732,6 +829,289 @@ body {
   .ui-tooltip[data-state="delayed-open"] {
     animation: none;
   }
+}
+
+/* ============================================================
+   3D shell palette. The clay material itself (shadows, radii,
+   borders, Nunito face, press physics) is global now — `.theme-clay`
+   only swaps the palette when GameShell renders the R3F scene
+   (?3d=1): a slightly tinted card/ink set, softer red for negative
+   money, the pastel stat fills and the action-tile faces.
+   ============================================================ */
+.theme-clay {
+  --clay-bg: #efeaf6;
+  --clay-card: #fbf9fd;
+  --clay-text: #3d3550;
+  --clay-text-muted: #7a7290;
+  --clay-chip: #f0eaf8;
+  --clay-gap: 12px;
+  /* action tile faces */
+  --btn-eat: #d8f3e6;
+  --btn-game: #ffe6d2;
+  --btn-sleep: #dcebfb;
+  --btn-study: #ece3fa;
+  --btn-jobs: #e3f4da;
+  --btn-skills: #fce1ea;
+  --btn-store: #fff1e0;
+
+  /* Repoint the shared tokens at the 3D clay palette. */
+  --panel-bg: var(--clay-card);
+  --chip-bg: var(--clay-card);
+  --tab-lavender: #e9e2f5;
+  --accent-coral: #e2607a; /* softer red for negative money */
+  --foreground: var(--clay-text);
+  --muted-foreground: var(--clay-text-muted);
+
+  background: var(--clay-bg);
+  color: var(--clay-text);
+}
+
+.theme-clay [data-side-panel="player"] {
+  gap: var(--clay-gap);
+}
+
+.theme-clay [data-testid="open-notifications"],
+.theme-clay [data-testid="open-audio"] {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+}
+
+/* Action tiles: the pastel face sits on the wrapper; the PixelButton
+   inside goes chromeless so all six tiles read as one family. */
+.theme-clay .clay-tile {
+  border-radius: var(--radius-tile);
+  box-shadow: var(--clay-shadow-ctrl);
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.theme-clay .clay-tile:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--clay-shadow-ctrl-hover);
+}
+
+.theme-clay .clay-tile:active {
+  transform: scale(0.95);
+}
+
+.theme-clay .clay-tile[data-clay-tone="eat"] {
+  background: var(--btn-eat);
+}
+.theme-clay .clay-tile[data-clay-tone="game"] {
+  background: var(--btn-game);
+}
+.theme-clay .clay-tile[data-clay-tone="sleep"] {
+  background: var(--btn-sleep);
+}
+.theme-clay .clay-tile[data-clay-tone="study"] {
+  background: var(--btn-study);
+}
+.theme-clay .clay-tile[data-clay-tone="jobs"] {
+  background: var(--btn-jobs);
+}
+.theme-clay .clay-tile[data-clay-tone="skills"] {
+  background: var(--btn-skills);
+}
+
+.theme-clay .clay-tile .clay-tile-inner,
+.theme-clay .clay-tile .clay-tile-inner:hover:not(:disabled),
+.theme-clay .clay-tile .clay-tile-inner:active:not(:disabled) {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.theme-clay .clay-tile:has([disabled]) {
+  opacity: 0.5;
+}
+
+.clay-tile-label {
+  color: var(--clay-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Ăn badge dot: clay uses the warm fullness accent. */
+.theme-clay [data-testid="food-ready-dot"] {
+  width: 8px;
+  height: 8px;
+  background: var(--stat-full);
+}
+
+/* Clay stat row (StatBar variant="clay"): thick pill with the label
+   inside left and the current value inside right. Height follows
+   --clay-stat-h. */
+.clay-stat-row {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+}
+
+.clay-stat-track {
+  position: relative;
+  height: var(--clay-stat-h, 30px);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+/* The fill bulges like a clay button, but with a lighter edge: soft
+   inner rim on top-left, faint inner shade bottom-right, tiny drop. */
+.clay-stat-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  box-shadow:
+    inset 2px 2px 4px rgba(255, 255, 255, 0.4),
+    inset -2px -2px 4px rgba(42, 37, 72, 0.06),
+    0 1px 3px rgba(124, 107, 217, 0.18);
+  transition: width 300ms ease;
+}
+
+.clay-stat-fill[data-alert="1"] {
+  animation: clay-fill-pulse 1.2s ease-in-out infinite;
+}
+
+.clay-stat-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  height: 100%;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Value lives inside the pill, right-aligned above the fill. */
+.clay-stat-value {
+  position: absolute;
+  top: 0;
+  right: 14px;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.clay-stat-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-left: 4px;
+  border-radius: 999px;
+  background: var(--accent-coral);
+  vertical-align: middle;
+}
+
+.clay-stat-track[data-tone="coral"] {
+  background: var(--stat-health-bg);
+}
+.clay-stat-track[data-tone="coral"] .clay-stat-fill {
+  background: var(--stat-health);
+}
+.clay-stat-track[data-tone="mint"] {
+  background: var(--stat-mood-bg);
+}
+.clay-stat-track[data-tone="mint"] .clay-stat-fill {
+  background: var(--stat-mood);
+}
+.clay-stat-track[data-tone="sky"] {
+  background: var(--stat-energy-bg);
+}
+.clay-stat-track[data-tone="sky"] .clay-stat-fill {
+  background: var(--stat-energy);
+}
+.clay-stat-track[data-tone="amber"] {
+  background: var(--stat-full-bg);
+}
+.clay-stat-track[data-tone="amber"] .clay-stat-fill {
+  background: var(--stat-full);
+}
+.clay-stat-track[data-tone="exp"] {
+  background: var(--stat-xp-bg);
+}
+.clay-stat-track[data-tone="exp"] .clay-stat-fill {
+  background: var(--stat-xp);
+}
+
+@keyframes clay-fill-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+/* Clay profile card: round avatar, XP line, chip row. */
+.clay-avatar {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--scene-plate);
+}
+
+.clay-name {
+  color: var(--clay-text);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.clay-subtitle {
+  color: var(--clay-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.clay-xp-label {
+  margin-bottom: 4px;
+  color: var(--clay-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.clay-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clay-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  background: var(--clay-chip);
+  padding: 4px 10px;
+  color: var(--clay-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.clay-warn {
+  color: var(--accent-coral);
+  font-size: 13px;
+  font-weight: 600;
 }
 
 /* CRT terminal — scoped to the task overlay. See docs/design/TERMINAL.md */
@@ -805,9 +1185,11 @@ body {
 .terminal-lights i:nth-child(1) {
   background: #ff5f57;
 }
+
 .terminal-lights i:nth-child(2) {
   background: #febc2e;
 }
+
 .terminal-lights i:nth-child(3) {
   background: #28c840;
 }

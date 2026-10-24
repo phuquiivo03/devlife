@@ -14,8 +14,9 @@ export type PixelButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 /**
- * Shared pixel-3D button. Skins are the `ui_btn_*` 9-slices.
- * Press swaps to the pressed sheet and drops the label with the face.
+ * Shared rounded pastel button (the old `ui_btn_*` 9-slice bitmaps are
+ * retired — the chrome is CSS in pixel-button.module.css, per variant via
+ * `data-variant`). Press drops the label with the face by `--btn-press`.
  */
 export function PixelButton({
   variant = "primary",

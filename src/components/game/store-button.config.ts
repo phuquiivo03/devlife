@@ -10,7 +10,7 @@ import { STORE_GRID } from "./store-grid.config";
 export const STORE_LABEL = "Cửa hàng";
 
 /** Native size of `icon_btn_store`. The HUD draws the `_x2` sheet at 2×. */
-export const STORE_ICON_NATIVE_PX = 12;
+export const STORE_ICON_NATIVE_PX = 24;
 
 /** CSS pixels between icons on the HUD icon bar. Đi ngủ stays on that bar. */
 export const HUD_ICON_GAP_PX = 8;

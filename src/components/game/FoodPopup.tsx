@@ -24,7 +24,7 @@ import styles from "./food-dock.module.css";
 import foodGridStyles from "./food-grid.module.css";
 
 /** Icon-only Ăn control. Sits on the HUD icon bar beside Đi ngủ and opens Ăn uống. */
-export function HungerDock() {
+export function HungerDock({ clay = false }: { clay?: boolean }) {
   const fullness = useGameStore((s) => s.career.players.fullness);
   const open = useGameStore((s) => s.foodOpen);
   const setOpen = useGameStore((s) => s.setFoodOpen);
@@ -32,13 +32,14 @@ export function HungerDock() {
   const metrics = foodButtonMetrics();
   const tip = foodDockTip(blocked);
   const ready = foodDotVisible(fullness);
+  const iconPx = clay ? 24 : metrics.iconPx;
 
   return (
     <>
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            className="relative inline-flex"
+            className="relative inline-flex w-full"
             data-testid="hunger"
             data-fullness={Math.round(fullness)}
             data-blocked={blocked ? "1" : "0"}
@@ -47,28 +48,32 @@ export function HungerDock() {
               variant="icon"
               disabled={blocked != null}
               aria-label={tip}
-              className={styles.button}
-              style={{
-                width: metrics.buttonPx,
-                height: metrics.buttonPx,
-                minWidth: metrics.buttonPx,
-                minHeight: metrics.buttonPx,
-              }}
+              className={clay ? "clay-tile-inner w-full" : styles.button}
+              style={
+                clay
+                  ? { width: "100%", height: 40, minHeight: 40 }
+                  : {
+                      width: metrics.buttonPx,
+                      height: metrics.buttonPx,
+                      minWidth: metrics.buttonPx,
+                      minHeight: metrics.buttonPx,
+                    }
+              }
               onClick={() => setOpen(true)}
               data-testid="food-open"
             >
               <img
                 src={m51AssetPath(foodArtFile())}
                 alt=""
-                width={metrics.iconPx}
-                height={metrics.iconPx}
+                width={iconPx}
+                height={iconPx}
                 draggable={false}
                 data-testid="food-bowl-icon"
                 data-icon-key="icon_btn_food"
                 className={cn("pixel-img", styles.icon)}
                 style={{
-                  width: metrics.iconPx,
-                  height: metrics.iconPx,
+                  width: iconPx,
+                  height: iconPx,
                 }}
               />
             </PixelButton>

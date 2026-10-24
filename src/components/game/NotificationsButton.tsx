@@ -1,5 +1,6 @@
 "use client";
 
+import type React from "react";
 import { PixelButton } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PixelIcon } from "./PixelIcon";
@@ -9,15 +10,20 @@ import styles from "./notifications.module.css";
 
 /**
  * Bell icon button for notifications. Shows a badge count for unread notices.
+ * `compact` renders the 48px round face used on the top bar.
  */
 export function NotificationsButton({
   iconFiles = [],
+  compact = false,
   onOpen,
 }: {
   iconFiles?: readonly string[];
+  compact?: boolean;
   onOpen: () => void;
 }) {
   const metrics = storeButtonMetrics();
+  const buttonPx = compact ? 48 : metrics.buttonPx;
+  const iconPx = compact ? 24 : metrics.iconPx;
   const label = "Thông báo";
   const notices = useGameStore((s) => s.career.feed?.notices ?? []);
   const unreadCount = notices.filter((n) => !n.read).length;
@@ -31,17 +37,18 @@ export function NotificationsButton({
             aria-label={label}
             className="shrink-0"
             style={{
-              width: metrics.buttonPx,
-              height: metrics.buttonPx,
-              minWidth: metrics.buttonPx,
-              minHeight: metrics.buttonPx,
+              width: buttonPx,
+              height: buttonPx,
+              minWidth: buttonPx,
+              minHeight: buttonPx,
+              ...(compact ? ({ "--btn-radius": "999px" } as React.CSSProperties) : {}),
             }}
             onClick={onOpen}
             data-testid="open-notifications"
           >
             <PixelIcon
               name="notification"
-              size={metrics.iconPx}
+              size={iconPx}
               alt=""
               files={iconFiles}
             />

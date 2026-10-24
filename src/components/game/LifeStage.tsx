@@ -16,6 +16,7 @@ import {
 } from "@/game/life/m51-art";
 import type { LifeDiary } from "@/game/career/types";
 import { useGameStore } from "@/game/state/store";
+import { lifeEmote } from "@/components/game/life-emote";
 import { formatVnd } from "@/lib/format-currency";
 
 function art(key: string): string {
@@ -192,7 +193,7 @@ function DiarySpends({ diary }: { diary: LifeDiary }) {
   );
 }
 
-export function LifeRoomFx() {
+export function LifeRoomFx({ is3d }: { is3d: boolean }) {
   const health = useGameStore((s) => s.career.players.health);
   const mood = useGameStore((s) => s.career.players.mood);
   const energy = useGameStore((s) => s.career.players.energy);
@@ -206,14 +207,7 @@ export function LifeRoomFx() {
     return () => window.clearTimeout(timer);
   }, [bubble]);
 
-  const emote =
-    health < 30
-      ? "emote_cough.png"
-      : mood < 15
-        ? "emote_cloud.png"
-        : energy < 15
-          ? "emote_sweat.png"
-          : null;
+  const emote = lifeEmote({ health, mood, energy }, is3d);
   const showBubble = bubble != null && bubble.until > now;
 
   return (

@@ -10,7 +10,7 @@ export function Input({
     <input
       type={type}
       className={cn(
-        "flex h-12 w-full rounded-lg border-2 border-[#cbd5e1] bg-input px-3 py-2 text-sm font-medium text-foreground transition-bouncy placeholder:text-muted-foreground focus-visible:border-accent focus-visible:outline-none focus-visible:shadow-[4px_4px_0_0_#8b5cf6] disabled:cursor-not-allowed disabled:opacity-50 md:h-10",
+        "flex h-12 w-full rounded-[var(--radius-ctrl)] border-0 bg-[var(--tab-lavender)] px-4 py-2 text-sm font-medium text-foreground placeholder:text-muted-foreground transition-bouncy focus-visible:bg-input focus-visible:outline-none focus-visible:shadow-[var(--clay-recessed),0_0_0_3px_var(--accent-violet)] disabled:cursor-not-allowed disabled:opacity-50 md:h-11",
         className,
       )}
       {...props}

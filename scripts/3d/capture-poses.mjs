@@ -65,8 +65,8 @@ async function shot(name, path, state) {
 await shot("2d-baseline", "/", { owned: [] });
 // 2. Fresh student: floor pose at the folding table + laptop.
 await shot("3d-floor", "/?3d=1", { owned: [] });
-// 3. Own the desk upgrades: standing by the desk.
-await shot("3d-stand", "/?3d=1", { owned: ["monitor2", "ergo_chair"] });
+// 3. Own the desk upgrades: seated on the chair (idle — no longer standing).
+await shot("3d-idle-sit", "/?3d=1", { owned: ["monitor2", "ergo_chair"] });
 // 4. CRT task open: sitting on the chair.
 await shot("3d-sit", "/?3d=1", { owned: ["monitor2", "ergo_chair"], taskJobId: "debug-task" });
 // 5. Sleep transition: player hidden.

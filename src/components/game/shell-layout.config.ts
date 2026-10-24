@@ -1,12 +1,14 @@
 /**
- * Desktop side panels and the room status bar.
- * Documented in docs/design/DESIGN_SYSTEM.md (Layout, Room status bar).
- * Below `desktopMinPx` the columns stay in normal flow and scroll with the page.
- * The status bar lives in the scrolling center column on every width, so it
- * does not change the sticky cap (`headerPx`, `marginYPx`, `stickyTopPx`).
+ * Shell metrics for the pastel redesign (top bar + scene column + sidebar).
+ * Documented in docs/design/DESIGN_SYSTEM.md (Layout, Top bar).
+ * The old 480px room cap is retired: the scene card fills the left column and
+ * SceneCanvas crops the world to the slot. Values stay exported for tests.
  */
 
-/** CSS cap for the room slot. Do not grow it to fill the column. */
+/**
+ * Legacy CSS cap for the room slot. No longer applied by GameShell — kept for
+ * the ROOM_STATUS_BAR math below and for the unit tests.
+ */
 export const ROOM_VIEWPORT_W = 480;
 
 /**

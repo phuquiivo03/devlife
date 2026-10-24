@@ -10,7 +10,7 @@ describe("modal shell", () => {
     expect(MODAL.contentZ).toBe(50);
     expect(modalOverlayStyle()).toMatchObject({
       zIndex: 40,
-      backgroundColor: "rgba(42, 37, 72, 0.45)",
+      backgroundColor: "rgba(42, 37, 72, 0.28)",
       animationDuration: "160ms",
     });
     expect(modalContentStyle()).toMatchObject({
