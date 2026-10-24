@@ -101,6 +101,7 @@ export function defaultCareer(
       energy: clampEnergy(config.starting_energy, config.energy_max),
       health: LIFE.starting_health,
       mood: LIFE.starting_mood,
+      fullness: LIFE.fullness_max,
       reputation: config.starting_reputation,
       freelance_completed: 0,
       trait,

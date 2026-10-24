@@ -15,7 +15,7 @@ export const STAGES = ["student", "junior", "senior"] as const;
 export type StageId = (typeof STAGES)[number];
 
 export const PERSIST_KEY = "devlife:v1";
-export const PERSIST_VERSION = 19;
+export const PERSIST_VERSION = 20;
 /**
  * v1: stage, loadouts, showCharacter.
  * v2: in-game `totalMinutes` (see docs/systems/time.md).
@@ -36,6 +36,7 @@ export const PERSIST_VERSION = 19;
  * v17: notice `actions` (`{ id, label, icon?, variant? }[]`) and `payload.jobId`, plus `life.jobNoticeSlots`. A legacy `action` string becomes one button. An older string list or `jobId` field is folded in. The slot counter starts at 0. Money, skills, and progress stay.
  * v18: offered and in-progress jobs become accepted. The deadline is recomputed from the save's current day (easy 2, mid 3, hard 4). Pay, progress, and the task run stay.
  * v19: furniture placement overhaul - items usable across all rooms
+ * v20: slot hunger (`life.slotsSinceMeal`) became the continuous `players.fullness` stat (0–100). Older saves start full (`fullness_default_migrate`).
  */
 
 export const CHAR_POSE_SIT_BACK = "character/derived/char_sit_back";

@@ -258,6 +258,7 @@ export function careerFromUnknown(
       mood: Number.isFinite(Number(players.mood))
         ? clampEnergy(Number(players.mood), LIFE.stat_max)
         : fresh.players.mood,
+      fullness: fullnessOrDefault(players.fullness),
       reputation: num(players.reputation, fresh.players.reputation),
       freelance_completed: num(players.freelance_completed),
       trait: isTraitId(players.trait) ? players.trait : MIGRATION_TRAIT,
@@ -278,6 +279,14 @@ export function careerFromUnknown(
       energy: Number.isFinite(Number(players.energy)) ? Number(players.energy) : fresh.players.energy,
     }),
   };
+}
+
+/** Fullness for a pre-v20 save (or a corrupt value): freshly full. */
+function fullnessOrDefault(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > LIFE.stat_max) {
+    return LIFE.fullness_default_migrate;
+  }
+  return value;
 }
 
 function normalizeLife(value: unknown, day: number): LifeState {
@@ -304,7 +313,8 @@ function normalizeLife(value: unknown, day: number): LifeState {
     suppressEndOfDayUntil:
       value.suppressEndOfDayUntil == null ? null : num(value.suppressEndOfDayUntil),
     homeDays: num(value.homeDays),
-    slotsSinceMeal: Math.max(0, num(value.slotsSinceMeal)),
+    hungryNoticed: value.hungryNoticed === true,
+    starvingNoticed: value.starvingNoticed === true,
     jobNoticeSlots: Math.max(0, num(value.jobNoticeSlots)),
   };
 }
@@ -498,10 +508,13 @@ function strOrNull(value: unknown): string | null {
  * marked `traitRolled`. A version 11 trait other than Cẩn thận is kept. A
  * version 11 Cẩn thận is rolled once and then marked. Version 13 marks
  * `introSeen` so an older save does not open the creation popup. Version 14
- * starts `feed.purse` empty. Version 15 sets `life.slotsSinceMeal` to 0.
+ * starts `feed.purse` empty.
  * Version 16 clears `sleptDay` and `sleptAt` on an older diary.
  * Version 17 turns a legacy `action` into `{ id, label }`, folds `jobId` into
  * `payload`, and starts `life.jobNoticeSlots` at 0.
+ * Version 20 replaces slot hunger with the continuous `players.fullness`
+ * stat; older saves wake up full (`fullness_default_migrate`). The stale
+ * `life.slotsSinceMeal` is dropped by `normalizeLife`.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -562,9 +575,6 @@ export function migrateSave(
   if (version < 14) {
     career = { ...career, feed: { ...career.feed, purse: emptyPurse() } };
   }
-  if (version < 15) {
-    career = { ...career, life: { ...career.life, slotsSinceMeal: 0 } };
-  }
   if (version < 16 && career.feed.diary) {
     career = {
       ...career,
@@ -584,6 +594,18 @@ export function migrateSave(
     // v19: furniture placement overhaul - overlay items can appear in all rooms, replacement items use loadouts across rooms
     // No save-breaking data migration needed as placement data is in JSON files
     // Ensure shop normalization handles owned items properly
+  }
+  if (version < 20) {
+    // v20: slot hunger became the continuous No bụng stat. `careerFromUnknown`
+    // already fills missing or invalid fullness; this branch documents the
+    // v19→v20 step explicitly (freshly full, so the save can keep ticking).
+    career = {
+      ...career,
+      players: {
+        ...career.players,
+        fullness: fullnessOrDefault(career.players.fullness),
+      },
+    };
   }
 
   return {

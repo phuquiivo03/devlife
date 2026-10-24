@@ -1,8 +1,3 @@
-/*
- * Pulse on the rice-bowl icon. Durations and the opacity / brightness
- * floors come from food-dock.config.ts as custom properties.
- * The icon does not translate or scale.
- */
 .button {
   flex: 0 0 auto;
 }
@@ -14,29 +9,15 @@
   pointer-events: none;
 }
 
-.bowlBlink {
-  animation-name: food-bowl-pulse;
-  animation-duration: var(--hunger-blink-ms);
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-@keyframes food-bowl-pulse {
-  0%,
-  100% {
-    opacity: 1;
-    filter: brightness(1);
-  }
-  50% {
-    opacity: var(--hunger-min-opacity);
-    filter: brightness(var(--hunger-min-brightness));
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .bowlBlink {
-    animation: none;
-    opacity: var(--hunger-still-opacity);
-    filter: brightness(var(--hunger-still-brightness));
-  }
+/* Small amber dot on the Ăn button while a meal is available (fullness < fullness_eat_below). */
+.readyDot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-amber);
+  border: 2px solid #1e1428;
+  border-radius: 5px;
+  pointer-events: none;
 }

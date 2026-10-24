@@ -8,34 +8,44 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { LIFE, type FoodId } from "@/game/life/content";
 import { m51AssetPath } from "@/game/life/assets";
 import { actionEatArtFile, foodArtFile, foodDockMetrics } from "@/game/life/m51-art";
-import { hungerLevel } from "@/game/life/hunger";
 import { lifeOf, mealBlocked } from "@/game/life/logic";
 import { foodPrice } from "@/game/life/traits";
 import { useGameStore } from "@/game/state/store";
 import { cn } from "@/lib/utils";
 import { formatVnd } from "@/lib/format-currency";
-import { foodButtonMetrics, foodHungerTip, hungerBowlBlinkStyle } from "./food-dock.config";
+import {
+  foodButtonMetrics,
+  foodDockTip,
+  foodDotVisible,
+  foodEatBlockReason,
+} from "./food-dock.config";
 import { foodGridCss, FOOD_GRID } from "./food-grid.config";
 import styles from "./food-dock.module.css";
 import foodGridStyles from "./food-grid.module.css";
 
 /** Icon-only Ăn control. Sits on the HUD icon bar beside Đi ngủ and opens Ăn uống. */
 export function HungerDock() {
-  const slots = useGameStore((s) => lifeOf(s.career).slotsSinceMeal);
+  const fullness = useGameStore((s) => s.career.players.fullness);
   const open = useGameStore((s) => s.foodOpen);
   const setOpen = useGameStore((s) => s.setFoodOpen);
-  const hunger = hungerLevel(slots);
+  const blocked = foodEatBlockReason(fullness);
   const metrics = foodButtonMetrics();
-  const tip = foodHungerTip(hunger);
-  const blinking = hunger !== "full";
+  const tip = foodDockTip(blocked);
+  const ready = foodDotVisible(fullness);
 
   return (
     <>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span className="inline-flex" data-testid="hunger" data-hunger={hunger} data-slots={slots}>
+          <span
+            className="relative inline-flex"
+            data-testid="hunger"
+            data-fullness={Math.round(fullness)}
+            data-blocked={blocked ? "1" : "0"}
+          >
             <PixelButton
               variant="icon"
+              disabled={blocked != null}
               aria-label={tip}
               className={styles.button}
               style={{
@@ -54,16 +64,15 @@ export function HungerDock() {
                 height={metrics.iconPx}
                 draggable={false}
                 data-testid="food-bowl-icon"
-                data-hunger-blink={hunger}
                 data-icon-key="icon_btn_food"
-                className={cn("pixel-img", styles.icon, blinking && styles.bowlBlink)}
+                className={cn("pixel-img", styles.icon)}
                 style={{
                   width: metrics.iconPx,
                   height: metrics.iconPx,
-                  ...hungerBowlBlinkStyle(hunger),
                 }}
               />
             </PixelButton>
+            {ready && <span className={styles.readyDot} data-testid="food-ready-dot" />}
           </span>
         </TooltipTrigger>
         <TooltipContent side="top" data-testid="food-tooltip">

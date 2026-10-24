@@ -29,12 +29,16 @@ function useCareerSim() {
     const offHour = timeBus.on("hourChanged", (event) => {
       useGameStore.getState().onHour(event.hour, event.totalMinutes);
     });
+    const offMinute = timeBus.on("minute", (event) => {
+      useGameStore.getState().onMinute(event.count);
+    });
     const offSleep = timeBus.on("sleep", (event) => {
       useGameStore.getState().onWake(event.fromTotalMinutes);
     });
     return () => {
       offDay();
       offHour();
+      offMinute();
       offSleep();
     };
   }, []);
@@ -52,6 +56,7 @@ export function CareerChrome({
   const close = useGameStore((s) => s.closeCareerPanel);
   const debugAddMoney = useGameStore((s) => s.debugAddMoney);
   const debugFillEnergy = useGameStore((s) => s.debugFillEnergy);
+  const debugMakeHungry = useGameStore((s) => s.debugMakeHungry);
   const debugLevelUp = useGameStore((s) => s.debugLevelUp);
   const [floats, setFloats] = useState<FloatNote[]>([]);
   const [popup, setPopup] = useState<LevelPopup | null>(null);
@@ -140,6 +145,16 @@ export function CareerChrome({
                 onClick={debugFillEnergy}
               >
                 Đầy năng lượng
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                showArrow={false}
+                variant="outline"
+                data-testid="debug-make-hungry"
+                onClick={debugMakeHungry}
+              >
+                Làm đói
               </Button>
               <Button
                 type="button"

@@ -42,10 +42,25 @@ export type LifeConfig = {
   work_streak_energy_cost: number;
   work_streak_slot_mood: number;
   passive_slot_mood: number;
-  meals_low_below: number;
-  meals_low_health: number;
   meals_full: number;
   meals_full_health: number;
+  /** Fullness ceiling. The bar drains from this to 0. */
+  fullness_max: number;
+  /** Fullness lost per waking hour. `fullness_max` / this = hours from full to empty. */
+  fullness_drain_per_hour: number;
+  /** Fullness assigned when the player wakes up. Below `fullness_eat_below` so breakfast is allowed. */
+  fullness_wake: number;
+  /** Eating is blocked at or above this fullness. */
+  fullness_eat_below: number;
+  /** Fullness set by every meal. */
+  fullness_after_meal: number;
+  /** Health lost per hour while fullness is 0. */
+  starve_health_per_hour: number;
+  /** Fullness for a save that predates the stat. */
+  fullness_default_migrate: number;
+  fullness_hungry_notice: string;
+  fullness_starving_notice: string;
+  fullness_eat_block: string;
   mood_anchor: number;
   mood_regress: number;
   fun_slots_for_grind: number;
@@ -77,11 +92,6 @@ export type LifeConfig = {
   rent: Record<StageId, number>;
   utilities: Record<StageId, number>;
   salary: Record<StageId, number>;
-  /** Slots since the last meal still count as No. */
-  hunger_full_until: number;
-  /** Slots since the last meal still count as Hơi đói. */
-  hunger_peckish_until: number;
-  hunger_notice: string;
   /** Waking slots between new job notices. */
   job_notice_every_slots: number;
   /** Unaccepted job notices kept in the list. */

@@ -50,7 +50,7 @@ import {
   type SpeedPreset,
 } from "../time";
 import { LIFE, type FoodId } from "../life/content";
-import { crossWakingSlot, eatMeal, gameBlocked, gameBubbleText, hoursUntilWake, mealBlocked, playGameSlot, resolveMorning } from "../life/logic";
+import { crossWakingSlot, eatMeal, gameBlocked, gameBubbleText, hoursUntilWake, mealBlocked, playGameSlot, resolveMorning, setFullness, tickFullness } from "../life/logic";
 import { rollTrait } from "../life/traits";
 import { LIFE_EVENTS } from "../life/events-content";
 import {
@@ -217,6 +217,8 @@ export type GameState = {
   onDayStarted: (day: number, totalMinutes: number) => void;
   onWake: (fromTotalMinutes: number) => void;
   onHour: (hour: number, totalMinutes: number) => void;
+  /** Drain No bụng for `count` waking in-game minutes. No-op asleep (clockSkip) or in hospital. */
+  onMinute: (count: number) => void;
   buyCourse: (activityId: string, force?: boolean) => void;
   eat: (foodId: FoodId) => void;
   /** One 2-hour Chơi game slot. No-op when gameBlocked. */
@@ -268,6 +270,7 @@ export type GameState = {
   syncLifeSurface: () => void;
   debugAddMoney: () => void;
   debugFillEnergy: () => void;
+  debugMakeHungry: () => void;
   debugLevelUp: () => void;
 };
 
@@ -507,6 +510,15 @@ export const useGameStore = create<GameState>()(
           bubble: rolled.bubble,
           warns: [...rolled.warns, ...surface.warns],
         });
+      },
+      onMinute: (count) => {
+        // Sleep (SleepTransition) and hospital jumps both hold clockSkip; the
+        // hospital popup holds the clock still. Waking fast-forwards land here
+        // as coalesced minute events and drain in one batch.
+        if (clockSkip || get().hospitalOpen) return;
+        const result = tickFullness(get().career, count);
+        if (result.state === get().career) return;
+        commitLife({ ...result, skipMinutes: 0, bubble: null, warns: [] });
       },
       eat: (foodId) => {
         const current = get().career;
@@ -824,6 +836,11 @@ export const useGameStore = create<GameState>()(
       },
       debugFillEnergy: () => {
         const result = fillEnergy(get().career, SIM_CATALOG);
+        set({ career: result.state });
+        emitGame(result.events);
+      },
+      debugMakeHungry: () => {
+        const result = setFullness(get().career, 20);
         set({ career: result.state });
         emitGame(result.events);
       },

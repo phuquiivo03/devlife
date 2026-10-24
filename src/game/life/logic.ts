@@ -1,10 +1,10 @@
-import type { CareerState, LifeState } from "../career/types";
+import type { CareerState, LifeNotice, LifeState } from "../career/types";
 import type { StageId } from "../config";
 import type { GameEvent } from "../events/types";
 import { applyMoney } from "../vitals/logic";
 import { LIFE, foodById, type FoodId } from "./content";
+import { LIFE_EVENTS } from "./events-content";
 import { furnitureDailyHealth, furnitureDailyMood, furnitureSleepBonus } from "./furniture";
-import { advanceHunger } from "./hunger";
 import { notePurse } from "./purse";
 import { foodPrice, traitDecay, traitHomeMood, traitMoodFloor, traitMorningEnergy } from "./traits";
 
@@ -23,6 +23,7 @@ export type Vitals = {
   health: number;
   mood: number;
   money: number;
+  fullness: number;
 };
 
 export type LifeResult = {
@@ -55,7 +56,8 @@ export function defaultLife(day: number): LifeState {
     wakeBudget: slotBudget(day),
     suppressEndOfDayUntil: null,
     homeDays: 0,
-    slotsSinceMeal: 0,
+    hungryNoticed: false,
+    starvingNoticed: false,
     jobNoticeSlots: 0,
   };
 }
@@ -157,6 +159,7 @@ function vitalsOf(state: CareerState): Vitals {
     health: state.players.health,
     mood: state.players.mood,
     money: state.players.money,
+    fullness: state.players.fullness,
   };
 }
 
@@ -170,6 +173,7 @@ function writeVitals(state: CareerState, vitals: Vitals, life: LifeState): Caree
       health: vitals.health,
       mood: vitals.mood,
       money: vitals.money,
+      fullness: vitals.fullness,
     },
   };
 }
@@ -188,6 +192,7 @@ function finish(
   let energy = clampStat(next.energy);
   const health = clampStat(next.health);
   let mood = clampStat(next.mood);
+  const fullness = clampStat(next.fullness);
   const floor = traitMoodFloor(state);
   if (floor != null) mood = Math.max(mood, floor);
   const money = applyMoney(0, next.money);
@@ -217,7 +222,7 @@ function finish(
     // Keep health as is (it will be clamped on discharge)
   }
 
-  const after: Vitals = { energy, health, mood, money };
+  const after: Vitals = { energy, health, mood, money, fullness };
   const deltaEvents: GameEvent[] = [];
   if (after.energy !== before.energy) {
     deltaEvents.push({
@@ -240,6 +245,13 @@ function finish(
       mood: after.mood,
     });
   }
+  if (after.fullness !== before.fullness) {
+    deltaEvents.push({
+      type: "fullnessChanged",
+      delta: after.fullness - before.fullness,
+      fullness: after.fullness,
+    });
+  }
   if (after.money !== before.money) {
     deltaEvents.push({
       type: "moneyChanged",
@@ -260,7 +272,7 @@ function finish(
 
 function applyDirect(
   state: CareerState,
-  delta: Partial<Pick<Vitals, "energy" | "health" | "mood" | "money">>,
+  delta: Partial<Pick<Vitals, "energy" | "health" | "mood" | "money" | "fullness">>,
   life: LifeState = lifeOf(state),
 ): LifeResult {
   const before = vitalsOf(state);
@@ -272,6 +284,7 @@ function applyDirect(
       health: before.health + (delta.health ?? 0),
       mood: before.mood + (delta.mood ?? 0),
       money: before.money + (delta.money ?? 0),
+      fullness: before.fullness + (delta.fullness ?? 0),
     },
     life,
     [],
@@ -285,7 +298,7 @@ function applyDirect(
  */
 export function applyActionStats(
   state: CareerState,
-  delta: { energy?: number; health?: number; mood?: number; money?: number },
+  delta: { energy?: number; health?: number; mood?: number; money?: number; fullness?: number },
   life: LifeState = lifeOf(state),
 ): LifeResult {
   const before = vitalsOf(state);
@@ -314,6 +327,7 @@ export function applyActionStats(
       health: before.health + health,
       mood: before.mood + mood,
       money: before.money + (delta.money ?? 0),
+      fullness: before.fullness + (delta.fullness ?? 0),
     },
     { ...life, positiveMoodApplies: applies },
     [],
@@ -334,31 +348,119 @@ export function markWorked(state: CareerState): CareerState {
   return { ...state, life: { ...life, workedToday: true } };
 }
 
+function pushFullnessNotice(state: CareerState, life: LifeState, notice: LifeNotice): CareerState {
+  const feed = state.feed;
+  if (!feed) return state;
+  if (feed.notices.some((row) => row.id === notice.id)) return state;
+  const notices = [...feed.notices, notice];
+  const cap = LIFE_EVENTS.notice_cap;
+  return {
+    ...state,
+    life,
+    feed: { ...feed, notices: notices.length > cap ? notices.slice(notices.length - cap) : notices },
+  };
+}
+
+/**
+ * Waking hunger over `minutes` of in-game time, applied in one batch so a
+ * coalesced catch-up tick equals minute-by-minute play at any speed: fullness
+ * drains for as long as it lasts, and only the remainder after it reaches 0
+ * costs health. Sleep passes `asleep: true` (hospital skips the clock entirely).
+ * Health stays a float here so per-minute starvation is not rounded away.
+ */
+export function tickFullness(
+  state: CareerState,
+  minutes: number,
+  options: { asleep?: boolean } = {},
+): LifeResult {
+  const total = Number.isFinite(minutes) ? Math.max(0, minutes) : 0;
+  if (options.asleep || total <= 0) return { state, events: [], skipDays: 0 };
+  const fullness = state.players.fullness;
+  const drainPerMinute = LIFE.fullness_drain_per_hour / 60;
+  const fedMinutes = Math.min(total, fullness / drainPerMinute);
+  const starvingMinutes = total - fedMinutes;
+  const nextFullness = Math.max(LIFE.stat_min, fullness - fedMinutes * drainPerMinute);
+  const healthDelta = -starvingMinutes * (LIFE.starve_health_per_hour / 60);
+
+  const life = lifeOf(state);
+  const nextLife: LifeState = { ...life };
+  let withNotices = state;
+  if (nextFullness < LIFE.fullness_eat_below && !life.hungryNoticed) {
+    nextLife.hungryNoticed = true;
+    withNotices = pushFullnessNotice(
+      withNotices,
+      nextLife,
+      hungerNotice(state, "hungry", LIFE.fullness_hungry_notice, "warn"),
+    );
+  }
+  if (nextFullness <= 0 && !life.starvingNoticed) {
+    nextLife.starvingNoticed = true;
+    withNotices = pushFullnessNotice(
+      withNotices,
+      nextLife,
+      hungerNotice(state, "starving", LIFE.fullness_starving_notice, "urgent"),
+    );
+  }
+  return applyDirect(
+    withNotices,
+    { health: healthDelta, fullness: nextFullness - fullness },
+    nextLife,
+  );
+}
+
+function hungerNotice(
+  state: CareerState,
+  kind: "hungry" | "starving",
+  text: string,
+  severity: LifeNotice["severity"],
+): LifeNotice {
+  return {
+    id: `fullness-${kind}-${state.players.game_day}-${lifeOf(state).mealsToday}`,
+    day: state.players.game_day,
+    minute: state.players.game_minute,
+    severity,
+    icon: "icon_notif_event.png",
+    text,
+    action: "eat",
+    read: false,
+  };
+}
+
 export function eatMeal(state: CareerState, foodId: FoodId): LifeResult {
   const food = foodById(foodId);
   if (!food) {
     return { state, events: [], skipDays: 0 };
   }
-  const life = lifeOf(state);
-  if (life.mealsToday >= LIFE.meals_full) {
+  if (state.players.fullness >= LIFE.fullness_eat_below) {
     return { state, events: [], skipDays: 0 };
   }
   const price = foodPrice(food.price, state);
   if (state.players.money < price) {
     return { state, events: [], skipDays: 0 };
   }
+  const life = lifeOf(state);
   const spent = applyActionStats(
     state,
-    { money: -price, health: food.health },
-    { ...life, mealsToday: life.mealsToday + 1, slotsSinceMeal: 0 },
+    {
+      money: -price,
+      health: food.health,
+      fullness: LIFE.fullness_after_meal - state.players.fullness,
+    },
+    {
+      ...life,
+      mealsToday: life.mealsToday + 1,
+      hungryNoticed: false,
+      starvingNoticed: false,
+    },
   );
   return { ...spent, state: notePurse(spent.state, -price, "food") };
 }
 
+/** Order: unknown food → not hungry enough (`fullness_eat_below`) → not enough money. */
 export function mealBlocked(state: CareerState, foodId: FoodId): string | null {
   const food = foodById(foodId);
   if (!food) return "Không có món này";
-  if (lifeOf(state).mealsToday >= LIFE.meals_full) return "Hôm nay ăn đủ 3 bữa";
+  if (state.players.fullness >= LIFE.fullness_eat_below) return LIFE.fullness_eat_block;
   if (state.players.money < foodPrice(food.price, state)) return "Không đủ tiền";
   return null;
 }
@@ -446,9 +548,11 @@ function endOfDay(state: CareerState): LifeResult {
     return { state, events: [], skipDays: 0 };
   }
 
+  // Hunger is already charged per waking hour by tickFullness (starvation), so
+  // the day close only pays the bonus for a full 3 meals. A meals-low penalty
+  // here would double-charge. See docs for the M7 decision.
   let health = 0;
-  if (life.mealsToday < LIFE.meals_low_below) health += LIFE.meals_low_health;
-  else if (life.mealsToday === LIFE.meals_full) health += LIFE.meals_full_health;
+  if (life.mealsToday >= LIFE.meals_full) health += LIFE.meals_full_health;
 
   const workStreak = life.workedToday ? life.workStreak + 1 : 0;
   const homeDays = life.funSlotsToday > 0 ? 0 : (Number.isFinite(life.homeDays) ? life.homeDays : 0) + 1;
@@ -577,10 +681,16 @@ export function resolveMorning(state: CareerState, day: number): LifeResult {
     positiveMoodApplies: 0,
     morningResolvedDay: day,
     wakeBudget: slotBudget(day),
+    hungryNoticed: false,
+    starvingNoticed: false,
   };
   const rested = applyDirect(
     state,
-    { mood: penalty > 0 ? -penalty : 0, energy: traitMorningEnergy(state) },
+    {
+      mood: penalty > 0 ? -penalty : 0,
+      energy: traitMorningEnergy(state),
+      fullness: LIFE.fullness_wake - state.players.fullness,
+    },
     nextLife,
   );
   return crossWakingSlot(rested.state, 6 * 60, rested.events, rested.skipDays);
@@ -593,13 +703,12 @@ export function crossWakingSlot(
   priorEvents: GameEvent[] = [],
   priorSkip = 0,
 ): LifeResult {
-  const hungrier = advanceHunger(state);
-  const life = lifeOf(hungrier);
+  const life = lifeOf(state);
   const index = slotIndexFromWake(minuteOfDay);
   const budget = life.wakeBudget > 0 ? life.wakeBudget : slotBudget(state.players.game_day);
   if (index >= budget) {
     const late = applyDirect(
-      hungrier,
+      state,
       { health: LIFE.late_slot_health },
       {
         ...life,
@@ -613,14 +722,24 @@ export function crossWakingSlot(
       skipDays: Math.max(priorSkip, late.skipDays),
     };
   }
-  let mood = LIFE.passive_slot_mood * traitDecay(hungrier);
+  let mood = LIFE.passive_slot_mood * traitDecay(state);
   if (life.workStreak >= LIFE.work_streak_at) mood += LIFE.work_streak_slot_mood;
-  const ticked = applyDirect(hungrier, { mood }, life);
+  const ticked = applyDirect(state, { mood }, life);
   return {
     state: ticked.state,
     events: [...priorEvents, ...ticked.events],
     skipDays: Math.max(priorSkip, ticked.skipDays),
   };
+}
+
+/** Debug helper. Sets No bụng directly; clamps and emits like any vital change. */
+export function setFullness(state: CareerState, value: number): LifeResult {
+  return applyDirect(state, { fullness: value - state.players.fullness });
+}
+
+/** HUD low warning. Sức khỏe blinks below `sick_below`, No bụng below `fullness_eat_below`. */
+export function isLowStat(key: "health" | "fullness", value: number): boolean {
+  return value < (key === "health" ? LIFE.sick_below : LIFE.fullness_eat_below);
 }
 
 export function applySleepRest(state: CareerState, hours: number): LifeResult {

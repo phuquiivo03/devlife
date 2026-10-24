@@ -60,6 +60,11 @@ export type GameEvent =
       mood: number;
     }
   | {
+      type: "fullnessChanged";
+      delta: number;
+      fullness: number;
+    }
+  | {
       type: "taskStarted";
       jobId: string;
       templateId: string;

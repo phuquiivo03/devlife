@@ -126,11 +126,13 @@ describe("personality", () => {
   it("discounts food for Tiết kiệm and halves only a positive shopping mood", () => {
     const frugal = career("frugal");
     const plain = career("careful");
+    const hungryFrugal = { ...frugal, players: { ...frugal.players, fullness: 20 } };
+    const hungryPlain = { ...plain, players: { ...plain.players, fullness: 20 } };
     expect(foodPrice(8_000, frugal)).toBe(6_400);
     expect(foodPrice(25_000, frugal)).toBe(20_000);
-    expect(eatMeal(frugal, "noodles").state.players.money).toBe(3_000_000 - 6_400);
-    expect(eatMeal(plain, "noodles").state.players.money).toBe(3_000_000 - 8_000);
-    expect(eatMeal(frugal, "noodles").state.players.health).toBe(67);
+    expect(eatMeal(hungryFrugal, "noodles").state.players.money).toBe(3_000_000 - 6_400);
+    expect(eatMeal(hungryPlain, "noodles").state.players.money).toBe(3_000_000 - 8_000);
+    expect(eatMeal(hungryFrugal, "noodles").state.players.health).toBe(67);
     expect(scaleShoppingMood(4, frugal)).toBe(2);
     expect(scaleShoppingMood(10, frugal)).toBe(5);
     expect(scaleShoppingMood(-4, frugal)).toBe(-4);

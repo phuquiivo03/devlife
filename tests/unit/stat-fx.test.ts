@@ -55,6 +55,7 @@ describe("diffStats", () => {
     health: 70,
     mood: 70,
     energy: 62,
+    fullness: 100,
     reputation: 18,
     paidSalaryKey: null,
     paidRentKey: null,
@@ -77,6 +78,16 @@ describe("diffStats", () => {
     expect(specs[1].delayMs).toBe(120);
     expect(specs[2].key).toBe("reputation");
     expect(specs[2].text).toBe("+2");
+  });
+
+  it("eating floats a rice gain with the real delta", () => {
+    const specs = diffStats({ ...base, fullness: 10 }, { ...base, fullness: 100 });
+    expect(specs).toEqual([expect.objectContaining({ key: "fullness", text: "+90 🍚", tone: "gain" })]);
+  });
+
+  it("never floats a fullness loss (per-minute drain, wake reset)", () => {
+    expect(diffStats(base, { ...base, fullness: 10 })).toEqual([]);
+    expect(diffStats({ ...base, fullness: 58.4 }, { ...base, fullness: 58.2 })).toEqual([]);
   });
 
   it("rounds vitals for display", () => {
@@ -108,6 +119,7 @@ describe("moneyLabel", () => {
     health: 0,
     mood: 0,
     energy: 0,
+    fullness: 0,
     reputation: 0,
     paidSalaryKey: null,
     paidRentKey: null,

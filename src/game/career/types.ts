@@ -132,6 +132,8 @@ export type PlayerRow = {
   health: number;
   /** 0–100 float. The HUD rounds. */
   mood: number;
+  /** 0–100 float. No bụng. The HUD rounds. */
+  fullness: number;
   reputation: number;
   freelance_completed: number;
   /** One trait rolled at creation or once during migration. */
@@ -169,8 +171,10 @@ export type LifeState = {
   suppressEndOfDayUntil: number | null;
   /** Consecutive days that ended with no fun slot. Extrovert mood uses this. */
   homeDays: number;
-  /** Waking slots since the last meal. Eating sets this back to 0. */
-  slotsSinceMeal: number;
+  /** The Bụng đói notice already fired during this hungry cycle. Reset by eating and by waking. */
+  hungryNoticed: boolean;
+  /** The Đói lả notice already fired during this hungry cycle. Reset by eating and by waking. */
+  starvingNoticed: boolean;
   /** Waking slots since the last job-notice attempt. A new offer waits for `job_notice_every_slots`. */
   jobNoticeSlots: number;
 };

@@ -105,7 +105,7 @@ describe("store catalog", () => {
     expect(day.state.players.mood).toBeCloseTo(74.6, 5);
     const mattress = { ...start, shop: { owned: ["mattress"], pin: null } };
     const healed = applyLifeDayStart(mattress, 2, "student", { resolveMorning: false });
-    expect(healed.state.players.health).toBe(66); // mattress applies when owned (v19)
+    expect(healed.state.players.health).toBe(71); // mattress applies when owned (v19); the meals-low penalty is gone in v20
     const rested = { ...planted, shop: { owned: ["fan"], pin: null }, players: { ...planted.players, energy: 10 } };
     expect(applySleepRest(rested, 1).state.players.energy).toBe(10 + 12.5 + 5);
 

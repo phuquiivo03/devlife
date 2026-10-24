@@ -3,7 +3,7 @@
 import React, { useRef } from "react";
 import { SIM_CATALOG } from "@/game/career/content";
 import { VITAL_MAX } from "@/game/state/playerStats";
-import { calendar, holidayOn } from "@/game/life/logic";
+import { calendar, holidayOn, isLowStat } from "@/game/life/logic";
 import { useGameStore, type CareerPanel } from "@/game/state/store";
 import { canSleepAt, phaseById, snapshot, type PhaseId } from "@/game/time";
 import { resolveShippedIcon } from "@/lib/pixel-assets";
@@ -234,6 +234,7 @@ export function PlayerHudCard({
   const health = useGameStore((s) => s.career.players.health);
   const mood = useGameStore((s) => s.career.players.mood);
   const energy = useGameStore((s) => s.career.players.energy);
+  const fullness = useGameStore((s) => s.career.players.fullness);
   const sleep = useGameStore((s) => s.sleep);
   const canSleep = useGameStore((s) => canSleepAt(s.totalMinutes));
   const openCareerPanel = useGameStore((s) => s.openCareerPanel);
@@ -250,7 +251,7 @@ export function PlayerHudCard({
         backgroundColor: "transparent",
       }}
     >
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         <HudVital
           icon="health"
           label="Sức khỏe"
@@ -258,7 +259,7 @@ export function PlayerHudCard({
           max={VITAL_MAX}
           tone="coral"
           testId="hud-health"
-          alert={health < 30}
+          alert={isLowStat("health", health)}
           statKey="health"
         />
         <HudVital
@@ -280,6 +281,16 @@ export function PlayerHudCard({
           testId="hud-energy"
           alert={energy < 15}
           statKey="energy"
+        />
+        <HudVital
+          icon="food"
+          label="No bụng"
+          value={fullness}
+          max={VITAL_MAX}
+          tone="amber"
+          testId="hud-fullness"
+          alert={isLowStat("fullness", fullness)}
+          statKey="fullness"
         />
       </div>
       <div className="mt-3 flex items-center">
@@ -319,10 +330,10 @@ function HudVital({
   label: string;
   value: number;
   max: number;
-  tone: "coral" | "mint" | "sky";
+  tone: "coral" | "mint" | "sky" | "amber";
   testId: string;
   alert?: boolean;
-  statKey: "health" | "mood" | "energy";
+  statKey: "health" | "mood" | "energy" | "fullness";
 }) {
   const tweened = useTweenedNumber(value, 500);
   const shown = Math.round(value);

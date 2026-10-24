@@ -22,7 +22,6 @@ import {
   slotBudget,
   slotIndexFromWake,
 } from "@/game/life/logic";
-import { hungerLevel } from "@/game/life/hunger";
 import { playLifeSound, LIFE_SOUND_KEYS } from "@/game/life/sounds";
 import { migrateSave } from "@/game/storage/migrate";
 import { startTask } from "@/game/task-run/apply";
@@ -91,7 +90,8 @@ describe("life stats", () => {
   it("ends the day from meals, regresses mood, and ticks a waking slot", () => {
     const start = defaultCareer(1, 8 * 60, "student", SIM_CATALOG);
     const ended = applyDayStarted(start, 2, 0, "student", SIM_CATALOG, { resolveMorning: false });
-    expect(ended.state.players.health).toBe(65);
+    // No meals-low penalty anymore: hourly starvation replaced it.
+    expect(ended.state.players.health).toBe(70);
     expect(ended.state.players.mood).toBeCloseTo(70 + (60 - 70) * 0.1, 5);
     const fed = {
       ...start,
@@ -134,10 +134,16 @@ describe("life money", () => {
   it("prices food, bills rent on the 1st, and pays the low salary on the 10th", () => {
     const start = defaultCareer(1, 8 * 60, "student", SIM_CATALOG);
     expect(start.players.money).toBe(3_000_000);
-    expect(mealBlocked(start, "noodles")).toBeNull();
-    const noodles = eatMeal(start, "noodles");
+    const hungry = {
+      ...start,
+      players: { ...start.players, fullness: 20 },
+    };
+    expect(mealBlocked(start, "noodles")).toBe(LIFE.fullness_eat_block);
+    expect(mealBlocked(hungry, "noodles")).toBeNull();
+    const noodles = eatMeal(hungry, "noodles");
     expect(noodles.state.players.money).toBe(3_000_000 - 8_000);
     expect(noodles.state.players.health).toBe(67);
+    expect(noodles.state.players.fullness).toBe(LIFE.fullness_after_meal);
     expect(noodles.state.life.mealsToday).toBe(1);
     const funded = { ...start, players: { ...start.players, money: 4_000_000 } };
     const day29 = applyDayStarted(funded, 29, 0, "student", SIM_CATALOG, { resolveMorning: false });
@@ -204,35 +210,8 @@ describe("life study force", () => {
   });
 });
 
-describe("hunger", () => {
-  it("steps from No to Hơi đói to Đói and reminds once per meal", () => {
-    expect(LIFE.hunger_full_until).toBe(2);
-    expect(LIFE.hunger_peckish_until).toBe(4);
-    expect(hungerLevel(0)).toBe("full");
-    expect(hungerLevel(2)).toBe("full");
-    expect(hungerLevel(3)).toBe("peckish");
-    expect(hungerLevel(4)).toBe("peckish");
-    expect(hungerLevel(5)).toBe("hungry");
-
-    let state = defaultCareer(1, 8 * 60, "student", SIM_CATALOG);
-    for (let i = 0; i < 4; i += 1) state = crossWakingSlot(state, 10 * 60).state;
-    expect(state.life.slotsSinceMeal).toBe(4);
-    expect(state.feed.notices.some((notice) => notice.id.startsWith("hunger-"))).toBe(false);
-    state = crossWakingSlot(state, 12 * 60).state;
-    expect(state.life.slotsSinceMeal).toBe(5);
-    expect(state.feed.notices.filter((notice) => notice.text === LIFE.hunger_notice)).toEqual([
-      expect.objectContaining({ action: "eat" }),
-    ]);
-    state = crossWakingSlot(state, 14 * 60).state;
-    expect(state.feed.notices.filter((notice) => notice.text === LIFE.hunger_notice)).toHaveLength(1);
-
-    const eaten = eatMeal(state, "noodles").state;
-    expect(eaten.life.slotsSinceMeal).toBe(0);
-    expect(eaten.players.money).toBe(state.players.money - 8_000);
-    let again = eaten;
-    for (let i = 0; i < 5; i += 1) again = crossWakingSlot(again, 16 * 60).state;
-    expect(again.feed.notices.filter((notice) => notice.id.startsWith("hunger-"))).toHaveLength(2);
-
+describe("fullness saves", () => {
+  it("gives pre-fullness saves a full No bụng and keeps progress", () => {
     const old = migrateSave(
       {
         stage: "student",
@@ -246,7 +225,8 @@ describe("hunger", () => {
       14,
     );
     expect(old.career.players.money).toBe(42);
-    expect(old.career.life.slotsSinceMeal).toBe(0);
+    expect(old.career.players.fullness).toBe(LIFE.fullness_default_migrate);
+    expect(old.career.life).not.toHaveProperty("slotsSinceMeal");
     expect(old.career.player_skills.find((skill) => skill.skill_id === "frontend")).toMatchObject({ level: 3, xp: 4 });
 
     const dated = migrateSave(

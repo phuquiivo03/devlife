@@ -4,6 +4,7 @@ const barTone: Record<string, string> = {
   coral: "bg-[var(--accent-coral)]",
   mint: "bg-[var(--accent-mint)]",
   sky: "bg-[var(--accent-sky)]",
+  amber: "bg-[var(--accent-amber)]",
   exp: "bg-[var(--accent-mint)]",
 };
 

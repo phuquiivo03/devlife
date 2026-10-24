@@ -2,10 +2,10 @@ import type { CareerState } from "@/game/career/types";
 import { formatVnd } from "@/lib/format-currency";
 import { STAT_FX } from "./stat-fx.config";
 
-export type StatKey = "money" | "health" | "mood" | "energy" | "reputation";
+export type StatKey = "money" | "health" | "mood" | "energy" | "fullness" | "reputation";
 
 /** Display order = stagger order: status bar first, then HUD left→right, then the side panel. */
-export const STAT_ORDER: readonly StatKey[] = ["money", "health", "mood", "energy", "reputation"];
+export const STAT_ORDER: readonly StatKey[] = ["money", "health", "mood", "energy", "fullness", "reputation"];
 
 export type StatSample = Record<StatKey, number> & {
   paidSalaryKey: string | null;
@@ -21,6 +21,7 @@ export function sampleCareer(career: CareerState): StatSample {
     health: Number(players.health ?? 0),
     mood: Number(players.mood ?? 0),
     energy: Number(players.energy ?? 0),
+    fullness: Number(players.fullness ?? 0),
     reputation: Number(players.reputation ?? 0),
     paidSalaryKey: life.paidSalaryKey ?? null,
     paidRentKey: life.paidRentKey ?? null,
@@ -87,6 +88,9 @@ export function diffStats(prev: StatSample, next: StatSample, fx = STAT_FX): Flo
       ? Math.round(nextRaw) - Math.round(prevRaw)
       : Math.round(rawDelta);
     if (delta === 0) continue;
+    // No bụng never floats a loss: the per-minute drain is sub-rounding noise,
+    // and the wake reset to `fullness_wake` must not read as a huge loss.
+    if (key === "fullness" && delta < 0) continue;
 
     let text: string;
     let big = false;
@@ -94,6 +98,8 @@ export function diffStats(prev: StatSample, next: StatSample, fx = STAT_FX): Flo
       const label = moneyLabel(prev, next, fx);
       text = signedVnd(delta) + (label ? " " + label : "");
       big = Math.abs(delta) >= fx.bigMoneyVnd;
+    } else if (key === "fullness") {
+      text = `${signedInt(delta)} 🍚`;
     } else {
       text = signedInt(delta);
     }

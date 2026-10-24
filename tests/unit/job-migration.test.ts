@@ -25,7 +25,7 @@ function job(partial: Partial<PlayerJob> & Pick<PlayerJob, "id" | "status" | "te
 
 describe("version 18 job migration", () => {
   it("bumps the persist version and reads deadlines from config", () => {
-    expect(PERSIST_VERSION).toBe(18);
+    expect(PERSIST_VERSION).toBeGreaterThanOrEqual(18);
     expect(LIFE.job_deadline_easy).toBe(2);
     expect(LIFE.job_deadline_mid).toBe(3);
     expect(LIFE.job_deadline_hard).toBe(4);

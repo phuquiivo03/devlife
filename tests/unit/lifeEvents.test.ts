@@ -264,7 +264,8 @@ describe("life events", () => {
     expect(dated?.sleptAt).toBe("23:40");
     expect(dated ? diaryWhen(dated) : "").toBe("Ngày lễ · T2 · ngủ lúc 23:40");
 
-    const eaten = eatMeal(start(), "noodles").state;
+    const hungry = { ...start(), players: { ...start().players, fullness: 20 } };
+    const eaten = eatMeal(hungry, "noodles").state;
     const afterFood = openDiary(eaten, SIM_CATALOG).feed.diary;
     expect(afterFood).toMatchObject({ food: 8_000, rent: 0, shop: 0, earned: 0, spent: 8_000, remaining: 3_000_000 - 8_000 });
     const cleared = openDiary(captureSnapshot(eaten, SIM_CATALOG), SIM_CATALOG).feed.diary;
