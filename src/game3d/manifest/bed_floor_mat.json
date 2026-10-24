@@ -1,0 +1,145 @@
+{
+ "version": "bed_floor_mat_v1",
+ "units": "meters",
+ "up_axis": "+Y (glTF)",
+ "forward": "-Z (canonical facing of chair_plastic, player, player_standing)",
+ "room_origin": "room centre; floor top y=0.02, slab bottom y=-0.32",
+ "character_scale": 1.4,
+ "placement": "load items/<key>.glb, set position=position_gltf_yup, rotation (Euler XYZ, radians)=rotation_euler_gltf_rad, scale 1",
+ "items": [
+  {
+   "key": "bed_floor_mat",
+   "category": "misc",
+   "file": "bed_floor_mat_v1/bed_floor_mat.glb",
+   "position_blender_zup": [
+    -0.305,
+    1.455,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -0.305,
+    0.02,
+    -1.455
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1496,
+   "bbox_size_gltf_m": [
+    1.87,
+    0.112,
+    1.04
+   ],
+   "meshes": [
+    "bed_floor_mat__FloorMat_Blanket",
+    "bed_floor_mat__FloorMat_BlanketFold",
+    "bed_floor_mat__FloorMat_Cream",
+    "bed_floor_mat__FloorMat_Pillow"
+   ],
+   "pivot_check": [
+    0.0,
+    -0.0,
+    0.0
+   ],
+   "replaces": "bed",
+   "swap_note": "Drop-in for approved bed (pos [-0.315, 1.445, 0.02], yaw 0, bbox [1.87, 0.7, 1.07]). Mattress 1.85x1.00 m centred on the old frame centre (-0.315,1.465); head end (pillow) at -X like the old headboard. Cat must drop to z 0.096 (was 0.437)."
+  },
+  {
+   "key": "player",
+   "category": "character",
+   "file": "character_v6/player_sit.glb",
+   "position_blender_zup": [
+    -0.958,
+    0.2,
+    0.236
+   ],
+   "position_gltf_yup": [
+    -0.958,
+    0.236,
+    -0.2
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    1.5708,
+    0
+   ],
+   "rotation_y_deg": 90.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11800,
+   "bbox_size_gltf_m": [
+    1.003,
+    1.8769,
+    1.137
+   ],
+   "reference_only": true
+  },
+  {
+   "key": "cat",
+   "category": "decor",
+   "file": "wave1_2/cat.glb",
+   "position_blender_zup": [
+    0.175,
+    1.2875,
+    0.096
+   ],
+   "position_gltf_yup": [
+    0.175,
+    0.096,
+    -1.2875
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 3848,
+   "bbox_size_gltf_m": [
+    0.52,
+    0.264,
+    0.415
+   ],
+   "meshes": [
+    "cat__Cat",
+    "cat__CatDark",
+    "cat__CatNose"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    -0.0
+   ],
+   "reference_only": true
+  }
+ ],
+ "stats": {
+  "chair_plastic_measured_facing_deg": -138.0,
+  "chair_plastic_yaw_deg": 132.0,
+  "player_measured_facing_deg": -138.0,
+  "player_yaw_deg": 132.0,
+  "player_tris_before": 67008,
+  "player_tris_after": 11760,
+  "player_standing_measured_facing_deg": -90.0,
+  "player_standing_yaw_deg": 0.0,
+  "player_standing_tris_before": 65992,
+  "player_standing_tris_after": 11648
+ },
+ "notes": "bed_floor_mat_v1: cheapest bed (thin 6 cm floor mattress, flattened pillow, sloppily folded thin blanket). +Y up, scale 1, pivot bottom-center, front -Z, one mesh per material. Room = approved student_wave1_2 setup with Bed swapped."
+}
