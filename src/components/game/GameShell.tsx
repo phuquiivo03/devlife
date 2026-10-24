@@ -55,6 +55,7 @@ export function GameShell({
   const areaRef = useRef<HTMLDivElement>(null);
   const [sidebarTab, setSidebarTab] = useState<SidebarTab>("player");
   const [assetsLoaded, setAssetsLoaded] = useState(false);
+  const [roomCardHeight, setRoomCardHeight] = useState<number | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const debug = searchParams.get("debug") === "1";
@@ -94,6 +95,22 @@ export function GameShell({
   useEffect(() => {
     if (customizeOpen) setSidebarTab("edit-room");
   }, [customizeOpen]);
+
+  // The side panel matches the center room card's height. The card is content
+  // driven (canvas aspect + HUD), so its slot element is measured and published
+  // as `--shell-panel-h` for the desktop `.column` rule. The slot wraps only the
+  // card and its own 270px min never binds at desktop widths.
+  useEffect(() => {
+    const el = areaRef.current;
+    if (!assetsLoaded || !hydrated || !el) return;
+    const measure = () => {
+      setRoomCardHeight(Math.round(el.getBoundingClientRect().height));
+    };
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    measure();
+    return () => ro.disconnect();
+  }, [assetsLoaded, hydrated, areaRef]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -181,7 +198,7 @@ export function GameShell({
       <div className="flex min-h-0 flex-1 flex-col overflow-y-auto lg:items-center lg:justify-[safe_center] lg:px-4 lg:py-6">
         <div
           className="relative flex min-h-0 w-full flex-1 flex-col lg:grid lg:w-full lg:max-w-[1280px] lg:flex-none lg:grid-cols-[minmax(0,65fr)_minmax(300px,35fr)] lg:items-stretch lg:gap-5"
-          style={shellPanelVars()}
+          style={shellPanelVars(undefined, roomCardHeight ?? undefined)}
         >
           {/* <aside
             className={cn(

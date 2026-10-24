@@ -48,7 +48,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: var(--shell-panel-max);
+    /* Matches the measured center room card when available; the viewport cap
+       is the fallback and bounds it on short windows. */
+    height: var(--shell-panel-h, var(--shell-panel-max));
     max-height: var(--shell-panel-max);
     min-height: 0;
   }

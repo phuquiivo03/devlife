@@ -46,11 +46,20 @@ export function shellPanelMaxHeight(layout = SHELL_LAYOUT): string {
   return `calc(100vh - ${reserved}px)`;
 }
 
-/** Custom properties consumed by `shell-layout.module.css` at the desktop breakpoint. */
-export function shellPanelVars(layout = SHELL_LAYOUT): Record<`--${string}`, string> {
+/**
+ * Custom properties consumed by `shell-layout.module.css` at the desktop breakpoint.
+ * `panelHeightPx` is the measured height of the center room card; the side panels
+ * match it so their tops and bottoms align with the card. Without it the panels
+ * fall back to the viewport cap, and the cap still bounds them either way.
+ */
+export function shellPanelVars(
+  layout = SHELL_LAYOUT,
+  panelHeightPx?: number,
+): Record<`--${string}`, string> {
   return {
     "--shell-panel-top": `${layout.stickyTopPx}px`,
     "--shell-panel-max": shellPanelMaxHeight(layout),
+    ...(panelHeightPx ? { "--shell-panel-h": `${panelHeightPx}px` } : {}),
     "--shell-panel-z": String(layout.panelZ),
   };
 }
