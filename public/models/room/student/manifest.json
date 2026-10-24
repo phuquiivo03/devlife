@@ -1,0 +1,759 @@
+{
+ "version": "4.1",
+ "units": "meters",
+ "up_axis": "+Y (glTF)",
+ "forward": "-Z (canonical facing of chair_plastic, player, player_standing)",
+ "room_origin": "room centre; floor top y=0.02, slab bottom y=-0.32",
+ "character_scale": 1.4,
+ "placement": "load items/<key>.glb, set position=position_gltf_yup, rotation (Euler XYZ, radians)=rotation_euler_gltf_rad, scale 1",
+ "items": [
+  {
+   "key": "floor_base",
+   "category": "room_shell",
+   "file": "items/floor_base.glb",
+   "position_blender_zup": [
+    0.015,
+    -0.015,
+    -0.32
+   ],
+   "position_gltf_yup": [
+    0.015,
+    -0.32,
+    0.015
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 888,
+   "bbox_size_gltf_m": [
+    4.45,
+    0.34,
+    4.45
+   ]
+  },
+  {
+   "key": "walls",
+   "category": "room_shell",
+   "file": "items/walls.glb",
+   "position_blender_zup": [
+    -0.08,
+    0.12,
+    0.0
+   ],
+   "position_gltf_yup": [
+    -0.08,
+    0.0,
+    -0.12
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1224,
+   "bbox_size_gltf_m": [
+    4.34,
+    2.62,
+    4.26
+   ]
+  },
+  {
+   "key": "wall_tiles",
+   "category": "room_shell",
+   "file": "items/wall_tiles.glb",
+   "position_blender_zup": [
+    0.03,
+    0.01,
+    0.0
+   ],
+   "position_gltf_yup": [
+    0.03,
+    0.0,
+    -0.01
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 7152,
+   "bbox_size_gltf_m": [
+    4.12,
+    1.15,
+    4.04
+   ]
+  },
+  {
+   "key": "bed",
+   "category": "furniture",
+   "file": "items/bed.glb",
+   "position_blender_zup": [
+    -0.315,
+    1.445,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -0.315,
+    0.02,
+    -1.445
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2472,
+   "bbox_size_gltf_m": [
+    1.87,
+    0.7,
+    1.07
+   ]
+  },
+  {
+   "key": "nightstand",
+   "category": "furniture",
+   "file": "items/nightstand.glb",
+   "position_blender_zup": [
+    1.6,
+    1.6475,
+    0.02
+   ],
+   "position_gltf_yup": [
+    1.6,
+    0.02,
+    -1.6475
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1628,
+   "bbox_size_gltf_m": [
+    0.55,
+    0.62,
+    0.595
+   ]
+  },
+  {
+   "key": "chair_plastic",
+   "category": "furniture",
+   "file": "items/chair_plastic.glb",
+   "position_blender_zup": [
+    -1.0793,
+    0.6,
+    -0.0032
+   ],
+   "position_gltf_yup": [
+    -1.0793,
+    -0.0032,
+    -0.6
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    2.30383,
+    0
+   ],
+   "rotation_y_deg": 132.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2908,
+   "bbox_size_gltf_m": [
+    0.6364,
+    0.8671,
+    0.5213
+   ]
+  },
+  {
+   "key": "desk",
+   "category": "furniture",
+   "file": "items/desk.glb",
+   "position_blender_zup": [
+    -1.62,
+    -0.025,
+    0.0
+   ],
+   "position_gltf_yup": [
+    -1.62,
+    0.0,
+    0.025
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1096,
+   "bbox_size_gltf_m": [
+    0.72,
+    0.74,
+    1.65
+   ]
+  },
+  {
+   "key": "fan_standing",
+   "category": "furniture",
+   "file": "items/fan_standing.glb",
+   "position_blender_zup": [
+    1.0,
+    1.64,
+    0.01
+   ],
+   "position_gltf_yup": [
+    1.0,
+    0.01,
+    -1.64
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 4832,
+   "bbox_size_gltf_m": [
+    0.34,
+    1.245,
+    0.535
+   ]
+  },
+  {
+   "key": "plant_big",
+   "category": "decor",
+   "file": "items/plant_big.glb",
+   "position_blender_zup": [
+    -1.7028,
+    -1.7811,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -1.7028,
+    0.02,
+    1.7811
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2648,
+   "bbox_size_gltf_m": [
+    0.6283,
+    0.792,
+    0.6716
+   ]
+  },
+  {
+   "key": "plant_small",
+   "category": "decor",
+   "file": "items/plant_small.glb",
+   "position_blender_zup": [
+    -1.7974,
+    -0.669,
+    0.74
+   ],
+   "position_gltf_yup": [
+    -1.7974,
+    0.74,
+    0.669
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2648,
+   "bbox_size_gltf_m": [
+    0.2865,
+    0.2898,
+    0.2345
+   ]
+  },
+  {
+   "key": "books_stack",
+   "category": "decor",
+   "file": "items/books_stack.glb",
+   "position_blender_zup": [
+    -1.0491,
+    -1.65,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -1.0491,
+    0.02,
+    1.65
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1800,
+   "bbox_size_gltf_m": [
+    0.4498,
+    0.235,
+    0.3433
+   ]
+  },
+  {
+   "key": "cat",
+   "category": "decor",
+   "file": "items/cat.glb",
+   "position_blender_zup": [
+    0.175,
+    1.2875,
+    0.437
+   ],
+   "position_gltf_yup": [
+    0.175,
+    0.437,
+    -1.2875
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 3848,
+   "bbox_size_gltf_m": [
+    0.52,
+    0.2637,
+    0.415
+   ]
+  },
+  {
+   "key": "cup",
+   "category": "decor",
+   "file": "items/cup.glb",
+   "position_blender_zup": [
+    1.45,
+    1.55,
+    0.64
+   ],
+   "position_gltf_yup": [
+    1.45,
+    0.64,
+    -1.55
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 508,
+   "bbox_size_gltf_m": [
+    0.08,
+    0.09,
+    0.08
+   ]
+  },
+  {
+   "key": "kettle",
+   "category": "decor",
+   "file": "items/kettle.glb",
+   "position_blender_zup": [
+    1.6981,
+    1.72,
+    0.64
+   ],
+   "position_gltf_yup": [
+    1.6981,
+    0.64,
+    -1.72
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 3072,
+   "bbox_size_gltf_m": [
+    0.3597,
+    0.317,
+    0.21
+   ]
+  },
+  {
+   "key": "keyboard",
+   "category": "decor",
+   "file": "items/keyboard.glb",
+   "position_blender_zup": [
+    -1.4025,
+    0.3096,
+    0.745
+   ],
+   "position_gltf_yup": [
+    -1.4025,
+    0.745,
+    -0.3096
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 600,
+   "bbox_size_gltf_m": [
+    0.4034,
+    0.035,
+    0.4241
+   ]
+  },
+  {
+   "key": "lamp_desk",
+   "category": "decor",
+   "file": "items/lamp_desk.glb",
+   "position_blender_zup": [
+    -1.7582,
+    -0.2147,
+    0.74
+   ],
+   "position_gltf_yup": [
+    -1.7582,
+    0.74,
+    0.2147
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1932,
+   "bbox_size_gltf_m": [
+    0.3936,
+    0.4482,
+    0.3405
+   ]
+  },
+  {
+   "key": "monitor",
+   "category": "decor",
+   "file": "items/monitor.glb",
+   "position_blender_zup": [
+    -1.78,
+    0.12,
+    0.74
+   ],
+   "position_gltf_yup": [
+    -1.78,
+    0.74,
+    -0.12
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 902,
+   "bbox_size_gltf_m": [
+    0.2644,
+    0.58,
+    0.6072
+   ]
+  },
+  {
+   "key": "mug",
+   "category": "decor",
+   "file": "items/mug.glb",
+   "position_blender_zup": [
+    -1.48,
+    -0.3725,
+    0.745
+   ],
+   "position_gltf_yup": [
+    -1.48,
+    0.745,
+    0.3725
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1468,
+   "bbox_size_gltf_m": [
+    0.1,
+    0.11,
+    0.145
+   ]
+  },
+  {
+   "key": "poster_vn",
+   "category": "decor",
+   "file": "items/poster_vn.glb",
+   "position_blender_zup": [
+    -1.963,
+    -1.35,
+    1.32
+   ],
+   "position_gltf_yup": [
+    -1.963,
+    1.32,
+    1.35
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 830,
+   "bbox_size_gltf_m": [
+    0.056,
+    0.6,
+    0.46
+   ]
+  },
+  {
+   "key": "window",
+   "category": "decor",
+   "file": "items/window.glb",
+   "position_blender_zup": [
+    -0.35,
+    1.985,
+    1.075
+   ],
+   "position_gltf_yup": [
+    -0.35,
+    1.075,
+    -1.985
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 5098,
+   "bbox_size_gltf_m": [
+    1.4,
+    1.085,
+    0.59
+   ]
+  },
+  {
+   "key": "fairy_lights",
+   "category": "decor",
+   "file": "items/fairy_lights.glb",
+   "position_blender_zup": [
+    0.1375,
+    0.1378,
+    1.8226
+   ],
+   "position_gltf_yup": [
+    0.1375,
+    1.8226,
+    -0.1378
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11520,
+   "bbox_size_gltf_m": [
+    4.2309,
+    0.3832,
+    3.6804
+   ]
+  },
+  {
+   "key": "player",
+   "category": "character",
+   "file": "items/player.glb",
+   "position_blender_zup": [
+    -1.1015,
+    0.563,
+    0.0193
+   ],
+   "position_gltf_yup": [
+    -1.1015,
+    0.0193,
+    -0.563
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    2.30383,
+    0
+   ],
+   "rotation_y_deg": 132.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11760,
+   "bbox_size_gltf_m": [
+    1.003,
+    1.8769,
+    1.137
+   ]
+  },
+  {
+   "key": "player_standing",
+   "category": "character",
+   "file": "player_standing.glb",
+   "position_blender_zup": [
+    -0.0128,
+    -0.0394,
+    0.0064
+   ],
+   "position_gltf_yup": [
+    -0.0128,
+    0.0064,
+    0.0394
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11648,
+   "bbox_size_gltf_m": [
+    1.0037,
+    1.7513,
+    0.9749
+   ]
+  }
+ ],
+ "stats": {
+  "chair_plastic_measured_facing_deg": -138.0,
+  "chair_plastic_yaw_deg": 132.0,
+  "player_measured_facing_deg": -138.0,
+  "player_yaw_deg": 132.0,
+  "player_tris_before": 67008,
+  "player_tris_after": 11760,
+  "player_standing_measured_facing_deg": -90.0,
+  "player_standing_yaw_deg": 0.0,
+  "player_standing_tris_before": 65992,
+  "player_standing_tris_after": 11648
+ }
+}
