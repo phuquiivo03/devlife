@@ -8,10 +8,7 @@ export function PanelCard({
 }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(
-        "rounded-panel border border-panel-border bg-panel shadow-panel",
-        className,
-      )}
+      className={cn("rounded-panel bg-panel shadow-panel", className)}
       {...rest}
     >
       {children}

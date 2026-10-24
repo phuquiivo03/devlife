@@ -1,4 +1,4 @@
-# devlife UI — PRIMARY design system (Galmuri / soft gradient)
+# devlife UI — PRIMARY design system (Claymorphism on the pastel lavender palette)
 
 **This is the PRIMARY design system for devlife.** All UI in this repository must follow it unless the owner explicitly names another style for a feature (for example, the in-game terminal uses [TERMINAL.md](./TERMINAL.md)).
 
@@ -6,110 +6,156 @@
 
 ## Philosophy
 
-Cozy developer life-sim chrome: soft blue–violet–pink atmosphere, readable lavender cards, pixel art for world assets (room, icons, avatars). The **room canvas stays small** in the center column — never upscale it to fill the layout.
+High-fidelity **claymorphism**: the chrome behaves like soft, matte digital clay — surfaces are borderless, super-rounded, and shaped entirely by multi-layer light stacks (drop shadow + top-left light + inner bounce + inner rim). Controls bulge toward the viewer, lift on hover, and squish into the surface when pressed. The **color palette is the pastel lavender–pink set this project always had** — clay changes material (borders, shadows, radii, type, motion), never color. Pixel art stays for world assets (room, icons, avatars) and the in-canvas chrome.
+
+The room scene lives in one big rounded card that fills the left column; game chrome (stats, actions, profile) sits in white cards on the right.
+
+---
+
+## Clay material (the style definition)
+
+All tokens live in `:root` in `src/app/globals.css`.
+
+### Shadows — 4-layer light stacks
+
+Every surface is lit by a soft top-left source. Shadows are violet-tinted (`rgba(124, 107, 217, …)`), never neutral black. Values are scaled down from the reference claymorphism system to fit the compact game HUD.
+
+| Token | Stack | Used by |
+|-------|-------|---------|
+| `--clay-shadow-panel` | `10px 12px 26px` violet drop, `-6px -8px 18px` white top-left light, `inset 4px 4px 10px` violet bounce, `inset -4px -4px 10px` white rim | Cards (`shadow-panel`), top bar, modal |
+| `--clay-shadow-panel-hover` | same structure, deeper drop | Card hover (future use) |
+| `--clay-shadow-chip` | `3px 4px 10px` drop + white light + inner rim | `hud-chip`, tooltips, stage pill, list row tiles (`shadow-chip`), active tab |
+| `--clay-shadow-ctrl` | `6px 8px 16px` drop + `-4px -5px 12px` light + inner white rim + inset bottom shade | Buttons (`[data-variant]`, `PixelButton`, `btn-soft`), clay tiles |
+| `--clay-shadow-ctrl-hover` | stronger drop + light | control hover |
+| `--clay-pressed` | `inset 5px 5px 12px` violet + `inset -4px -4px 10px` white lip | `:active` on controls |
+| `--clay-recessed` | soft `inset 3px 3px 7px` + white lip | Tab tracks, stat bar tracks (`.stat-track`), input wells |
+| stat fill edge (`.clay-stat-fill`) | `inset 2px 2px 4px` white rim + `inset -2px -2px 4px` dark shade + `0 1px 3px` drop | Stat pill fills — the button edge, lighter |
+| stat fill edge, thin (`.stat-fill`) | same at 1px scale | Fills inside 10px `.stat-track` bars |
+
+`@utility shadow-panel` / `shadow-chip` map to the panel/chip stacks. **One-layer `0 8px 24px` shadows are gone** — do not reintroduce them.
+
+### Radii — super-rounded, absolute values only
+
+| Token | Value | Used by |
+|-------|-------|---------|
+| `--radius-panel` | 24px | Cards, scene card, modal content |
+| `--radius-ctrl` | 20px | Buttons and interactive controls (PixelButton default) |
+| `--radius-tile` | 18px | Nested tiles inside cards (career rows, tooltips) — outer −6px |
+| `--radius-chip` | 999px | Pills: chips, stat tracks, round icon buttons |
+
+Never use `rounded-sm`/`rounded-md` on chrome. Round icon buttons pass `--btn-radius: 999px`.
+
+### Borders — none on chrome
+
+Cards and controls are **borderless**; the shadow stack is the edge. `--panel-border` (#E7DFF2) survives as a **divider/hairline color only** (skills rows, job table separators). The legacy `--btn-light-border` token is kept because `buttons.test.ts` pins it, but no button draws a border anymore.
+
+### Typography — Nunito UI face
+
+`--font-ui: var(--font-nunito), var(--font-galmuri-9), system-ui` is the face for **everything**: body, buttons, chips, titles. The `.font-galmuri-7/9/11` classes keep their names and size roles but resolve to `--font-ui` — treat them as size classes (`text-galmuri-*`), not face classes. Nunito ships 600/700/800; weight-400 text renders at 600 (nearest match). Galmuri remains the fallback and the face of the pixel canvas art. The terminal keeps JetBrains Mono ([TERMINAL.md](./TERMINAL.md)).
+
+### Motion — clay physics
+
+- **Hover lift**: controls rise `translateY(-1px)` with the stronger ctrl-hover stack (`[data-variant]`, `.btn-soft`, `.clay-tile`, `.audio-mute`).
+- **Press squish**: `:active` scales the box to `0.95` and swaps to `--clay-pressed`. The pixel-era label press-drop (`--btn-press`) is cancelled project-wide (the module rule stays only because tests pin it).
+- Transitions: `140ms ease` on `background-color / box-shadow / transform / opacity`.
+- All of it switches off under `prefers-reduced-motion`.
 
 ---
 
 ## Background
 
-Prefer **CSS** for crisp scaling:
+CSS only, in one stack (utility `devlife-page-bg` on `html`/`body`):
 
-- Gradient: `linear-gradient(135deg, #3B3F8F 0%, #5A63C4 45%, #9A78CC 75%, #D08FCB 100%)`
-- Grid: `1px` lines `rgba(255,255,255,0.06)` every **24px**, fixed attachment
-- Radial glow behind the room stage (`.room-stage-glow`)
-- Reference/fallback image: `public/reference/background.jpg`
+- Gradient: `linear-gradient(135deg, #E9E4F6 0%, #F3ECF9 45%, #F9EEF5 75%, #FDF0F5 100%)`
+- Two soft white radial glows (top-left, bottom-right)
+- Fixed attachment
 
-Utility class: `devlife-page-bg` on `html`/`body` (gradient + grid in **one** `background-image` stack — do not split into two classes or the grid layer hides the gradient).
-
-**No black letterbox void** — use violet frame + gradient in empty space.
+Do **not** split the background layers into two classes — the second `background-image` wins and hides the gradient. There is no dark grid anymore; the page stays light at every stage.
 
 ---
 
-## Layout (desktop)
+## Layout
 
-On `lg` and up, the three columns are one centered group (`max-w-[1200px]`), not stretched to the viewport. Side columns are **320px**. The center column holds the capped room and the HUD and stays within **520px**. A **20px** gap separates the columns. Leftover width on both sides is only the page gradient. The columns are top-aligned. At 1366px the group still fits with those widths and the same gap. Below `lg`, the stack is unchanged.
+`GameShell` renders, inside `max-w-[1280px]`:
 
-On `lg`, both side panels are sticky and their block size matches the center room card: `GameShell` measures the card slot with a `ResizeObserver` and publishes it as `--shell-panel-h`, which the `.column` rule in `src/components/game/shell-layout.module.css` uses as its height. That keeps the panel tops and bottoms aligned with the room card. The viewport cap from `src/components/game/shell-layout.config.ts` (`SHELL_LAYOUT`, `100vh` minus the header and the scroll region's top and bottom margins) stays as the fallback before measurement and as a `max-height` bound on short windows. The panel interior scrolls (`overflow-y: auto`). This design system has no pixel scrollbar, so that scroller is the native one. Panel `z-index` stays below the holiday banner, modals, popups, and tooltips, so the banner can paint across the columns. Below `lg` the panels stay in normal flow and scroll with the page. The right panel's cards, type, and tabs are unchanged; only this size and the inner scroll apply.
+| Row | Content |
+|-----|---------|
+| Header | `TopBar` — white rounded pill, full width |
+| Main grid (`lg:grid-cols-[minmax(0,1fr)_360px]`, 20px gap) | Left: `SceneCard`. Right: sidebar cards |
 
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `desktopMinPx` | 1024 | Tailwind `lg`. Below this, no sticky cap |
-| `headerPx` | 56 | Header `min-h-14`, border included |
-| `marginYPx` | 24 | `lg:py-6`, subtracted twice. This padding is the inset |
-| `stickyTopPx` | 0 | Sticky offset. Stays 0 so it does not stack on that padding |
-| `panelZ` | 1 | Under the banner (`overlayFloorZ` 30) and modal/tooltip layers (40+) |
+- **`lg` and up:** shell is `h-screen`, `overflow-hidden`. The sidebar scrolls internally (`lg:overflow-y-auto`); the main column scrolls internally. Below `lg` the page stacks and scrolls as a whole: **top bar → scene → profile → stats → actions → skills**.
+- Sidebar cards in order: **Profile** (`ProfileCard`), **Stats** (`StatsCard`), **Actions** (`ActionsCard`), **Skills** (`SkillsCard`, collapsed by default). Dev-only tabs `Nhân vật` / `Sửa phòng` (Radix Tabs, `tabs-lavender`) sit above the profile card when `NODE_ENV !== production` or `?debug=1`.
+- Direct children of the sidebar flex column carry `shrink-0` — the aside is a flex column with `lg:overflow-y-auto`, and without it flex-shrink crushes the tabs block to height 0 (content then overlaps the cards below).
+- `shell-layout.config.ts` still exports `SHELL_LAYOUT` (z-floor bookkeeping) and `ROOM_STATUS_BAR` (top-bar metrics), but the old sticky-panel measurement (`shellPanelVars`, `--shell-panel-h`) is retired.
 
-On `lg` the shell is `h-screen` and the region under the header is what scrolls. The header stays put. Below `lg` the page still scrolls as a whole.
+### Top bar (`TopBar` in `PlayerHudCard.tsx`)
 
-| Column | Content |
-|--------|---------|
-| Left | Notifications (`Thông báo`) |
-| Center | Room status bar (Tiền, Ngày/giờ, Cửa hàng), small framed room, stage pill label, HUD card |
-| Right | Tabs `Nhân vật` / `Sửa phòng` |
+One white `PanelCard` pill, `data-testid="room-status-bar"`:
 
-**Mobile:** stack **room → HUD → panels** (notifications, then character/customize). The status bar stays directly above the room and wraps if the row does not fit; Cửa hàng stays at the trailing edge.
+- Left: `devlife` wordmark (Galmuri11 bold, violet dot before it)
+- Center: two `hud-chip` pills — **Tiền** (`savings` icon + VND, `hud-money`, mint when positive, coral when not, tween + Stat FX) and **Ngày/giờ** (phase icon + `Ngày N · weekday · HH:MM phase`, `game-clock` with the full data-attr set; fast-forward still flashes the cluster). Chips are `whitespace-nowrap`; on narrow bars they wrap whole, never mid-text.
+- Right: `NotificationsButton` and `AudioButton` in **compact** mode — 48px round `PixelButton icon` faces with the unread badge on the bell.
 
-### Room status bar
+### Scene card (`SceneCard.tsx`)
 
-A lavender card sits in the center column, directly above the room frame, and scrolls with that column. It does not change the sticky side panels. Its cap is `CENTER_COLUMN_MAX_PX` (520), the same cap as the HUD card, from `src/components/game/shell-layout.config.ts` (`ROOM_STATUS_BAR`). That width keeps Tiền, Ngày/giờ, and Cửa hàng on one line in the desktop column. The room slot stays at `ROOM_VIEWPORT_W` (480) and stays centered under the bar. Below `lg`, and whenever the column is narrower than the row, the bar is `width: 100%` up to that cap and wraps; Cửa hàng stays at the trailing edge.
+One white clay card (`rounded-panel`, 24px, `shadow-panel`, borderless), `aria-label="Phòng"`:
 
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `maxWidthPx` | 520 | Center-column cap, shared with the HUD card |
-| `gapBelowPx` | 8 | Space between the bar and the room frame |
-| `padXPx` | 12 | Horizontal padding |
-| `padYPx` | 6 | Vertical padding |
-| `clusterGapPx` | 16 | Space between Tiền and Ngày/giờ |
-| `iconGapPx` | 6 | Space between an icon and its text |
-| `wrapGapPx` | 8 | Row gap when the bar wraps |
-| `iconPx` | 22 | Savings icon and the phase icon |
-| `separator` | ` · ` | Between day, weekday, and clock |
-
-Left to right: the savings icon and the VND amount (`hud-money`), the phase icon and `Ngày N · weekday · HH:MM phase` (`game-clock`, for example `Ngày 1 · T2 · 08:12 Sáng`), then **Cửa hàng** (`icon_btn_store`, tooltip “Cửa hàng”) pinned to the end. Fast-forward still flashes the clock cluster. Galmuri7 at 16px, so Tiền and Ngày/giờ share one line with the shop button in the desktop column.
+- Stage label pill pinned top-left (`left-3 top-3`, white/90, truncates).
+- The canvas slot fills the card with a soft lavender plate (`--scene-plate`) behind the canvas, so the letterbox above/below the 427:240 canvas reads as a floor, not a void.
+- The **480px `ROOM_VIEWPORT_W` cap is retired** (owner-approved redesign): the slot fills the column and `SceneCanvas` crops the world to it (`computeView` crop mode). The 2D pixel canvas is the default; R3F stays behind `?3d=1` and fills the card when on.
+- Room overlays mount inside the card on a `relative` wrapper over the canvas: `LifeRoomFx`, `LifeEventPopup`, `SleepTransition`. Nothing dims the room behind popups.
 
 ---
 
 ## Color tokens
 
+**Unchanged by the clay restyle** — clay is a material change, not a palette change.
+
 | Token | Value | Use |
 |-------|-------|-----|
-| panel bg | `#F3F1F8` | Cards |
-| panel border | `#D9D4E6` | 1px borders |
+| panel bg | `#FFFFFF` | Cards, top bar |
+| panel border | `#E7DFF2` | Divider hairlines only (skills rows, job table) — never card edges |
 | foreground | `#2A2548` | Text |
-| muted foreground | `#5C5678` | Secondary text |
-| coral | `#F0625F` | Health, Frontend bars |
-| mint | `#5CCB9A` | Mood, Backend, EXP |
-| sky | `#4A90E2` | Energy, Thuật toán |
-| tab lavender | `#E8E2F4` | Inactive tabs |
-| stage plate | `#E9E4F5` / `#3B3466` | Chamfered room label text/bg |
+| muted foreground | `#6B6390` | Secondary text |
+| accent violet | `#7C6BD9` | Primary buttons, links, XP, ring |
+| coral | `#F0625F` | Health bars, danger |
+| mint | `#5CCB9A` | Mood, EXP, money |
+| sky | `#4A90E2` | Energy |
+| amber | `#F5A623` | Fullness, Cửa hàng button (border `#D9941A`) |
+| pill coral / mint / sky / amber | `#FDE7E6` / `#E3F6EE` / `#E4EFFA` / `#FCEED4` | Stat label pill fills (ink `#C24744` / `#2F8F68` / `#33689F` / `#A66A0B`) |
+| tab lavender | `#EFEAF8` | Inactive tab wells, stat track wells |
+| chip bg | `#F6F2FB` | Hover fills |
+| scene plate | `#F1ECF9` | Scene card floor, avatar frame bg |
+| room frame | `#D9CDEF` | Avatar frame border |
 
-Shadow: `0 8px 24px rgba(30, 20, 80, 0.25)` (`shadow-panel` / `--shadow-panel`).
-
-Radius: **12px** on cards (`--radius-panel`).
-
----
-
-## Typography — Galmuri (OFL)
-
-Self-hosted under `src/app/fonts/` (see `LICENSE.txt` in `public/fonts/`). **Do not use Galmuri11-Bold** (missing Vietnamese glyphs).
-
-| Role | Face | Design size | Desktop UI (integer multiple) |
-|------|------|-------------|-------------------------------|
-| Body | Galmuri9 | 10px | 20px (`--text-galmuri-body`) |
-| Titles | Galmuri11 | 12px | 24px (`--text-galmuri-title`) |
-| Small | Galmuri7 | 8px | 16px (`--text-galmuri-small`) |
-
-**Rule:** render at **integer px sizes** only (multiples of the design sizes for readability).
-
-Classes: `font-galmuri-7`, `font-galmuri-9`, `font-galmuri-11`, `text-galmuri-*`.
-
-User-facing copy: **Vietnamese**; tech terms stay English (Frontend, Backend, Junior, …).
+Shadows and radii: see **Clay material** above.
 
 ---
 
-## Pixel buttons
+## Typography
 
-New chrome uses `PixelButton` from `@/components/ui/button` (`primary`, `secondary`, `light`, `danger`, and square `icon`). Skins are the `ui_btn_*` 9-slices in `public/ui/m5_1/` (`normal` / `hover` / `pressed`, native and `_x2`). Insets come from `slices.json`. The pressed face is already 2 native pixels lower; the label drops that same distance with the face. `light` is the notice **Ăn** / **Xem job** face: the secondary sheet, light fill `#E8E2F4`, dark pixel border `#1E1428`, dark ink `#2A2548`, Galmuri7 at 16px. Those numbers are `BUTTON_LIGHT` and `--btn-light-*`. An icon sits on the left of the label. **Học**, **Việc làm**, **Kỹ năng**, **Đã đọc**, life-event choices, and the job board **Làm** use it. The older `Button` styles stay as they are. Details: [buttons.md](../systems/buttons.md).
+Face: **Nunito** (`--font-ui`, weights 600/700/800, vietnamese subset, next/font). Sizes keep the pixel-era scale, applied through the same classes:
+
+| Role | Class | Size |
+|------|-------|------|
+| Body | `font-galmuri-9` + `text-galmuri-body` | 20px |
+| Titles | `font-galmuri-11` + `text-galmuri-title` | 24px (title-lg 28px) |
+| Small | `font-galmuri-7` + `text-galmuri-small` | 16px |
+| HUD chips | `.hud-chip` | 15px / 700 |
+
+Integer px sizes only. User-facing copy is **Vietnamese**; tech terms stay English. Galmuri stays self-hosted as the fallback (`src/app/fonts/`).
+
+---
+
+## Buttons — clay PixelButton skin
+
+`PixelButton` from `@/components/ui/button` keeps its API (`primary`, `secondary`, `light`, `danger`, `icon`); the chrome is the shared clay control skin (`pixel-button.module.css` + the global `[data-variant]` rules).
+
+- Base: borderless, radius `var(--btn-radius, 20px)` (round icon faces pass `999px`), fill from `--btn-skin-bg` per `data-variant`, ink from `--btn-ink`, `--clay-shadow-ctrl` stack, Nunito with weight fallback 700.
+- Physics: hover `translateY(-1px)` + ctrl-hover stack; active `scale(.95)` + `--clay-pressed` (the squish lives in globals.css — the module box never transforms).
+- Faces: `primary` violet / white ink, `secondary` white, `light` lavender `#E8E2F4` tile (the dark pixel border color survives only inside the pinned `--btn-light-*` tokens), `danger` coral, `icon` white.
+- `light` numbers stay pinned in `BUTTON_LIGHT` (`button/config.ts`) and mirrored `--btn-light-*` in `globals.css`.
+- The amber **Cửa hàng** bar is `StoreButton wide`: a `variant="icon"` button overridden with `--btn-skin-bg: var(--accent-amber)`, white ink, full width, icon 24px + label inside.
 
 ---
 
@@ -119,74 +165,35 @@ Room canvas, UI icons, avatars: `image-rendering: pixelated` (`.pixelated`). Do 
 
 ### Icons (`public/ui/icons/`)
 
-Art-agent PNGs with clean alpha (no chroma-key). Naming: `icon_<name>.png` and `icon_<name>_x4.png`.
-
-| Asset | Native size | ×4 size |
-|-------|-------------|---------|
-| Icons | **44×44** | **176×176** |
-
-**IDs (23):** `health`, `mood`, `energy`, `burnout`, `clock`, `level`, `job`, `reputation`, `stars`, `relationship`, `frontend`, `backend`, `devops`, `algorithms`, `english`, `communication`, `balance`, `salary`, `rent`, `food`, `savings`, `debt`, `skill_up`.
-
-**HUD menu:** `skills` is `icon_skills.png` only (44×44, no `_x4`). The Kỹ năng button picks it through `SKILL_MENU_ICON`. Học uses `icon_learn_book`. Việc làm uses the briefcase `icon_job`. All three sit on the left of a `light` button.
-
-**Phase clock:** `morning`, `noon`, `evening`, `night` (same `icon_<key>.png` / `_x4` files). The HUD uses them next to the in-game clock and falls back to an emoji only when a file is missing.
-
-Use `PixelIcon` + `resolveIconAsset()` in `src/lib/pixel-assets.ts`: pick native or `_x4` so CSS display size is an **integer downscale/upscale** only (e.g. 22px display → 44px native @ 2×, 88px display → 176px `_x4` @ 2×).
+Art-agent PNGs with clean alpha. Naming `icon_<name>.png` / `icon_<name>_x4.png`; icons 44×44 native, 176×176 ×4. Phase clock: `morning`, `noon`, `evening`, `night`. HUD menu: `skills`, `learn_book` (Học), `job` (Việc làm). Use `PixelIcon` + `resolveIconAsset()` so display size is an integer scale of the sheet.
 
 ### Avatars (`public/ui/avatars/`)
 
-Framed portraits for in-game chrome (use **framed**, not `_bust`, unless a scene explicitly needs bust crop).
+Framed 48×48 native (192×192 ×4), roles `player`, `boss`, … Use `PixelAvatar`. On the profile card: 80px inside a `rounded-2xl` lavender frame (`--scene-plate` bg, `--room-frame` border).
 
-| Asset | Native | ×4 |
-|-------|--------|-----|
-| Framed avatar | **48×48** | **192×192** |
+### In-canvas chrome (unchanged)
 
-**Roles:** `player`, `boss`, `tech_lead`, `coworker_male`, `designer`, `partner`, `hr`.  
-Also shipped: `avatar_<role>_bust.png` (+ `_x4`) for future dialogue UI.
-
-Use `PixelAvatar` + `resolveAvatarAsset()` with the same integer-scale rule.
+`ui_speech_bubble`, `ui_window_notepad`, `ui_store_frame`, confetti and banner sheets stay 9-sliced inside the canvas/overlays — the redesign only changed the shell chrome around the canvas.
 
 ---
 
-## HUD & stat bars
+## Sidebar cards
 
-- HUD card under the room has **no avatar**. Three labeled bars, each with `current/max`: **Sức khỏe** (coral), **Tinh thần** (mint), **Năng lượng** (sky). The numbers are rounded; the saved values are floats. Energy, health, mood, money, and the clock are the career/life state. The name on the character card stays the placeholder.
-- Same card: the icon bar is trailing-aligned and holds two icon-only `PixelButton`s of the same size. **Ăn** (rice bowl `icon_btn_food`) sits immediately before **Đi ngủ** (bed `icon_btn_sleep`). Sleep stays on the trailing edge. Money and the clock are only on the room status bar above the canvas. Tips use `src/components/ui/tooltip.tsx`: sleep is “Đi ngủ”, and the bowl is “Ăn · ” plus the hunger level. Each button keeps that string as its `aria-label`. While sleep is allowed, `fx_zzz` floats above the bed; `prefers-reduced-motion` keeps the first frame still. Timings are in `src/components/game/sleep-button.config.ts`, `src/components/game/store-button.config.ts`, and `src/components/game/food-dock.config.ts`. On a narrow screen the pair wraps and stays end-aligned. Then **Học** / **Việc làm** / **Kỹ năng**, each a `PixelButton` `light` with its icon on the left (`icon_learn_book`, `icon_job`, `icon_skills` via `SKILL_MENU_ICON`). Below a 28rem card they stack; from there they share one row.
-- Audio row on that card: mute button (**Tắt tiếng** / **Bật tiếng**) and two sliders, **Nhạc** and **Hiệu ứng**. Mute uses `icon_sound_on` / `icon_sound_off` (44×44 native only, shown at 22px, `image-rendering: pixelated`). Each slider puts `icon_volume_low` and `icon_volume_high` at its ends the same way. Defaults live in `game_config.json`: sound on, Nhạc 0.5, Hiệu ứng 0.8. The choice is stored in `localStorage` (`devlife:audio:v2`), separate from the career save. A `devlife:audio:v1` payload is unmuted once and rewritten as v2; a later mute stays muted. SFX play from one preloaded Web Audio sprite. Music starts after the first tap or key, during idle, so it does not block the first paint. On iOS the context uses the media playback channel, so the ring/silent switch does not mute the game; if the sprite cannot be decoded, SFX fall back to per-file audio.
-- **Học** panel has two tabs: **Khóa học** (courses still available to buy) and **Đã học** (finished courses, read-only: skill, XP granted, day completed). Empty states: “Không còn khóa để học.” and “Chưa học khóa nào.” A non-repeatable course moves to **Đã học** after one purchase.
-- **Nhân vật** panel: avatar, name, stage, overall rank badge (rounded mean of the five skill levels), trait row (icon at 22px and the trait name; the bonus line is a tooltip), **Danh tiếng**, Freelance `n/100` with a bar, then the five catalog skills from `skillProgressList` (icon, name, rank badge, `Junior 60%`, bar). No stub skill percents. The trait icon uses the same 22px box as Danh tiếng and Freelance.
-- Bars: 1px border, fill coral / mint / sky per vital. A vital under its warning line blinks a coral inset; a change floats above that bar via Stat FX.
-  **Stat FX**: diff giá trị store (gộp 40ms), pill nền mint (tăng) / coral (giảm), chữ --foreground, viền #1e1428; bay 24px / 0,8s ease-out, lệch 120ms theo thứ tự Tiền → Sức khỏe → Tinh thần → Năng lượng → Danh tiếng; số chạy ease-out 0,5s (tiền ≥ 1.000.000đ: 0,6s, pill to + nhãn Lương / Trọ + điện nước); ô nháy 0,45s; tối đa 3 pill mỗi ô; reduced motion: chỉ đổi số. Bảng key STAT_FX: Key | Default | Meaning (floatMs 800, floatRisePx 24, floatStaggerMs 120, aggregateMs 40, tweenMs 500, tweenBigMs 600, flashMs 450, bigMoneyVnd 1_000_000, clockFfMs 600, clockSleepMs 1200, phaseXfadeMs 400, shakeMs 280, shakePx 3).
-- `prefers-reduced-motion` keeps the inset and drops the blink.
-- A pending life event (Mẹ gọi, Cúp điện, and the rest) is a card on the lower part of the room canvas. There is no dimmed backdrop: the room, HUD, and panels stay visible and keep clicks. The card is 424×186 CSS pixels and scales down, keeping that ratio, when the canvas is narrower or shorter. It fades and rises; `prefers-reduced-motion` skips the motion. Numbers are `LIFE_EVENT_POPUP` in `src/components/game/life-event-popup.config.ts`. The speech bubble still sits on the native M5 frame (`ui_speech_bubble`) as a 9-slice at 2×. The sleep diary is a notepad window on `ui_window_notepad` (`public/ui/m5_1/`, native and `_x2`, 9-slice from `slices.json`). The title is drawn in the titlebar. The window buttons are part of that frame. The store opens from the room status bar shop icon in the shared modal as a grid of smaller cells (see Store grid). Portraits and emotes use the native PNG at integer scale with `image-rendering: pixelated`. The room canvas is unchanged.
+### Stats card (`StatsCard`)
 
----
+Four rows, one per vital — **Sức khỏe** (coral), **Tinh thần** (mint), **Năng lượng** (sky), **No bụng** (amber) — all rendered as clay stat pills (`StatBar variant="clay"`, both shells): 30px rounded pill, tinted track (`--stat-*-bg`), fill `--stat-*` with the light button-like clay edge, pixel icon + label **inside left**, current value **inside right** (on the fill). Low vital = soft opacity pulse on the fill + coral dot after the value. Testids `hud-health` / `hud-mood` / `hud-energy` / `hud-fullness` keep their data-attrs; Stat FX floaters/flash still ride each row. Energy max comes from `SIM_CATALOG.config.energy_max`, the rest `VITAL_MAX` (100).
 
-## Room viewport
+### Actions card (`ActionsCard`)
 
-`ROOM_VIEWPORT_W` in `shell-layout.config.ts` (read by `GameShell`, 480px) caps CSS size; renderer still uses integer device-pixel scale internally. **Do not increase** to fill the center column without owner approval. The room status bar uses the center-column cap (`CENTER_COLUMN_MAX_PX`, 520) so its row fits above that room.
+A `flex-wrap` grid (3 per row, `hud-icon-bar`) of six tiles — **Ăn** (`HungerDock`), **Chơi game** (`GameButton`), **Đi ngủ** (`SleepButton`) as icon buttons with the name under them, then **Học / Việc làm / Kỹ năng** as `light` tiles (icon over label, `BUTTON_LIGHT.iconPx` icons). Tooltips and aria-labels are unchanged. The full-width amber **Cửa hàng** (`StoreButton wide`, `open-store`) closes the card.
 
-### Chamfered game frame
+### Profile card (`ProfileCard`)
 
-Octagonal **clip-path** frame around the room (`RoomChamferFrame`), reference `uploads/index.html`. Nested layers (outer → inner), corners cut by `--c` per layer; scale corner radius and padding with `roomWidth / 427`:
+Avatar, name + overall `RankBadge`, `{stage} · {rank}` (`player-rank`), presentational **Lv/XP** bar (level = sum of the five skill levels, progress = Σxp/ΣxpToNext — display only, no game state), trait row with tooltip (`player-trait`), sick/burnout lines, **Danh tiếng** (`player-reputation`, tweened + Stat FX), **Freelance n/100** bar (`player-freelance`), rent line (`life-rent`).
 
-| Layer | Corner `c` | Pad | Fill |
-|-------|------------|-----|------|
-| f1 | 16px | 3px | `#1C1745` outer line |
-| f2 | 14px | 3px | gradient `#A99CF0` → `#7E70D0` bevel |
-| f3 | 12px | 7px | gradient 160deg `#4A3F8C`, `#2D2763` 60%, `#3A2F78` body |
-| f5 | 6px | — | canvas clip, flush on f3, + **inset** shadow `0 4px 10px rgba(0,0,0,.5)` (scaled) |
+### Skills card (`SkillsCard`)
 
-There is **no f4 / `#15112F` inner line** and no padding between the purple body and the canvas. The canvas slot (`.room-canvas-slot`) is transparent and shrink-wraps the canvas, so the purple frame meets the canvas edge. No dark letterbox behind the canvas.
-
-**Glow:** `.room-frame-glow` wrapper uses `filter: drop-shadow(...)` (not `box-shadow` — clip-path clips box-shadow).  
-**Label plate:** chamfer `c6`, bg `#E9E4F5`, text `#3B3466`, stage title from room content.
-
-**Side panels** use the same layers, pads, corners, and inset shadow at scale 1 (`PanelChamferFrame`), in a softer rose-lavender so the deep purple canvas stays the focus. Both columns share one color: f1 `#6A4A66`, f2 `#F8E4F2` → `#E3B4D8`, f3 `#E7C6E2` / `#D08FCB` (page-gradient pink) / `#E4B7D8`. The well is `--panel-bg` (`#F3F1F8`). Glow is `.panel-frame-glow`, lighter than the room. Inner notification and skill cards stay lavender `PanelCard`s.
-
-**Thông báo** rows are compact: 8px padding, Galmuri7 at 16px, and the message clamps to two lines (the clock shares the first line). The header unread count is `ui_badge_unread_lg` at 16px, with an 8px white digit and a light opacity pulse (`prefers-reduced-motion` holds the disc still). Pay rent, view job, and open store are `PixelButton` `icon` actions (`icon_action_pay_rent`, `icon_action_view_job`, `icon_action_open_store`) with the old label as the tooltip and `aria-label`. Open store still runs the notice action that opens the store modal. Eat and sleep glyphs are in the same map. A label with no glyph stays a text button. Sizes: `src/components/game/notifications.config.ts` and [notifications.md](../systems/notifications.md).
-
-Canvas sizing `ref` stays on the room-size cap box; the visible frame wraps the canvas inside it. Pointer hit-testing and `?debug=1` unchanged.
+Native `<details>` collapsed by default; summary "Kỹ năng" with a rotating chevron. Rows: icon, name, rank badge, `rankLabel %`, mint stepped bar (`player-skills`, `player-skill-*`).
 
 ---
 
@@ -196,80 +203,43 @@ The **Canvas2D room renderer** is not restyled (integer scale, nearest-neighbour
 
 ---
 
+## 3D shell palette (`?3d=1`)
+
+When GameShell renders the R3F scene (`?3d=1`) it adds **`.theme-clay`** to the shell root and passes `clay` to `ProfileCard` / `ActionsCard` (and the icon buttons they mount); `StatsCard` renders its clay stat pills in both shells. The **material is the same global clay** — `.theme-clay` only swaps the palette: card `#FBF9FD` / ink `#3D3550` / muted `#7A7290`, page bg `#EFEAF6`, tab lavender `#E9E2F5`, softer red `#E2607A` for negative money, and the action-tile faces (`--btn-eat` … `--btn-store`). The pastel stat fills (`--stat-*`) live in `:root` and are shared.
+
+- **StatBar `variant="clay"`** (also the stats card in both shells): 30px fully-rounded pill, tinted track (`--stat-*-bg`), fill `--stat-*` with the light clay edge, icon + label **inside** left, current value **inside** right (`hud-*` testids and data attrs unchanged). Low stat = soft opacity pulse on the fill + 8px coral dot by the number (the red `stat-blink` frame is not used here). Tone mapping: coral→health, mint→mood, sky→energy, amber→full, exp→xp. Height follows `--clay-stat-h` (the profile XP bar sets 10px).
+- **ProfileCard clay**: 56px round avatar + name (800) + subtitle row; one XP line (`Lv. N · x/y XP`); trait/reputation/freelance/rent fold into `--clay-chip` pills (`player-trait`, `player-reputation`, `player-freelance`, `life-rent` testids kept).
+- **Actions clay**: the six tiles share one family — the pastel face sits on the tile wrapper (`.clay-tile[data-clay-tone=eat|game|sleep|study|jobs|skills]`, radius `--radius-tile`, ctrl shadow stack), the inner `PixelButton` goes chromeless (`.clay-tile-inner`). 3-col grid, 10px gap, hover −1px lift, active `scale(.95)`. Ăn's ready dot recolors to `--stat-full`. Cửa hàng drops the amber bar for a full-width cream pill (`--btn-store`, 48px, ink `--clay-text`).
+- **Top bar clay**: notifications/audio shrink to 40px round faces. Negative money keeps the softer red.
+
+---
+
 ## Event popup
 
-The choice card is `LifeEventPopup`, mounted inside the room frame in `GameShell`. Numbers live in `src/components/game/life-event-popup.config.ts` (`LIFE_EVENT_POPUP`):
-
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `widthPx` | 424 | Card width on the desktop canvas |
-| `heightPx` | 186 | Card height. Narrow canvases keep `width / height` |
-| `insetPx` | 8 | Gap under the card. It stays centered at `widthPx` when the canvas is wider |
-| `zIndex` | 20 | Above the canvas and the side panels (`panelZ` 1). Below the holiday banner (`overlayFloorZ` 30), modal backdrops, and tooltips (40) |
-| `enterMs` | 160 | Fade and rise. `prefers-reduced-motion` skips it |
-| `risePx` | 4 | How far the card rises while it fades in |
-| `border` | `#E3B4D8` | Rose edge, same family as the side-panel frame |
-
-The host does not take pointer events. Only the card does, so the rest of the room stays clickable. Copy, portraits, and choices are the event's own.
+`LifeEventPopup` mounts inside the scene card over the canvas. Numbers live in `src/components/game/life-event-popup.config.ts` (`LIFE_EVENT_POPUP`): 424×186 card, 8px inset, `zIndex` 20, 160ms fade+rise, rose border `#E3B4D8`. The host takes no pointer events; only the card does.
 
 ---
 
 ## Tooltips
 
-Chrome hints use `src/components/ui/tooltip.tsx`. Numbers live in `src/components/ui/tooltip.config.ts` (`TOOLTIP`):
+Chrome hints use `src/components/ui/tooltip.tsx` (`TOOLTIP` config unchanged: 300ms hover delay, 120ms skip, 8px offsets). Keyboard focus opens immediately; coarse pointers tap-to-open.
 
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `openDelayMs` | 300 | Hover delay on a fine pointer |
-| `skipDelayMs` | 120 | How long the next tip in the same provider skips that delay |
-| `sideOffsetPx` | 8 | Gap between the trigger and the tip |
-| `collisionPaddingPx` | 8 | Viewport inset before the tip flips |
-| `enterMs` | 120 | Fade and 4px slide. `prefers-reduced-motion` skips it |
-| `disableHoverableContent` | true | Leaving the trigger closes the tip. The tip has no controls |
-
-Hover opens the tip after `openDelayMs`. Keyboard focus opens it immediately and sets `aria-describedby` on the trigger while the tip is open. A coarse pointer opens it on tap; a tap outside, or Escape, closes it. The character-card trait row uses this for the bonus line. The room status bar shop icon and the HUD sleep icon use it for “Cửa hàng” and “Đi ngủ”. The HUD Ăn icon, beside Đi ngủ, uses it for “Ăn · ” plus the hunger level (“No”, “Hơi đói”, “Đói”), and that same string is the button `aria-label`. Notice actions show those words on the button and use the same string for `aria-label` and the tip: “Trả trọ”, “Xem job”, “Mở store”, “Ăn”, and “Ngủ”.
+---
 
 ## Modal
 
-Popup chrome uses `src/components/ui/modal.tsx`. Numbers live in `src/components/ui/modal.config.ts` (`MODAL`):
+Popup chrome uses `src/components/ui/modal.tsx` (`MODAL` config): overlay z-40, content z-50, 160ms fade+rise, backdrop **`rgba(42, 37, 72, 0.28)`** (softened for the light page; the career panel and level-up popups use the same tint), 80vh cap, 420px default / 640px store width. `PanelCard` content (white, 24px radius, clay shadow).
 
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `overlayZ` | 40 | Backdrop. Same stack as the career panel, the food popup, and the sheet overlay |
-| `contentZ` | 50 | Dialog. Same stack as sheet content and the level-up popup |
-| `enterMs` | 160 | Fade and rise. `prefers-reduced-motion` skips it |
-| `risePx` | 4 | How far the dialog rises while it fades in |
-| `backdrop` | `rgba(42, 37, 72, 0.45)` | Dim, same tint as the other full-screen overlays |
-| `maxHeightVh` | 80 | Dialog cap |
-| `chromePx` | 112 | Title row and padding kept outside the scrolling body |
-| `maxWidthPx` | 420 | Default width cap. The store passes `STORE_GRID.modalMaxPx` (640) |
-| `viewportInsetPx` | 16 | Side inset on a narrow viewport |
-
-The shell traps focus, closes on Escape and a backdrop click, and sets `aria-modal`. **Đóng** closes it too. The store renders its grid inside it.
+---
 
 ## Store grid
 
-The shop dialog is a grid of item cells. Counts live in `src/components/game/store-grid.config.ts` (`STORE_GRID`). `storeGridCss()` writes the column rules, so the stylesheet does not keep a second copy.
+Unchanged mechanics (`STORE_GRID`): 2 columns mobile / 4 desktop, 148px cells, tabs **Nội thất / Phòng / Tất cả**, owned = mint border + **Đã có**, locked = dimmed + **Ghim**, buttons `PixelButton`. The store opens from the amber Cửa hàng bar on the actions card (`open-store`).
 
-| Key | Default | Meaning |
-|-----|---------|---------|
-| `columnsMobile` | 2 | Columns below `desktopMinPx` |
-| `columnsDesktop` | 4 | Columns from `desktopMinPx` up |
-| `desktopMinPx` | 1024 | Tailwind `lg`. Same cutoff as the shell |
-| `gapPx` | 8 | Space between cells |
-| `cellPx` | 148 | Desktop cell width the dialog is sized for. Narrower than the old 192px card |
-| `modalPadPx` | 24 | Panel padding on both sides (modal `p-3`) |
-| `modalMaxPx` | 640 | `cellPx * columnsDesktop + gapPx * (columnsDesktop - 1) + modalPadPx` |
-| `furnitureIconPx` | 64 | Furniture art at 2× (native 32) |
-| `roomIconW` / `roomIconH` | 64 / 40 | Room art at 1× |
-| `badgePx` | 22 | Owned check and lock. Integer half of the 44px icon |
-
-Tabs are **Nội thất**, **Phòng**, and **Tất cả**. The list is a `tablist` (arrow keys move the selection). The catalog has no category field, so `src/components/game/store-shelf.ts` treats a row with a stage, or a `room_` id, as a room and everything else as furniture. **Tất cả** draws furniture first, then rooms. An owned cell has a mint border, the done icon, and its button reads **Đã có**. A locked cell (skill, reputation, or room requirement) is dimmed, shows the lock icon, and its button is **Ghim**. Short on money, **Mua** stays disabled and **Ghim** stays so the item can still be pinned. Prices, buy, and pin still use the existing shop actions. Buttons are `PixelButton`.
+---
 
 ## Motion & a11y
 
-Respect `prefers-reduced-motion`. Keep tap targets ≥ 44px on mobile where practical.
+Respect `prefers-reduced-motion` (see the reduced-motion block in `globals.css` — floats, blinks, slides, and the tooltip/entrance animations all switch off). Keep tap targets ≥ 44px on mobile where practical. `src/lib/reduced-motion.ts` provides `prefersReducedMotion()` / `usePrefersReducedMotion()`.
 
-- **Stat FX helper**: `src/lib/reduced-motion.ts` provides `prefersReducedMotion()` and `usePrefersReducedMotion()` for consistent media query handling. SceneCanvas and CharacterIntro previously used inline checks; new code should use the helper.
-
-The rice-bowl icon inside the HUD Ăn button pulses with opacity and brightness when the player is Hơi đói (slow, faint) or Đói (faster, stronger). No stays still. Reduced motion holds a static tint instead of the pulse. Timings are `HUNGER_BOWL_BLINK` in `src/components/game/food-dock.config.ts`.
+The rice-bowl Ăn icon still pulses on Hơi đói / Đói (timings in `food-dock.config.ts`); reduced motion holds a static tint.

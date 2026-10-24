@@ -129,18 +129,36 @@ class FakeContext implements AudioContextLike {
 
 const PACK: AudioCue[] = [
   {
-    id: "bgm_student_day",
-    file: "ogg/bgm/bgm_student_day.ogg",
-    mp3: "mp3/bgm/bgm_student_day.mp3",
+    id: "bgm_morning",
+    file: "ogg/bgm/bgm_morning.ogg",
+    mp3: "mp3/bgm/bgm_morning.mp3",
     type: "bgm",
     loop: true,
     volume: 0.8,
     category: "bgm",
   },
   {
-    id: "bgm_student_night",
-    file: "ogg/bgm/bgm_student_night.ogg",
-    mp3: "mp3/bgm/bgm_student_night.mp3",
+    id: "bgm_afternoon",
+    file: "ogg/bgm/bgm_afternoon.ogg",
+    mp3: "mp3/bgm/bgm_afternoon.mp3",
+    type: "bgm",
+    loop: true,
+    volume: 0.8,
+    category: "bgm",
+  },
+  {
+    id: "bgm_evening",
+    file: "ogg/bgm/bgm_evening.ogg",
+    mp3: "mp3/bgm/bgm_evening.mp3",
+    type: "bgm",
+    loop: true,
+    volume: 0.8,
+    category: "bgm",
+  },
+  {
+    id: "bgm_night",
+    file: "ogg/bgm/bgm_night.ogg",
+    mp3: "mp3/bgm/bgm_night.mp3",
     type: "bgm",
     loop: true,
     volume: 0.8,
@@ -204,8 +222,10 @@ const OFFSETS: SpriteMap = {
     },
   },
   bgm: {
-    bgm_student_day: { mp3LeadSeconds: MP3_LEAD },
-    bgm_student_night: { mp3LeadSeconds: MP3_LEAD },
+    bgm_morning: { mp3LeadSeconds: MP3_LEAD },
+    bgm_afternoon: { mp3LeadSeconds: MP3_LEAD },
+    bgm_evening: { mp3LeadSeconds: MP3_LEAD },
+    bgm_night: { mp3LeadSeconds: MP3_LEAD },
   },
 };
 
@@ -317,12 +337,12 @@ describe("audio manifest", () => {
     ]);
     expect(
       parseManifest({
-        assets: [{ id: "bgm_student_day", type: "bgm", file: "ogg/bgm/bgm_student_day.ogg", mp3: "mp3/bgm/bgm_student_day.mp3", loop: true, volume: 0.5 }],
+        assets: [{ id: "bgm_morning", type: "bgm", file: "ogg/bgm/bgm_morning.ogg", mp3: "mp3/bgm/bgm_morning.mp3", loop: true, volume: 0.5 }],
       })[0],
     ).toMatchObject({
-      id: "bgm_student_day",
+      id: "bgm_morning",
       type: "bgm",
-      mp3: "mp3/bgm/bgm_student_day.mp3",
+      mp3: "mp3/bgm/bgm_morning.mp3",
       loop: true,
     });
     expect(parseManifest({ nope: true })).toEqual([]);
@@ -351,20 +371,20 @@ describe("audio manifest", () => {
   });
 
   it("keeps BGM on ogg and offers mp3 only as an SFX fallback", () => {
-    const day = PACK[0]!;
-    const night = PACK[1]!;
-    const click = PACK[2]!;
-    expect(cueUrls(day)).toEqual(["/audio/ogg/bgm/bgm_student_day.ogg"]);
-    expect(cueUrls(night)).toEqual(["/audio/ogg/bgm/bgm_student_night.ogg"]);
+    const day = PACK.find((cue) => cue.id === "bgm_morning")!;
+    const night = PACK.find((cue) => cue.id === "bgm_night")!;
+    const click = PACK.find((cue) => cue.id === "sfx_ui_click")!;
+    expect(cueUrls(day)).toEqual(["/audio/ogg/bgm/bgm_morning.ogg"]);
+    expect(cueUrls(night)).toEqual(["/audio/ogg/bgm/bgm_night.ogg"]);
     expect(cueUrls(click)).toEqual([
       "/audio/ogg/sfx/sfx_ui_click.ogg",
       "/audio/mp3/sfx/sfx_ui_click.mp3",
     ]);
     expect(cueUrls(day).some((url) => url.endsWith(".mp3"))).toBe(false);
-    expect(bgmUrl(day, "ogg")).toBe("/audio/ogg/bgm/bgm_student_day.ogg");
-    expect(bgmUrl(day, "mp3")).toBe("/audio/mp3/bgm/bgm_student_day.mp3");
-    expect(bgmLeadSeconds(OFFSETS, "ogg", "bgm_student_day")).toBe(0);
-    expect(bgmLeadSeconds(OFFSETS, "mp3", "bgm_student_day")).toBe(MP3_LEAD);
+    expect(bgmUrl(day, "ogg")).toBe("/audio/ogg/bgm/bgm_morning.ogg");
+    expect(bgmUrl(day, "mp3")).toBe("/audio/mp3/bgm/bgm_morning.mp3");
+    expect(bgmLeadSeconds(OFFSETS, "ogg", "bgm_morning")).toBe(0);
+    expect(bgmLeadSeconds(OFFSETS, "mp3", "bgm_morning")).toBe(MP3_LEAD);
     expect(preferredAudioFormat(() => "probably")).toBe("ogg");
     expect(preferredAudioFormat(() => "maybe")).toBe("ogg");
     expect(preferredAudioFormat(() => "")).toBe("mp3");
@@ -435,13 +455,21 @@ describe("sound icons", () => {
     }
   });
 
-  it("ships each sound icon as a 44×44 png", () => {
+  it("ships the 3D set at 256px and the volume marks at 44px", () => {
+    // 3D icon swap: sound_on/sound_off moved to the 256px rendered set;
+    // volume_low/volume_high keep the 44px pixel art until new art lands.
+    const dims: Record<(typeof names)[number], number> = {
+      sound_on: 256,
+      sound_off: 256,
+      volume_low: 44,
+      volume_high: 44,
+    };
     for (const name of names) {
       const file = path.join(process.cwd(), "public/ui/icons", `icon_${name}.png`);
       const bytes = fs.readFileSync(file);
       expect(bytes.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
-      expect(bytes.readUInt32BE(16)).toBe(44);
-      expect(bytes.readUInt32BE(20)).toBe(44);
+      expect(bytes.readUInt32BE(16)).toBe(dims[name]);
+      expect(bytes.readUInt32BE(20)).toBe(dims[name]);
       expect(
         fs.existsSync(path.join(process.cwd(), "public/ui/icons", `icon_${name}_x4.png`)),
       ).toBe(false);
@@ -452,15 +480,14 @@ describe("sound icons", () => {
 describe("audio cues", () => {
   const brackets = SIM_CATALOG.config.rank_brackets;
 
-  it("uses the day bed for morning and noon, and the night bed after that", () => {
-    expect(bgmBedForPhase("morning")).toBe("day");
-    expect(bgmBedForPhase("noon")).toBe("day");
-    expect(bgmBedForPhase("evening")).toBe("night");
-    expect(bgmBedForPhase("night")).toBe("night");
-    expect(bgmIdForPhase("noon")).toBe("bgm_student_day");
-    expect(bgmIdForPhase("evening")).toBe("bgm_student_night");
-    expect(shouldCrossfadeBgm("morning", "noon")).toBe(false);
-    expect(shouldCrossfadeBgm("noon", "evening")).toBe(true);
+  it("gives each phase its own lo-fi loop and crossfades on every phase change", () => {
+    expect(bgmBedForPhase("morning")).toBe("morning");
+    expect(bgmIdForPhase("morning")).toBe("bgm_morning");
+    expect(bgmIdForPhase("noon")).toBe("bgm_afternoon");
+    expect(bgmIdForPhase("evening")).toBe("bgm_evening");
+    expect(bgmIdForPhase("night")).toBe("bgm_night");
+    expect(shouldCrossfadeBgm("morning", "noon")).toBe(true);
+    expect(shouldCrossfadeBgm("noon", "noon")).toBe(false);
   });
 
   it("plays one time-skip sting for a multi-hour jump, not for sleep or a single hour", () => {
@@ -476,7 +503,7 @@ describe("audio cues", () => {
     ]);
     expect(skip.timeSkip).toBe(true);
     expect(skip.bgmPhase).toBe("noon");
-    expect(shouldCrossfadeBgm(skip.bgmPrevious!, skip.bgmPhase!)).toBe(false);
+    expect(shouldCrossfadeBgm(skip.bgmPrevious!, skip.bgmPhase!)).toBe(true);
 
     const sleep = planTimeAudio([
       { type: "hourChanged", day: 2, hour: 6, totalMinutes: 30 * 60 },
@@ -556,7 +583,7 @@ describe("audio engine", () => {
     expect(audio.calls.some((url) => url.includes("bgm"))).toBe(false);
 
     await audio.flush();
-    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_student_day.ogg");
+    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_morning.ogg");
     const bed = audio.ctx.sources.find((source) => source.loop);
     expect(bed?.loopStart).toBe(0);
     expect(bed?.started?.offset).toBe(0);
@@ -567,7 +594,7 @@ describe("audio engine", () => {
     expect(audio.calls.some((url) => url.endsWith(".mp3"))).toBe(false);
   });
 
-  it("plays a sprite slice on pointerdown and keeps the bed when the phase stays on it", async () => {
+  it("plays a sprite slice on pointerdown and crossfades to each phase's own bed", async () => {
     const audio = harness();
     await audio.engine.preloadSfx();
     audio.engine.setSettings({ music: 1, sfx: 0.5, muted: false });
@@ -587,18 +614,19 @@ describe("audio engine", () => {
 
     const loops = () => audio.ctx.sources.filter((source) => source.loop);
     expect(loops()).toHaveLength(1);
+    const morningBed = loops()[0]!;
     audio.engine.applyTimePlan(planTimeAudio([phaseChange("noon", "morning")]));
-    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_student_day.ogg");
-    expect(loops()).toHaveLength(1);
+    await audio.flush();
+    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_afternoon.ogg");
+    expect(morningBed.stopped).toBe(true);
     const noon = sfxStarts(audio.ctx).at(-1)!;
     expect(noon.started?.offset).toBe(NOON.ogg.offset);
     expect((noon.dest as FakeGain).dest).not.toBe(uiBus);
 
-    const day = loops()[0]!;
+    const day = loops().find((source) => !source.stopped)!;
     audio.engine.applyTimePlan(planTimeAudio([phaseChange("evening", "noon")]));
-    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_student_day.ogg");
     await audio.flush();
-    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_student_night.ogg");
+    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_evening.ogg");
     expect(day.stopped).toBe(true);
     expect(audio.calls.some((url) => url.endsWith(".mp3"))).toBe(false);
   });
@@ -614,7 +642,7 @@ describe("audio engine", () => {
     expect(click.started?.offset).toBeCloseTo(CLICK.mp3.offset, 6);
     expect(click.started?.offset).toBeCloseTo(CLICK.ogg.offset + MP3_DELAY_SAMPLES / SPRITE_RATE, 6);
     await audio.flush();
-    expect(audio.engine.bedUrl()).toBe("/audio/mp3/bgm/bgm_student_day.mp3");
+    expect(audio.engine.bedUrl()).toBe("/audio/mp3/bgm/bgm_morning.mp3");
     const bed = audio.ctx.sources.find((source) => source.loop);
     expect(bed?.loopStart).toBeCloseTo(MP3_LEAD, 6);
     expect(bed?.started?.offset).toBeCloseTo(MP3_LEAD, 6);
@@ -634,7 +662,7 @@ describe("audio engine", () => {
     audio.engine.playKey("hover");
     expect(audio.ctx.sources).toHaveLength(before);
     await audio.flush();
-    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_student_night.ogg");
+    expect(audio.engine.bedUrl()).toBe("/audio/ogg/bgm/bgm_night.ogg");
   });
 
   it("keeps mute and the sfx slider on the gain nodes", async () => {
@@ -743,7 +771,7 @@ describe("audio engine", () => {
     const click = sfxStarts(audio.ctx).at(-1)!;
     expect(click.started?.offset).toBeCloseTo(CLICK.mp3.offset, 6);
     await audio.flush();
-    expect(audio.engine.bedUrl()).toBe("/audio/mp3/bgm/bgm_student_day.mp3");
+    expect(audio.engine.bedUrl()).toBe("/audio/mp3/bgm/bgm_morning.mp3");
   });
 
   it("falls back to per-file audio when every sprite decode fails", async () => {
@@ -782,7 +810,7 @@ describe("audio engine", () => {
       expect(warnings.filter((line) => line.includes("[devlife-audio]"))).toEqual(spriteWarnings);
       await audio.flush();
       const bed = elements.find((element) => element.loop);
-      expect(bed?.src).toBe("/audio/ogg/bgm/bgm_student_day.ogg");
+      expect(bed?.src).toBe("/audio/ogg/bgm/bgm_morning.ogg");
       expect(warnings.some((line) => line.includes("BGM decode failed"))).toBe(true);
       const logged = warnings.length;
       audio.engine.playKey("click");
@@ -991,15 +1019,15 @@ const manifestPath = path.join(process.cwd(), "public/audio/manifest.json");
 const hasManifest = fs.existsSync(manifestPath);
 
 describe.skipIf(!hasManifest)("shipped audio pack", () => {
-  it("includes both student beds and resolves mapped cues", () => {
+  it("includes all four phase beds and resolves mapped cues", () => {
     const cues = parseManifest(JSON.parse(fs.readFileSync(manifestPath, "utf8")));
     const ids = cues.map((cue) => cue.id);
-    const day = cues.find((cue) => cue.id === "bgm_student_day");
-    const night = cues.find((cue) => cue.id === "bgm_student_night");
+    const day = cues.find((cue) => cue.id === "bgm_morning");
+    const night = cues.find((cue) => cue.id === "bgm_night");
     expect(day?.type).toBe("bgm");
     expect(night?.type).toBe("bgm");
-    expect(cueUrls(day!)).toEqual(["/audio/ogg/bgm/bgm_student_day.ogg"]);
-    expect(cueUrls(night!)).toEqual(["/audio/ogg/bgm/bgm_student_night.ogg"]);
+    expect(cueUrls(day!)).toEqual(["/audio/ogg/bgm/bgm_morning.ogg"]);
+    expect(cueUrls(night!)).toEqual(["/audio/ogg/bgm/bgm_night.ogg"]);
     const sfx = cues.filter((cue) => cue.type === "sfx");
     const looped = sfx.filter((cue) => cue.loop);
     const oneShots = sfx.filter((cue) => !cue.loop);
@@ -1078,8 +1106,8 @@ describe.skipIf(!hasManifest)("shipped audio pack", () => {
       expect(mp3?.duration, cue.id).toBeCloseTo(ogg!.duration, 5);
       expect(mp3!.offset - ogg!.offset, cue.id).toBeCloseTo(shift, 5);
     }
-    expect(offsets!.bgm.bgm_student_day?.mp3LeadSeconds).toBeGreaterThan(0.01);
-    expect(offsets!.bgm.bgm_student_night?.mp3LeadSeconds).toBeGreaterThan(0.01);
-    expect(offsets!.bgm.bgm_student_day?.mp3LeadSeconds).toBeLessThan(0.08);
+    expect(offsets!.bgm.bgm_morning?.mp3LeadSeconds).toBeGreaterThan(0.01);
+    expect(offsets!.bgm.bgm_night?.mp3LeadSeconds).toBeGreaterThan(0.01);
+    expect(offsets!.bgm.bgm_morning?.mp3LeadSeconds).toBeLessThan(0.08);
   });
 });

@@ -2,11 +2,10 @@
 
 import { PixelButton } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { m51AssetPath } from "@/game/life/assets";
+import { PixelIcon } from "./PixelIcon";
 import {
   SLEEP_LABEL,
   sleepButtonMetrics,
-  sleepIconFile,
   sleepZzzStyle,
 } from "./sleep-button.config";
 import styles from "./sleep-button.module.css";
@@ -19,40 +18,42 @@ import styles from "./sleep-button.module.css";
 export function SleepButton({
   canSleep,
   onSleep,
+  clay = false,
 }: {
   canSleep: boolean;
   onSleep: () => void;
+  clay?: boolean;
 }) {
   const metrics = sleepButtonMetrics();
+  const iconPx = clay ? 24 : metrics.iconPx;
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="inline-flex">
+        <span className="inline-flex w-full">
           <PixelButton
             variant="icon"
             disabled={!canSleep}
             aria-label={SLEEP_LABEL}
-            className={styles.button}
-            style={{
-              width: metrics.buttonPx,
-              height: metrics.buttonPx,
-              minWidth: metrics.buttonPx,
-              minHeight: metrics.buttonPx,
-            }}
+            className={clay ? "clay-tile-inner w-full" : styles.button}
+            style={
+              clay
+                ? { width: "100%", height: "100%", minHeight: 40 }
+                : {
+                    width: metrics.buttonPx,
+                    height: metrics.buttonPx,
+                    minWidth: metrics.buttonPx,
+                    minHeight: metrics.buttonPx,
+                  }
+            }
             onClick={onSleep}
             data-testid="sleep-button"
             data-sleep-ready={canSleep ? "1" : "0"}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- pixel bed stays unoptimized */}
-            <img
-              src={m51AssetPath(sleepIconFile())}
+            <PixelIcon
+              name="sleep"
+              size={iconPx}
               alt=""
-              width={metrics.iconPx}
-              height={metrics.iconPx}
-              draggable={false}
-              data-icon-key="icon_btn_sleep"
               className={styles.icon}
-              style={{ width: metrics.iconPx, height: metrics.iconPx }}
             />
             {canSleep ? (
               <span

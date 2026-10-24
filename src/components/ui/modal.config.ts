@@ -15,7 +15,7 @@ export const MODAL = {
   /** How far the dialog rises while it fades in, CSS pixels. */
   risePx: 4,
   /** Dim tint shared with the other full-screen overlays. */
-  backdrop: "rgba(42, 37, 72, 0.45)",
+  backdrop: "rgba(42, 37, 72, 0.28)",
   /** Dialog height cap, as a percentage of the viewport. */
   maxHeightVh: 80,
   /**

@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 import { applyDayStarted, defaultCareer } from "@/game/career/actions";
+import type { CareerState } from "@/game/career/types";
 import { SIM_CATALOG } from "@/game/career/content";
 import { LIFE } from "@/game/life/content";
 import { gameBlocked, gameBubbleText, gameMoodGain, gameOutcomeMood, pickGameOutcome, playGameSlot } from "@/game/life/logic";
 
 const WIN = () => 0.1, NORMAL = () => 0.5, TROLL = () => 0.8, LOSE = () => 0.97;
 const base = defaultCareer(1, 20 * 60, "student", SIM_CATALOG, "careful");
-const at = (s: any, patch: any) => ({ ...s, players: { ...s.players, ...patch } });
+const at = (s: CareerState, patch: Partial<CareerState["players"]>): CareerState => ({
+  ...s,
+  players: { ...s.players, ...patch },
+});
 const free = { minuteOfDay: 20 * 60, hospitalOpen: false, taskOpen: false };
 
 describe("Chơi game logic", () => {

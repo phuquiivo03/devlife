@@ -61,8 +61,8 @@ export function JobBoardPanel({ iconFiles }: { iconFiles: readonly string[] }) {
             data-state={done ? "done" : active ? "active" : check.ok ? "open" : "locked"}
             className={
               done
-                ? "card-done flex items-center gap-3 rounded-[var(--radius-panel)] border border-[var(--panel-border)] bg-white/40 p-2"
-                : "card-slide flex items-center gap-3 rounded-[var(--radius-panel)] border border-[var(--panel-border)] bg-white/50 p-2"
+                ? "card-done flex items-center gap-3 rounded-[var(--radius-tile)] bg-white/60 p-2 shadow-chip"
+                : "card-slide flex items-center gap-3 rounded-[var(--radius-tile)] bg-white/70 p-2 shadow-chip"
             }
             style={done ? undefined : { animationDelay: `${index * 90}ms` }}
           >

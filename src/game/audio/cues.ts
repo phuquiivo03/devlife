@@ -5,21 +5,26 @@ import type { PhaseId } from "../time/config";
 import type { TimeEvent } from "../time/types";
 import { resolveCueId } from "./manifest";
 
-export const BGM_DAY_ID = "bgm_student_day";
-export const BGM_NIGHT_ID = "bgm_student_night";
+/** One lo-fi loop per phase (same key and motif, so phase crossfades stay smooth). */
+export const BGM_PHASE_IDS: Record<PhaseId, string> = {
+  morning: "bgm_morning",
+  noon: "bgm_afternoon",
+  evening: "bgm_evening",
+  night: "bgm_night",
+};
 
-export type BgmBed = "day" | "night";
+export type BgmBed = PhaseId;
 
-/** Morning and noon share the day bed. Evening and night share the night bed. */
+/** Each phase has its own bed. */
 export function bgmBedForPhase(phase: PhaseId): BgmBed {
-  return phase === "morning" || phase === "noon" ? "day" : "night";
+  return phase;
 }
 
 export function bgmIdForPhase(phase: PhaseId): string {
-  return bgmBedForPhase(phase) === "day" ? BGM_DAY_ID : BGM_NIGHT_ID;
+  return BGM_PHASE_IDS[phase];
 }
 
-/** Same-bed phase changes (Sáng → Trưa) keep the current loop running. */
+/** Every phase change crossfades to that phase's loop. */
 export function shouldCrossfadeBgm(from: PhaseId, to: PhaseId): boolean {
   return bgmBedForPhase(from) !== bgmBedForPhase(to);
 }

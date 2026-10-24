@@ -1,7 +1,7 @@
 /*
- * Room status bar, every width. Numbers come from ROOM_STATUS_BAR.
- * The shop control stays at the trailing edge when the row wraps.
- * Column capping stays in the desktop media query below.
+ * Top bar. Numbers come from ROOM_STATUS_BAR.
+ * The bar is one white rounded card; money and clock chips wrap under
+ * the logo on narrow viewports.
  */
 
 .statusBar {
@@ -12,7 +12,6 @@
   box-sizing: border-box;
   width: 100%;
   max-width: 100%;
-  /* margin-bottom: var(--room-status-gap); */
   padding: var(--room-status-pad-y) var(--room-status-pad-x);
   column-gap: var(--room-status-cluster);
   row-gap: var(--room-status-wrap);
@@ -32,26 +31,4 @@
   display: inline-flex;
   flex: 0 0 auto;
   margin-left: auto;
-}
-
-/*
- * Desktop only. The breakpoint number is SHELL_LAYOUT.desktopMinPx.
- * Mobile keeps the aside in normal flow (no sticky, no viewport cap).
- */
-
-@media (min-width: 1024px) {
-  .column {
-    position: sticky;
-    top: var(--shell-panel-top);
-    z-index: var(--shell-panel-z);
-    align-self: start;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    /* Matches the measured center room card when available; the viewport cap
-       is the fallback and bounds it on short windows. */
-    height: var(--shell-panel-h, var(--shell-panel-max));
-    max-height: var(--shell-panel-max);
-    min-height: 0;
-  }
 }

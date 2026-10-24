@@ -1,0 +1,1073 @@
+{
+ "version": "character_v6_rot3",
+ "units": "meters",
+ "up_axis": "+Y (glTF)",
+ "forward": "-Z (canonical facing of chair_plastic, player, player_standing)",
+ "room_origin": "room centre; floor top y=0.02, slab bottom y=-0.32",
+ "character_scale": 1.4,
+ "placement": "load items/<key>.glb, set position=position_gltf_yup, rotation (Euler XYZ, radians)=rotation_euler_gltf_rad, scale 1",
+ "items": [
+  {
+   "key": "floor_base",
+   "category": "room_shell",
+   "file": "character_v6_rot/floor_base.glb",
+   "position_blender_zup": [
+    0.015,
+    -0.015,
+    -0.32
+   ],
+   "position_gltf_yup": [
+    0.015,
+    -0.32,
+    0.015
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 888,
+   "bbox_size_gltf_m": [
+    4.45,
+    0.34,
+    4.45
+   ],
+   "meshes": [
+    "floor_base__Floor",
+    "floor_base__Slab"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "walls",
+   "category": "room_shell",
+   "file": "character_v6_rot/walls.glb",
+   "position_blender_zup": [
+    -0.08,
+    0.12,
+    0.0
+   ],
+   "position_gltf_yup": [
+    -0.08,
+    0.0,
+    -0.12
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1224,
+   "bbox_size_gltf_m": [
+    4.34,
+    2.62,
+    4.26
+   ],
+   "meshes": [
+    "walls__CreamWall"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "wall_tiles",
+   "category": "room_shell",
+   "file": "character_v6_rot/wall_tiles.glb",
+   "position_blender_zup": [
+    0.03,
+    0.01,
+    0.0
+   ],
+   "position_gltf_yup": [
+    0.03,
+    0.0,
+    -0.01
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 7152,
+   "bbox_size_gltf_m": [
+    4.12,
+    1.15,
+    4.04
+   ],
+   "meshes": [
+    "wall_tiles__Mint",
+    "wall_tiles__MintGrout"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "bed",
+   "category": "furniture",
+   "file": "character_v6_rot/bed.glb",
+   "position_blender_zup": [
+    -0.315,
+    1.445,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -0.315,
+    0.02,
+    -1.445
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2472,
+   "bbox_size_gltf_m": [
+    1.87,
+    0.7,
+    1.07
+   ],
+   "meshes": [
+    "bed__Blanket",
+    "bed__Pillow",
+    "bed__Sheet",
+    "bed__WoodLight"
+   ],
+   "pivot_check": [
+    0.0,
+    -0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "nightstand",
+   "category": "furniture",
+   "file": "character_v6_rot/nightstand.glb",
+   "position_blender_zup": [
+    1.6,
+    1.6475,
+    0.02
+   ],
+   "position_gltf_yup": [
+    1.6,
+    0.02,
+    -1.6475
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1628,
+   "bbox_size_gltf_m": [
+    0.55,
+    0.62,
+    0.595
+   ],
+   "meshes": [
+    "nightstand__Mint",
+    "nightstand__MintKnob",
+    "nightstand__MintLight"
+   ],
+   "pivot_check": [
+    0.0,
+    -0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "chair_plastic",
+   "category": "furniture",
+   "file": "wave1_2/chair_plastic.glb",
+   "position_blender_zup": [
+    -0.8239,
+    0.2,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -0.8239,
+    0.02,
+    -0.2
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    1.5708,
+    0
+   ],
+   "rotation_y_deg": 90.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1212,
+   "bbox_size_gltf_m": [
+    0.624,
+    0.782,
+    0.544
+   ],
+   "meshes": [
+    "chair_plastic__BluePlastic"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "note": "rot2: moved +0.25 m X (back from desk) to stop arm/desk clipping"
+  },
+  {
+   "key": "desk",
+   "category": "furniture",
+   "file": "character_v6_rot/desk.glb",
+   "position_blender_zup": [
+    -1.62,
+    -0.025,
+    0.0
+   ],
+   "position_gltf_yup": [
+    -1.62,
+    0.0,
+    0.025
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1096,
+   "bbox_size_gltf_m": [
+    0.72,
+    0.74,
+    1.65
+   ],
+   "meshes": [
+    "desk__BoxCream",
+    "desk__Wood"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "fan_standing",
+   "category": "furniture",
+   "file": "character_v6_rot/fan_standing.glb",
+   "position_blender_zup": [
+    1.0,
+    1.64,
+    0.01
+   ],
+   "position_gltf_yup": [
+    1.0,
+    0.01,
+    -1.64
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    2.0944,
+    0
+   ],
+   "rotation_y_deg": 120.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 3532,
+   "bbox_size_gltf_m": [
+    0.684,
+    1.287,
+    0.485
+   ],
+   "meshes": [
+    "blades",
+    "fan_standing__FanBadge",
+    "fan_standing__FanButton",
+    "fan_standing__FanButtonOn",
+    "fan_standing__FanCream"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "children": {
+    "blades": {
+     "pivot_local_gltf": [
+      0.0,
+      0.945,
+      -0.043
+     ],
+     "spin_axis_local": "Z (glTF, forward)"
+    }
+   }
+  },
+  {
+   "key": "plant_big",
+   "category": "decor",
+   "file": "character_v6_rot/plant_big.glb",
+   "position_blender_zup": [
+    -1.7087,
+    -1.7756,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -1.7087,
+    0.02,
+    1.7756
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2648,
+   "bbox_size_gltf_m": [
+    0.628,
+    0.792,
+    0.672
+   ],
+   "meshes": [
+    "plant_big__Leaf",
+    "plant_big__LeafDark",
+    "plant_big__Pot",
+    "plant_big__Soil"
+   ],
+   "pivot_check": [
+    0.006,
+    -0.006,
+    -0.0
+   ]
+  },
+  {
+   "key": "plant_small",
+   "category": "decor",
+   "file": "character_v6_rot/plant_small.glb",
+   "position_blender_zup": [
+    -1.8055,
+    -0.6626,
+    0.74
+   ],
+   "position_gltf_yup": [
+    -1.8055,
+    0.74,
+    0.6626
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 2648,
+   "bbox_size_gltf_m": [
+    0.286,
+    0.29,
+    0.235
+   ],
+   "meshes": [
+    "plant_small__Leaf",
+    "plant_small__LeafDark",
+    "plant_small__Pot",
+    "plant_small__Soil"
+   ],
+   "pivot_check": [
+    0.008,
+    -0.006,
+    -0.0
+   ]
+  },
+  {
+   "key": "books_stack",
+   "category": "decor",
+   "file": "character_v6_rot/books_stack.glb",
+   "position_blender_zup": [
+    -1.0491,
+    -1.65,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -1.0491,
+    0.02,
+    1.65
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1800,
+   "bbox_size_gltf_m": [
+    0.45,
+    0.235,
+    0.343
+   ],
+   "meshes": [
+    "books_stack__BookBlue",
+    "books_stack__BookGreen",
+    "books_stack__BookOrange",
+    "books_stack__Paper"
+   ],
+   "pivot_check": [
+    -0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "cat",
+   "category": "decor",
+   "file": "character_v6_rot/cat.glb",
+   "position_blender_zup": [
+    0.175,
+    1.2875,
+    0.437
+   ],
+   "position_gltf_yup": [
+    0.175,
+    0.437,
+    -1.2875
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 3848,
+   "bbox_size_gltf_m": [
+    0.52,
+    0.264,
+    0.415
+   ],
+   "meshes": [
+    "cat__Cat",
+    "cat__CatDark",
+    "cat__CatNose"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    -0.0
+   ]
+  },
+  {
+   "key": "cup",
+   "category": "decor",
+   "file": "character_v6_rot/cup.glb",
+   "position_blender_zup": [
+    1.45,
+    1.55,
+    0.64
+   ],
+   "position_gltf_yup": [
+    1.45,
+    0.64,
+    -1.55
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 508,
+   "bbox_size_gltf_m": [
+    0.08,
+    0.09,
+    0.08
+   ],
+   "meshes": [
+    "cup__Cream"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "kettle",
+   "category": "decor",
+   "file": "character_v6_rot/kettle.glb",
+   "position_blender_zup": [
+    1.6981,
+    1.72,
+    0.64
+   ],
+   "position_gltf_yup": [
+    1.6981,
+    0.64,
+    -1.72
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 3072,
+   "bbox_size_gltf_m": [
+    0.36,
+    0.317,
+    0.21
+   ],
+   "meshes": [
+    "kettle__Cream",
+    "kettle__DarkGrey"
+   ],
+   "pivot_check": [
+    -0.0,
+    0.0,
+    -0.0
+   ]
+  },
+  {
+   "key": "keyboard",
+   "category": "decor",
+   "file": "character_v6_rot/keyboard.glb",
+   "position_blender_zup": [
+    -1.384,
+    0.2,
+    0.745
+   ],
+   "position_gltf_yup": [
+    -1.384,
+    0.745,
+    -0.2
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 600,
+   "bbox_size_gltf_m": [
+    0.16,
+    0.035,
+    0.44
+   ],
+   "meshes": [
+    "keyboard__DarkGrey",
+    "keyboard__Grey"
+   ],
+   "pivot_check": [
+    0.0,
+    -0.0,
+    0.0
+   ],
+   "note": "rot2: moved +0.13 m X toward player; hands rest on it"
+  },
+  {
+   "key": "lamp_desk",
+   "category": "decor",
+   "file": "character_v6_rot/lamp_desk.glb",
+   "position_blender_zup": [
+    -1.86,
+    -0.3,
+    0.74
+   ],
+   "position_gltf_yup": [
+    -1.86,
+    0.74,
+    0.3
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    -1.5708,
+    0
+   ],
+   "rotation_y_deg": -90.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1092,
+   "bbox_size_gltf_m": [
+    0.19,
+    0.449,
+    0.387
+   ],
+   "meshes": [
+    "lamp_desk__Grey",
+    "lamp_desk__LampBulbW1"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "monitor",
+   "category": "decor",
+   "file": "character_v6_rot/monitor.glb",
+   "position_blender_zup": [
+    -1.76,
+    0.12,
+    0.74
+   ],
+   "position_gltf_yup": [
+    -1.76,
+    0.74,
+    -0.12
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    -1.7802,
+    0
+   ],
+   "rotation_y_deg": -102.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1058,
+   "bbox_size_gltf_m": [
+    0.64,
+    0.59,
+    0.28
+   ],
+   "meshes": [
+    "monitor__Bezel",
+    "monitor__Cream",
+    "monitor__ScreenTexW1"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "mug",
+   "category": "decor",
+   "file": "character_v6_rot/mug.glb",
+   "position_blender_zup": [
+    -1.48,
+    -0.3725,
+    0.745
+   ],
+   "position_gltf_yup": [
+    -1.48,
+    0.745,
+    0.3725
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 1468,
+   "bbox_size_gltf_m": [
+    0.1,
+    0.11,
+    0.145
+   ],
+   "meshes": [
+    "mug__Mug"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "poster_vn",
+   "category": "decor",
+   "file": "character_v6_rot/poster_vn.glb",
+   "position_blender_zup": [
+    -1.963,
+    -1.35,
+    1.32
+   ],
+   "position_gltf_yup": [
+    -1.963,
+    1.32,
+    1.35
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 830,
+   "bbox_size_gltf_m": [
+    0.056,
+    0.6,
+    0.46
+   ],
+   "meshes": [
+    "poster_vn__Paper",
+    "poster_vn__Pin",
+    "poster_vn__PosterTex"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "window",
+   "category": "decor",
+   "file": "character_v6_rot/window.glb",
+   "position_blender_zup": [
+    -0.35,
+    1.985,
+    1.075
+   ],
+   "position_gltf_yup": [
+    -0.35,
+    1.075,
+    -1.985
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 5098,
+   "bbox_size_gltf_m": [
+    1.4,
+    1.085,
+    0.59
+   ],
+   "meshes": [
+    "window__Cream",
+    "window__SkyTex"
+   ],
+   "pivot_check": [
+    -0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "key": "fairy_lights",
+   "category": "decor",
+   "file": "character_v6_rot/fairy_lights.glb",
+   "position_blender_zup": [
+    0.1375,
+    0.1378,
+    1.8226
+   ],
+   "position_gltf_yup": [
+    0.1375,
+    1.8226,
+    -0.1378
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    0.0,
+    0
+   ],
+   "rotation_y_deg": 0.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11520,
+   "bbox_size_gltf_m": [
+    4.231,
+    0.383,
+    3.68
+   ],
+   "meshes": [
+    "fairy_lights__Bulb",
+    "fairy_lights__Wire"
+   ],
+   "pivot_check": [
+    0.0,
+    0.0,
+    -0.0
+   ]
+  },
+  {
+   "key": "player",
+   "category": "character",
+   "file": "character_v6/player_sit.glb",
+   "position_blender_zup": [
+    -0.958,
+    0.2,
+    0.236
+   ],
+   "position_gltf_yup": [
+    -0.958,
+    0.236,
+    -0.2
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    1.5708,
+    0
+   ],
+   "rotation_y_deg": 90.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11800,
+   "bbox_size_gltf_m": [
+    1.003,
+    1.8769,
+    1.137
+   ],
+   "note": "rot2: moved +0.25 m X (back from desk) to stop arm/desk clipping"
+  },
+  {
+   "key": "player_standing",
+   "category": "character",
+   "file": "character_v6/player_stand.glb",
+   "position_blender_zup": [
+    -0.95,
+    -0.5,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -0.95,
+    0.02,
+    0.5
+   ],
+   "rotation_euler_gltf_rad": [
+    0,
+    1.5708,
+    0
+   ],
+   "rotation_y_deg": 90.0,
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "triangles": 11798,
+   "bbox_size_gltf_m": [
+    1.0037,
+    1.7513,
+    0.9749
+   ],
+   "note": "standing beside the desk, facing it (-X)"
+  }
+ ],
+ "stats": {
+  "chair_plastic_measured_facing_deg": -138.0,
+  "chair_plastic_yaw_deg": 132.0,
+  "player_measured_facing_deg": -138.0,
+  "player_yaw_deg": 132.0,
+  "player_tris_before": 67008,
+  "player_tris_after": 11760,
+  "player_standing_measured_facing_deg": -90.0,
+  "player_standing_yaw_deg": 0.0,
+  "player_standing_tris_before": 65992,
+  "player_standing_tris_after": 11648
+ },
+ "notes": [
+  "character_v6_rot: every item merged to one mesh per material (fan_standing keeps child node \"blades\", pivot on hub axis). Wall items (window, poster_vn, fairy_lights, aircon): pivot bottom-center of own bbox, position puts them on the wall. character_v6_rot: chair_plastic + player yaw 90 (perpendicular to desk wall), chair at Blender (-1.08,0.2); keyboard re-oriented to match.",
+  "rot2 BVH clip test: sit vs desk 0 overlaps (gap 3.7mm), vs keyboard 0 (gap 4mm); stage0 vs table 0 (gap 20mm), vs laptop 0 (gap 4.8mm)",
+  "rot3 BVH: player_floor vs table 0 overlaps (gap 26mm), vs laptop 0 overlaps (min gap ~8mm, hands)"
+ ],
+ "stage0": [
+  {
+   "key": "player_floor",
+   "category": "character",
+   "file": "character_v6_rot3/player_floor.glb",
+   "position_blender_zup": [
+    -1.0,
+    0.1,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -1.0,
+    0.02,
+    -0.1
+   ],
+   "rotation_y_deg": 90.0,
+   "rotation_euler_gltf_rad": [
+    0,
+    1.5708,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "note": "stage0 rot3: arms raised (elbow +0.065/-0.04 fwd, hands +0.048 up/-0.08 fwd, pre-scale units); hands rest on laptop keyboard; pivot = original v6 pivot so placement unchanged",
+   "triangles": 11800
+  },
+  {
+   "key": "table_folding",
+   "category": "furniture",
+   "file": "character_v6/table_folding.glb",
+   "position_blender_zup": [
+    -1.6,
+    0.1,
+    0.02
+   ],
+   "position_gltf_yup": [
+    -1.6,
+    0.02,
+    -0.1
+   ],
+   "rotation_y_deg": 90.0,
+   "rotation_euler_gltf_rad": [
+    0,
+    1.5708,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "note": "stage0 rot2: between player and wall"
+  },
+  {
+   "key": "laptop",
+   "category": "desk",
+   "file": "character_v6/laptop.glb",
+   "position_blender_zup": [
+    -1.535,
+    0.1,
+    0.32
+   ],
+   "position_gltf_yup": [
+    -1.535,
+    0.32,
+    -0.1
+   ],
+   "rotation_y_deg": -90.0,
+   "rotation_euler_gltf_rad": [
+    0,
+    -1.5708,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ],
+   "note": "stage0 rot2: screen faces player, lid back to wall"
+  },
+  {
+   "hide_in_stage0": [
+    "desk",
+    "chair_plastic",
+    "monitor",
+    "keyboard",
+    "lamp_desk",
+    "mug",
+    "plant_small"
+   ]
+  }
+ ]
+}

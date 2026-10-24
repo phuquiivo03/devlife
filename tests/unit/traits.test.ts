@@ -347,15 +347,16 @@ describe("personality", () => {
     expect(pending.career.players.money).toBe(10);
   });
 
-  it("uses the approved trait sheets at 16 and 32", () => {
+  it("ships the 3D trait art at 256px for native and 2× paths", () => {
     const art = join(process.cwd(), "public", "ui", "m5");
     for (const id of TRAIT_IDS) {
       const native = readFileSync(join(art, `icon_trait_${id}.png`));
       const doubled = readFileSync(join(art, `icon_trait_${id}_x2.png`));
-      expect(native.readUInt32BE(16)).toBe(16);
-      expect(native.readUInt32BE(20)).toBe(16);
-      expect(doubled.readUInt32BE(16)).toBe(32);
-      expect(doubled.readUInt32BE(20)).toBe(32);
+      // 3D icon swap: both paths carry the same 256px rendered art.
+      expect(native.readUInt32BE(16)).toBe(256);
+      expect(native.readUInt32BE(20)).toBe(256);
+      expect(doubled.readUInt32BE(16)).toBe(256);
+      expect(doubled.readUInt32BE(20)).toBe(256);
       expect(native.length).toBeGreaterThan(200);
       expect(doubled.length).toBeGreaterThan(200);
     }

@@ -6,17 +6,15 @@ import { useGameStore } from "@/game/state/store";
 import { snapshot } from "@/game/time";
 import { LIFE } from "@/game/life/content";
 import { energyCost, gameBlocked, gameMoodGain } from "@/game/life/logic";
-import { m51AssetPath } from "@/game/life/assets";
+import { PixelIcon } from "./PixelIcon";
 import {
   GAME_LABEL,
-  GAME_ICON_FALLBACK,
-  GAME_ICON_KEY,
   gameButtonMetrics,
   gameButtonTip,
 } from "./game-button.config";
 import styles from "./game-button.module.css";
 
-export function GameButton() {
+export function GameButton({ clay = false }: { clay?: boolean }) {
   const career = useGameStore((s) => s.career);
   const totalMinutes = useGameStore((s) => s.totalMinutes);
   const hospitalOpen = useGameStore((s) => s.hospitalOpen);
@@ -40,49 +38,35 @@ export function GameButton() {
 
   const metrics = gameButtonMetrics();
 
-  // Try to load actual icon, fallback to emoji
-  const iconExists = false; // TODO: check public/ui/m5_1/icon_btn_game.png existence at build time
-  const iconSrc = iconExists ? m51AssetPath(`${GAME_ICON_KEY}.png`) : null;
-
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className="inline-flex">
+        <span className="inline-flex w-full">
           <PixelButton
             variant="icon"
             disabled={blocked != null}
             aria-label={GAME_LABEL}
-            className={styles.button}
-            style={{
-              width: metrics.buttonPx,
-              height: metrics.buttonPx,
-              minWidth: metrics.buttonPx,
-              minHeight: metrics.buttonPx,
-            }}
+            className={clay ? "clay-tile-inner w-full" : styles.button}
+            style={
+              clay
+                ? { width: "100%", height: "100%", minHeight: 40 }
+                : {
+                    width: metrics.buttonPx,
+                    height: metrics.buttonPx,
+                    minWidth: metrics.buttonPx,
+                    minHeight: metrics.buttonPx,
+                  }
+            }
             onClick={playGame}
             data-testid="game-button"
             data-game-ready={blocked ? "0" : "1"}
           >
-            {iconSrc ? (
-              <img
-                src={iconSrc}
-                alt=""
-                width={metrics.iconPx}
-                height={metrics.iconPx}
-                draggable={false}
-                data-icon-key={GAME_ICON_KEY}
-                className={styles.icon}
-                style={{ width: metrics.iconPx, height: metrics.iconPx }}
-              />
-            ) : (
-              <span
-                className={styles.emoji}
-                style={{ fontSize: metrics.iconPx * 0.8 }}
-                aria-hidden="true"
-              >
-                {GAME_ICON_FALLBACK}
-              </span>
-            )}
+            <PixelIcon
+              name="game"
+              size={clay ? 24 : metrics.iconPx}
+              alt=""
+              className={styles.icon}
+            />
           </PixelButton>
         </span>
       </TooltipTrigger>

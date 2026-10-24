@@ -195,7 +195,7 @@ export function CareerChrome({
 
       {panel && panel !== "jobs" ? (
         <div
-          className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-[#2A2548]/40 p-4"
+          className="fixed inset-0 z-40 flex items-start justify-center overflow-y-auto bg-[#2A2548]/30 p-4"
           onClick={close}
         >
           <div
@@ -227,7 +227,7 @@ export function CareerChrome({
 
       {popup ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2A2548]/45 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2A2548]/35 p-4"
           data-testid="level-up-popup"
           role="dialog"
           aria-modal="true"

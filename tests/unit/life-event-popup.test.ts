@@ -56,8 +56,8 @@ describe("life event popup", () => {
     const shell = readFileSync(join(process.cwd(), "src/components/game/GameShell.tsx"), "utf8");
     const life = readFileSync(join(process.cwd(), "src/components/game/LifeStage.tsx"), "utf8");
     const popup = readFileSync(join(process.cwd(), "src/components/game/LifeEventPopup.tsx"), "utf8");
-    const frame = shell.indexOf("<RoomChamferFrame");
-    const frameEnd = shell.indexOf("</RoomChamferFrame>");
+    const frame = shell.indexOf("<SceneCard");
+    const frameEnd = shell.indexOf("</SceneCard>");
     const inside = shell.slice(frame, frameEnd);
     expect(inside).toContain("<LifeEventPopup />");
     expect(shell.indexOf("<LifeEventPopup />")).toBeGreaterThan(frame);

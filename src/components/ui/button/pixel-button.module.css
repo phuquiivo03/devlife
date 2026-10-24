@@ -1,3 +1,12 @@
+/*
+ * Clay skin for PixelButton: borderless, super-rounded, defined by the
+ * 4-layer `--clay-*` light stacks in globals.css. Hover lifts the button
+ * toward the viewer; press squishes it into the surface (the squish
+ * itself lives in globals.css — the box never transforms in here).
+ * Variant faces come from `data-variant` so `pixelButtonStyle()` keeps
+ * shipping the legacy `--btn-*` tokens untouched (see buttons.test.ts).
+ */
+
 .pixelButton {
   box-sizing: border-box;
   display: inline-flex;
@@ -7,36 +16,80 @@
   padding: 0 var(--btn-pad-x);
   min-height: var(--btn-min-height);
   border-style: solid;
-  border-color: transparent;
-  border-width: var(--btn-slice-width);
-  background: transparent;
+  border-color: var(--btn-skin-border, var(--panel-border));
+  border-width: 0;
+  border-radius: var(--btn-radius, var(--radius-ctrl, 20px));
+  background: var(--btn-skin-bg, #ffffff);
   color: var(--btn-ink);
-  font-weight: var(--btn-weight, 400);
+  font-weight: var(--btn-weight, 700);
   line-height: 1;
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  image-rendering: pixelated;
-  border-image-source: var(--btn-img);
-  border-image-slice: var(--btn-slice);
-  border-image-width: var(--btn-slice-width);
-  border-image-repeat: stretch;
+  box-shadow: var(--clay-shadow-ctrl);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    transform 140ms ease;
 }
 
+/* Clay physics: lift on hover, sink on press. */
 .pixelButton:hover:not(:disabled) {
-  border-image-source: var(--btn-img-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--clay-shadow-ctrl-hover);
+}
+
+/* Variant faces. Ink still comes from `--btn-ink` in pixelButtonStyle(). */
+.pixelButton[data-variant="primary"] {
+  --btn-skin-bg: var(--accent-violet);
+  --btn-skin-border: #6a58c9;
+}
+
+.pixelButton[data-variant="primary"]:hover:not(:disabled) {
+  --btn-skin-bg: #8b7be3;
+}
+
+.pixelButton[data-variant="primary"]:active:not(:disabled) {
+  --btn-skin-bg: #6a58c9;
+}
+
+.pixelButton[data-variant="secondary"] {
+  --btn-skin-bg: #ffffff;
+}
+
+.pixelButton[data-variant="secondary"]:hover:not(:disabled) {
+  --btn-skin-bg: var(--chip-bg);
+}
+
+.pixelButton[data-variant="danger"] {
+  --btn-skin-bg: var(--accent-coral);
+  --btn-skin-border: #d84f4c;
+}
+
+.pixelButton[data-variant="danger"]:hover:not(:disabled) {
+  --btn-skin-bg: #f47b78;
+}
+
+.pixelButton[data-variant="icon"] {
+  --btn-skin-bg: #ffffff;
+}
+
+.pixelButton[data-variant="icon"]:hover:not(:disabled) {
+  --btn-skin-bg: var(--chip-bg);
+}
+
+.pixelButton:active:not(:disabled) {
+  box-shadow: var(--clay-pressed);
 }
 
 /*
- * The pressed sheet already draws the face lower. Move only the direct
- * children (label and icon) by --btn-press, the same distance. Do not
- * translate this box — that would drop the face a second time.
+ * Press still drops only the direct children (label and icon) by
+ * `--btn-press`. Do not translate this box — that would double the drop.
+ * (globals.css cancels this drop project-wide so the clay scale squish
+ * is the only press cue; the rule stays because buttons.test.ts pins it.)
  */
-.pixelButton:active:not(:disabled) {
-  border-image-source: var(--btn-img-pressed);
-}
-
 .pixelButton:active:not(:disabled) > * {
   transform: translateY(var(--btn-press));
 }
@@ -51,14 +104,23 @@
   opacity: 0.5;
 }
 
-/* Notice Ăn / Xem job face. The 9-slice paints the pixel border; these tokens match it. */
+/* Notice Ăn / Xem job face: lavender clay tile (the legacy pixel border
+   color stays for the pinned `--btn-light-*` token chain only). */
 .light {
   background-color: var(--btn-bg, var(--btn-light-bg));
   border-color: var(--btn-border, var(--btn-light-border));
   color: var(--btn-ink, var(--btn-light-ink));
-  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: var(--btn-label-size, var(--btn-light-label));
   font-weight: var(--btn-weight, var(--btn-light-weight));
+}
+
+.pixelButton[data-variant="light"]:hover:not(:disabled) {
+  background-color: #f1edf9;
+}
+
+.pixelButton[data-variant="light"]:active:not(:disabled) {
+  background-color: #dcd4ee;
 }
 
 .icon {

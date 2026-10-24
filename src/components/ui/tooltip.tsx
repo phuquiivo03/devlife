@@ -122,12 +122,12 @@ export const TooltipContent = React.forwardRef<
         sideOffset={sideOffset}
         collisionPadding={collisionPadding}
         className={cn(
-          "ui-tooltip z-40 max-w-64 border border-[var(--panel-border)] bg-[var(--panel-bg)] px-2 py-1 text-left font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)] shadow-panel outline-none",
+          "ui-tooltip z-40 max-w-64 bg-[var(--panel-bg)] px-2.5 py-1.5 text-left font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)] shadow-chip outline-none",
           className,
         )}
         style={{
           animationDuration: `${TOOLTIP.enterMs}ms`,
-          borderRadius: "var(--radius-panel)",
+          borderRadius: "var(--radius-tile)",
           ...style,
         }}
         {...props}

@@ -163,7 +163,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         </div>
 
         {/* Loading Card */}
-        <div className="w-full rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/[0.02] p-6 shadow-xl backdrop-blur-sm">
+        <div className="w-full rounded-panel bg-white/85 p-6 shadow-panel backdrop-blur-sm">
           <div className="flex flex-col gap-4">
             {/* Title */}
             <h2 className="text-center font-galmuri-11 text-galmuri-title-lg text-[var(--foreground)]">
@@ -173,13 +173,13 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             {/* Progress Bar */}
             {!error && (
               <div className="flex flex-col gap-2">
-                <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                <div className="h-2 overflow-hidden rounded-full bg-[var(--tab-lavender)]">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-violet-400 to-violet-500 transition-all duration-300 ease-out"
+                    className="h-full rounded-full bg-gradient-to-r from-[var(--accent-violet)] to-[#8b7be3] transition-all duration-300 ease-out"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
-                <p className="text-center font-galmuri-9 text-galmuri-body text-[var(--foreground)]/70">
+                <p className="text-center font-galmuri-9 text-galmuri-body text-[var(--muted-foreground)]">
                   {progress}%
                 </p>
               </div>
@@ -188,15 +188,14 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
             {/* Error Message & Retry Button */}
             {error && (
               <div className="flex flex-col gap-3">
-                <p className="text-center font-galmuri-9 text-galmuri-caption text-red-400">
+                <p className="text-center font-galmuri-9 text-galmuri-caption text-[var(--accent-coral)]">
                   {error}
                 </p>
                 <button
                   onClick={handleRetry}
-                  className="group relative overflow-hidden rounded-lg border border-white/20 bg-gradient-to-b from-white/10 to-white/5 px-6 py-3 font-galmuri-9 text-galmuri-body text-[var(--foreground)] transition-all hover:border-violet-400/40 hover:from-white/15 hover:to-white/10 active:scale-[0.98]"
+                  className="rounded-[var(--radius-ctrl)] bg-white px-6 py-3 font-galmuri-9 text-galmuri-body text-[var(--foreground)] shadow-chip transition-all duration-150 hover:-translate-y-0.5 hover:bg-[var(--chip-bg)] active:translate-y-0 active:shadow-[var(--clay-pressed)]"
                 >
-                  <span className="relative z-10">Thử lại</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/0 via-violet-500/10 to-violet-500/0 opacity-0 transition-opacity group-hover:opacity-100" />
+                  Thử lại
                 </button>
               </div>
             )}

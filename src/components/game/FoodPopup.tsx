@@ -7,12 +7,13 @@ import { Modal } from "@/components/ui/modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { LIFE, type FoodId } from "@/game/life/content";
 import { m51AssetPath } from "@/game/life/assets";
-import { actionEatArtFile, foodArtFile, foodDockMetrics } from "@/game/life/m51-art";
+import { actionEatArtFile, foodDockMetrics } from "@/game/life/m51-art";
 import { lifeOf, mealBlocked } from "@/game/life/logic";
 import { foodPrice } from "@/game/life/traits";
 import { useGameStore } from "@/game/state/store";
 import { cn } from "@/lib/utils";
 import { formatVnd } from "@/lib/format-currency";
+import { PixelIcon } from "./PixelIcon";
 import {
   foodButtonMetrics,
   foodDockTip,
@@ -24,7 +25,7 @@ import styles from "./food-dock.module.css";
 import foodGridStyles from "./food-grid.module.css";
 
 /** Icon-only Ăn control. Sits on the HUD icon bar beside Đi ngủ and opens Ăn uống. */
-export function HungerDock() {
+export function HungerDock({ clay = false }: { clay?: boolean }) {
   const fullness = useGameStore((s) => s.career.players.fullness);
   const open = useGameStore((s) => s.foodOpen);
   const setOpen = useGameStore((s) => s.setFoodOpen);
@@ -32,13 +33,14 @@ export function HungerDock() {
   const metrics = foodButtonMetrics();
   const tip = foodDockTip(blocked);
   const ready = foodDotVisible(fullness);
+  const iconPx = clay ? 24 : metrics.iconPx;
 
   return (
     <>
       <Tooltip>
         <TooltipTrigger asChild>
           <span
-            className="relative inline-flex"
+            className="relative inline-flex w-full"
             data-testid="hunger"
             data-fullness={Math.round(fullness)}
             data-blocked={blocked ? "1" : "0"}
@@ -47,29 +49,25 @@ export function HungerDock() {
               variant="icon"
               disabled={blocked != null}
               aria-label={tip}
-              className={styles.button}
-              style={{
-                width: metrics.buttonPx,
-                height: metrics.buttonPx,
-                minWidth: metrics.buttonPx,
-                minHeight: metrics.buttonPx,
-              }}
+              className={clay ? "clay-tile-inner w-full" : styles.button}
+              style={
+                clay
+                  ? { width: "100%", height: "100%", minHeight: 40 }
+                  : {
+                      width: metrics.buttonPx,
+                      height: metrics.buttonPx,
+                      minWidth: metrics.buttonPx,
+                      minHeight: metrics.buttonPx,
+                    }
+              }
               onClick={() => setOpen(true)}
               data-testid="food-open"
             >
-              <img
-                src={m51AssetPath(foodArtFile())}
+              <PixelIcon
+                name="eat"
+                size={iconPx}
                 alt=""
-                width={metrics.iconPx}
-                height={metrics.iconPx}
-                draggable={false}
-                data-testid="food-bowl-icon"
-                data-icon-key="icon_btn_food"
-                className={cn("pixel-img", styles.icon)}
-                style={{
-                  width: metrics.iconPx,
-                  height: metrics.iconPx,
-                }}
+                className={styles.icon}
               />
             </PixelButton>
             {ready && <span className={styles.readyDot} data-testid="food-ready-dot" />}
