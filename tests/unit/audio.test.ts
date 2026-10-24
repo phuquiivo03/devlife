@@ -129,24 +129,6 @@ class FakeContext implements AudioContextLike {
 
 const PACK: AudioCue[] = [
   {
-    id: "bgm_student_day",
-    file: "ogg/bgm/bgm_student_day.ogg",
-    mp3: "mp3/bgm/bgm_student_day.mp3",
-    type: "bgm",
-    loop: true,
-    volume: 0.8,
-    category: "bgm",
-  },
-  {
-    id: "bgm_student_night",
-    file: "ogg/bgm/bgm_student_night.ogg",
-    mp3: "mp3/bgm/bgm_student_night.mp3",
-    type: "bgm",
-    loop: true,
-    volume: 0.8,
-    category: "bgm",
-  },
-  {
     id: "bgm_morning",
     file: "ogg/bgm/bgm_morning.ogg",
     mp3: "mp3/bgm/bgm_morning.mp3",
@@ -240,8 +222,6 @@ const OFFSETS: SpriteMap = {
     },
   },
   bgm: {
-    bgm_student_day: { mp3LeadSeconds: MP3_LEAD },
-    bgm_student_night: { mp3LeadSeconds: MP3_LEAD },
     bgm_morning: { mp3LeadSeconds: MP3_LEAD },
     bgm_afternoon: { mp3LeadSeconds: MP3_LEAD },
     bgm_evening: { mp3LeadSeconds: MP3_LEAD },
@@ -357,12 +337,12 @@ describe("audio manifest", () => {
     ]);
     expect(
       parseManifest({
-        assets: [{ id: "bgm_student_day", type: "bgm", file: "ogg/bgm/bgm_student_day.ogg", mp3: "mp3/bgm/bgm_student_day.mp3", loop: true, volume: 0.5 }],
+        assets: [{ id: "bgm_morning", type: "bgm", file: "ogg/bgm/bgm_morning.ogg", mp3: "mp3/bgm/bgm_morning.mp3", loop: true, volume: 0.5 }],
       })[0],
     ).toMatchObject({
-      id: "bgm_student_day",
+      id: "bgm_morning",
       type: "bgm",
-      mp3: "mp3/bgm/bgm_student_day.mp3",
+      mp3: "mp3/bgm/bgm_morning.mp3",
       loop: true,
     });
     expect(parseManifest({ nope: true })).toEqual([]);
@@ -391,20 +371,20 @@ describe("audio manifest", () => {
   });
 
   it("keeps BGM on ogg and offers mp3 only as an SFX fallback", () => {
-    const day = PACK[0]!;
-    const night = PACK[1]!;
+    const day = PACK.find((cue) => cue.id === "bgm_morning")!;
+    const night = PACK.find((cue) => cue.id === "bgm_night")!;
     const click = PACK.find((cue) => cue.id === "sfx_ui_click")!;
-    expect(cueUrls(day)).toEqual(["/audio/ogg/bgm/bgm_student_day.ogg"]);
-    expect(cueUrls(night)).toEqual(["/audio/ogg/bgm/bgm_student_night.ogg"]);
+    expect(cueUrls(day)).toEqual(["/audio/ogg/bgm/bgm_morning.ogg"]);
+    expect(cueUrls(night)).toEqual(["/audio/ogg/bgm/bgm_night.ogg"]);
     expect(cueUrls(click)).toEqual([
       "/audio/ogg/sfx/sfx_ui_click.ogg",
       "/audio/mp3/sfx/sfx_ui_click.mp3",
     ]);
     expect(cueUrls(day).some((url) => url.endsWith(".mp3"))).toBe(false);
-    expect(bgmUrl(day, "ogg")).toBe("/audio/ogg/bgm/bgm_student_day.ogg");
-    expect(bgmUrl(day, "mp3")).toBe("/audio/mp3/bgm/bgm_student_day.mp3");
-    expect(bgmLeadSeconds(OFFSETS, "ogg", "bgm_student_day")).toBe(0);
-    expect(bgmLeadSeconds(OFFSETS, "mp3", "bgm_student_day")).toBe(MP3_LEAD);
+    expect(bgmUrl(day, "ogg")).toBe("/audio/ogg/bgm/bgm_morning.ogg");
+    expect(bgmUrl(day, "mp3")).toBe("/audio/mp3/bgm/bgm_morning.mp3");
+    expect(bgmLeadSeconds(OFFSETS, "ogg", "bgm_morning")).toBe(0);
+    expect(bgmLeadSeconds(OFFSETS, "mp3", "bgm_morning")).toBe(MP3_LEAD);
     expect(preferredAudioFormat(() => "probably")).toBe("ogg");
     expect(preferredAudioFormat(() => "maybe")).toBe("ogg");
     expect(preferredAudioFormat(() => "")).toBe("mp3");
@@ -1031,15 +1011,15 @@ const manifestPath = path.join(process.cwd(), "public/audio/manifest.json");
 const hasManifest = fs.existsSync(manifestPath);
 
 describe.skipIf(!hasManifest)("shipped audio pack", () => {
-  it("includes both student beds and resolves mapped cues", () => {
+  it("includes all four phase beds and resolves mapped cues", () => {
     const cues = parseManifest(JSON.parse(fs.readFileSync(manifestPath, "utf8")));
     const ids = cues.map((cue) => cue.id);
-    const day = cues.find((cue) => cue.id === "bgm_student_day");
-    const night = cues.find((cue) => cue.id === "bgm_student_night");
+    const day = cues.find((cue) => cue.id === "bgm_morning");
+    const night = cues.find((cue) => cue.id === "bgm_night");
     expect(day?.type).toBe("bgm");
     expect(night?.type).toBe("bgm");
-    expect(cueUrls(day!)).toEqual(["/audio/ogg/bgm/bgm_student_day.ogg"]);
-    expect(cueUrls(night!)).toEqual(["/audio/ogg/bgm/bgm_student_night.ogg"]);
+    expect(cueUrls(day!)).toEqual(["/audio/ogg/bgm/bgm_morning.ogg"]);
+    expect(cueUrls(night!)).toEqual(["/audio/ogg/bgm/bgm_night.ogg"]);
     const sfx = cues.filter((cue) => cue.type === "sfx");
     const looped = sfx.filter((cue) => cue.loop);
     const oneShots = sfx.filter((cue) => !cue.loop);
@@ -1118,8 +1098,8 @@ describe.skipIf(!hasManifest)("shipped audio pack", () => {
       expect(mp3?.duration, cue.id).toBeCloseTo(ogg!.duration, 5);
       expect(mp3!.offset - ogg!.offset, cue.id).toBeCloseTo(shift, 5);
     }
-    expect(offsets!.bgm.bgm_student_day?.mp3LeadSeconds).toBeGreaterThan(0.01);
-    expect(offsets!.bgm.bgm_student_night?.mp3LeadSeconds).toBeGreaterThan(0.01);
-    expect(offsets!.bgm.bgm_student_day?.mp3LeadSeconds).toBeLessThan(0.08);
+    expect(offsets!.bgm.bgm_morning?.mp3LeadSeconds).toBeGreaterThan(0.01);
+    expect(offsets!.bgm.bgm_night?.mp3LeadSeconds).toBeGreaterThan(0.01);
+    expect(offsets!.bgm.bgm_morning?.mp3LeadSeconds).toBeLessThan(0.08);
   });
 });

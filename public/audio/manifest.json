@@ -377,30 +377,6 @@
       "description": "Same typing loop time-stretched 1.5x, pitch preserved, for ./lam-au. Ogg loops directly; mp3 skips leading encoder silence."
     },
     {
-      "id": "bgm_student_day",
-      "type": "bgm",
-      "file": "ogg/bgm/bgm_student_day.ogg",
-      "mp3": "mp3/bgm/bgm_student_day.mp3",
-      "wav": "masters/bgm/bgm_student_day.wav",
-      "category": "bgm",
-      "duration": 72.0,
-      "loop": true,
-      "volume": 0.5,
-      "description": "Lo-fi chiptune student room loop, day (80 BPM, Fmaj7-Em7-Dm7-Cmaj7)"
-    },
-    {
-      "id": "bgm_student_night",
-      "type": "bgm",
-      "file": "ogg/bgm/bgm_student_night.ogg",
-      "mp3": "mp3/bgm/bgm_student_night.mp3",
-      "wav": "masters/bgm/bgm_student_night.wav",
-      "category": "bgm",
-      "duration": 70.588,
-      "loop": true,
-      "volume": 0.5,
-      "description": "Same theme, night: slower 68 BPM, triangle lead, softer drums, darker filter"
-    },
-    {
       "id": "sfx_notif_info",
       "type": "sfx",
       "file": "ogg/sfx/sfx_notif_info.ogg",

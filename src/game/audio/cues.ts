@@ -5,9 +5,6 @@ import type { PhaseId } from "../time/config";
 import type { TimeEvent } from "../time/types";
 import { resolveCueId } from "./manifest";
 
-export const BGM_DAY_ID = "bgm_student_day";
-export const BGM_NIGHT_ID = "bgm_student_night";
-
 /** One lo-fi loop per phase (same key and motif, so phase crossfades stay smooth). */
 export const BGM_PHASE_IDS: Record<PhaseId, string> = {
   morning: "bgm_morning",
