@@ -4,10 +4,18 @@ import { useMemo } from "react";
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
 import { resolveRoomFurniture } from "./slot-models";
-import { ITEM_BY_KEY, STUDENT_MANIFEST } from "./manifest";
+import { STUDENT_MANIFEST, itemByKey } from "./manifest";
 
-function at(key: string, offset: [number, number, number]): [number, number, number] | null {
-  const item = ITEM_BY_KEY.get(key) ?? STUDENT_MANIFEST.stage0.items.find((i) => i.key === key);
+function at(
+  stage: string,
+  key: string,
+  offset: [number, number, number],
+): [number, number, number] | null {
+  // The laptop only exists in the student stage0 set; other rooms place it
+  // through a slot, so itemByKey alone finds it there.
+  const item =
+    itemByKey(stage, key) ??
+    (stage === "student" ? STUDENT_MANIFEST.stage0.items.find((i) => i.key === key) : undefined);
   if (!item) return null;
   return [item.position[0] + offset[0], item.position[1] + offset[1], item.position[2] + offset[2]];
 }
@@ -29,14 +37,15 @@ export function Lights() {
       getRoom(stage).slots,
       loadout,
       new Set(owned ?? []),
+      stage,
     );
     return plan.drawn.has("lamp_desk");
   }, [stage, loadout, owned]);
 
-  const lamp = lampDrawn ? at("lamp_desk", [0.12, 0.34, 0]) : null;
-  const monitor = at("monitor", [0.26, 0.3, 0]);
-  const laptop = at("laptop", [0.16, 0.16, 0]);
-  const fairy = ITEM_BY_KEY.get("fairy_lights");
+  const lamp = lampDrawn ? at(stage, "lamp_desk", [0.12, 0.34, 0]) : null;
+  const monitor = at(stage, "monitor", [0.26, 0.3, 0]);
+  const laptop = at(stage, "laptop", [0.16, 0.16, 0]);
+  const fairy = itemByKey(stage, "fairy_lights");
   const fairyY = fairy ? fairy.position[1] : 1.8;
 
   return (

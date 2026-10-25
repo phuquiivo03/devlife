@@ -1,14 +1,18 @@
 "use client";
 
-import { STUDENT_MANIFEST } from "./manifest";
+import { useGameStore } from "@/game/state/store";
+import { getRoomManifest } from "./manifest";
 import { ItemModel } from "./ItemModel";
 
-/** Floor / walls / wall tiles. The floor only receives shadows so the
- * directional light keeps the room bright; furniture does the casting. */
+/** Floor / walls / wall tiles for the current room. The student shell is
+ * three meshes (the floor only receives shadows so the directional light
+ * keeps the room bright); the junior/senior shells are one merged GLB with
+ * the window baked in. */
 export function RoomShell() {
+  const stage = useGameStore((s) => s.stage);
   return (
     <>
-      {STUDENT_MANIFEST.items
+      {getRoomManifest(stage).items
         .filter((item) => item.category === "room_shell")
         .map((item) => (
           <ItemModel

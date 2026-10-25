@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
 import { isLoadoutOnly } from "./assets";
-import { STUDENT_MANIFEST } from "./manifest";
+import { STUDENT_MANIFEST, getRoomManifest } from "./manifest";
 import { resolveRoomFurniture } from "./slot-models";
 import { ItemModel } from "./ItemModel";
 
@@ -27,12 +27,16 @@ export function Furniture() {
   const ownedSet = useMemo(() => new Set(owned ?? []), [owned]);
 
   const plan = useMemo(
-    () => resolveRoomFurniture(getRoom(stage).slots, loadout, ownedSet),
+    () => resolveRoomFurniture(getRoom(stage).slots, loadout, ownedSet, stage),
     [stage, loadout, ownedSet],
   );
 
   const stage0Active =
     stage === "student" && !ownedSet.has("monitor2") && !ownedSet.has("ergo_chair");
+
+  // Junior/senior ship an empty stage0 — their default look comes from the
+  // slot defaults drawn by resolveRoomFurniture, not a stage0 swap.
+  const manifest = getRoomManifest(stage);
 
   const hidden = useMemo(
     () => new Set<string>(stage0Active ? STUDENT_MANIFEST.stage0.hide : []),
@@ -49,7 +53,7 @@ export function Furniture() {
 
   return (
     <>
-      {STUDENT_MANIFEST.items.map((item) => {
+      {manifest.items.map((item) => {
         if (item.category === "room_shell") return null;
         if (item.missing) return null;
         const override = plan.positionOverrides[item.key];
@@ -62,7 +66,7 @@ export function Furniture() {
           />
         );
       })}
-      {STUDENT_MANIFEST.stage0.items.map((item) => {
+      {manifest.stage0.items.map((item) => {
         if (item.missing) return null;
         // The fresh-student scene draws the stage0 set as shipped; otherwise
         // these GLBs (folding table, laptop) only appear when a slot pick

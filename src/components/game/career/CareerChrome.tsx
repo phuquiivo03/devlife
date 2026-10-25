@@ -62,6 +62,7 @@ export function CareerChrome({
   const fired = useGameStore((s) => s.career.employment?.fired ?? null);
   const closeFired = useGameStore((s) => s.closeFired);
   const debugAddMoney = useGameStore((s) => s.debugAddMoney);
+  const debugAddReputation = useGameStore((s) => s.debugAddReputation);
   const debugFillEnergy = useGameStore((s) => s.debugFillEnergy);
   const debugMakeHungry = useGameStore((s) => s.debugMakeHungry);
   const debugLevelUp = useGameStore((s) => s.debugLevelUp);
@@ -143,6 +144,15 @@ export function CareerChrome({
                 onClick={debugAddMoney}
               >
                 Thêm tiền
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                showArrow={false}
+                data-testid="debug-add-reputation"
+                onClick={debugAddReputation}
+              >
+                Thêm uy tín
               </Button>
               <Button
                 type="button"
