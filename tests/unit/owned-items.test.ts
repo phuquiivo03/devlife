@@ -307,4 +307,27 @@ describe("Owned Items Tab", () => {
     expect(hasJuniorItems).toBe(true);
     expect(hasSeniorItems).toBe(true);
   });
+
+  it("hides defaults without a 3D model and maps the rest to shop icons", () => {
+    const career = mockCareer();
+    const items = getOwnedItems(career, "student", {});
+    const ids = items.map((i) => i.catalogId);
+
+    // No pixel sprites: defaults without a 3D model are kept out entirely.
+    expect(ids).not.toContain("student.backpack");
+    expect(ids).not.toContain("student.noodle_cup");
+    expect(ids).not.toContain("junior.bookshelf");
+    expect(ids).not.toContain("senior.armchair");
+
+    // Exact-model matches render from the 3D shop icon set.
+    const table = items.find((i) => i.catalogId === "student.folding_table");
+    expect(table?.icon).toBe("shop_table_folding.png");
+    const mattress = items.find((i) => i.catalogId === "student.mattress");
+    expect(mattress?.icon).toBe("shop_mattress.png");
+    const juniorBed = items.find((i) => i.catalogId === "junior.bed");
+    expect(juniorBed?.icon).toBe("shop_bed.png");
+    for (const item of items) {
+      expect(item.icon.startsWith("shop_")).toBe(true);
+    }
+  });
 });

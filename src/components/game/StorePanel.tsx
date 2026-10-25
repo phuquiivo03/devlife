@@ -260,11 +260,10 @@ function OwnedCard({
   stage: string;
   onActivate: (slotId: string, itemId: string | null) => void;
 }) {
-  // Determine image path based on item type
-  const isStoreItem = !!item.storeId; // Store items use shop/M5 icons, catalog items use sprite paths
-  const shopIcon = isStoreItem && isShopIcon(item.icon);
-  const imagePath = isStoreItem ? storeIconSrc(item.icon) : `/assets/${item.icon}.png`;
-  const imagePath2x = isStoreItem ? undefined : `/assets/${item.icon}_x2.png`;
+  // Owned-tab icons are always the 3D shop renders (store items + mapped
+  // defaults from owned-items); no pixel sprites are drawn here anymore.
+  const shopIcon = isShopIcon(item.icon);
+  const imagePath = storeIconSrc(item.icon);
 
   const icon = storeIconSize(item.icon);
   const isActive = item.status === "active";
@@ -336,7 +335,6 @@ function OwnedCard({
           <div className={styles.artWrap} style={{ height: STORE_GRID.furnitureIconPx }}>
             <img
               src={imagePath}
-              srcSet={imagePath2x ? `${imagePath2x} 2x` : undefined}
               width={icon.w}
               height={icon.h}
               alt=""
