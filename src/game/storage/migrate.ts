@@ -345,6 +345,7 @@ export function normalizeEmployment(value: unknown): EmploymentState {
     pendingPayouts,
     fired,
     lastPaydayKey: strOrNull(value.lastPaydayKey),
+    dayStartKey: value.dayStartKey == null ? null : num(value.dayStartKey),
   };
 }
 

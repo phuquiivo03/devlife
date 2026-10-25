@@ -394,6 +394,28 @@ describe("weekly board and company tasks", () => {
     }
   });
 
+  it("runs once per day even though sleep fires dayStarted twice", () => {
+    // Sleep emits dayStarted at the midnight pass (minute 0, clockSkip) and
+    // again on the 06:00 wake diff — the second pass must be a no-op.
+    const seeded = employed(FE_INTERN.id, 2);
+    const first = fulltimeDayStart(seeded, 3, 0);
+    const tasksAfterFirst = first.player_jobs.filter((job) => job.source === "company").length;
+    const daysAfterFirst = first.employment.current?.daysWorkedThisMonth;
+
+    const second = fulltimeDayStart(first, 3, 6 * 60);
+    expect(second.player_jobs.filter((job) => job.source === "company").length).toBe(tasksAfterFirst);
+    expect(second.employment.current?.daysWorkedThisMonth).toBe(daysAfterFirst);
+    expect(second.employment.dayStartKey).toBe(3);
+
+    // The next day starts fresh.
+    const third = fulltimeDayStart(
+      { ...second, players: { ...second.players, game_day: 4 } },
+      4,
+      0,
+    );
+    expect(third.employment.dayStartKey).toBe(4);
+  });
+
   it("auto-accepts an untouched company task overnight", () => {
     const state = { ...employed(FE_INTERN.id, 2), player_jobs: [companyJob({ offered_day: 2 })] };
     const next = fulltimeDayStart(state, 3, 6 * 60);
@@ -664,6 +686,7 @@ describe("version 22 migration", () => {
       pendingPayouts: [],
       fired: null,
       lastPaydayKey: null,
+      dayStartKey: null,
     });
   });
 });

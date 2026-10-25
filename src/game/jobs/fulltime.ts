@@ -96,6 +96,7 @@ export function defaultEmployment(): EmploymentState {
     pendingPayouts: [],
     fired: null,
     lastPaydayKey: null,
+    dayStartKey: null,
   };
 }
 
@@ -816,6 +817,10 @@ export function settlePayday(state: CareerState, day: number, minute: number): C
  * Full-time housekeeping for `dayStarted`: reveal application results, reroll
  * the weekly board, settle a finished month (18h fallback), count the worked
  * day, auto-accept yesterday's tasks, and hand out today's company tasks.
+ *
+ * Sleep emits dayStarted TWICE per night (the midnight pass inside the sleep
+ * animation, then the 06:00 wake diff), so the whole pass is guarded by
+ * `dayStartKey` and runs exactly once per game day.
  */
 export function fulltimeDayStart(
   state: CareerState,
@@ -823,7 +828,11 @@ export function fulltimeDayStart(
   minute: number,
   catalog = SIM_CATALOG,
 ): CareerState {
-  let next = expireApplicationOffers(state, day);
+  const initial = employmentOf(state);
+  if (initial.dayStartKey === day) return state;
+  let next: CareerState = { ...state, employment: { ...initial, dayStartKey: day } };
+
+  next = expireApplicationOffers(next, day);
   next = resolveApplicationsDay(next, day, minute);
   next = {
     ...next,

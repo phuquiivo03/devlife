@@ -469,6 +469,12 @@ export type EmploymentState = {
   fired: FiredSummary | null;
   /** Month key already settled by payday. Guards the 18h/day-1 double pay. */
   lastPaydayKey: string | null;
+  /**
+   * Game day whose full-time day-start housekeeping already ran. Sleep fires
+   * dayStarted twice (midnight pass + 06:00 wake), so everything in
+   * `fulltimeDayStart` must run once per day.
+   */
+  dayStartKey: number | null;
 };
 
 /** localStorage document. Keys match the Postgres tables. */
