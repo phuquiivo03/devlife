@@ -11,9 +11,9 @@ export type PlayerPose = "floor" | "sit" | "stand" | "sleep";
  * Pose precedence:
  * 1. sleeping → player hidden (`sleepTransition` runs its own overlay)
  *    // TODO lying pose when a lying GLB lands
- * 2. seat slot emptied (`null`) → standing — nothing to sit on
- * 3. fresh student room (no monitor2/ergo_chair yet) → sits on the floor at
+ * 2. fresh student room (no monitor2/ergo_chair yet) → sits on the floor at
  *    the folding table + laptop (stage0 set)
+ * 3. seat slot emptied (`null`) → also sits on the floor — nothing to sit on
  * 4. otherwise (working or idle) → seated on the chair at the desk
  */
 export function usePlayerPose(): PlayerPose {
@@ -24,13 +24,13 @@ export function usePlayerPose(): PlayerPose {
   const loadout = useGameStore((s) => s.loadouts[s.stage]);
 
   if (sleeping) return "sleep";
-  // The seat slot mirrors what the room actually draws: untouched keeps the
-  // base chair, an explicit `null` empties it — nothing to sit on then.
+  // The fresh-student floor scene ships as-is (folding table + laptop).
+  if (stage === "student" && !hasMonitor2 && !hasErgoChair) return "floor";
+  // No chair in the seat slot (explicit `null`) → sitting on the floor.
   const seatSlot = getRoom(stage).slots.find((slot) => slot.id === "seat");
   if (seatSlot && seatSlot.id in loadout && loadout[seatSlot.id] === null) {
-    return "stand";
+    return "floor";
   }
-  if (stage === "student" && !hasMonitor2 && !hasErgoChair) return "floor";
   return "sit";
 }
 

@@ -71,10 +71,11 @@ export const POSITION_OVERRIDES: Record<string, [number, number, number]> = {
   // "Floor mattress" as the bed-slot pick: mattress GLB's manifest spot is the
   // overlay on the wooden bed — as a replacement it sits on the floor instead.
   "student.mattress": [-0.315, 0.02, -1.445],
-  // Laptop as the display pick: its stage0 spot is on the low folding table —
-  // as a replacement for the monitor it sits on the desk surface instead.
-  "student.laptop": [-1.52, 0.745, -0.12],
 };
+
+/** Laptop GLB spots: on the folding table (stage0) vs on the wooden desk (the monitor's place). */
+const LAPTOP_ON_FOLDING_TABLE: [number, number, number] = [-1.535, 0.32, -0.1];
+const LAPTOP_ON_DESK: [number, number, number] = [-1.76, 0.74, -0.12];
 
 function slotStoreItems(accepts: readonly string[]): StoreItem[] {
   return STORE_ITEMS.filter(
@@ -162,6 +163,21 @@ export function resolveRoomFurniture(
     if (overlay && base) visible[base] = true;
     const override = POSITION_OVERRIDES[entry];
     if (override) positionOverrides[glb] = override;
+    if (entry === "student.laptop") {
+      // The laptop follows whichever desk is actually drawn: on the folding
+      // table it keeps its stage0 spot; on the wooden desk it takes the
+      // monitor's place so it never floats above the low table.
+      const deskSlot = slots.find((s) => s.id === "desk");
+      const deskEntry = deskSlot
+        ? deskSlot.id in loadout
+          ? loadout[deskSlot.id]
+          : null
+        : null;
+      positionOverrides.laptop =
+        deskEntry === "student.folding_table"
+          ? LAPTOP_ON_FOLDING_TABLE
+          : LAPTOP_ON_DESK;
+    }
   }
 
   return { visible, positionOverrides };

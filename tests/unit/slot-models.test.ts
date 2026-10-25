@@ -115,15 +115,28 @@ describe("resolveRoomFurniture", () => {
     expect(plan.positionOverrides.mattress).toEqual([-0.315, 0.02, -1.445]);
   });
 
-  it("raises the laptop to the desk surface when it replaces the monitor", () => {
-    const plan = resolveRoomFurniture(
+  it("places the laptop on whichever desk is actually drawn", () => {
+    // Desk untouched → the wooden desk draws; the laptop takes the monitor's
+    // place on its surface.
+    const onDesk = resolveRoomFurniture(
       SLOTS,
       { display: "student.laptop" },
       OWNED([]),
     );
-    expect(plan.visible.monitor).toBe(false);
-    expect(plan.visible.laptop).toBe(true);
-    expect(plan.positionOverrides.laptop).toEqual([-1.52, 0.745, -0.12]);
+    expect(onDesk.visible.monitor).toBe(false);
+    expect(onDesk.visible.laptop).toBe(true);
+    expect(onDesk.positionOverrides.laptop).toEqual([-1.76, 0.74, -0.12]);
+
+    // Folding table picked for the desk → the laptop sits on that table.
+    const onFolding = resolveRoomFurniture(
+      SLOTS,
+      { display: "student.laptop", desk: "student.folding_table" },
+      OWNED([]),
+    );
+    expect(onFolding.visible.desk).toBe(false);
+    expect(onFolding.visible.table_folding).toBe(true);
+    expect(onFolding.visible.laptop).toBe(true);
+    expect(onFolding.positionOverrides.laptop).toEqual([-1.535, 0.32, -0.1]);
   });
 
   it("hides slot-bound store items when the store pick replaces them", () => {

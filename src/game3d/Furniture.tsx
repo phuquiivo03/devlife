@@ -7,7 +7,6 @@ import { isOwnedOnly, STORE_TO_KEY } from "./assets";
 import { STUDENT_MANIFEST } from "./manifest";
 import { resolveRoomFurniture } from "./slot-models";
 import { ItemModel } from "./ItemModel";
-import { usePlayerPose } from "./Player";
 
 /** Invert STORE_TO_KEY so manifest item keys can ask "is this owned?". */
 const KEY_TO_STORE: ReadonlyMap<string, string> = new Map(
@@ -20,14 +19,14 @@ const KEY_TO_STORE: ReadonlyMap<string, string> = new Map(
  * - slots follow the loadout (see slot-models.ts): untouched slots keep the
  *   shipped scene, a loadout entry replaces/overlays/empties the slot
  * - keys outside every slot (aircon, lamp_desk, …) stay owned-gated
- * - the floor pose hides the desk set via stage0.hide
+ * - the fresh-student scene (no monitor2/ergo_chair owned) swaps in the
+ *   stage0 set (folding table + laptop) and hides the desk set — independent
+ *   of the player pose, which floors separately when the seat is emptied
  */
 export function Furniture() {
   const owned = useGameStore((s) => s.career.shop?.owned);
   const stage = useGameStore((s) => s.stage);
   const loadout = useGameStore((s) => s.loadouts[stage]);
-  const pose = usePlayerPose();
-  const floorPose = pose === "floor";
 
   const ownedSet = useMemo(() => new Set(owned ?? []), [owned]);
 
@@ -36,9 +35,12 @@ export function Furniture() {
     [stage, loadout, ownedSet],
   );
 
+  const stage0Active =
+    stage === "student" && !ownedSet.has("monitor2") && !ownedSet.has("ergo_chair");
+
   const hidden = useMemo(
-    () => new Set<string>(floorPose ? STUDENT_MANIFEST.stage0.hide : []),
-    [floorPose],
+    () => new Set<string>(stage0Active ? STUDENT_MANIFEST.stage0.hide : []),
+    [stage0Active],
   );
 
   const visibleFor = (key: string): boolean => {
@@ -67,16 +69,16 @@ export function Furniture() {
       })}
       {STUDENT_MANIFEST.stage0.items.map((item) => {
         if (item.missing) return null;
-        // Floor pose draws the stage0 set as shipped; outside it these GLBs
-        // (folding table, laptop) only appear when a slot pick resolves to
-        // them — at the overridden desk position where needed.
-        const slotDriven = !floorPose && plan.visible[item.key] === true;
+        // The fresh-student scene draws the stage0 set as shipped; otherwise
+        // these GLBs (folding table, laptop) only appear when a slot pick
+        // resolves to them — at the overridden position where needed.
+        const slotDriven = !stage0Active && plan.visible[item.key] === true;
         const override = plan.positionOverrides[item.key];
         return (
           <ItemModel
             key={`stage0:${item.key}`}
             item={override ? { ...item, position: override } : item}
-            visible={floorPose || slotDriven}
+            visible={stage0Active || slotDriven}
           />
         );
       })}
