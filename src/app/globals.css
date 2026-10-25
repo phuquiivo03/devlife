@@ -941,11 +941,14 @@ body:has(.theme-clay) {
 }
 
 /* The div wrapping the 3D canvas: deep purple gradient (darkest top-left),
-   borderless, no inner shadow — the room floats on it. */
+   borderless, no inner shadow — the room floats on it. The gradient endpoints
+   come from the phase lighting preset (Lights writes --scene-bg-a/-b), so the
+   backdrop shifts with the clock; the transition covers the first paint. */
 .theme-clay .clay-scene-well {
   overflow: hidden;
   border-radius: 20px;
-  background: linear-gradient(160deg, #807090 0%, #9a88a4 45%, #b8a0bc 100%);
+  background: linear-gradient(160deg, var(--scene-bg-a, #807090) 0%, var(--scene-bg-b, #b8a0bc) 100%);
+  transition: background 500ms;
 }
 
 /* 3D load hint: sits on the well gradient, so light ink for contrast. */

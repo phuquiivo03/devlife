@@ -278,8 +278,11 @@ function RoomCameraRig({ interactive }: { interactive: boolean }) {
  * (ssr:false) so three stays out of SSR.
  */
 export default function Scene3D({ debug = false }: { debug?: boolean }) {
+  // The tweening lights also repaint this backdrop (see Lights' wellEl).
+  const wellRef = useRef<HTMLDivElement>(null);
   return (
     <div
+      ref={wellRef}
       className="clay-scene-well relative w-full"
       style={{ aspectRatio: "4 / 3" }}
       role="img"
@@ -290,10 +293,10 @@ export default function Scene3D({ debug = false }: { debug?: boolean }) {
         dpr={[1, 2]}
         orthographic
         camera={{ position: [6, 6, 6], zoom: 110, near: 0.1, far: 100 }}
-        gl={{ antialias: true, alpha: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 1.1 }}
+        gl={{ antialias: true, alpha: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 1.0 }}
         onCreated={({ camera }) => camera.lookAt(0, 0.8, 0)}
       >
-        <Lights />
+        <Lights wellEl={wellRef} />
         <Suspense fallback={null}>
           <RoomShell />
           <Furniture />

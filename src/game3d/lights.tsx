@@ -1,10 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
+import type {
+  AmbientLight,
+  DirectionalLight,
+  HemisphereLight,
+  PointLight,
+} from "three";
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
+import { phaseAtMinuteOfDay } from "@/game/time";
 import { resolveRoomFurniture } from "./slot-models";
 import { STUDENT_MANIFEST, itemByKey } from "./manifest";
+import {
+  HEMI_GROUND,
+  HEMI_I,
+  LIGHT_PRESETS,
+  mixPreset,
+  type LightPreset,
+} from "./light-presets";
+
+/** Phase crossfade duration, matching the trailer's 14-frame lerp. */
+const TWEEN_MS = 500;
+
+/** Base screen-spill strengths (scaled by the preset's per-phase factor). */
+const MONITOR_BASE = 0.5;
+const LAPTOP_BASE = 0.35;
 
 function at(
   stage: string,
@@ -21,16 +43,20 @@ function at(
 }
 
 /**
- * Cozy clay-pastel lighting: warm hemisphere fill, one soft-shadow directional
- * sun, warm desk-lamp pool, cool screen spill (monitor when seated, laptop in
- * the stage0 floor pose), and a faint fairy-light glow along the string.
+ * Cozy clay lighting that follows the clock: ambient / hemisphere / sun read
+ * the phase preset (see light-presets.ts) and crossfade over ~500 ms when the
+ * phase changes; the desk lamp and fairy string only glow from evening on.
  * Positions derive from the merged manifest placements. The lamp pool follows
- * the desk_lamp slot: lit only while the loadout actually places the lamp.
+ * the desk_lamp slot: mounted only while the loadout actually places the lamp,
+ * while the fairy point mounts whenever the stage manifest has fairy_lights.
  */
-export function Lights() {
+export function Lights({ wellEl }: { wellEl?: { readonly current: HTMLElement | null } }) {
   const stage = useGameStore((s) => s.stage);
   const loadout = useGameStore((s) => s.loadouts[stage]);
   const owned = useGameStore((s) => s.career.shop?.owned);
+  // Derived selector: re-renders only when the phase itself changes, not on
+  // every game-minute tick.
+  const phaseId = useGameStore((s) => phaseAtMinuteOfDay(s.totalMinutes).id);
 
   const lampDrawn = useMemo(() => {
     const plan = resolveRoomFurniture(
@@ -46,53 +72,147 @@ export function Lights() {
   const monitor = at(stage, "monitor", [0.26, 0.3, 0]);
   const laptop = at(stage, "laptop", [0.16, 0.16, 0]);
   const fairy = itemByKey(stage, "fairy_lights");
-  const fairyY = fairy ? fairy.position[1] : 1.8;
+
+  const hemiRef = useRef<HemisphereLight>(null);
+  const ambRef = useRef<AmbientLight>(null);
+  const sunRef = useRef<DirectionalLight>(null);
+  const lampRef = useRef<PointLight>(null);
+  const fairyRef = useRef<PointLight>(null);
+  const monitorRef = useRef<PointLight>(null);
+  const laptopRef = useRef<PointLight>(null);
+
+  // Mount-time phase, captured once: JSX initial values stay stable across
+  // re-renders so React never fights the per-frame tween.
+  const initRef = useRef<LightPreset | null>(null);
+  if (!initRef.current) initRef.current = LIGHT_PRESETS[phaseId];
+  const init = initRef.current;
+
+  // Tween clock: lights are written straight to the objects in useFrame —
+  // no per-frame state. On a phase change the blend restarts from wherever
+  // the previous crossfade was interrupted.
+  const tween = useRef<{ from: LightPreset; to: LightPreset; t: number; phase: typeof phaseId }>({
+    from: init,
+    to: init,
+    t: 1,
+    phase: phaseId,
+  });
+  // The mount phase never triggers a change, so push the initial preset to
+  // the objects (and the well vars) once on the first frame.
+  const appliedOnce = useRef(false);
+
+  useFrame((_, delta) => {
+    const tw = tween.current;
+    if (tw.phase !== phaseId) {
+      tw.from = mixPreset(tw.from, tw.to, tw.t);
+      tw.to = LIGHT_PRESETS[phaseId];
+      tw.t = 0;
+      tw.phase = phaseId;
+    }
+    if (appliedOnce.current && tw.t >= 1) return;
+    appliedOnce.current = true;
+    tw.t = Math.min(1, tw.t + (delta * 1000) / TWEEN_MS);
+    // Smoothstep so the crossfade eases at both ends.
+    const e = tw.t * tw.t * (3 - 2 * tw.t);
+    const p = mixPreset(tw.from, tw.to, e);
+
+    const hemi = hemiRef.current;
+    if (hemi) hemi.color.set(p.hemiSky);
+    const amb = ambRef.current;
+    if (amb) {
+      amb.color.set(p.amb);
+      amb.intensity = p.ambI;
+    }
+    const sun = sunRef.current;
+    if (sun) {
+      sun.color.set(p.sun);
+      sun.intensity = p.sunI;
+      sun.position.set(p.sunPos[0], p.sunPos[1], p.sunPos[2]);
+    }
+    const lampLight = lampRef.current;
+    if (lampLight) {
+      lampLight.intensity = p.lamp;
+      lampLight.visible = p.lamp > 0.05;
+    }
+    const fairyLight = fairyRef.current;
+    if (fairyLight) {
+      fairyLight.intensity = p.lamp * 0.6;
+      fairyLight.visible = p.lamp > 0.05;
+    }
+    const spill = p.spill;
+    const monitorLight = monitorRef.current;
+    if (monitorLight) monitorLight.intensity = MONITOR_BASE * spill;
+    const laptopLight = laptopRef.current;
+    if (laptopLight) laptopLight.intensity = LAPTOP_BASE * spill;
+
+    const well = wellEl?.current;
+    if (well) {
+      well.style.setProperty("--scene-bg-a", p.bg[0]);
+      well.style.setProperty("--scene-bg-b", p.bg[1]);
+    }
+  });
 
   return (
     <>
-      <hemisphereLight args={["#fff6e8", "#d8c6b2", 0.55]} />
-      <ambientLight color="#ffeef4" intensity={0.28} />
+      <hemisphereLight ref={hemiRef} args={[init.hemiSky, HEMI_GROUND, HEMI_I]} />
+      <ambientLight ref={ambRef} args={[init.amb, init.ambI]} />
       <directionalLight
-        position={[3.5, 6.5, 2.5]}
-        intensity={1.9}
-        color="#fff2df"
+        ref={sunRef}
+        position={init.sunPos}
+        intensity={init.sunI}
+        color={init.sun}
         castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-camera-left={-3.5}
-        shadow-camera-right={3.5}
-        shadow-camera-top={3.5}
-        shadow-camera-bottom={-3.5}
+        shadow-mapSize={[1024, 1024]}
+        shadow-camera-left={-5}
+        shadow-camera-right={5}
+        shadow-camera-top={5}
+        shadow-camera-bottom={-5}
         shadow-camera-near={1}
-        shadow-camera-far={15}
-        shadow-bias={-0.0004}
+        shadow-camera-far={20}
+        shadow-bias={-0.0005}
         shadow-normalBias={0.02}
       />
       {lamp ? (
-        <pointLight position={lamp} color="#ffb46b" intensity={1.2} distance={2.6} decay={2} />
+        <pointLight
+          ref={lampRef}
+          position={lamp}
+          color="#ffc27a"
+          intensity={init.lamp}
+          visible={init.lamp > 0.05}
+          distance={6}
+          decay={1.4}
+        />
       ) : null}
       {monitor ? (
-        <pointLight position={monitor} color="#9fc7ff" intensity={0.5} distance={1.8} decay={2} />
-      ) : null}
-      {laptop ? (
-        <pointLight position={laptop} color="#9fc7ff" intensity={0.35} distance={1.2} decay={2} />
-      ) : null}
-      {(
-        [
-          [-1.85, fairyY + 0.05, -1.75],
-          [1.9, fairyY + 0.05, -1.75],
-          [-1.85, fairyY + 0.05, 1.55],
-          [1.9, fairyY + 0.05, 1.55],
-        ] as Array<[number, number, number]>
-      ).map((position) => (
         <pointLight
-          key={position.join(",")}
-          position={position}
-          color="#ffd9a0"
-          intensity={0.16}
-          distance={2.4}
+          ref={monitorRef}
+          position={monitor}
+          color="#9fc7ff"
+          intensity={MONITOR_BASE * init.spill}
+          distance={1.8}
           decay={2}
         />
-      ))}
+      ) : null}
+      {laptop ? (
+        <pointLight
+          ref={laptopRef}
+          position={laptop}
+          color="#9fc7ff"
+          intensity={LAPTOP_BASE * init.spill}
+          distance={1.2}
+          decay={2}
+        />
+      ) : null}
+      {fairy ? (
+        <pointLight
+          ref={fairyRef}
+          position={[fairy.position[0], fairy.position[1] + 0.08, fairy.position[2]]}
+          color="#ffd9a8"
+          intensity={init.lamp * 0.6}
+          visible={init.lamp > 0.05}
+          distance={5}
+          decay={1.4}
+        />
+      ) : null}
     </>
   );
 }
