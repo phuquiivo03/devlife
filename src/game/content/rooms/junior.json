@@ -20,243 +20,33 @@
   },
   "focusX": 205,
   "slots": [
-    {
-      "id": "wall_art_1",
-      "kind": "wall",
-      "accepts": [
-        "wall_art"
-      ],
-      "default": "junior.poster_1",
-      "anchor": [
-        43,
-        60
-      ],
-      "label": {
-        "en": "Wall art",
-        "vi": "Trang trí tường"
-      },
-      "group": "wall"
-    },
-    {
-      "id": "wall_art_2",
-      "kind": "wall",
-      "accepts": [
-        "wall_art"
-      ],
-      "default": "junior.poster_2",
-      "anchor": [
-        70,
-        59
-      ],
-      "label": {
-        "en": "Wall art",
-        "vi": "Trang trí tường"
-      },
-      "group": "wall"
-    },
-    {
-      "id": "bed",
-      "kind": "floor",
-      "accepts": [
-        "bed"
-      ],
-      "default": "junior.bed",
-      "anchor": [
-        46,
-        203
-      ],
-      "label": {
-        "en": "Bed",
-        "vi": "Giường"
-      },
-      "group": "room"
-    },
-    {
-      "id": "desk",
-      "kind": "floor",
-      "accepts": [
-        "desk"
-      ],
-      "default": "junior.desk",
-      "anchor": [
-        205,
-        153
-      ],
-      "required": true,
-      "label": {
-        "en": "Desk",
-        "vi": "Bàn"
-      },
-      "group": "desk"
-    },
-    {
-      "id": "under_desk",
-      "kind": "surface",
-      "accepts": [
-        "under_desk"
-      ],
-      "default": "junior.drawer_pedestal",
-      "parent": "desk",
-      "socket": "under",
-      "label": {
-        "en": "Under desk",
-        "vi": "Dưới bàn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "side_device",
-      "kind": "surface",
-      "accepts": [
-        "side_device"
-      ],
-      "default": "junior.laptop_stand",
-      "parent": "desk",
-      "socket": "side",
-      "label": {
-        "en": "Side device",
-        "vi": "Thiết bị phụ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "display",
-      "kind": "surface",
-      "accepts": [
-        "display"
-      ],
-      "default": "junior.monitor",
-      "parent": "desk",
-      "socket": "display",
-      "label": {
-        "en": "Screen",
-        "vi": "Màn hình"
-      },
-      "group": "room"
-    },
-    {
-      "id": "keyboard",
-      "kind": "surface",
-      "accepts": [
-        "keyboard"
-      ],
-      "default": "junior.keyboard_mat",
-      "parent": "desk",
-      "socket": "keyboard",
-      "label": {
-        "en": "Keyboard",
-        "vi": "Bàn phím"
-      },
-      "group": "room"
-    },
-    {
-      "id": "mouse",
-      "kind": "surface",
-      "accepts": [
-        "mouse"
-      ],
-      "default": "junior.mouse",
-      "parent": "desk",
-      "socket": "mouse",
-      "label": {
-        "en": "Mouse",
-        "vi": "Chuột"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cup",
-      "kind": "surface",
-      "accepts": [
-        "cup"
-      ],
-      "default": "junior.mug",
-      "parent": "desk",
-      "socket": "cup",
-      "label": {
-        "en": "Cup",
-        "vi": "Cốc"
-      },
-      "group": "room"
-    },
-    {
-      "id": "desk_plant",
-      "kind": "surface",
-      "accepts": [
-        "desk_plant"
-      ],
-      "default": "junior.plant_small",
-      "parent": "desk",
-      "socket": "plant",
-      "label": {
-        "en": "Desk plant",
-        "vi": "Cây bàn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "gadget",
-      "kind": "surface",
-      "accepts": [
-        "gadget"
-      ],
-      "default": null,
-      "parent": "desk",
-      "socket": "gadget",
-      "label": {
-        "en": "Gadget",
-        "vi": "Thiết bị"
-      },
-      "group": "room"
-    },
-    {
-      "id": "seat",
-      "kind": "seat",
-      "accepts": [
-        "chair"
-      ],
-      "default": "junior.office_chair",
-      "parent": "desk",
-      "socket": "seat",
-      "label": {
-        "en": "Chair",
-        "vi": "Ghế"
-      },
-      "group": "room"
-    },
-    {
-      "id": "shelf",
-      "kind": "floor",
-      "accepts": [
-        "shelf"
-      ],
-      "default": "junior.bookshelf",
-      "anchor": [
-        312,
-        133
-      ],
-      "label": {
-        "en": "Shelf",
-        "vi": "Kệ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "wardrobe",
-      "kind": "floor",
-      "accepts": [
-        "wardrobe"
-      ],
-      "default": "junior.wardrobe",
-      "anchor": [
-        408,
-        134
-      ],
-      "label": {
-        "en": "Wardrobe",
-        "vi": "Tủ"
-      },
-      "group": "room"
-    }
+    { "id": "bed", "default": "junior.bed", "anchor": [46, 203] },
+    { "id": "desk", "default": "junior.desk", "anchor": [205, 153] },
+    { "id": "under_desk", "default": "junior.drawer_pedestal" },
+    { "id": "side_device", "default": "junior.laptop_stand" },
+    { "id": "display", "default": "junior.monitor" },
+    { "id": "keyboard", "default": "junior.keyboard_mat" },
+    { "id": "mouse", "default": "junior.mouse" },
+    { "id": "cup", "default": "junior.mug" },
+    { "id": "desk_plant", "default": "junior.plant_small" },
+    { "id": "gadget", "default": null },
+    { "id": "desk_lamp", "default": null },
+    { "id": "seat", "default": "junior.office_chair" },
+    { "id": "cabinet", "default": null },
+    { "id": "cabinet_top", "default": null },
+    { "id": "cabinet_top_2", "default": null },
+    { "id": "shelf", "default": "junior.bookshelf", "anchor": [312, 133] },
+    { "id": "wardrobe", "default": "junior.wardrobe", "anchor": [408, 134] },
+    { "id": "lounge", "default": null },
+    { "id": "decor_1", "default": null },
+    { "id": "decor_2", "default": null },
+    { "id": "decor_3", "default": null },
+    { "id": "snack_1", "default": null },
+    { "id": "snack_2", "default": null },
+    { "id": "rug", "default": null },
+    { "id": "wall_hanging", "default": null },
+    { "id": "wall_art_1", "default": "junior.poster_1", "anchor": [43, 60] },
+    { "id": "wall_art_2", "default": "junior.poster_2", "anchor": [70, 59] },
+    { "id": "aircon", "default": null }
   ]
 }

@@ -4,13 +4,19 @@ import catalogJson from "./items.json";
 import studentRoom from "./rooms/student.json";
 import juniorRoom from "./rooms/junior.json";
 import seniorRoom from "./rooms/senior.json";
+import { buildRoomSlots } from "./rooms/slots.shared";
 
 const catalogParsed = catalogSchema.parse(catalogJson);
-const roomsParsed = [
-  roomSchema.parse(studentRoom),
-  roomSchema.parse(juniorRoom),
-  roomSchema.parse(seniorRoom),
-] as Room[];
+const roomSources: Array<{ id: StageId; json: unknown }> = [
+  { id: "student", json: studentRoom },
+  { id: "junior", json: juniorRoom },
+  { id: "senior", json: seniorRoom },
+];
+const roomsParsed = roomSources.map(({ id, json }) => {
+  const parsed = roomSchema.parse(json);
+  // Slots are shared across rooms; each room only supplies defaults/anchors.
+  return { ...parsed, slots: buildRoomSlots(id, parsed.slots) } as Room;
+});
 
 for (const room of roomsParsed) {
   assertRoomSize(room);

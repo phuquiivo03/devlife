@@ -20,266 +20,33 @@
   },
   "focusX": 262,
   "slots": [
-    {
-      "id": "wall_hanging",
-      "kind": "wall",
-      "accepts": [
-        "wall_hanging"
-      ],
-      "default": "student.clothesline",
-      "anchor": [
-        66,
-        78
-      ],
-      "label": {
-        "en": "Wall hanging",
-        "vi": "Treo tường"
-      },
-      "group": "wall"
-    },
-    {
-      "id": "wall_art_1",
-      "kind": "wall",
-      "accepts": [
-        "wall_art"
-      ],
-      "default": "student.mirror",
-      "anchor": [
-        84,
-        83
-      ],
-      "label": {
-        "en": "Wall art",
-        "vi": "Trang trí tường"
-      },
-      "group": "wall"
-    },
-    {
-      "id": "bed",
-      "kind": "floor",
-      "accepts": [
-        "bed"
-      ],
-      "default": "student.mattress",
-      "anchor": [
-        45,
-        221
-      ],
-      "label": {
-        "en": "Bed",
-        "vi": "Giường"
-      },
-      "group": "room"
-    },
-    {
-      "id": "decor_1",
-      "kind": "floor",
-      "accepts": [
-        "floor_decor"
-      ],
-      "default": "student.fan",
-      "anchor": [
-        126,
-        144
-      ],
-      "label": {
-        "en": "Floor decor",
-        "vi": "Đồ sàn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cabinet",
-      "kind": "floor",
-      "accepts": [
-        "cabinet"
-      ],
-      "default": "student.bedside_cabinet",
-      "anchor": [
-        158,
-        139
-      ],
-      "label": {
-        "en": "Cabinet",
-        "vi": "Tủ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cabinet_top",
-      "kind": "surface",
-      "accepts": [
-        "appliance"
-      ],
-      "default": "student.kettle",
-      "parent": "cabinet",
-      "socket": "top",
-      "label": {
-        "en": "On cabinet",
-        "vi": "Trên tủ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "snack_1",
-      "kind": "floor",
-      "accepts": [
-        "cup"
-      ],
-      "default": "student.noodle_cup",
-      "anchor": [
-        203,
-        128
-      ],
-      "label": {
-        "en": "Snack",
-        "vi": "Đồ ăn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "snack_2",
-      "kind": "floor",
-      "accepts": [
-        "cup"
-      ],
-      "default": "student.noodle_cup",
-      "anchor": [
-        189,
-        126
-      ],
-      "label": {
-        "en": "Snack",
-        "vi": "Đồ ăn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "desk",
-      "kind": "floor",
-      "accepts": [
-        "desk"
-      ],
-      "default": "student.folding_table",
-      "anchor": [
-        262,
-        133
-      ],
-      "required": true,
-      "label": {
-        "en": "Desk",
-        "vi": "Bàn"
-      },
-      "group": "desk"
-    },
-    {
-      "id": "display",
-      "kind": "surface",
-      "accepts": [
-        "display"
-      ],
-      "default": "student.laptop",
-      "parent": "desk",
-      "socket": "display",
-      "label": {
-        "en": "Screen",
-        "vi": "Màn hình"
-      },
-      "group": "room"
-    },
-    {
-      "id": "mouse",
-      "kind": "surface",
-      "accepts": [
-        "mouse"
-      ],
-      "default": "student.mouse",
-      "parent": "desk",
-      "socket": "mouse",
-      "label": {
-        "en": "Mouse",
-        "vi": "Chuột"
-      },
-      "group": "room"
-    },
-    {
-      "id": "keyboard",
-      "kind": "surface",
-      "accepts": [
-        "keyboard"
-      ],
-      "default": null,
-      "parent": "desk",
-      "socket": "keyboard",
-      "label": {
-        "en": "Keyboard",
-        "vi": "Bàn phím"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cup",
-      "kind": "surface",
-      "accepts": [
-        "cup"
-      ],
-      "default": null,
-      "parent": "desk",
-      "socket": "cup",
-      "label": {
-        "en": "Cup",
-        "vi": "Cốc"
-      },
-      "group": "room"
-    },
-    {
-      "id": "seat",
-      "kind": "seat",
-      "accepts": [
-        "chair"
-      ],
-      "default": null,
-      "parent": "desk",
-      "socket": "seat",
-      "label": {
-        "en": "Chair",
-        "vi": "Ghế"
-      },
-      "group": "room"
-    },
-    {
-      "id": "decor_2",
-      "kind": "floor",
-      "accepts": [
-        "floor_decor"
-      ],
-      "default": "student.backpack",
-      "anchor": [
-        110,
-        221
-      ],
-      "label": {
-        "en": "Floor decor",
-        "vi": "Đồ sàn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "decor_3",
-      "kind": "floor",
-      "accepts": [
-        "floor_decor"
-      ],
-      "default": "student.books_stack",
-      "anchor": [
-        143,
-        235
-      ],
-      "label": {
-        "en": "Floor decor",
-        "vi": "Đồ sàn"
-      },
-      "group": "room"
-    }
+    { "id": "bed", "default": "student.mattress", "anchor": [45, 221] },
+    { "id": "desk", "default": "student.folding_table", "anchor": [262, 133] },
+    { "id": "under_desk", "default": null },
+    { "id": "side_device", "default": null },
+    { "id": "display", "default": "student.laptop" },
+    { "id": "keyboard", "default": null },
+    { "id": "mouse", "default": "student.mouse" },
+    { "id": "cup", "default": null },
+    { "id": "desk_plant", "default": null },
+    { "id": "gadget", "default": null },
+    { "id": "desk_lamp", "default": null },
+    { "id": "seat", "default": null },
+    { "id": "cabinet", "default": "student.bedside_cabinet", "anchor": [158, 139] },
+    { "id": "cabinet_top", "default": "student.kettle" },
+    { "id": "cabinet_top_2", "default": null },
+    { "id": "shelf", "default": null },
+    { "id": "wardrobe", "default": null },
+    { "id": "lounge", "default": null },
+    { "id": "decor_1", "default": "student.fan", "anchor": [126, 144] },
+    { "id": "decor_2", "default": "student.backpack", "anchor": [110, 221] },
+    { "id": "decor_3", "default": "student.books_stack", "anchor": [143, 235] },
+    { "id": "snack_1", "default": "student.noodle_cup", "anchor": [203, 128] },
+    { "id": "snack_2", "default": "student.noodle_cup", "anchor": [189, 126] },
+    { "id": "rug", "default": null },
+    { "id": "wall_hanging", "default": "student.clothesline", "anchor": [66, 78] },
+    { "id": "wall_art_1", "default": "student.mirror", "anchor": [84, 83] },
+    { "id": "wall_art_2", "default": null },
+    { "id": "aircon", "default": null }
   ]
 }

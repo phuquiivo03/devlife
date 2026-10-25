@@ -1,5 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
+import { useGameStore } from "@/game/state/store";
+import { getRoom } from "@/game/content";
+import { resolveRoomFurniture } from "./slot-models";
 import { ITEM_BY_KEY, STUDENT_MANIFEST } from "./manifest";
 
 function at(key: string, offset: [number, number, number]): [number, number, number] | null {
@@ -12,10 +16,24 @@ function at(key: string, offset: [number, number, number]): [number, number, num
  * Cozy clay-pastel lighting: warm hemisphere fill, one soft-shadow directional
  * sun, warm desk-lamp pool, cool screen spill (monitor when seated, laptop in
  * the stage0 floor pose), and a faint fairy-light glow along the string.
- * Positions derive from the merged manifest placements.
+ * Positions derive from the merged manifest placements. The lamp pool follows
+ * the desk_lamp slot: lit only while the loadout actually places the lamp.
  */
 export function Lights() {
-  const lamp = at("lamp_desk", [0.12, 0.34, 0]);
+  const stage = useGameStore((s) => s.stage);
+  const loadout = useGameStore((s) => s.loadouts[stage]);
+  const owned = useGameStore((s) => s.career.shop?.owned);
+
+  const lampDrawn = useMemo(() => {
+    const plan = resolveRoomFurniture(
+      getRoom(stage).slots,
+      loadout,
+      new Set(owned ?? []),
+    );
+    return plan.drawn.has("lamp_desk");
+  }, [stage, loadout, owned]);
+
+  const lamp = lampDrawn ? at("lamp_desk", [0.12, 0.34, 0]) : null;
   const monitor = at("monitor", [0.26, 0.3, 0]);
   const laptop = at("laptop", [0.16, 0.16, 0]);
   const fairy = ITEM_BY_KEY.get("fairy_lights");
