@@ -484,6 +484,40 @@
     0,
     0
    ]
+  },
+  "room_junior": {
+   "files": [
+    "shop_room_junior.png",
+    "shop_room_junior_256.png"
+   ],
+   "glb": "public/models/room/junior/room_shell.glb",
+   "content_bbox_512": [
+    40,
+    60,
+    472,
+    452
+   ],
+   "verts": 2402,
+   "bbox_max_m": 4.49,
+   "furniture": [],
+   "note": "empty room_shell.glb only, no added furniture"
+  },
+  "room_senior": {
+   "files": [
+    "shop_room_senior.png",
+    "shop_room_senior_256.png"
+   ],
+   "glb": "public/models/room/senior/room_shell.glb",
+   "content_bbox_512": [
+    40,
+    60,
+    472,
+    452
+   ],
+   "verts": 2474,
+   "bbox_max_m": 4.49,
+   "furniture": [],
+   "note": "empty room_shell.glb only, no added furniture"
   }
  }
 }
