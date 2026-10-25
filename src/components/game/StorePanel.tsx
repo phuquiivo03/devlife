@@ -42,7 +42,10 @@ function storeIconSrc(icon: string): string {
 function cardModel(item: StoreItem, career: CareerState, day: number): CardModel {
   const shop = shopOf(career);
   const owned = shop.owned.includes(item.id);
-  const locked = !owned && true; // No more unlock blocks based on room
+  // Unlock gates are gone (v19+): nothing locks a card anymore — buyBlock
+  // drives the disabled state and its reason tooltip instead. Keeping
+  // `locked` true here hid the Mua button on every unowned item.
+  const locked = false;
   const block = owned ? null : buyBlock(career, item.id);
   const price = storePrice(item, day);
   return {
