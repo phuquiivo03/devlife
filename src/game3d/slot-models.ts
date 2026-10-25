@@ -43,10 +43,10 @@ export function firstUntouchedAcceptingSlot(
   );
 }
 
-/** Catalog item id → GLB key: exact model matches plus the closest shipped one.
- * Junior/senior defaults without a dedicated GLB map to the nearest shipped
- * model (a nightstand stands in for the bookshelf/wardrobe/drawer, the kettle
- * for the espresso machines, etc.) until their own GLBs land. */
+/** Catalog item id → GLB key. Student picks draw the shipped models; every
+ * junior/senior default maps to its own GLB from art/3d/room_defaults_v1
+ * (junior bed/desk/monitor/mug and senior ergo chair/plant reuse shipped
+ * student models, drawer_pedestal is shared by both rooms). */
 export const CATALOG_TO_GLB: Record<string, string> = {
   "student.mattress": "mattress",
   "student.folding_table": "table_folding",
@@ -62,31 +62,31 @@ export const CATALOG_TO_GLB: Record<string, string> = {
   "junior.monitor": "monitor",
   "junior.mug": "mug",
   "junior.plant_small": "plant_small",
-  "junior.office_chair": "ergo_chair", // no office_chair GLB — ergo is the closest
-  "junior.bookshelf": "nightstand",
-  "junior.drawer_pedestal": "nightstand",
-  "junior.keyboard_mat": "keyboard",
-  "junior.laptop_stand": "laptop",
-  "junior.mouse": "mug", // no mouse GLB — the mug is the closest desk-side object
-  "junior.poster_1": "poster_vn",
-  "junior.poster_2": "poster_vn",
-  "junior.wardrobe": "nightstand",
+  "junior.office_chair": "junior_office_chair",
+  "junior.bookshelf": "junior_bookshelf",
+  "junior.drawer_pedestal": "drawer_pedestal",
+  "junior.keyboard_mat": "junior_keyboard_mat",
+  "junior.laptop_stand": "junior_laptop_stand",
+  "junior.mouse": "junior_mouse",
+  "junior.poster_1": "junior_poster_1",
+  "junior.poster_2": "junior_poster_2",
+  "junior.wardrobe": "junior_wardrobe",
   "senior.ergo_chair": "ergo_chair",
   "senior.plant_small": "plant_small",
-  "senior.armchair": "ergo_chair", // lounge stand-in until an armchair GLB ships
-  "senior.bookshelf": "nightstand",
-  "senior.coffee_grinder": "kettle",
-  "senior.dual_monitor": "monitor2",
-  "senior.drawer_pedestal": "nightstand",
-  "senior.espresso_machine": "kettle",
-  "senior.frame_1": "poster_vn",
-  "senior.frame_2": "poster_vn",
-  "senior.keyboard_mat": "keyboard",
-  "senior.monstera": "plant_big",
-  "senior.rug": "bed_floor_mat", // floor mat doubles as the rug
-  "senior.sideboard": "nightstand",
-  "senior.smart_speaker": "mug",
-  "senior.standing_desk": "desk",
+  "senior.armchair": "senior_armchair",
+  "senior.bookshelf": "senior_bookshelf",
+  "senior.coffee_grinder": "senior_coffee_grinder",
+  "senior.dual_monitor": "senior_dual_monitor",
+  "senior.drawer_pedestal": "drawer_pedestal",
+  "senior.espresso_machine": "senior_espresso_machine",
+  "senior.frame_1": "senior_frame_1",
+  "senior.frame_2": "senior_frame_2",
+  "senior.keyboard_mat": "senior_keyboard_mat",
+  "senior.monstera": "senior_monstera",
+  "senior.rug": "senior_rug",
+  "senior.sideboard": "senior_sideboard",
+  "senior.smart_speaker": "senior_smart_speaker",
+  "senior.standing_desk": "senior_standing_desk",
 };
 
 /**
@@ -141,24 +141,26 @@ const POSITION_OVERRIDES_BY_STAGE: Record<StageId, Record<string, [number, numbe
     "student.mattress": [-0.315, 0.02, -1.445],
   },
   junior: {
-    "student.mattress": [-0.9, 0.02, -1.44],
+    // "Floor mattress" as the bed-slot pick: mattress GLB's manifest spot is
+    // the overlay on the junior bed — as a replacement it lies on the floor
+    // at the bed spot (left wall, rotated like the bed).
+    "student.mattress": [-1.45, 0.02, 1.05],
   },
   senior: {
-    "student.mattress": [-1.05, 0.02, -1.42],
-    // The mat's manifest spot is the rug centre — as a bed pick it goes
-    // beside the bed instead.
-    "store:bed_floor_mat": [-0.15, 0.01, -1.42],
+    // Senior ships bedless; a floor-mattress pick claims the bed zone at the
+    // front-centre (the only clear floor for a 1.9 m bed in this layout).
+    "student.mattress": [-0.465, 0.02, 1.35],
   },
 };
 
-/** Laptop GLB spots per room: on the folding table vs on the desk (the monitor's place). */
+/** Laptop GLB spots per room: on the folding table vs on the desk (the display's place). */
 const LAPTOP_SPOTS: Record<
   StageId,
   { folding: [number, number, number]; desk: [number, number, number] }
 > = {
   student: { folding: [-1.535, 0.32, -0.1], desk: [-1.76, 0.74, -0.12] },
-  junior: { folding: [-1.535, 0.32, 0.475], desk: [-1.76, 0.74, 0.255] },
-  senior: { folding: [0.2, 0.32, -1.5], desk: [0.245, 0.74, -1.76] },
+  junior: { folding: [-1.535, 0.32, -0.95], desk: [-1.78, 0.74, -0.95] },
+  senior: { folding: [-1.645, 0.32, -0.35], desk: [-1.83, 0.74, -0.55] },
 };
 
 function slotStoreItems(accepts: readonly string[]): StoreItem[] {

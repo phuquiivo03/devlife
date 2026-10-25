@@ -278,6 +278,94 @@
    ],
    "rotationY": 0,
    "note": "plastic stool, mid-right floor; provisional spot"
+  },
+  {
+   "key": "drawer_pedestal",
+   "category": "furniture",
+   "position": [
+    -1.7,
+    0.02,
+    -0.45
+   ],
+   "rotationY": -1.5708,
+   "note": "under_desk slot pick (junior/senior.drawer_pedestal); under the desk"
+  },
+  {
+   "key": "junior_mouse",
+   "category": "decor",
+   "position": [
+    -1.38,
+    0.744,
+    -0.5
+   ],
+   "rotationY": 0,
+   "note": "mouse slot pick (junior.mouse); beside the keyboard"
+  },
+  {
+   "key": "junior_laptop_stand",
+   "category": "decor",
+   "position": [
+    -1.46,
+    0.74,
+    0.72
+   ],
+   "rotationY": -1.13446,
+   "note": "side_device slot pick (junior.laptop_stand); desk front-right"
+  },
+  {
+   "key": "senior_smart_speaker",
+   "category": "decor",
+   "position": [
+    -1.87,
+    0.74,
+    0.12
+   ],
+   "rotationY": 0,
+   "note": "gadget slot pick (senior.smart_speaker); desk back edge"
+  },
+  {
+   "key": "junior_bookshelf",
+   "category": "furniture",
+   "position": [
+    1.85,
+    0.02,
+    -0.5
+   ],
+   "rotationY": -1.5708,
+   "note": "shelf slot pick (junior.bookshelf); right wall"
+  },
+  {
+   "key": "junior_wardrobe",
+   "category": "furniture",
+   "position": [
+    1.82,
+    0.02,
+    0.45
+   ],
+   "rotationY": -1.5708,
+   "note": "wardrobe slot pick (junior.wardrobe); right wall, front of the shelf pick"
+  },
+  {
+   "key": "senior_armchair",
+   "category": "furniture",
+   "position": [
+    1.3,
+    0.02,
+    1.2
+   ],
+   "rotationY": 2.618,
+   "note": "lounge slot pick (senior.armchair); front-right corner"
+  },
+  {
+   "key": "senior_rug",
+   "category": "decor",
+   "position": [
+    0.1,
+    0.02,
+    0.3
+   ],
+   "rotationY": 0,
+   "note": "rug slot pick (senior.rug); room centre"
   }
  ],
  "stage0": {
