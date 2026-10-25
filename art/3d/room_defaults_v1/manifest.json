@@ -1,0 +1,1336 @@
+{
+ "version": "room_defaults_v1",
+ "units": "m, +Y up (glTF), scale 1",
+ "conventions": "every new GLB: root empty <name> with one child mesh per material (<name>__<Material>); pivot bottom-centre; canonical front = -Z (glTF) = +Y (Blender); no lights/cameras; rotation not baked, use rotation_y_deg / rotation_euler_gltf_rad (Euler XYZ rad) from this manifest. Wall items (posters/frames): back face on local z=+0.014, place at wall inner face + 0.014.",
+ "room_origin": "same as rooms_junior_senior_v1_1 / student: room centre, floor top y=0.02, inner walls left x=-2.0, back z=-2.0 (glTF)",
+ "desk_top_y": 0.74,
+ "note_desk": "reused junior desk.glb is placed at y=0.0 like student (legs sink 0.02 into floor, top 0.74); senior_standing_desk is 0.72 tall, placed on floor top y=0.02 -> top 0.74. Desk-surface items at y=0.74.",
+ "models": [
+  {
+   "file": "drawer_pedestal.glb",
+   "triangles": 516,
+   "bbox_size_gltf_m": [
+    0.38,
+    0.599,
+    0.508
+   ],
+   "materials": 4
+  },
+  {
+   "file": "junior_laptop_stand.glb",
+   "triangles": 442,
+   "bbox_size_gltf_m": [
+    0.32,
+    0.313,
+    0.277
+   ],
+   "materials": 4
+  },
+  {
+   "file": "junior_keyboard_mat.glb",
+   "triangles": 276,
+   "bbox_size_gltf_m": [
+    0.8,
+    0.018,
+    0.3
+   ],
+   "materials": 5
+  },
+  {
+   "file": "senior_keyboard_mat.glb",
+   "triangles": 384,
+   "bbox_size_gltf_m": [
+    0.85,
+    0.036,
+    0.33
+   ],
+   "materials": 3
+  },
+  {
+   "file": "junior_mouse.glb",
+   "triangles": 180,
+   "bbox_size_gltf_m": [
+    0.061,
+    0.037,
+    0.106
+   ],
+   "materials": 2
+  },
+  {
+   "file": "junior_office_chair.glb",
+   "triangles": 1132,
+   "bbox_size_gltf_m": [
+    0.636,
+    1.054,
+    0.635
+   ],
+   "materials": 4
+  },
+  {
+   "file": "junior_bookshelf.glb",
+   "triangles": 1988,
+   "bbox_size_gltf_m": [
+    0.7,
+    1.2,
+    0.3
+   ],
+   "materials": 7
+  },
+  {
+   "file": "junior_wardrobe.glb",
+   "triangles": 716,
+   "bbox_size_gltf_m": [
+    0.8,
+    1.85,
+    0.601
+   ],
+   "materials": 4
+  },
+  {
+   "file": "junior_poster_1.glb",
+   "triangles": 94,
+   "bbox_size_gltf_m": [
+    0.42,
+    0.56,
+    0.028
+   ],
+   "materials": 3
+  },
+  {
+   "file": "junior_poster_2.glb",
+   "triangles": 94,
+   "bbox_size_gltf_m": [
+    0.34,
+    0.46,
+    0.028
+   ],
+   "materials": 3
+  },
+  {
+   "file": "senior_frame_1.glb",
+   "triangles": 110,
+   "bbox_size_gltf_m": [
+    0.4,
+    0.52,
+    0.027
+   ],
+   "materials": 2
+  },
+  {
+   "file": "senior_frame_2.glb",
+   "triangles": 110,
+   "bbox_size_gltf_m": [
+    0.36,
+    0.44,
+    0.027
+   ],
+   "materials": 2
+  },
+  {
+   "file": "senior_standing_desk.glb",
+   "triangles": 932,
+   "bbox_size_gltf_m": [
+    1.6,
+    0.72,
+    0.7
+   ],
+   "materials": 4
+  },
+  {
+   "file": "senior_dual_monitor.glb",
+   "triangles": 632,
+   "bbox_size_gltf_m": [
+    1.129,
+    0.525,
+    0.262
+   ],
+   "materials": 3
+  },
+  {
+   "file": "senior_smart_speaker.glb",
+   "triangles": 312,
+   "bbox_size_gltf_m": [
+    0.1,
+    0.173,
+    0.1
+   ],
+   "materials": 2
+  },
+  {
+   "file": "senior_sideboard.glb",
+   "triangles": 556,
+   "bbox_size_gltf_m": [
+    1.0,
+    0.72,
+    0.45
+   ],
+   "materials": 4
+  },
+  {
+   "file": "senior_espresso_machine.glb",
+   "triangles": 448,
+   "bbox_size_gltf_m": [
+    0.24,
+    0.32,
+    0.37
+   ],
+   "materials": 6
+  },
+  {
+   "file": "senior_coffee_grinder.glb",
+   "triangles": 308,
+   "bbox_size_gltf_m": [
+    0.121,
+    0.3,
+    0.147
+   ],
+   "materials": 3
+  },
+  {
+   "file": "senior_bookshelf.glb",
+   "triangles": 2672,
+   "bbox_size_gltf_m": [
+    0.8,
+    1.75,
+    0.32
+   ],
+   "materials": 10
+  },
+  {
+   "file": "senior_armchair.glb",
+   "triangles": 1536,
+   "bbox_size_gltf_m": [
+    0.79,
+    0.937,
+    0.757
+   ],
+   "materials": 3
+  },
+  {
+   "file": "senior_monstera.glb",
+   "triangles": 1312,
+   "bbox_size_gltf_m": [
+    0.838,
+    1.394,
+    0.848
+   ],
+   "materials": 4
+  },
+  {
+   "file": "senior_rug.glb",
+   "triangles": 56,
+   "bbox_size_gltf_m": [
+    2.0,
+    0.006,
+    1.3
+   ],
+   "materials": 2
+  }
+ ],
+ "rooms": {
+  "junior": [
+   {
+    "key": "junior.bed",
+    "slot": "bed",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/bed.glb",
+    "position_blender_zup": [
+     -1.45,
+     -1.05,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -1.45,
+     0.02,
+     1.05
+    ],
+    "rotation_y_deg": 90,
+    "rotation_euler_gltf_rad": [
+     0,
+     1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "junior.desk",
+    "slot": "desk",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/desk.glb",
+    "position_blender_zup": [
+     -1.62,
+     0.95,
+     0.0
+    ],
+    "position_gltf_yup": [
+     -1.62,
+     0.0,
+     -0.95
+    ],
+    "rotation_y_deg": 0,
+    "rotation_euler_gltf_rad": [
+     0,
+     0.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "junior.monitor",
+    "slot": "display",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/monitor.glb",
+    "position_blender_zup": [
+     -1.78,
+     0.95,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.78,
+     0.74,
+     -0.95
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "junior.keyboard_mat",
+    "slot": "keyboard",
+    "source": "new",
+    "file": "junior_keyboard_mat.glb",
+    "position_blender_zup": [
+     -1.48,
+     0.95,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.48,
+     0.74,
+     -0.95
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 276,
+    "bbox_size_gltf_m": [
+     0.8,
+     0.018,
+     0.3
+    ],
+    "meshes": [
+     "junior_keyboard_mat__DarkGrey",
+     "junior_keyboard_mat__ErgoLavDark",
+     "junior_keyboard_mat__ErgoLavender",
+     "junior_keyboard_mat__KeyGlow",
+     "junior_keyboard_mat__SlateLavDark"
+    ]
+   },
+   {
+    "key": "junior.mouse",
+    "slot": "mouse",
+    "source": "new",
+    "file": "junior_mouse.glb",
+    "position_blender_zup": [
+     -1.45,
+     1.27,
+     0.744
+    ],
+    "position_gltf_yup": [
+     -1.45,
+     0.744,
+     -1.27
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 180,
+    "bbox_size_gltf_m": [
+     0.061,
+     0.037,
+     0.106
+    ],
+    "meshes": [
+     "junior_mouse__ErgoLavender",
+     "junior_mouse__SlateLavDark"
+    ]
+   },
+   {
+    "key": "junior.laptop_stand",
+    "slot": "side_device",
+    "source": "new",
+    "file": "junior_laptop_stand.glb",
+    "position_blender_zup": [
+     -1.72,
+     1.52,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.72,
+     0.74,
+     -1.52
+    ],
+    "rotation_y_deg": -65,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.1345,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 442,
+    "bbox_size_gltf_m": [
+     0.32,
+     0.313,
+     0.277
+    ],
+    "meshes": [
+     "junior_laptop_stand__Cream",
+     "junior_laptop_stand__DarkGrey",
+     "junior_laptop_stand__Metal",
+     "junior_laptop_stand__ScreenTex"
+    ]
+   },
+   {
+    "key": "junior.mug",
+    "slot": "cup",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/mug.glb",
+    "position_blender_zup": [
+     -1.42,
+     0.4,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.42,
+     0.74,
+     -0.4
+    ],
+    "rotation_y_deg": 0,
+    "rotation_euler_gltf_rad": [
+     0,
+     0.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "junior.plant_small",
+    "slot": "desk_plant",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/plant_small.glb",
+    "position_blender_zup": [
+     -1.8,
+     0.33,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.8,
+     0.74,
+     -0.33
+    ],
+    "rotation_y_deg": 0,
+    "rotation_euler_gltf_rad": [
+     0,
+     0.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "junior.drawer_pedestal",
+    "slot": "under_desk",
+    "source": "new",
+    "file": "drawer_pedestal.glb",
+    "position_blender_zup": [
+     -1.7,
+     1.4,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -1.7,
+     0.02,
+     -1.4
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 516,
+    "bbox_size_gltf_m": [
+     0.38,
+     0.599,
+     0.508
+    ],
+    "meshes": [
+     "drawer_pedestal__Cream",
+     "drawer_pedestal__DarkGrey",
+     "drawer_pedestal__SlateLav",
+     "drawer_pedestal__SlateLavDark"
+    ]
+   },
+   {
+    "key": "junior.office_chair",
+    "slot": "seat",
+    "source": "new",
+    "file": "junior_office_chair.glb",
+    "position_blender_zup": [
+     -1.0,
+     0.95,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -1.0,
+     0.02,
+     -0.95
+    ],
+    "rotation_y_deg": 90,
+    "rotation_euler_gltf_rad": [
+     0,
+     1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 1132,
+    "bbox_size_gltf_m": [
+     0.636,
+     1.054,
+     0.635
+    ],
+    "meshes": [
+     "junior_office_chair__DarkGrey",
+     "junior_office_chair__ErgoLavDark",
+     "junior_office_chair__ErgoLavender",
+     "junior_office_chair__Metal"
+    ]
+   },
+   {
+    "key": "junior.bookshelf",
+    "slot": "shelf",
+    "source": "new",
+    "file": "junior_bookshelf.glb",
+    "position_blender_zup": [
+     1.06,
+     1.845,
+     0.02
+    ],
+    "position_gltf_yup": [
+     1.06,
+     0.02,
+     -1.845
+    ],
+    "rotation_y_deg": 180,
+    "rotation_euler_gltf_rad": [
+     0,
+     3.1416,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 1988,
+    "bbox_size_gltf_m": [
+     0.7,
+     1.2,
+     0.3
+    ],
+    "meshes": [
+     "junior_bookshelf__BookBlue",
+     "junior_bookshelf__BookGreen",
+     "junior_bookshelf__BookOrange",
+     "junior_bookshelf__BookPink",
+     "junior_bookshelf__Cream",
+     "junior_bookshelf__Wood",
+     "junior_bookshelf__WoodLight"
+    ]
+   },
+   {
+    "key": "junior.wardrobe",
+    "slot": "wardrobe",
+    "source": "new",
+    "file": "junior_wardrobe.glb",
+    "position_blender_zup": [
+     1.82,
+     1.695,
+     0.02
+    ],
+    "position_gltf_yup": [
+     1.82,
+     0.02,
+     -1.695
+    ],
+    "rotation_y_deg": 180,
+    "rotation_euler_gltf_rad": [
+     0,
+     3.1416,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 716,
+    "bbox_size_gltf_m": [
+     0.8,
+     1.85,
+     0.601
+    ],
+    "meshes": [
+     "junior_wardrobe__Cream",
+     "junior_wardrobe__Wood",
+     "junior_wardrobe__WoodLight",
+     "junior_wardrobe__WoodWarm"
+    ]
+   },
+   {
+    "key": "junior.poster_1",
+    "slot": "wall_art_1",
+    "source": "new",
+    "file": "junior_poster_1.glb",
+    "position_blender_zup": [
+     -1.986,
+     -1.45,
+     1.25
+    ],
+    "position_gltf_yup": [
+     -1.986,
+     1.25,
+     1.45
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 94,
+    "bbox_size_gltf_m": [
+     0.42,
+     0.56,
+     0.028
+    ],
+    "meshes": [
+     "junior_poster_1__Paper",
+     "junior_poster_1__Pin",
+     "junior_poster_1__poster_1"
+    ]
+   },
+   {
+    "key": "junior.poster_2",
+    "slot": "wall_art_2",
+    "source": "new",
+    "file": "junior_poster_2.glb",
+    "position_blender_zup": [
+     -1.986,
+     -0.85,
+     1.32
+    ],
+    "position_gltf_yup": [
+     -1.986,
+     1.32,
+     0.85
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 94,
+    "bbox_size_gltf_m": [
+     0.34,
+     0.46,
+     0.028
+    ],
+    "meshes": [
+     "junior_poster_2__Paper",
+     "junior_poster_2__Pin",
+     "junior_poster_2__poster_2"
+    ]
+   }
+  ],
+  "senior": [
+   {
+    "key": "senior.standing_desk",
+    "slot": "desk",
+    "source": "new",
+    "file": "senior_standing_desk.glb",
+    "position_blender_zup": [
+     -1.645,
+     0.55,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -1.645,
+     0.02,
+     -0.55
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 932,
+    "bbox_size_gltf_m": [
+     1.6,
+     0.72,
+     0.7
+    ],
+    "meshes": [
+     "senior_standing_desk__Metal",
+     "senior_standing_desk__SlateLav",
+     "senior_standing_desk__SlateLavDark",
+     "senior_standing_desk__Wood"
+    ]
+   },
+   {
+    "key": "senior.dual_monitor",
+    "slot": "display",
+    "source": "new",
+    "file": "senior_dual_monitor.glb",
+    "position_blender_zup": [
+     -1.83,
+     0.55,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.83,
+     0.74,
+     -0.55
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 632,
+    "bbox_size_gltf_m": [
+     1.129,
+     0.525,
+     0.262
+    ],
+    "meshes": [
+     "senior_dual_monitor__Metal",
+     "senior_dual_monitor__ScreenTex",
+     "senior_dual_monitor__SlateLavDark"
+    ]
+   },
+   {
+    "key": "senior.keyboard_mat",
+    "slot": "keyboard",
+    "source": "new",
+    "file": "senior_keyboard_mat.glb",
+    "position_blender_zup": [
+     -1.48,
+     0.55,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.48,
+     0.74,
+     -0.55
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 384,
+    "bbox_size_gltf_m": [
+     0.85,
+     0.036,
+     0.33
+    ],
+    "meshes": [
+     "senior_keyboard_mat__DarkGrey",
+     "senior_keyboard_mat__Metal",
+     "senior_keyboard_mat__SlateLavDark"
+    ]
+   },
+   {
+    "key": "senior.plant_small",
+    "slot": "desk_plant",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/plant_small.glb",
+    "position_blender_zup": [
+     -1.45,
+     1.2,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.45,
+     0.74,
+     -1.2
+    ],
+    "rotation_y_deg": 0,
+    "rotation_euler_gltf_rad": [
+     0,
+     0.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "senior.smart_speaker",
+    "slot": "gadget",
+    "source": "new",
+    "file": "senior_smart_speaker.glb",
+    "position_blender_zup": [
+     -1.86,
+     -0.08,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.86,
+     0.74,
+     0.08
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 312,
+    "bbox_size_gltf_m": [
+     0.1,
+     0.173,
+     0.1
+    ],
+    "meshes": [
+     "senior_smart_speaker__DarkGrey",
+     "senior_smart_speaker__SpeakerRing"
+    ]
+   },
+   {
+    "key": "senior.drawer_pedestal",
+    "slot": "under_desk",
+    "source": "new",
+    "file": "drawer_pedestal.glb",
+    "position_blender_zup": [
+     -1.72,
+     0.94,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -1.72,
+     0.02,
+     -0.94
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 516,
+    "bbox_size_gltf_m": [
+     0.38,
+     0.599,
+     0.508
+    ],
+    "meshes": [
+     "drawer_pedestal__Cream",
+     "drawer_pedestal__DarkGrey",
+     "drawer_pedestal__SlateLav",
+     "drawer_pedestal__SlateLavDark"
+    ]
+   },
+   {
+    "key": "senior.ergo_chair",
+    "slot": "seat",
+    "source": "reuse (main public/models/items/)",
+    "file": "items/ergo_chair.glb",
+    "position_blender_zup": [
+     -0.95,
+     0.55,
+     0.026
+    ],
+    "position_gltf_yup": [
+     -0.95,
+     0.026,
+     -0.55
+    ],
+    "rotation_y_deg": 90,
+    "rotation_euler_gltf_rad": [
+     0,
+     1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ]
+   },
+   {
+    "key": "senior.sideboard",
+    "slot": "cabinet",
+    "source": "new",
+    "file": "senior_sideboard.glb",
+    "position_blender_zup": [
+     -1.77,
+     -1.2,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -1.77,
+     0.02,
+     1.2
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 556,
+    "bbox_size_gltf_m": [
+     1.0,
+     0.72,
+     0.45
+    ],
+    "meshes": [
+     "senior_sideboard__Cream",
+     "senior_sideboard__DarkGrey",
+     "senior_sideboard__Wood",
+     "senior_sideboard__WoodLight"
+    ]
+   },
+   {
+    "key": "senior.espresso_machine",
+    "slot": "cabinet_top",
+    "source": "new",
+    "file": "senior_espresso_machine.glb",
+    "position_blender_zup": [
+     -1.8,
+     -1.42,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.8,
+     0.74,
+     1.42
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 448,
+    "bbox_size_gltf_m": [
+     0.24,
+     0.32,
+     0.37
+    ],
+    "meshes": [
+     "senior_espresso_machine__Cream",
+     "senior_espresso_machine__DarkGrey",
+     "senior_espresso_machine__Dial",
+     "senior_espresso_machine__LCD",
+     "senior_espresso_machine__Metal",
+     "senior_espresso_machine__SlateLavDark"
+    ]
+   },
+   {
+    "key": "senior.coffee_grinder",
+    "slot": "cabinet_top_2",
+    "source": "new",
+    "file": "senior_coffee_grinder.glb",
+    "position_blender_zup": [
+     -1.82,
+     -1.03,
+     0.74
+    ],
+    "position_gltf_yup": [
+     -1.82,
+     0.74,
+     1.03
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 308,
+    "bbox_size_gltf_m": [
+     0.121,
+     0.3,
+     0.147
+    ],
+    "meshes": [
+     "senior_coffee_grinder__DarkGrey",
+     "senior_coffee_grinder__Glass",
+     "senior_coffee_grinder__SlateLavDark"
+    ]
+   },
+   {
+    "key": "senior.bookshelf",
+    "slot": "shelf",
+    "source": "new",
+    "file": "senior_bookshelf.glb",
+    "position_blender_zup": [
+     1.56,
+     1.835,
+     0.02
+    ],
+    "position_gltf_yup": [
+     1.56,
+     0.02,
+     -1.835
+    ],
+    "rotation_y_deg": 180,
+    "rotation_euler_gltf_rad": [
+     0,
+     3.1416,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 2672,
+    "bbox_size_gltf_m": [
+     0.8,
+     1.75,
+     0.32
+    ],
+    "meshes": [
+     "senior_bookshelf__BookBlue",
+     "senior_bookshelf__BookGreen",
+     "senior_bookshelf__BookOrange",
+     "senior_bookshelf__BookPink",
+     "senior_bookshelf__Ceramic",
+     "senior_bookshelf__Cream",
+     "senior_bookshelf__Leaf",
+     "senior_bookshelf__Pot",
+     "senior_bookshelf__WoodLight",
+     "senior_bookshelf__WoodWarm"
+    ]
+   },
+   {
+    "key": "senior.monstera",
+    "slot": "decor_1",
+    "source": "new",
+    "file": "senior_monstera.glb",
+    "position_blender_zup": [
+     1.65,
+     1.0,
+     0.02
+    ],
+    "position_gltf_yup": [
+     1.65,
+     0.02,
+     -1.0
+    ],
+    "rotation_y_deg": 0,
+    "rotation_euler_gltf_rad": [
+     0,
+     0.0,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 1312,
+    "bbox_size_gltf_m": [
+     0.838,
+     1.394,
+     0.848
+    ],
+    "meshes": [
+     "senior_monstera__Leaf",
+     "senior_monstera__LeafDark",
+     "senior_monstera__Pot",
+     "senior_monstera__Soil"
+    ]
+   },
+   {
+    "key": "senior.armchair",
+    "slot": "lounge",
+    "source": "new",
+    "file": "senior_armchair.glb",
+    "position_blender_zup": [
+     1.35,
+     -0.6,
+     0.02
+    ],
+    "position_gltf_yup": [
+     1.35,
+     0.02,
+     0.6
+    ],
+    "rotation_y_deg": 120,
+    "rotation_euler_gltf_rad": [
+     0,
+     2.0944,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 1536,
+    "bbox_size_gltf_m": [
+     0.79,
+     0.937,
+     0.757
+    ],
+    "meshes": [
+     "senior_armchair__Cushion",
+     "senior_armchair__PillowTeal",
+     "senior_armchair__Wood"
+    ]
+   },
+   {
+    "key": "senior.rug",
+    "slot": "rug",
+    "source": "new",
+    "file": "senior_rug.glb",
+    "position_blender_zup": [
+     -0.4,
+     0.45,
+     0.02
+    ],
+    "position_gltf_yup": [
+     -0.4,
+     0.02,
+     -0.45
+    ],
+    "rotation_y_deg": 90,
+    "rotation_euler_gltf_rad": [
+     0,
+     1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 56,
+    "bbox_size_gltf_m": [
+     2.0,
+     0.006,
+     1.3
+    ],
+    "meshes": [
+     "senior_rug__Rug",
+     "senior_rug__RugInner"
+    ]
+   },
+   {
+    "key": "senior.frame_1",
+    "slot": "wall_art_1",
+    "source": "new",
+    "file": "senior_frame_1.glb",
+    "position_blender_zup": [
+     -1.986,
+     -1.2,
+     1.3
+    ],
+    "position_gltf_yup": [
+     -1.986,
+     1.3,
+     1.2
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 110,
+    "bbox_size_gltf_m": [
+     0.4,
+     0.52,
+     0.027
+    ],
+    "meshes": [
+     "senior_frame_1__WoodWarm",
+     "senior_frame_1__frame_1"
+    ]
+   },
+   {
+    "key": "senior.frame_2",
+    "slot": "wall_art_2",
+    "source": "new",
+    "file": "senior_frame_2.glb",
+    "position_blender_zup": [
+     -1.986,
+     0.55,
+     1.45
+    ],
+    "position_gltf_yup": [
+     -1.986,
+     1.45,
+     -0.55
+    ],
+    "rotation_y_deg": -90,
+    "rotation_euler_gltf_rad": [
+     0,
+     -1.5708,
+     0
+    ],
+    "scale": [
+     1,
+     1,
+     1
+    ],
+    "triangles": 110,
+    "bbox_size_gltf_m": [
+     0.36,
+     0.44,
+     0.027
+    ],
+    "meshes": [
+     "senior_frame_2__WoodWarm",
+     "senior_frame_2__frame_2"
+    ]
+   }
+  ]
+ },
+ "clip_check": {
+  "junior": {
+   "character_height_m": 1.748,
+   "character_scale": 1.4,
+   "overlaps": [
+    [
+     "junior.desk",
+     "shell",
+     296
+    ]
+   ]
+  },
+  "senior": {
+   "character_height_m": 1.748,
+   "character_scale": 1.4,
+   "overlaps": []
+  }
+ }
+}

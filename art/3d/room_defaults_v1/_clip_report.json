@@ -1,0 +1,18 @@
+{
+ "junior": {
+  "character_height_m": 1.748,
+  "character_scale": 1.4,
+  "overlaps": [
+   [
+    "junior.desk",
+    "shell",
+    296
+   ]
+  ]
+ },
+ "senior": {
+  "character_height_m": 1.748,
+  "character_scale": 1.4,
+  "overlaps": []
+ }
+}

@@ -1,0 +1,372 @@
+[
+ {
+  "key": "drawer_pedestal",
+  "file": "drawer_pedestal.glb",
+  "triangles": 516,
+  "bbox_size_gltf_m": [
+   0.38,
+   0.599,
+   0.508
+  ],
+  "meshes": [
+   "drawer_pedestal__Cream",
+   "drawer_pedestal__DarkGrey",
+   "drawer_pedestal__SlateLav",
+   "drawer_pedestal__SlateLavDark"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "junior_laptop_stand",
+  "file": "junior_laptop_stand.glb",
+  "triangles": 442,
+  "bbox_size_gltf_m": [
+   0.32,
+   0.313,
+   0.277
+  ],
+  "meshes": [
+   "junior_laptop_stand__Cream",
+   "junior_laptop_stand__DarkGrey",
+   "junior_laptop_stand__Metal",
+   "junior_laptop_stand__ScreenTex"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "junior_keyboard_mat",
+  "file": "junior_keyboard_mat.glb",
+  "triangles": 276,
+  "bbox_size_gltf_m": [
+   0.8,
+   0.018,
+   0.3
+  ],
+  "meshes": [
+   "junior_keyboard_mat__DarkGrey",
+   "junior_keyboard_mat__ErgoLavDark",
+   "junior_keyboard_mat__ErgoLavender",
+   "junior_keyboard_mat__KeyGlow",
+   "junior_keyboard_mat__SlateLavDark"
+  ],
+  "materials": 5
+ },
+ {
+  "key": "senior_keyboard_mat",
+  "file": "senior_keyboard_mat.glb",
+  "triangles": 384,
+  "bbox_size_gltf_m": [
+   0.85,
+   0.036,
+   0.33
+  ],
+  "meshes": [
+   "senior_keyboard_mat__DarkGrey",
+   "senior_keyboard_mat__Metal",
+   "senior_keyboard_mat__SlateLavDark"
+  ],
+  "materials": 3
+ },
+ {
+  "key": "junior_mouse",
+  "file": "junior_mouse.glb",
+  "triangles": 180,
+  "bbox_size_gltf_m": [
+   0.061,
+   0.037,
+   0.106
+  ],
+  "meshes": [
+   "junior_mouse__ErgoLavender",
+   "junior_mouse__SlateLavDark"
+  ],
+  "materials": 2
+ },
+ {
+  "key": "junior_office_chair",
+  "file": "junior_office_chair.glb",
+  "triangles": 1132,
+  "bbox_size_gltf_m": [
+   0.636,
+   1.054,
+   0.635
+  ],
+  "meshes": [
+   "junior_office_chair__DarkGrey",
+   "junior_office_chair__ErgoLavDark",
+   "junior_office_chair__ErgoLavender",
+   "junior_office_chair__Metal"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "junior_bookshelf",
+  "file": "junior_bookshelf.glb",
+  "triangles": 1988,
+  "bbox_size_gltf_m": [
+   0.7,
+   1.2,
+   0.3
+  ],
+  "meshes": [
+   "junior_bookshelf__BookBlue",
+   "junior_bookshelf__BookGreen",
+   "junior_bookshelf__BookOrange",
+   "junior_bookshelf__BookPink",
+   "junior_bookshelf__Cream",
+   "junior_bookshelf__Wood",
+   "junior_bookshelf__WoodLight"
+  ],
+  "materials": 7
+ },
+ {
+  "key": "junior_wardrobe",
+  "file": "junior_wardrobe.glb",
+  "triangles": 716,
+  "bbox_size_gltf_m": [
+   0.8,
+   1.85,
+   0.601
+  ],
+  "meshes": [
+   "junior_wardrobe__Cream",
+   "junior_wardrobe__Wood",
+   "junior_wardrobe__WoodLight",
+   "junior_wardrobe__WoodWarm"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "junior_poster_1",
+  "file": "junior_poster_1.glb",
+  "triangles": 94,
+  "bbox_size_gltf_m": [
+   0.42,
+   0.56,
+   0.028
+  ],
+  "meshes": [
+   "junior_poster_1__Paper",
+   "junior_poster_1__Pin",
+   "junior_poster_1__poster_1"
+  ],
+  "materials": 3
+ },
+ {
+  "key": "junior_poster_2",
+  "file": "junior_poster_2.glb",
+  "triangles": 94,
+  "bbox_size_gltf_m": [
+   0.34,
+   0.46,
+   0.028
+  ],
+  "meshes": [
+   "junior_poster_2__Paper",
+   "junior_poster_2__Pin",
+   "junior_poster_2__poster_2"
+  ],
+  "materials": 3
+ },
+ {
+  "key": "senior_frame_1",
+  "file": "senior_frame_1.glb",
+  "triangles": 110,
+  "bbox_size_gltf_m": [
+   0.4,
+   0.52,
+   0.027
+  ],
+  "meshes": [
+   "senior_frame_1__WoodWarm",
+   "senior_frame_1__frame_1"
+  ],
+  "materials": 2
+ },
+ {
+  "key": "senior_frame_2",
+  "file": "senior_frame_2.glb",
+  "triangles": 110,
+  "bbox_size_gltf_m": [
+   0.36,
+   0.44,
+   0.027
+  ],
+  "meshes": [
+   "senior_frame_2__WoodWarm",
+   "senior_frame_2__frame_2"
+  ],
+  "materials": 2
+ },
+ {
+  "key": "senior_standing_desk",
+  "file": "senior_standing_desk.glb",
+  "triangles": 932,
+  "bbox_size_gltf_m": [
+   1.6,
+   0.72,
+   0.7
+  ],
+  "meshes": [
+   "senior_standing_desk__Metal",
+   "senior_standing_desk__SlateLav",
+   "senior_standing_desk__SlateLavDark",
+   "senior_standing_desk__Wood"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "senior_dual_monitor",
+  "file": "senior_dual_monitor.glb",
+  "triangles": 632,
+  "bbox_size_gltf_m": [
+   1.129,
+   0.525,
+   0.262
+  ],
+  "meshes": [
+   "senior_dual_monitor__Metal",
+   "senior_dual_monitor__ScreenTex",
+   "senior_dual_monitor__SlateLavDark"
+  ],
+  "materials": 3
+ },
+ {
+  "key": "senior_smart_speaker",
+  "file": "senior_smart_speaker.glb",
+  "triangles": 312,
+  "bbox_size_gltf_m": [
+   0.1,
+   0.173,
+   0.1
+  ],
+  "meshes": [
+   "senior_smart_speaker__DarkGrey",
+   "senior_smart_speaker__SpeakerRing"
+  ],
+  "materials": 2
+ },
+ {
+  "key": "senior_sideboard",
+  "file": "senior_sideboard.glb",
+  "triangles": 556,
+  "bbox_size_gltf_m": [
+   1.0,
+   0.72,
+   0.45
+  ],
+  "meshes": [
+   "senior_sideboard__Cream",
+   "senior_sideboard__DarkGrey",
+   "senior_sideboard__Wood",
+   "senior_sideboard__WoodLight"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "senior_espresso_machine",
+  "file": "senior_espresso_machine.glb",
+  "triangles": 448,
+  "bbox_size_gltf_m": [
+   0.24,
+   0.32,
+   0.37
+  ],
+  "meshes": [
+   "senior_espresso_machine__Cream",
+   "senior_espresso_machine__DarkGrey",
+   "senior_espresso_machine__Dial",
+   "senior_espresso_machine__LCD",
+   "senior_espresso_machine__Metal",
+   "senior_espresso_machine__SlateLavDark"
+  ],
+  "materials": 6
+ },
+ {
+  "key": "senior_coffee_grinder",
+  "file": "senior_coffee_grinder.glb",
+  "triangles": 308,
+  "bbox_size_gltf_m": [
+   0.121,
+   0.3,
+   0.147
+  ],
+  "meshes": [
+   "senior_coffee_grinder__DarkGrey",
+   "senior_coffee_grinder__Glass",
+   "senior_coffee_grinder__SlateLavDark"
+  ],
+  "materials": 3
+ },
+ {
+  "key": "senior_bookshelf",
+  "file": "senior_bookshelf.glb",
+  "triangles": 2672,
+  "bbox_size_gltf_m": [
+   0.8,
+   1.75,
+   0.32
+  ],
+  "meshes": [
+   "senior_bookshelf__BookBlue",
+   "senior_bookshelf__BookGreen",
+   "senior_bookshelf__BookOrange",
+   "senior_bookshelf__BookPink",
+   "senior_bookshelf__Ceramic",
+   "senior_bookshelf__Cream",
+   "senior_bookshelf__Leaf",
+   "senior_bookshelf__Pot",
+   "senior_bookshelf__WoodLight",
+   "senior_bookshelf__WoodWarm"
+  ],
+  "materials": 10
+ },
+ {
+  "key": "senior_armchair",
+  "file": "senior_armchair.glb",
+  "triangles": 1536,
+  "bbox_size_gltf_m": [
+   0.79,
+   0.937,
+   0.757
+  ],
+  "meshes": [
+   "senior_armchair__Cushion",
+   "senior_armchair__PillowTeal",
+   "senior_armchair__Wood"
+  ],
+  "materials": 3
+ },
+ {
+  "key": "senior_monstera",
+  "file": "senior_monstera.glb",
+  "triangles": 1312,
+  "bbox_size_gltf_m": [
+   0.838,
+   1.394,
+   0.848
+  ],
+  "meshes": [
+   "senior_monstera__Leaf",
+   "senior_monstera__LeafDark",
+   "senior_monstera__Pot",
+   "senior_monstera__Soil"
+  ],
+  "materials": 4
+ },
+ {
+  "key": "senior_rug",
+  "file": "senior_rug.glb",
+  "triangles": 56,
+  "bbox_size_gltf_m": [
+   2.0,
+   0.006,
+   1.3
+  ],
+  "meshes": [
+   "senior_rug__Rug",
+   "senior_rug__RugInner"
+  ],
+  "materials": 2
+ }
+]
