@@ -1,6 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import { SIM_CATALOG } from "@/game/career/content";
 import { applyDayStarted, applyStudy, defaultCareer } from "@/game/career/actions";
 import { grantedXp } from "@/game/knowledge/logic";
@@ -18,7 +16,6 @@ import {
   storeItem,
 } from "@/game/life/furniture";
 import { openDiary, syncLifeSurface } from "@/game/life/events";
-import { notSold, replacedItemIds, storeDrawEntries } from "@/game/life/placement";
 import { buyShopItem } from "@/game/life/store-buy";
 import { migrateSave } from "@/game/storage/migrate";
 import { startTask } from "@/game/task-run/apply";
@@ -367,34 +364,3 @@ describe("store catalog", () => {
   });
 });
 
-describe("store placement", () => {
-  it("replaces the listed sprites and shows items in all rooms", () => {
-    // Note: NotSold requirement removed in v19 (removed notSold restrictions)
-    // Now all items can appear in all rooms
-    const owned = ["plant_big", "fan_standing", "aircon", "ergo_chair", "monitor2", "mattress"];
-    expect(notSold("fan_standing", "student")).toBe(false);
-    expect(notSold("mattress", "senior")).toBe(false);
-    expect(replacedItemIds("student", owned)).toEqual(new Set(["student.floor_cushion", "student.mattress"]));
-    const juniorBed = storeDrawEntries("junior", owned, 153).find((entry) => entry.key === "store:junior:mattress");
-    expect(juniorBed?.bitmap).toBe("/ui/m5/item_mattress_junior.png");
-    const monitor = storeDrawEntries("junior", owned, 153).find((entry) => entry.key === "store:junior:monitor2");
-    expect(monitor).toMatchObject({ x: 255 - 22, y: 97 - 32, sortBaseline: 153 });
-    expect(storeDrawEntries("senior", owned, null).some((entry) => entry.bitmap?.includes("item_mattress.png"))).toBe(false);
-    expect(storeDrawEntries("student", owned, null).some((entry) => entry.bitmap === "/ui/m5/item_mattress.png")).toBe(false);
-    const shadow = storeDrawEntries("student", ["plant_big"], null).find((entry) => entry.key.endsWith(":shadow"));
-    expect(shadow).toMatchObject({
-      bitmap: "/ui/m5/item_plant_shadow.png",
-      x: Math.round(338 - Math.floor(30 / 2)),
-      y: Math.round(132 - Math.floor(8 / 2) - 1),
-    });
-    for (const file of [
-      "item_plant_shadow.png",
-      "item_fan_shadow.png",
-      "item_ergo_chair_shadow.png",
-      "item_mattress_student_shadow.png",
-      "item_mattress_junior_shadow.png",
-    ]) {
-      expect(existsSync(join(process.cwd(), "public/ui/m5", file))).toBe(true);
-    }
-  });
-});

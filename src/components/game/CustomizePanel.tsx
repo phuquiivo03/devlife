@@ -2,8 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { getCatalog, getRoom } from "@/game/content";
+import type { Category } from "@/game/types";
+import { shopIconPath } from "@/game/life/assets";
+import { STORE_ITEMS } from "@/game/life/furniture";
 import { loadAtlas, type LoadedAtlas } from "@/game/render/atlas";
 import { useGameStore } from "@/game/state/store";
+import { STORE_SLOT_PREFIX } from "@/game3d/slot-models";
 import { ItemThumb } from "./ItemThumb";
 import { Switch } from "@/components/ui/switch";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,6 +17,7 @@ import { t } from "@/lib/locale";
 export function CustomizePanel() {
   const stage = useGameStore((s) => s.stage);
   const loadout = useGameStore((s) => s.loadouts[stage]);
+  const owned = useGameStore((s) => s.career.shop?.owned ?? []);
   const selectedSlot = useGameStore((s) => s.selectedSlot);
   const setSlotItem = useGameStore((s) => s.setSlotItem);
   const selectSlot = useGameStore((s) => s.selectSlot);
@@ -35,9 +40,18 @@ export function CustomizePanel() {
       <ScrollArea className="min-h-0 flex-1 pr-2">
         <div className="space-y-3">
           {slots.map((slot) => {
-            const current = loadout[slot.id] ?? slot.default;
+            // Explicit null means "off" — only an untouched slot falls back
+            // to the room default (3D renders the same distinction).
+            const current = slot.id in loadout ? loadout[slot.id] : slot.default;
             const variants = items.filter((i) =>
               slot.accepts.includes(i.category),
+            );
+            // Owned store furniture that fits this slot joins the variants.
+            const storeVariants = STORE_ITEMS.filter(
+              (s) =>
+                s.category != null &&
+                slot.accepts.includes(s.category as Category) &&
+                owned.includes(s.id),
             );
             const enabled = current !== null;
             const slotLabel = t(slot.label);
@@ -91,6 +105,20 @@ export function CustomizePanel() {
                       onClick={() => setSlotItem(slot.id, v.id)}
                     />
                   ))}
+                  {storeVariants.map((s) => {
+                    const id = `${STORE_SLOT_PREFIX}${s.id}`;
+                    return (
+                      <ItemThumb
+                        key={id}
+                        atlas={atlas}
+                        imageUrl={shopIconPath(s.icon)}
+                        label={s.label}
+                        badge={s.stage?.[0]?.toUpperCase()}
+                        selected={enabled && current === id}
+                        onClick={() => setSlotItem(slot.id, id)}
+                      />
+                    );
+                  })}
                 </div>
               </div>
             );

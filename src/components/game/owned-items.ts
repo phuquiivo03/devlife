@@ -1,18 +1,18 @@
 /**
  * Logic for the "Đã sở hữu" (Owned) tab:
  * - List all owned store items + default room furniture
- * - Store items are categorized as:
- *   1. Replacement items (replaces != null): map to catalog item
- *   2. Overlay items (replaces == null): always active if placed in current stage
- * - Determine active state from loadouts for replacement items, from placement for overlays
+ * - Store furniture is placed into room slots by its store.json `category`
+ *   (loadout value `store:<id>`); defaults resolve through CATALOG_SHOP_ICONS
+ * - Active state reads the loadout with the same convention as the 3D room
+ *   (`slot.id in loadout ? loadout[slot.id] : slot.default`)
  */
 
 import type { StageId } from "@/game/config";
 import type { CareerState } from "@/game/career/types";
-import type { Loadout, Item, Category } from "@/game/types";
+import type { Category, Loadout } from "@/game/types";
 import { getCatalog, getRoom } from "@/game/content";
-import { shopOf, storeItem, type StoreItem } from "@/game/life/furniture";
-import { placementRows } from "@/game/life/placement";
+import { shopOf, storeItem } from "@/game/life/furniture";
+import { STORE_SLOT_PREFIX } from "@/game3d/slot-models";
 
 export type OwnedItemStatus = "active" | "inactive";
 
@@ -47,20 +47,18 @@ export type OwnedItemModel = {
   label: string;
   icon: string;
   stage?: StageId;
+  /** store.json category (store items) — drives slot placement. */
+  category?: string;
   status: OwnedItemStatus;
-  /** Slot ID where this item is active, or null */
+  /** Slot ID where this item is active, or null. */
   activeSlot: string | null;
-  /** True if this is an overlay item (replaces null), can be toggled on/off */
-  isOverlay: boolean;
-  /** True if this overlay is hidden in current room */
-  isHidden?: boolean;
-  /** True if current room has no slot accepting this item's category */
+  /** True if the current room has no slot accepting this item. */
   noSlotInRoom?: boolean;
 };
 
 /**
- * Build owned item list for the current stage.
- * Includes purchased store items + default room furniture from all stages.
+ * Build the owned item list for the current stage: purchased store items
+ * (usable by category) + default room furniture from all stages.
  */
 export function getOwnedItems(
   career: CareerState,
@@ -74,72 +72,33 @@ export function getOwnedItems(
   const result: OwnedItemModel[] = [];
   const catalogItemsSeen = new Set<string>();
 
-  // Add purchased store items (all usable in current room)
+  // Purchased store items: placed into slots by their category.
   for (const storeId of owned) {
     const item = storeItem(storeId);
     if (!item) continue;
-
     // Skip room upgrades (room_junior, room_senior)
     if (storeId === "room_junior" || storeId === "room_senior") continue;
 
-    // Find all placement rows for this item across all rooms
-    const placementRow = placementRows().find(
-      (row) => row.item === storeId && row.room === currentStage
-    );
-
-    // Determine if this is a replacement item (maps to catalog) or overlay item
-    const catalogId = placementRow?.replaces || "";
-    const isOverlay = !catalogId && !!placementRow;
-
-    // Determine status
-    let status: OwnedItemStatus;
-    let activeSlot: string | null = null;
-    let noSlotInRoom = false;
-
-    if (isOverlay) {
-      // Overlay items: check if they have placement in current room
-      if (placementRow) {
-        // Has placement - always "active" (visible unless explicitly hidden)
-        status = "active";
-      } else {
-        // No placement in current room - need to create default placement
-        status = "active";
-      }
-    } else if (catalogId) {
-      // Replacement item: check loadout
-      const catalogItem = catalog.itemsById.get(catalogId);
-      if (!catalogItem) continue;
-
-      const acceptingSlots = findAcceptingSlots(catalogId, currentStage);
-      if (acceptingSlots.length === 0) {
-        // No slot accepts this item in current room
-        noSlotInRoom = true;
-        status = "inactive";
-      } else {
-        activeSlot = findActiveSlot(catalogId, room.slots, loadout);
-        status = activeSlot ? "active" : "inactive";
-      }
-
-      catalogItemsSeen.add(catalogId);
-    } else {
-      // No placement and no catalog mapping - shouldn't happen
-      status = "inactive";
-    }
+    const acceptingSlots = item.category
+      ? findAcceptingSlotsByCategory(item.category, currentStage)
+      : [];
+    const activeSlot = findStoreActiveSlot(storeId, room.slots, loadout);
+    const noSlotInRoom = item.category == null || acceptingSlots.length === 0;
 
     result.push({
       storeId,
-      catalogId,
+      catalogId: "",
       label: item.label,
-      icon: item.icon, // Store item uses m5 icon
+      icon: item.icon, // 3D shop icon
       stage: item.stage,
-      status,
+      category: item.category,
+      status: activeSlot ? "active" : "inactive",
       activeSlot,
-      isOverlay,
       noSlotInRoom,
     });
   }
 
-  // Add default furniture from ALL room stages (not just current)
+  // Default furniture from ALL room stages (not just current).
   const allStages: StageId[] = ["student", "junior", "senior"];
   for (const stageId of allStages) {
     const stageRoom = getRoom(stageId);
@@ -159,7 +118,9 @@ export function getOwnedItems(
       const noSlotInRoom = acceptingSlots.length === 0;
 
       // Check if this is active in current room
-      const activeSlot = noSlotInRoom ? null : findActiveSlot(defaultId, room.slots, loadout);
+      const activeSlot = noSlotInRoom
+        ? null
+        : findActiveSlot(defaultId, room.slots, loadout);
       const status = activeSlot ? "active" : "inactive";
 
       result.push({
@@ -170,7 +131,6 @@ export function getOwnedItems(
         stage: catalogItem.stage,
         status,
         activeSlot,
-        isOverlay: false,
         noSlotInRoom,
       });
 
@@ -181,8 +141,22 @@ export function getOwnedItems(
   return result;
 }
 
+/** Slot whose loadout entry is this store item (`store:<id>`), if any. */
+function findStoreActiveSlot(
+  storeId: string,
+  slots: readonly { id: string }[],
+  loadout: Loadout,
+): string | null {
+  const wanted = `${STORE_SLOT_PREFIX}${storeId}`;
+  for (const slot of slots) {
+    if (loadout[slot.id] === wanted) return slot.id;
+  }
+  return null;
+}
+
 /**
- * Find which slot (if any) has this catalog item active.
+ * Find which slot (if any) has this catalog item active. An untouched slot
+ * falls back to the room default; an explicit `null` entry is "off".
  */
 function findActiveSlot(
   catalogId: string,
@@ -190,7 +164,7 @@ function findActiveSlot(
   loadout: Loadout,
 ): string | null {
   for (const slot of slots) {
-    const itemId = loadout[slot.id] ?? slot.default;
+    const itemId = slot.id in loadout ? loadout[slot.id] : slot.default;
     if (itemId === catalogId) {
       return slot.id;
     }
@@ -199,17 +173,27 @@ function findActiveSlot(
 }
 
 /**
- * Find all slots that accept this item's category.
+ * Find all slots of the current room whose `accepts` contains the category.
+ */
+export function findAcceptingSlotsByCategory(
+  category: string,
+  stage: StageId,
+): Array<{ id: string; accepts: readonly string[]; required?: boolean }> {
+  const room = getRoom(stage);
+  return room.slots.filter((slot) =>
+    slot.accepts.includes(category as Category),
+  );
+}
+
+/**
+ * Find all slots that accept this catalog item (by its own category).
  */
 export function findAcceptingSlots(
   catalogId: string,
   stage: StageId,
-): Array<{ id: string; accepts: Category[]; required?: boolean }> {
+): Array<{ id: string; accepts: readonly string[]; required?: boolean }> {
   const catalog = getCatalog();
   const item = catalog.itemsById.get(catalogId);
   if (!item) return [];
-
-  const room = getRoom(stage);
-  return room.slots.filter((slot) => slot.accepts.includes(item.category));
+  return findAcceptingSlotsByCategory(item.category, stage);
 }
-
