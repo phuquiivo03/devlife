@@ -1,3 +1,5 @@
+<p align="center"><img src="public/branding/logo_transparent.png" alt="devlife" width="420"></p>
+
 # devlife
 
 [![devlife](docs/banner_1280x640.png)](https://deflife.vercel.app)
