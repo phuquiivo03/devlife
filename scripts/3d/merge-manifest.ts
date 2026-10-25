@@ -83,6 +83,33 @@ const WAVE2_ITEMS: Array<Omit<MergedItem, "missing">> = [
   },
 ];
 
+// Wave 3 (store items without a Blender placement pass): provisional spots
+// chosen by hand — bed_vip takes the bed position (bed hides when owned), the
+// floor mat sits beside the bed, the stool fills the mid-right floor.
+const WAVE3_ITEMS: Array<Omit<MergedItem, "missing">> = [
+  {
+    key: "bed_vip",
+    category: "furniture",
+    position: [-0.315, 0.02, -1.445],
+    rotationY: 0,
+    note: "replaces bed (hidden when owned); provisional spot at the bed position",
+  },
+  {
+    key: "bed_floor_mat",
+    category: "furniture",
+    position: [0.55, 0.01, -1.44],
+    rotationY: 0,
+    note: "floor mat beside the bed; provisional spot",
+  },
+  {
+    key: "stool_plastic",
+    category: "furniture",
+    position: [1.15, 0.02, 0.55],
+    rotationY: 0,
+    note: "plastic stool, mid-right floor; provisional spot",
+  },
+];
+
 function toMerged(src: SourceItem, extra?: Partial<MergedItem>): MergedItem {
   return {
     key: src.key,
@@ -115,6 +142,7 @@ items.push(
   }),
 );
 items.push(...WAVE2_ITEMS);
+items.push(...WAVE3_ITEMS);
 
 // stage0: rot3 player_floor (hands on laptop) + table_folding + laptop.
 const stage0Items: MergedItem[] = [];
@@ -127,6 +155,8 @@ for (const row of rot3.stage0 ?? []) {
   if (row.key === "player_floor") continue; // moved to poses
   stage0Items.push(toMerged(row));
 }
+// bed_vip / bed_floor_mat are owned-only but must not float in the floor pose.
+stage0Hide.push("bed_vip", "bed_floor_mat");
 
 const poses = {
   sit: toMerged(rot2ById.get("player")!),

@@ -2,7 +2,7 @@
  * Shell metrics for the pastel redesign (top bar + scene column + sidebar).
  * Documented in docs/design/DESIGN_SYSTEM.md (Layout, Top bar).
  * The old 480px room cap is retired: the scene card fills the left column and
- * SceneCanvas crops the world to the slot. Values stay exported for tests.
+ * the 3D room fills the slot. Values stay exported for tests.
  */
 
 /**

@@ -12,7 +12,7 @@ describe("Owned Items Tab", () => {
     return {
       ...career,
       shop: {
-        owned: ["plant", "fan"],
+        owned: ["plant_big", "fan_standing"],
         pin: null,
       },
     };
@@ -76,7 +76,7 @@ describe("Owned Items Tab", () => {
     const career = {
       ...mockCareer(),
       shop: {
-        owned: ["room_junior", "plant"],
+        owned: ["room_junior", "plant_big"],
         pin: null,
       },
     };
@@ -138,7 +138,7 @@ describe("Owned Items Tab", () => {
     const career = {
       ...mockCareer(),
       shop: {
-        owned: ["plant", "fan", "monitor2"],
+        owned: ["plant_big", "fan_standing", "monitor2"],
         pin: null,
       },
     };
@@ -146,8 +146,8 @@ describe("Owned Items Tab", () => {
     const items = getOwnedItems(career, "junior", loadout);
 
     // All three items should appear in junior room
-    const plant = items.find((i) => i.storeId === "plant");
-    const fan = items.find((i) => i.storeId === "fan");
+    const plant = items.find((i) => i.storeId === "plant_big");
+    const fan = items.find((i) => i.storeId === "fan_standing");
     const monitor2 = items.find((i) => i.storeId === "monitor2");
 
     expect(plant).toBeDefined();
@@ -169,7 +169,7 @@ describe("Owned Items Tab", () => {
     const career = {
       ...mockCareer(),
       shop: {
-        owned: ["plant", "fan", "aircon"],
+        owned: ["plant_big", "fan_standing", "aircon"],
         pin: null,
       },
     };
@@ -177,8 +177,8 @@ describe("Owned Items Tab", () => {
     const items = getOwnedItems(career, "junior", loadout);
 
     // plant, fan should appear as active overlays
-    const plant = items.find((i) => i.storeId === "plant");
-    const fan = items.find((i) => i.storeId === "fan");
+    const plant = items.find((i) => i.storeId === "plant_big");
+    const fan = items.find((i) => i.storeId === "fan_standing");
 
     expect(plant?.status).toBe("active");
     expect(plant?.isOverlay).toBe(true);
@@ -195,7 +195,7 @@ describe("Owned Items Tab", () => {
     const career = {
       ...mockCareer(),
       shop: {
-        owned: ["fan"],
+        owned: ["fan_standing"],
         pin: null,
       },
     };
@@ -203,7 +203,7 @@ describe("Owned Items Tab", () => {
     const items = getOwnedItems(career, "student", loadout);
 
     // fan should be active in student room now (removed notSold restriction)
-    const fan = items.find((i) => i.storeId === "fan");
+    const fan = items.find((i) => i.storeId === "fan_standing");
     expect(fan?.status).toBe("active");
     expect(fan?.isOverlay).toBe(true);
   });
@@ -267,13 +267,13 @@ describe("Owned Items Tab", () => {
     const career = {
       ...mockCareer(),
       shop: {
-        owned: ["plant"],
+        owned: ["plant_big"],
         pin: null,
       },
     };
     const loadout: Loadout = {};
     const items = getOwnedItems(career, "student", loadout);
-    const plant = items.find((i) => i.storeId === "plant");
+    const plant = items.find((i) => i.storeId === "plant_big");
 
     expect(plant?.isOverlay).toBe(true);
     expect(plant?.status).toBe("active");
@@ -306,5 +306,28 @@ describe("Owned Items Tab", () => {
 
     expect(hasJuniorItems).toBe(true);
     expect(hasSeniorItems).toBe(true);
+  });
+
+  it("hides defaults without a 3D model and maps the rest to shop icons", () => {
+    const career = mockCareer();
+    const items = getOwnedItems(career, "student", {});
+    const ids = items.map((i) => i.catalogId);
+
+    // No pixel sprites: defaults without a 3D model are kept out entirely.
+    expect(ids).not.toContain("student.backpack");
+    expect(ids).not.toContain("student.noodle_cup");
+    expect(ids).not.toContain("junior.bookshelf");
+    expect(ids).not.toContain("senior.armchair");
+
+    // Exact-model matches render from the 3D shop icon set.
+    const table = items.find((i) => i.catalogId === "student.folding_table");
+    expect(table?.icon).toBe("shop_table_folding.png");
+    const mattress = items.find((i) => i.catalogId === "student.mattress");
+    expect(mattress?.icon).toBe("shop_mattress.png");
+    const juniorBed = items.find((i) => i.catalogId === "junior.bed");
+    expect(juniorBed?.icon).toBe("shop_bed.png");
+    for (const item of items) {
+      expect(item.icon.startsWith("shop_")).toBe(true);
+    }
   });
 });

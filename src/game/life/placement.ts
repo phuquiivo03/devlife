@@ -25,8 +25,8 @@ const LAYER_OBJECT = 4;
 type Shadow = { file: string; w: number; h: number };
 
 const SHADOW: Record<string, Shadow | undefined> = {
-  plant: { file: "item_plant_shadow.png", w: 30, h: 8 },
-  fan: { file: "item_fan_shadow.png", w: 44, h: 10 },
+  plant_big: { file: "item_plant_shadow.png", w: 30, h: 8 },
+  fan_standing: { file: "item_fan_shadow.png", w: 44, h: 10 },
   ergo_chair: { file: "item_ergo_chair_shadow.png", w: 59, h: 14 },
 };
 

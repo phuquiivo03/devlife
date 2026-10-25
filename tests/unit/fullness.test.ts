@@ -127,6 +127,14 @@ describe("eating", () => {
     expect(eatMeal(noodles.state, "noodles").state).toBe(noodles.state);
   });
 
+  it("bún bò lifts mood by 5 and gà chiên by 10", () => {
+    const start = { ...freshCareer(), players: { ...freshCareer().players, fullness: 10 } };
+    expect(eatMeal(start, "bun_bo").state.players.mood).toBe(start.players.mood + 5);
+    expect(eatMeal(start, "ga_chien").state.players.mood).toBe(start.players.mood + 10);
+    // Plain foods leave mood alone.
+    expect(eatMeal(start, "noodles").state.players.mood).toBe(start.players.mood);
+  });
+
   it("debug setFullness clamps through the normal vitals path", () => {
     const start = freshCareer();
     const hungry = setFullness(start, 20);

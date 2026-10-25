@@ -137,12 +137,12 @@ describe("personality", () => {
     expect(scaleShoppingMood(10, frugal)).toBe(5);
     expect(scaleShoppingMood(-4, frugal)).toBe(-4);
     expect(scaleShoppingMood(4, plain)).toBe(4);
-    const bought = buyShopItem(plain, "plant");
+    const bought = buyShopItem(plain, "plant_big");
     expect(bought.error).toBeNull();
     expect(bought.state.players.mood).toBe(74);
-    const frugalBuy = buyShopItem(frugal, "plant");
+    const frugalBuy = buyShopItem(frugal, "plant_big");
     expect(frugalBuy.state.players.mood).toBe(72);
-    const again = buyShopItem(frugalBuy.state, "fan");
+    const again = buyShopItem(frugalBuy.state, "fan_standing");
     expect(again.state.players.mood).toBeCloseTo(73.2, 5);
     const juniorReady = (state: ReturnType<typeof career>) => ({
       ...state,
@@ -276,7 +276,7 @@ describe("personality", () => {
       level: 4,
       xp: 12,
     });
-    expect(saved.career.shop).toEqual({ owned: ["plant"], pin: "fan" });
+    expect(saved.career.shop).toEqual({ owned: ["plant_big"], pin: "fan_standing" });
     expect(saved.career.life.homeDays).toBe(0);
     expect(saved.career.feed.notices[0]?.cue).toBe("sfx_salary");
 

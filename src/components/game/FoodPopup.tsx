@@ -97,7 +97,7 @@ function FoodCard({
   reason,
   onEat,
 }: {
-  food: { id: FoodId; label: string; health: number };
+  food: { id: FoodId; label: string; health: number; mood: number };
   price: number;
   reason: string | null;
   onEat: (id: FoodId) => void;
@@ -128,6 +128,11 @@ function FoodCard({
         {food.health !== 0 && (
           <p className={cn(foodGridStyles.health, food.health > 0 ? foodGridStyles.positive : foodGridStyles.negative)}>
             {food.health > 0 ? 'sức khỏe +' : 'sức khỏe giảm'}
+          </p>
+        )}
+        {food.mood > 0 && (
+          <p className={cn(foodGridStyles.health, foodGridStyles.positive)} data-testid={`food-mood-${food.id}`}>
+            {`tinh thần +${food.mood}`}
           </p>
         )}
       </div>

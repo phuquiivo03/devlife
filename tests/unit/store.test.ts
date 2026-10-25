@@ -42,17 +42,33 @@ describe("store catalog", () => {
   const start = defaultCareer(1, 8 * 60, "student", SIM_CATALOG);
 
   it("uses the spec prices and a 10% Black Friday rate", () => {
-    expect(storeItem("plant")?.price).toBe(150_000);
-    expect(storeItem("fan")?.price).toBe(400_000);
+    expect(storeItem("plant_big")?.price).toBe(150_000);
+    expect(storeItem("fan_standing")?.price).toBe(400_000);
     expect(storeItem("aircon")?.price).toBe(7_000_000);
     expect(storeItem("ergo_chair")?.price).toBe(3_500_000);
     expect(storeItem("monitor2")?.price).toBe(4_000_000);
     expect(storeItem("mattress")?.price).toBe(5_000_000);
     expect(storeItem("room_junior")?.price).toBe(25_000_000);
     expect(storeItem("room_senior")?.price).toBe(180_000_000);
+    // New 3D furniture rows (prices are provisional).
+    expect(storeItem("plant_small")?.price).toBe(80_000);
+    expect(storeItem("bed_vip")?.price).toBe(9_000_000);
+    expect(storeItem("bed_vip")?.sleep).toBe(15);
+    expect(storeItem("bed_floor_mat")?.price).toBe(150_000);
+    expect(storeItem("fairy_lights")?.daily_mood).toBe(1);
+    expect(storeItem("lamp_desk")?.price).toBe(250_000);
+    expect(storeItem("poster_vn")?.price).toBe(50_000);
+    expect(storeItem("books_stack")?.price).toBe(200_000);
+    expect(storeItem("kettle")?.price).toBe(300_000);
+    expect(storeItem("mug")?.price).toBe(60_000);
+    expect(storeItem("nightstand")?.price).toBe(900_000);
+    expect(storeItem("stool_plastic")?.price).toBe(70_000);
+    expect(storeItem("keyboard")?.price).toBe(1_200_000);
+    // The 2D floor-pose desk set is never sold.
+    expect(storeItem("table_folding")).toBeUndefined();
     expect(blackFriday(1)).toBe(false);
     expect(blackFriday(306)).toBe(true);
-    expect(storePrice(storeItem("plant")!, 306)).toBe(135_000);
+    expect(storePrice(storeItem("plant_big")!, 306)).toBe(135_000);
     expect(storePrice(storeItem("room_junior")!, 306)).toBe(22_500_000);
   });
 
@@ -67,11 +83,11 @@ describe("store catalog", () => {
     expect(buyBlock(senior, "room_senior")).toBeNull();
     expect(buyBlock(rich(start, 4_000_000), "monitor2")).toBeNull();
 
-    const broke = buyShopItem(start, "plant");
+    const broke = buyShopItem(start, "plant_big");
     expect(broke.error).toBeNull();
     expect(broke.state.players.money).toBe(3_000_000 - 150_000);
-    expect(buyShopItem(broke.state, "plant").error).toBe("Đã có.");
-    expect(buyShopItem(broke.state, "plant").state.players.money).toBe(broke.state.players.money);
+    expect(buyShopItem(broke.state, "plant_big").error).toBe("Đã có.");
+    expect(buyShopItem(broke.state, "plant_big").state.players.money).toBe(broke.state.players.money);
     expect(buyShopItem(start, "room_junior").error).not.toBeNull();
     expect(buyShopItem(start, "room_junior").state.players.money).toBe(3_000_000);
   });
@@ -88,7 +104,7 @@ describe("store catalog", () => {
     );
     expect(both.state.players.stage).toBe("senior");
     expect(both.state.shop.owned).toEqual(["room_junior", "room_senior"]);
-    const fan = buyShopItem(rich(both.state, 400_000), "fan");
+    const fan = buyShopItem(rich(both.state, 400_000), "fan_standing");
     const air = buyShopItem(rich(fan.state, 7_000_000), "aircon");
     // v19: furniture applies wherever owned. Room bonuses only apply in their room.
     // Senior room: room_senior(20) + aircon(10) + fan(5) = 35
@@ -100,13 +116,13 @@ describe("store catalog", () => {
   });
 
   it("applies daily mood and health, sleep energy, job energy, and work XP", () => {
-    const planted = buyShopItem(start, "plant").state;
+    const planted = buyShopItem(start, "plant_big").state;
     const day = applyLifeDayStart(planted, 2, "student", { resolveMorning: false });
     expect(day.state.players.mood).toBeCloseTo(74.6, 5);
     const mattress = { ...start, shop: { owned: ["mattress"], pin: null } };
     const healed = applyLifeDayStart(mattress, 2, "student", { resolveMorning: false });
     expect(healed.state.players.health).toBe(71); // mattress applies when owned (v19); the meals-low penalty is gone in v20
-    const rested = { ...planted, shop: { owned: ["fan"], pin: null }, players: { ...planted.players, energy: 10 } };
+    const rested = { ...planted, shop: { owned: ["fan_standing"], pin: null }, players: { ...planted.players, energy: 10 } };
     expect(applySleepRest(rested, 1).state.players.energy).toBe(10 + 12.5 + 5);
 
     const board = applyDayStarted(start, 1, 8 * 60, "student", SIM_CATALOG, { resolveMorning: false });
@@ -143,15 +159,15 @@ describe("store catalog", () => {
 
   it("pins one item, shows the percent, and notices once when it is affordable", () => {
     expect(pinProgressLine(start)).toBe("Chưa ghim món.");
-    const pinned = pinItem(start, "plant");
-    expect(pinProgressLine(pinned)).toBe("Cây xanh 100%.");
-    const short = pinItem(rich(start, 75_000), "plant");
-    expect(pinProgressLine(short)).toBe("Cây xanh 50%.");
+    const pinned = pinItem(start, "plant_big");
+    expect(pinProgressLine(pinned)).toBe("Cây xanh lớn 100%.");
+    const short = pinItem(rich(start, 75_000), "plant_big");
+    expect(pinProgressLine(short)).toBe("Cây xanh lớn 50%.");
     const diary = openDiary(short, SIM_CATALOG);
-    expect(diary.feed.diary?.pin).toBe("Cây xanh 50%.");
+    expect(diary.feed.diary?.pin).toBe("Cây xanh lớn 50%.");
     const noted = syncLifeSurface(pinned, 1, 8 * 60, false);
-    expect(noted.state.feed.notices.some((notice) => notice.id === "pin-ready-plant")).toBe(true);
-    expect(syncLifeSurface(noted.state, 1, 9 * 60, false).state.feed.notices.filter((notice) => notice.id === "pin-ready-plant")).toHaveLength(1);
+    expect(noted.state.feed.notices.some((notice) => notice.id === "pin-ready-plant_big")).toBe(true);
+    expect(syncLifeSurface(noted.state, 1, 9 * 60, false).state.feed.notices.filter((notice) => notice.id === "pin-ready-plant_big")).toHaveLength(1);
     const sale = pinItem({ ...start, players: { ...start.players, game_day: 306, money: 135_000 } }, "aircon");
     expect(pinProgressLine(sale)).toBe("Máy lạnh 2%.");
   });
@@ -227,7 +243,7 @@ describe("store catalog", () => {
     );
     expect(buyer.stage).toBe("junior");
     expect(buyer.career.players.money).toBe(100);
-    expect(buyer.career.shop).toEqual({ owned: ["plant", "room_junior"], pin: "fan" });
+    expect(buyer.career.shop).toEqual({ owned: ["plant_big", "room_junior"], pin: "fan_standing" });
   });
 
   it("keeps a v8 save's money, skills, and progress and defaults notice cues", () => {
@@ -299,7 +315,7 @@ describe("store catalog", () => {
     expect(saved.career.player_study_completions).toEqual([
       { activity_id: "html", skill_id: "frontend", xp_gained: 80, completed_day: 2 },
     ]);
-    expect(saved.career.shop).toEqual({ owned: ["plant"], pin: "fan" });
+    expect(saved.career.shop).toEqual({ owned: ["plant_big"], pin: "fan_standing" });
     expect(saved.career.life.workStreak).toBe(2);
     expect(saved.career.life.paidSalaryKey).toBe("1-1");
     expect(saved.career.feed.pity).toBe(2);
@@ -319,14 +335,44 @@ describe("store catalog", () => {
       },
     ]);
   });
+  it("renames the 3D store ids and drops stale ones (v20→v21)", () => {
+    const saved = migrateSave(
+      {
+        stage: "student",
+        totalMinutes: 480,
+        career: {
+          players: { money: 42 },
+          shop: { owned: ["plant", "fan", "aircon"], pin: "plant" },
+        },
+      },
+      20,
+    );
+    expect(saved.career.shop).toEqual({
+      owned: ["plant_big", "fan_standing", "aircon"],
+      pin: "plant_big",
+    });
+    // Ids outside the new catalog are dropped by normalizeShop.
+    const stale = migrateSave(
+      {
+        stage: "student",
+        totalMinutes: 480,
+        career: {
+          players: { money: 42 },
+          shop: { owned: ["plant", "desk"], pin: "desk" },
+        },
+      },
+      20,
+    );
+    expect(stale.career.shop).toEqual({ owned: ["plant_big"], pin: null });
+  });
 });
 
 describe("store placement", () => {
   it("replaces the listed sprites and shows items in all rooms", () => {
     // Note: NotSold requirement removed in v19 (removed notSold restrictions)
     // Now all items can appear in all rooms
-    const owned = ["plant", "fan", "aircon", "ergo_chair", "monitor2", "mattress"];
-    expect(notSold("fan", "student")).toBe(false);
+    const owned = ["plant_big", "fan_standing", "aircon", "ergo_chair", "monitor2", "mattress"];
+    expect(notSold("fan_standing", "student")).toBe(false);
     expect(notSold("mattress", "senior")).toBe(false);
     expect(replacedItemIds("student", owned)).toEqual(new Set(["student.floor_cushion", "student.mattress"]));
     const juniorBed = storeDrawEntries("junior", owned, 153).find((entry) => entry.key === "store:junior:mattress");
@@ -335,7 +381,7 @@ describe("store placement", () => {
     expect(monitor).toMatchObject({ x: 255 - 22, y: 97 - 32, sortBaseline: 153 });
     expect(storeDrawEntries("senior", owned, null).some((entry) => entry.bitmap?.includes("item_mattress.png"))).toBe(false);
     expect(storeDrawEntries("student", owned, null).some((entry) => entry.bitmap === "/ui/m5/item_mattress.png")).toBe(false);
-    const shadow = storeDrawEntries("student", ["plant"], null).find((entry) => entry.key.endsWith(":shadow"));
+    const shadow = storeDrawEntries("student", ["plant_big"], null).find((entry) => entry.key.endsWith(":shadow"));
     expect(shadow).toMatchObject({
       bitmap: "/ui/m5/item_plant_shadow.png",
       x: Math.round(338 - Math.floor(30 / 2)),

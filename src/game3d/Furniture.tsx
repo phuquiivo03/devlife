@@ -28,6 +28,9 @@ export function Furniture() {
     if (owned?.includes("ergo_chair") && !MISSING_KEYS.has("ergo_chair")) {
       hide.add("chair_plastic");
     }
+    if (owned?.includes("bed_vip") && !MISSING_KEYS.has("bed_vip")) {
+      hide.add("bed");
+    }
     return hide;
   }, [owned, floorPose]);
 
@@ -44,7 +47,7 @@ export function Furniture() {
             <ItemModel
               key={item.key}
               item={item}
-              visible={storeId != null && ownedSet.has(storeId)}
+              visible={storeId != null && ownedSet.has(storeId) && !hidden.has(item.key)}
               spinBlades={item.key === "fan_standing"}
             />
           );

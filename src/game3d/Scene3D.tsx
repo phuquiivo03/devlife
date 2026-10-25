@@ -147,8 +147,8 @@ function RoomCameraRig({ interactive }: { interactive: boolean }) {
 /**
  * Fixed isometric orthographic view of the student room in a 4:3 slot.
  * The canvas is transparent; the wrapper div (`.clay-scene-well`) paints
- * the deep-purple gradient the room floats on. Loaded behind the `?3d=1`
- * flag via next/dynamic (ssr:false) so three never enters the 2D bundle.
+ * the deep-purple gradient the room floats on. Loaded via next/dynamic
+ * (ssr:false) so three stays out of SSR.
  */
 export default function Scene3D({ debug = false }: { debug?: boolean }) {
   return (

@@ -8,6 +8,7 @@ export type FoodDef = {
   label: string;
   price: number;
   health: number;
+  mood: number;
 };
 
 export type HolidayDef = {

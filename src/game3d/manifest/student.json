@@ -211,8 +211,7 @@
     -0.2
    ],
    "rotationY": 1.5708,
-   "note": "replaces chair_plastic at the rot2 seat when owned; wave2 spot was provisional",
-   "missing": true
+   "note": "replaces chair_plastic at the rot2 seat when owned; wave2 spot was provisional"
   },
   {
    "key": "monitor2",
@@ -223,8 +222,7 @@
     -0.64
    ],
    "rotationY": -1.361356816555577,
-   "note": "secondary screen next to the main monitor; owned only",
-   "missing": true
+   "note": "secondary screen next to the main monitor; owned only"
   },
   {
    "key": "mattress",
@@ -235,8 +233,7 @@
     -1.465
    ],
    "rotationY": 0,
-   "note": "overlay on the bed; owned only",
-   "missing": true
+   "note": "overlay on the bed; owned only"
   },
   {
    "key": "aircon",
@@ -247,8 +244,40 @@
     -1.89
    ],
    "rotationY": 3.141592653589793,
-   "note": "wall mounted, right wall; owned only",
-   "missing": true
+   "note": "wall mounted, right wall; owned only"
+  },
+  {
+   "key": "bed_vip",
+   "category": "furniture",
+   "position": [
+    -0.315,
+    0.02,
+    -1.445
+   ],
+   "rotationY": 0,
+   "note": "replaces bed (hidden when owned); provisional spot at the bed position"
+  },
+  {
+   "key": "bed_floor_mat",
+   "category": "furniture",
+   "position": [
+    0.55,
+    0.01,
+    -1.44
+   ],
+   "rotationY": 0,
+   "note": "floor mat beside the bed; provisional spot"
+  },
+  {
+   "key": "stool_plastic",
+   "category": "furniture",
+   "position": [
+    1.15,
+    0.02,
+    0.55
+   ],
+   "rotationY": 0,
+   "note": "plastic stool, mid-right floor; provisional spot"
   }
  ],
  "stage0": {
@@ -281,7 +310,9 @@
    "keyboard",
    "lamp_desk",
    "mug",
-   "plant_small"
+   "plant_small",
+   "bed_vip",
+   "bed_floor_mat"
   ]
  },
  "poses": {

@@ -1,6 +1,9 @@
 import { ATLAS_JSON_URL, ATLAS_URL } from "../config";
 import type { AtlasData, AtlasFrame } from "../types";
-import type { FrameLookup } from "../layout/resolveScene";
+
+export type FrameLookup = (
+  sprite: string,
+) => { w: number; h: number; pivotX: number; pivotY: number };
 
 export type LoadedAtlas = {
   image: HTMLImageElement;

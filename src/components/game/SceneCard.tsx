@@ -12,19 +12,13 @@ type Props = {
   label: ReactNode;
   children: ReactNode;
   canvas: ReactNode;
-  /**
-   * 3D mode: transparent 4:3 slot floating on the page background — no
-   * card face, plate, or glow. Overlays (LifeRoomFx, LifeEventPopup,
-   * SleepTransition) mount absolutely over the canvas, never below it.
-   */
-  bare?: boolean;
 };
 
 /**
- * Big rounded scene card — the room viewport of the pastel redesign.
- * The canvas slot fills the card and SceneCanvas / Scene3D keep their own
- * view fitting. Overlays (LifeRoomFx, LifeEventPopup, SleepTransition)
- * mount absolutely on top of the canvas area.
+ * The room viewport — a transparent slot floating on the page background;
+ * Scene3D paints its own deep-purple well. Overlays (LifeRoomFx,
+ * LifeEventPopup, SleepTransition) mount absolutely over the canvas,
+ * never below it.
  */
 export function SceneCard({
   areaRef,
@@ -32,7 +26,6 @@ export function SceneCard({
   label,
   children,
   canvas,
-  bare = false,
 }: Props) {
   const setRefs = useCallback(
     (node: HTMLDivElement | null) => {
@@ -43,11 +36,7 @@ export function SceneCard({
 
   return (
     <section
-      className={
-        bare
-          ? "scene-bare relative mx-auto flex w-full flex-col overflow-hidden"
-          : "relative flex min-h-[320px] w-full flex-1 flex-col overflow-hidden rounded-panel bg-panel shadow-panel"
-      }
+      className="scene-bare relative mx-auto flex w-full flex-col overflow-hidden"
       aria-label="Phòng"
     >
       {label ? (
@@ -57,11 +46,7 @@ export function SceneCard({
       ) : null}
       <div
         ref={setRefs}
-        className={
-          bare
-            ? "flex min-h-0 w-full flex-1 flex-col"
-            : "room-stage-glow flex min-h-0 w-full flex-1 items-center justify-center bg-[var(--scene-plate)]"
-        }
+        className="flex min-h-0 w-full flex-1 flex-col"
         style={roomAreaStyle}
       >
         <div className="relative flex min-h-0 w-full flex-1 flex-col items-center justify-center">

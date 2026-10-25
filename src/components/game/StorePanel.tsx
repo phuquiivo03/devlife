@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import type { CareerState } from "@/game/career/types";
 import type { StageId } from "@/game/config";
-import { m5AssetPath, type M5AssetKey } from "@/game/life/assets";
+import { isShopIcon, m5AssetPath, shopIconPath, type M5AssetKey } from "@/game/life/assets";
 import { buyBlock, shopOf, STORE, STORE_ITEMS, storePrice, type StoreItem } from "@/game/life/furniture";
 import { useGameStore } from "@/game/state/store";
 import { snapshot } from "@/game/time";
@@ -32,6 +32,11 @@ type CardModel = {
   reason: string | null;
   action: ReturnType<typeof storeCardAction>;
 };
+
+/** 3D shop items render from /icons/shop (smooth, contained); rooms keep the M5 sheets. */
+function storeIconSrc(icon: string): string {
+  return isShopIcon(icon) ? shopIconPath(icon) : m5AssetPath(icon as M5AssetKey);
+}
 
 function cardModel(item: StoreItem, career: CareerState, day: number): CardModel {
   const shop = shopOf(career);
@@ -173,13 +178,17 @@ function StoreCard({
       ) : null}
       <div className={styles.artWrap} style={{ height: STORE_GRID.furnitureIconPx }}>
         <img
-          src={m5AssetPath(item.icon as M5AssetKey)}
+          src={storeIconSrc(item.icon)}
           width={icon.w}
           height={icon.h}
           alt=""
           draggable={false}
-          className={`${styles.art} pixel-img`}
-          style={{ width: icon.w, height: icon.h }}
+          className={cn(styles.art, !isShopIcon(item.icon) && "pixel-img")}
+          style={{
+            width: icon.w,
+            height: icon.h,
+            ...(isShopIcon(item.icon) ? { objectFit: "contain" as const } : {}),
+          }}
         />
       </div>
       <div className={styles.copy}>
@@ -251,10 +260,10 @@ function OwnedCard({
   stage: string;
   onActivate: (slotId: string, itemId: string | null) => void;
 }) {
-  // Determine image path based on item type
-  const isStoreItem = !!item.storeId; // Store items use m5 icons, catalog items use sprite paths
-  const imagePath = isStoreItem ? m5AssetPath(item.icon as M5AssetKey) : `/assets/${item.icon}.png`;
-  const imagePath2x = isStoreItem ? undefined : `/assets/${item.icon}_x2.png`;
+  // Owned-tab icons are always the 3D shop renders (store items + mapped
+  // defaults from owned-items); no pixel sprites are drawn here anymore.
+  const shopIcon = isShopIcon(item.icon);
+  const imagePath = storeIconSrc(item.icon);
 
   const icon = storeIconSize(item.icon);
   const isActive = item.status === "active";
@@ -326,13 +335,16 @@ function OwnedCard({
           <div className={styles.artWrap} style={{ height: STORE_GRID.furnitureIconPx }}>
             <img
               src={imagePath}
-              srcSet={imagePath2x ? `${imagePath2x} 2x` : undefined}
               width={icon.w}
               height={icon.h}
               alt=""
               draggable={false}
-              className={`${styles.art} pixel-img`}
-              style={{ width: icon.w, height: icon.h }}
+              className={cn(styles.art, !shopIcon && "pixel-img")}
+              style={{
+                width: icon.w,
+                height: icon.h,
+                ...(shopIcon ? { objectFit: "contain" as const } : {}),
+              }}
             />
           </div>
           <div className={styles.copy}>

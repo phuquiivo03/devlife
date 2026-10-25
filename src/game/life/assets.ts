@@ -42,12 +42,6 @@ export const M5_ASSET_KEYS = [
   "item_monitor2.png",
   "item_mattress_student.png",
   "item_mattress_junior.png",
-  "icon_store_plant.png",
-  "icon_store_fan.png",
-  "icon_store_aircon.png",
-  "icon_store_ergo_chair.png",
-  "icon_store_monitor2.png",
-  "icon_store_mattress.png",
   "icon_store_room_junior.png",
   "icon_store_room_senior.png",
   "icon_trait_night_owl.png",
@@ -67,4 +61,18 @@ export function m5AssetPath(key: M5AssetKey): string {
 /** M5.1 sheets in `public/ui/m5_1/`. Final art uses these same names. */
 export function m51AssetPath(file: string): string {
   return `/ui/m5_1/${file}`;
+}
+
+/**
+ * Store icons for the 3D furniture items live in `public/icons/shop/` as
+ * `shop_<id>.png` (512) + `shop_<id>_256.png`; the UI renders the `_256`
+ * file at 64px with object-fit contain (no pixelation). Room icons keep
+ * the M5 sheets.
+ */
+export function shopIconPath(icon: string): string {
+  return `/icons/shop/${icon.replace(/\.png$/, "_256.png")}`;
+}
+
+export function isShopIcon(icon: string): boolean {
+  return icon.startsWith("shop_");
 }

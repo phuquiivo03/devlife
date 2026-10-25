@@ -8,6 +8,12 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:4317",
     trace: "on-first-retry",
+    // Playwright 1.64 dropped ubuntu-20.04 browser builds; pin the last
+    // cached chromium that still runs here (same pin as capture-poses.mjs).
+    launchOptions: {
+      executablePath:
+        "/home/quivo/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome",
+    },
   },
   webServer: {
     command: "pnpm dev",

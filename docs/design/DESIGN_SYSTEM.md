@@ -98,11 +98,11 @@ One white `PanelCard` pill, `data-testid="room-status-bar"`:
 
 ### Scene card (`SceneCard.tsx`)
 
-One white clay card (`rounded-panel`, 24px, `shadow-panel`, borderless), `aria-label="Phòng"`:
+A borderless transparent slot (`scene-bare` — no card face, plate, or glow), `aria-label="Phòng"`:
 
-- Stage label pill pinned top-left (`left-3 top-3`, white/90, truncates).
-- The canvas slot fills the card with a soft lavender plate (`--scene-plate`) behind the canvas, so the letterbox above/below the 427:240 canvas reads as a floor, not a void.
-- The **480px `ROOM_VIEWPORT_W` cap is retired** (owner-approved redesign): the slot fills the column and `SceneCanvas` crops the world to it (`computeView` crop mode). The 2D pixel canvas is the default; R3F stays behind `?3d=1` and fills the card when on.
+- Stage label pill pinned top-left (`left-3 top-3`, white/90, truncates) — **debug only**.
+- The slot fills the column as a fixed 4:3 well; `Scene3D` paints the deep-purple `.clay-scene-well` gradient itself and the room floats on the page background.
+- The 2D pixel canvas, its renderer, and the `/debug` route have been removed — the R3F room is the only renderer (the old 480px `ROOM_VIEWPORT_W` cap stays retired).
 - Room overlays mount inside the card on a `relative` wrapper over the canvas: `LifeRoomFx`, `LifeEventPopup`, `SleepTransition`. Nothing dims the room behind popups.
 
 ---
@@ -197,17 +197,11 @@ Native `<details>` collapsed by default; summary "Kỹ năng" with a rotating ch
 
 ---
 
-## Canvas exception
+## 3D shell palette
 
-The **Canvas2D room renderer** is not restyled (integer scale, nearest-neighbour, no CSS shadows on canvas pixels). Debug route `/debug` unchanged.
+GameShell always renders the R3F scene and adds **`.theme-clay`** to the shell root, passing `clay` to `ProfileCard` / `ActionsCard` (and the icon buttons they mount); `StatsCard` renders its clay stat pills in the sidebar block. The **material is the same global clay** — `.theme-clay` only swaps the palette: card `#FBF9FD` / ink `#3D3550` / muted `#7A7290`, page bg `#EFEAF6`, tab lavender `#E9E2F5`, softer red `#E2607A` for negative money, and the action-tile faces (`--btn-eat` … `--btn-store`). The pastel stat fills (`--stat-*`) live in `:root` and are shared.
 
----
-
-## 3D shell palette (`?3d=1`)
-
-When GameShell renders the R3F scene (`?3d=1`) it adds **`.theme-clay`** to the shell root and passes `clay` to `ProfileCard` / `ActionsCard` (and the icon buttons they mount); `StatsCard` renders its clay stat pills in both shells. The **material is the same global clay** — `.theme-clay` only swaps the palette: card `#FBF9FD` / ink `#3D3550` / muted `#7A7290`, page bg `#EFEAF6`, tab lavender `#E9E2F5`, softer red `#E2607A` for negative money, and the action-tile faces (`--btn-eat` … `--btn-store`). The pastel stat fills (`--stat-*`) live in `:root` and are shared.
-
-- **StatBar `variant="clay"`** (also the stats card in both shells): 30px fully-rounded pill, tinted track (`--stat-*-bg`), fill `--stat-*` with the light clay edge, icon + label **inside** left, current value **inside** right (`hud-*` testids and data attrs unchanged). Low stat = soft opacity pulse on the fill + 8px coral dot by the number (the red `stat-blink` frame is not used here). Tone mapping: coral→health, mint→mood, sky→energy, amber→full, exp→xp. Height follows `--clay-stat-h` (the profile XP bar sets 10px).
+- **StatBar `variant="clay"`** (also the stats card in the sidebar): 30px fully-rounded pill, tinted track (`--stat-*-bg`), fill `--stat-*` with the light clay edge, icon + label **inside** left, current value **inside** right (`hud-*` testids and data attrs unchanged). Low stat = soft opacity pulse on the fill + 8px coral dot by the number (the red `stat-blink` frame is not used here). Tone mapping: coral→health, mint→mood, sky→energy, amber→full, exp→xp. Height follows `--clay-stat-h` (the profile XP bar sets 10px).
 - **ProfileCard clay**: 56px round avatar + name (800) + subtitle row; one XP line (`Lv. N · x/y XP`); trait/reputation/freelance/rent fold into `--clay-chip` pills (`player-trait`, `player-reputation`, `player-freelance`, `life-rent` testids kept).
 - **Actions clay**: the six tiles share one family — the pastel face sits on the tile wrapper (`.clay-tile[data-clay-tone=eat|game|sleep|study|jobs|skills]`, radius `--radius-tile`, ctrl shadow stack), the inner `PixelButton` goes chromeless (`.clay-tile-inner`). 3-col grid, 10px gap, hover −1px lift, active `scale(.95)`. Ăn's ready dot recolors to `--stat-full`. Cửa hàng drops the amber bar for a full-width cream pill (`--btn-store`, 48px, ink `--clay-text`).
 - **Top bar clay**: notifications/audio shrink to 40px round faces. Negative money keeps the softer red.

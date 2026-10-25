@@ -16,6 +16,31 @@ import { placementRows } from "@/game/life/placement";
 
 export type OwnedItemStatus = "active" | "inactive";
 
+/**
+ * Catalog default id → 3D shop icon id (`public/icons/shop/shop_<id>_256.png`).
+ * Only exact-model matches are listed; defaults without a 3D model (bookshelf,
+ * wardrobe, armchair, rug, posters, mouse, …) are kept out of the owned tab
+ * instead of drawing their old pixel sprites.
+ */
+const CATALOG_SHOP_ICONS: Record<string, string> = {
+  "student.mattress": "mattress",
+  "student.folding_table": "table_folding",
+  "student.laptop": "laptop",
+  "student.kettle": "kettle",
+  "student.books_stack": "books_stack",
+  "student.fan": "fan_standing",
+  "student.bedside_cabinet": "nightstand",
+  "student.plastic_stool": "stool_plastic",
+  "junior.bed": "bed",
+  "junior.desk": "desk",
+  "junior.monitor": "monitor",
+  "junior.mug": "mug",
+  "junior.plant_small": "plant_small",
+  "junior.office_chair": "ergo_chair", // closest match — no office_chair GLB
+  "senior.ergo_chair": "ergo_chair",
+  "senior.plant_small": "plant_small",
+};
+
 export type OwnedItemModel = {
   storeId: string;
   catalogId: string;
@@ -125,6 +150,10 @@ export function getOwnedItems(
       const catalogItem = catalog.itemsById.get(defaultId);
       if (!catalogItem) continue;
 
+      // Only defaults with a 3D shop icon show up here — no pixel sprites.
+      const shopId = CATALOG_SHOP_ICONS[defaultId];
+      if (!shopId) continue;
+
       // Check if this item can be used in current room
       const acceptingSlots = findAcceptingSlots(defaultId, currentStage);
       const noSlotInRoom = acceptingSlots.length === 0;
@@ -137,7 +166,7 @@ export function getOwnedItems(
         storeId: "", // No store item
         catalogId: defaultId,
         label: catalogItem.name.vi,
-        icon: catalogItem.sprite, // Catalog item uses sprite path
+        icon: `shop_${shopId}.png`, // 3D shop icon
         stage: catalogItem.stage,
         status,
         activeSlot,
