@@ -11,6 +11,7 @@ import { LIFE } from "../life/content";
 import { takePendingBugDelta } from "../life/events";
 import { jobEnergyFactor, scaleWorkXp } from "../life/furniture";
 import { scaleTraitPay, scaleTraitXp, traitBugCount, traitJobHours } from "../life/traits";
+import { addCompanyStrike } from "../jobs/fulltime";
 import {
   applyActionStats,
   energyCost,
@@ -334,9 +335,14 @@ export function grantTaskSuccess(
   if (!template) return fail(state, "Không tìm thấy việc");
 
   const day = state.players.game_day;
-  const pay = scaleTraitPay(jobPay(template.pay, template.tier, state.players.reputation), state);
-  const money = applyMoney(state.players.money, pay);
-  const freelance_completed = state.players.freelance_completed + 1;
+  const companyTask = job.source === "company";
+  // Company tasks pay no freelance money and do not count as freelance completed;
+  // they still grant the template's reputation and skill XP.
+  const pay = companyTask ? 0 : scaleTraitPay(jobPay(template.pay, template.tier, state.players.reputation), state);
+  const money = companyTask ? state.players.money : applyMoney(state.players.money, pay);
+  const freelance_completed = companyTask
+    ? state.players.freelance_completed
+    : state.players.freelance_completed + 1;
   const reputation = state.players.reputation + template.reputation_gain;
   const completed: PlayerJob = {
     ...job,
@@ -359,8 +365,10 @@ export function grantTaskSuccess(
   const events: GameEvent[] = [
     { type: "taskSucceeded", jobId: job.id, templateId: template.id, pay },
     { type: "jobCompleted", jobId: job.id, templateId: template.id, pay },
-    { type: "moneyChanged", delta: pay, money },
   ];
+  if (!companyTask) {
+    events.push({ type: "moneyChanged", delta: pay, money });
+  }
   const grants = catalog.jobTemplateXp.filter((row) => row.template_id === template.id);
   for (const grant of grants) {
     const skill = skillById(next.player_skills, grant.skill_id);
@@ -413,10 +421,12 @@ function grantTaskFail(
       reputationDelta: reputation - state.players.reputation,
     },
   ];
-  return ok(
-    patchJob({ ...state, players: { ...state.players, reputation } }, job.id, failed),
-    events,
-  );
+  let next = patchJob({ ...state, players: { ...state.players, reputation } }, job.id, failed);
+  if (job.source === "company") {
+    // A test fail costs a company task its strike, but no salary percent.
+    next = addCompanyStrike(next, job, "fail");
+  }
+  return ok(next, events);
 }
 
 /** Scripted perfect run for callers that still want the old one-shot payout. */

@@ -15,7 +15,7 @@ export const STAGES = ["student", "junior", "senior"] as const;
 export type StageId = (typeof STAGES)[number];
 
 export const PERSIST_KEY = "devlife:v1";
-export const PERSIST_VERSION = 21;
+export const PERSIST_VERSION = 22;
 /**
  * v1: stage, loadouts, showCharacter.
  * v2: in-game `totalMinutes` (see docs/systems/time.md).
@@ -37,6 +37,8 @@ export const PERSIST_VERSION = 21;
  * v18: offered and in-progress jobs become accepted. The deadline is recomputed from the save's current day (easy 2, mid 3, hard 4). Pay, progress, and the task run stay.
  * v19: furniture placement overhaul - items usable across all rooms
  * v20: slot hunger (`life.slotsSinceMeal`) became the continuous `players.fullness` stat (0–100). Older saves start full (`fullness_default_migrate`).
+ * v21: the 3D store renamed `plant`→`plant_big` and `fan`→`fan_standing` in `shop.owned` and `shop.pin`.
+ * v22: full-time career. `career.employment` starts empty (no job, no applications, no board); every existing `player_jobs` row, including legacy `remote` offers, keeps running as `source: "freelance"`.
  */
 
 export const CHAR_POSE_SIT_BACK = "character/derived/char_sit_back";

@@ -3,11 +3,13 @@ import {
   type CareerState,
   type LifeNotice,
   type NoticeActionButton,
+  type PlayerJob,
   type SimCatalog,
 } from "../career/types";
 import { SIM_CATALOG } from "../career/content";
 import { LIFE } from "../life/content";
 import { LIFE_EVENTS } from "../life/events-content";
+import { addCompanyStrike } from "./fulltime";
 
 const REMIND_ICON = "icon_notif_deadline.png";
 
@@ -37,11 +39,17 @@ export function applyJobDeadlines(
   let mood = state.players.mood;
   let notices = state.feed.notices;
   let changed = false;
+  const struckCompany: PlayerJob[] = [];
   const jobs = state.player_jobs.map((job) => {
     if (job.status !== "active" || job.deadline_day == null) return job;
     const left = job.deadline_day - day;
     if (left < 0) {
       changed = true;
+      if (job.source === "company") {
+        // Company tasks: 5% salary penalty, −1 reputation, +1 strike (warn/fire inside).
+        struckCompany.push(job);
+        return { ...job, status: "failed" as const };
+      }
       reputation = Math.max(0, reputation + LIFE.job_late_reputation);
       mood = Math.max(0, mood + LIFE.job_late_mood);
       const name = jobName(job.template_id, catalog);
@@ -80,10 +88,14 @@ export function applyJobDeadlines(
     return job;
   });
   if (!changed) return state;
-  return {
+  let next: CareerState = {
     ...state,
     players: { ...state.players, reputation, mood },
     player_jobs: jobs,
     feed: { ...state.feed, notices },
   };
+  for (const job of struckCompany) {
+    next = addCompanyStrike(next, job, "late");
+  }
+  return next;
 }

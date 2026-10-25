@@ -147,6 +147,7 @@ export function offerJob(template: JobTemplate, day: number): PlayerJob {
     id: `job-${day}-${template.id}`,
     template_id: template.id,
     job_type: template.job_type,
+    source: "freelance",
     status: "offered",
     hours_required: template.hours,
     progress_hours: 0,
@@ -167,6 +168,7 @@ export function boardHasToday(
 ): boolean {
   return jobs.some(
     (job) =>
+      job.source !== "company" &&
       job.offered_day === day &&
       (job.status === "offered" || job.status === "completed"),
   );
@@ -193,8 +195,9 @@ export function visibleBoardJobs(
 ): PlayerJob[] {
   return jobs.filter(
     (job) =>
-      job.status === "active" ||
-      (job.offered_day === day &&
-        (job.status === "offered" || job.status === "completed")),
+      job.source !== "company" &&
+      (job.status === "active" ||
+        (job.offered_day === day &&
+          (job.status === "offered" || job.status === "completed"))),
   );
 }
