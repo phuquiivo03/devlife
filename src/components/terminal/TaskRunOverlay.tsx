@@ -102,7 +102,7 @@ export function TaskRunOverlay() {
             <TicketStep
               title={ticket.title}
               quote={ticket.quote}
-              pay={template.pay}
+              pay={job.pay}
               difficulty={ticket.difficulty_label}
               skillId={skillId}
               prompt={ticket.prompt}
@@ -116,7 +116,7 @@ export function TaskRunOverlay() {
               run={job.task_run}
               jobId={job.id}
               templateId={template.id}
-              pay={template.pay}
+              pay={job.pay}
               reputation={template.reputation_gain}
               skillId={skillId}
               failed={job.status === "failed"}
@@ -465,7 +465,7 @@ function ResultStep({
           <p>[ok] Đã giao cho khách</p>
           <dl className="mt-3 grid grid-cols-[8rem_1fr] gap-y-1">
             <dt className="terminal-sage">tiền công</dt>
-            <dd>+{formatVnd(pay)}</dd>
+            <dd>{pay > 0 ? `+${formatVnd(pay)}` : "0đ"}</dd>
             <dt className="terminal-sage">kinh nghiệm</dt>
             <dd>
               +{xp} XP <Term id={skillId}>{skillId}</Term>
