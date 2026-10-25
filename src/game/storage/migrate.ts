@@ -231,6 +231,33 @@ function nullableNum(value: unknown): number | null {
   return Math.floor(parsed);
 }
 
+/**
+ * v20→v21: the 3D store renamed `plant`→`plant_big` and `fan`→`fan_standing`.
+ * The rename must touch the raw shop before `careerFromUnknown`'s
+ * `normalizeShop` filters ids against the new catalog, otherwise the owned
+ * items would be silently dropped instead of migrated. Loadouts only hold
+ * catalog ids (plant/fan were overlay items, never placed), so they need no
+ * rename. Stale ids outside the new catalog are dropped by `normalizeShop`.
+ */
+const V21_SHOP_RENAMES: Record<string, string> = {
+  plant: "plant_big",
+  fan: "fan_standing",
+};
+
+function withRenamedShop(career: unknown): unknown {
+  if (!isRecord(career) || !isRecord(career.shop)) return career;
+  const rename = (id: unknown) =>
+    typeof id === "string" ? (V21_SHOP_RENAMES[id] ?? id) : id;
+  return {
+    ...career,
+    shop: {
+      ...career.shop,
+      owned: Array.isArray(career.shop.owned) ? career.shop.owned.map(rename) : career.shop.owned,
+      pin: rename(career.shop.pin),
+    },
+  };
+}
+
 export function careerFromUnknown(
   value: unknown,
   day: number,
@@ -515,6 +542,9 @@ function strOrNull(value: unknown): string | null {
  * Version 20 replaces slot hunger with the continuous `players.fullness`
  * stat; older saves wake up full (`fullness_default_migrate`). The stale
  * `life.slotsSinceMeal` is dropped by `normalizeLife`.
+ * Version 21 renames the 3D store ids `plant`→`plant_big` and
+ * `fan`→`fan_standing` in `shop.owned` and `shop.pin`; ids outside the new
+ * catalog are dropped by `normalizeShop`.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -539,7 +569,12 @@ export function migrateSave(
   const snap = snapshot(totalMinutes);
   let career =
     version >= 3
-      ? careerFromUnknown(prev.career, snap.day, snap.minuteOfDay, stage)
+      ? careerFromUnknown(
+          version < 21 ? withRenamedShop(prev.career) : prev.career,
+          snap.day,
+          snap.minuteOfDay,
+          stage,
+        )
       : defaultCareer(snap.day, snap.minuteOfDay, stage, SIM_CATALOG);
   if (version < 4) {
     career = { ...career, player_study_completions: [] };

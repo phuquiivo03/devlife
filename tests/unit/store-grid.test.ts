@@ -26,12 +26,24 @@ describe("store shelves", () => {
     expect(STORE_ITEMS.map((item) => [item.id, storeShelf(item)])).toEqual([
       ["room_junior", "room"],
       ["room_senior", "room"],
-      ["plant", "furniture"],
-      ["fan", "furniture"],
       ["aircon", "furniture"],
       ["ergo_chair", "furniture"],
       ["monitor2", "furniture"],
       ["mattress", "furniture"],
+      ["plant_big", "furniture"],
+      ["fan_standing", "furniture"],
+      ["plant_small", "furniture"],
+      ["bed_vip", "furniture"],
+      ["bed_floor_mat", "furniture"],
+      ["fairy_lights", "furniture"],
+      ["lamp_desk", "furniture"],
+      ["poster_vn", "furniture"],
+      ["books_stack", "furniture"],
+      ["kettle", "furniture"],
+      ["mug", "furniture"],
+      ["nightstand", "furniture"],
+      ["stool_plastic", "furniture"],
+      ["keyboard", "furniture"],
     ]);
     expect(storeShelf({ id: "room_custom" })).toBe("room");
     expect(storeShelf({ id: "lamp", stage: "junior" })).toBe("room");
@@ -41,24 +53,48 @@ describe("store shelves", () => {
   it("filters the three tabs and draws furniture before rooms", () => {
     expect(STORE_TABS.map((tab) => tab.label)).toEqual(["Nội thất", "Phòng", "Tất cả"]);
     expect(filterStoreItems(STORE_ITEMS, "furniture").map((item) => item.id)).toEqual([
-      "plant",
-      "fan",
       "aircon",
       "ergo_chair",
       "monitor2",
       "mattress",
+      "plant_big",
+      "fan_standing",
+      "plant_small",
+      "bed_vip",
+      "bed_floor_mat",
+      "fairy_lights",
+      "lamp_desk",
+      "poster_vn",
+      "books_stack",
+      "kettle",
+      "mug",
+      "nightstand",
+      "stool_plastic",
+      "keyboard",
     ]);
     expect(filterStoreItems(STORE_ITEMS, "room").map((item) => item.id)).toEqual([
       "room_junior",
       "room_senior",
     ]);
     expect(filterStoreItems(STORE_ITEMS, "all").map((item) => item.id)).toEqual([
-      "plant",
-      "fan",
       "aircon",
       "ergo_chair",
       "monitor2",
       "mattress",
+      "plant_big",
+      "fan_standing",
+      "plant_small",
+      "bed_vip",
+      "bed_floor_mat",
+      "fairy_lights",
+      "lamp_desk",
+      "poster_vn",
+      "books_stack",
+      "kettle",
+      "mug",
+      "nightstand",
+      "stool_plastic",
+      "keyboard",
       "room_junior",
       "room_senior",
     ]);
@@ -99,7 +135,7 @@ describe("store grid config", () => {
   });
 
   it("draws furniture at 2× and rooms at 1×", () => {
-    expect(storeIconSize("icon_store_plant.png")).toEqual({ w: 64, h: 64 });
+    expect(storeIconSize("shop_aircon.png")).toEqual({ w: 64, h: 64 });
     expect(storeIconSize("icon_store_room_junior.png")).toEqual({ w: 64, h: 40 });
     expect(STORE_GRID.badgePx).toBe(22);
   });

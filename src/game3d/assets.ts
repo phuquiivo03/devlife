@@ -20,29 +20,38 @@ export function characterUrl(poseKey: string): string {
   return `/models/characters/${CHARACTER_FILES[poseKey] ?? poseKey}.glb`;
 }
 
-/** Store purchase id → 3D item key. */
+/**
+ * Store purchase id → 3D item key. Every purchasable furniture item maps to
+ * its own GLB (ids match the model file names); table_folding stays out of
+ * the store because the floor pose renders it for free.
+ */
 export const STORE_TO_KEY: Record<string, string> = {
-  plant: "plant_big",
-  fan: "fan_standing",
-  monitor2: "monitor2",
-  mattress: "mattress",
   aircon: "aircon",
   ergo_chair: "ergo_chair",
+  monitor2: "monitor2",
+  mattress: "mattress",
+  plant_big: "plant_big",
+  fan_standing: "fan_standing",
+  plant_small: "plant_small",
+  bed_vip: "bed_vip",
+  bed_floor_mat: "bed_floor_mat",
+  fairy_lights: "fairy_lights",
+  lamp_desk: "lamp_desk",
+  poster_vn: "poster_vn",
+  books_stack: "books_stack",
+  kettle: "kettle",
+  mug: "mug",
+  nightstand: "nightstand",
+  stool_plastic: "stool_plastic",
+  keyboard: "keyboard",
   // room_junior / room_senior: MVP renders the student room only.
 };
 
 /**
- * Manifest items gated behind store ownership. Everything else in
- * STUDENT_MANIFEST.items is base furniture, always visible.
+ * Manifest items gated behind store ownership: every purchasable key.
+ * Everything else in STUDENT_MANIFEST.items is base furniture, always visible.
  */
-const OWNED_ONLY_KEYS = new Set([
-  "plant_big",
-  "fan_standing",
-  "monitor2",
-  "mattress",
-  "aircon",
-  "ergo_chair",
-]);
+const OWNED_ONLY_KEYS = new Set(Object.keys(STORE_TO_KEY));
 
 export function isOwnedOnly(key: string): boolean {
   return OWNED_ONLY_KEYS.has(key);

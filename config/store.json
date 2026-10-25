@@ -29,44 +29,118 @@
       "daily_health": 2
     },
     {
-      "id": "plant",
-      "label": "Cây xanh",
-      "price": 150000,
-      "icon": "icon_store_plant.png",
-      "daily_mood": 2
-    },
-    {
-      "id": "fan",
-      "label": "Quạt",
-      "price": 400000,
-      "icon": "icon_store_fan.png",
-      "sleep": 5
-    },
-    {
       "id": "aircon",
       "label": "Máy lạnh",
       "price": 7000000,
-      "icon": "icon_store_aircon.png",
+      "icon": "shop_aircon.png",
       "sleep": 10
     },
     {
       "id": "ergo_chair",
       "label": "Ghế công thái học",
       "price": 3500000,
-      "icon": "icon_store_ergo_chair.png"
+      "icon": "shop_ergo_chair.png"
     },
     {
       "id": "monitor2",
       "label": "Màn hình thứ 2",
       "price": 4000000,
-      "icon": "icon_store_monitor2.png"
+      "icon": "shop_monitor2.png"
     },
     {
       "id": "mattress",
       "label": "Nệm xịn",
       "price": 5000000,
-      "icon": "icon_store_mattress.png",
+      "icon": "shop_mattress.png",
       "daily_health": 1
+    },
+    {
+      "id": "plant_big",
+      "label": "Cây xanh lớn",
+      "price": 150000,
+      "icon": "shop_plant_big.png",
+      "daily_mood": 2
+    },
+    {
+      "id": "fan_standing",
+      "label": "Quạt đứng",
+      "price": 400000,
+      "icon": "shop_fan_standing.png",
+      "sleep": 5
+    },
+    {
+      "id": "plant_small",
+      "label": "Cây nhỏ",
+      "price": 80000,
+      "icon": "shop_plant_small.png"
+    },
+    {
+      "id": "bed_vip",
+      "label": "Giường VIP",
+      "price": 9000000,
+      "icon": "shop_bed_vip.png",
+      "sleep": 15
+    },
+    {
+      "id": "bed_floor_mat",
+      "label": "Chiếu ngủ",
+      "price": 150000,
+      "icon": "shop_bed_floor_mat.png"
+    },
+    {
+      "id": "fairy_lights",
+      "label": "Đèn dây",
+      "price": 120000,
+      "icon": "shop_fairy_lights.png",
+      "daily_mood": 1
+    },
+    {
+      "id": "lamp_desk",
+      "label": "Đèn bàn",
+      "price": 250000,
+      "icon": "shop_lamp_desk.png"
+    },
+    {
+      "id": "poster_vn",
+      "label": "Poster Việt Nam",
+      "price": 50000,
+      "icon": "shop_poster_vn.png"
+    },
+    {
+      "id": "books_stack",
+      "label": "Chồng sách",
+      "price": 200000,
+      "icon": "shop_books_stack.png"
+    },
+    {
+      "id": "kettle",
+      "label": "Ấm siêu tốc",
+      "price": 300000,
+      "icon": "shop_kettle.png"
+    },
+    {
+      "id": "mug",
+      "label": "Cốc",
+      "price": 60000,
+      "icon": "shop_mug.png"
+    },
+    {
+      "id": "nightstand",
+      "label": "Tủ đầu giường",
+      "price": 900000,
+      "icon": "shop_nightstand.png"
+    },
+    {
+      "id": "stool_plastic",
+      "label": "Ghế đẩu nhựa",
+      "price": 70000,
+      "icon": "shop_stool_plastic.png"
+    },
+    {
+      "id": "keyboard",
+      "label": "Bàn phím cơ",
+      "price": 1200000,
+      "icon": "shop_keyboard.png"
     }
   ]
 }

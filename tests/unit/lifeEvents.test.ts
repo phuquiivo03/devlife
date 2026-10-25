@@ -271,7 +271,7 @@ describe("life events", () => {
     const cleared = openDiary(captureSnapshot(eaten, SIM_CATALOG), SIM_CATALOG).feed.diary;
     expect(cleared).toMatchObject({ food: 0, spent: 0, earned: 0, remaining: eaten.players.money });
 
-    const planted = buyShopItem(start(), "plant").state;
+    const planted = buyShopItem(start(), "plant_big").state;
     expect(openDiary(planted, SIM_CATALOG).feed.diary).toMatchObject({ shop: 150_000, food: 0, rent: 0, spent: 150_000 });
 
     const billed = settleCalendarDay(start(), 1, "student").state;
