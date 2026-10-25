@@ -1,0 +1,489 @@
+{
+ "version": "shop_icons_v1",
+ "source": "feat/3d public/models/items/*.glb",
+ "camera": "ortho, elevation 30 deg, azimuth 35 deg right of front",
+ "view_transform": "Standard",
+ "margin": "content fills ~84% of the longer side, centred",
+ "items": {
+  "aircon": {
+   "files": [
+    "shop_aircon.png",
+    "shop_aircon_256.png"
+   ],
+   "glb": "public/models/items/aircon.glb",
+   "content_bbox_512": [
+    40,
+    114,
+    472,
+    398
+   ],
+   "verts": 394,
+   "bbox_max_m": 0.82,
+   "yaw_tilt_deg": [
+    180,
+    0
+   ]
+  },
+  "bed": {
+   "files": [
+    "shop_bed.png",
+    "shop_bed_256.png"
+   ],
+   "glb": "public/models/items/bed.glb",
+   "content_bbox_512": [
+    40,
+    102,
+    472,
+    410
+   ],
+   "verts": 1423,
+   "bbox_max_m": 1.87,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "bed_floor_mat": {
+   "files": [
+    "shop_bed_floor_mat.png",
+    "shop_bed_floor_mat_256.png"
+   ],
+   "glb": "public/models/items/bed_floor_mat.glb",
+   "content_bbox_512": [
+    40,
+    157,
+    472,
+    355
+   ],
+   "verts": 942,
+   "bbox_max_m": 1.87,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "bed_vip": {
+   "files": [
+    "shop_bed_vip.png",
+    "shop_bed_vip_256.png"
+   ],
+   "glb": "public/models/items/bed_vip.glb",
+   "content_bbox_512": [
+    40,
+    111,
+    472,
+    401
+   ],
+   "verts": 977,
+   "bbox_max_m": 2.088,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "books_stack": {
+   "files": [
+    "shop_books_stack.png",
+    "shop_books_stack_256.png"
+   ],
+   "glb": "public/models/items/books_stack.glb",
+   "content_bbox_512": [
+    40,
+    77,
+    472,
+    435
+   ],
+   "verts": 1068,
+   "bbox_max_m": 0.45,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "chair_plastic": {
+   "files": [
+    "shop_chair_plastic.png",
+    "shop_chair_plastic_256.png"
+   ],
+   "glb": "public/models/items/chair_plastic.glb",
+   "content_bbox_512": [
+    99,
+    40,
+    413,
+    472
+   ],
+   "verts": 955,
+   "bbox_max_m": 0.782,
+   "yaw_tilt_deg": [
+    180,
+    0
+   ]
+  },
+  "cup": {
+   "files": [
+    "shop_cup.png",
+    "shop_cup_256.png"
+   ],
+   "glb": "public/models/items/cup.glb",
+   "content_bbox_512": [
+    100,
+    40,
+    412,
+    472
+   ],
+   "verts": 324,
+   "bbox_max_m": 0.09,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "desk": {
+   "files": [
+    "shop_desk.png",
+    "shop_desk_256.png"
+   ],
+   "glb": "public/models/items/desk.glb",
+   "content_bbox_512": [
+    40,
+    44,
+    472,
+    468
+   ],
+   "verts": 876,
+   "bbox_max_m": 1.65,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "ergo_chair": {
+   "files": [
+    "shop_ergo_chair.png",
+    "shop_ergo_chair_256.png"
+   ],
+   "glb": "public/models/items/ergo_chair.glb",
+   "content_bbox_512": [
+    144,
+    40,
+    368,
+    472
+   ],
+   "verts": 2536,
+   "bbox_max_m": 1.298,
+   "yaw_tilt_deg": [
+    180,
+    0
+   ]
+  },
+  "fairy_lights": {
+   "files": [
+    "shop_fairy_lights.png",
+    "shop_fairy_lights_256.png"
+   ],
+   "glb": "public/models/items/fairy_lights.glb",
+   "content_bbox_512": [
+    0,
+    197,
+    512,
+    335
+   ],
+   "verts": 11296,
+   "bbox_max_m": 5.563,
+   "yaw_tilt_deg": [
+    45,
+    0
+   ],
+   "segment": [
+    0.338,
+    0.95
+   ],
+   "camera_exception": "PM-approved exception (Oct 25): same camera angle/lighting/Standard, but ortho framing cropped close on a ~0.95 m segment of the actual fairy_lights.glb string (yaw 45) showing 3 bulbs; soft warm glow halo added in post around emissive bulbs (scripts/shop_icons_v1_fairy_seg.py + shop_icons_v1_fairy_glow.py). Model unchanged. Previous version in _old/."
+  },
+  "fan_standing": {
+   "files": [
+    "shop_fan_standing.png",
+    "shop_fan_standing_256.png"
+   ],
+   "glb": "public/models/items/fan_standing.glb",
+   "content_bbox_512": [
+    151,
+    40,
+    361,
+    472
+   ],
+   "verts": 1551,
+   "bbox_max_m": 1.305,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "kettle": {
+   "files": [
+    "shop_kettle.png",
+    "shop_kettle_256.png"
+   ],
+   "glb": "public/models/items/kettle.glb",
+   "content_bbox_512": [
+    57,
+    40,
+    455,
+    472
+   ],
+   "verts": 1894,
+   "bbox_max_m": 0.36,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "keyboard": {
+   "files": [
+    "shop_keyboard.png",
+    "shop_keyboard_256.png"
+   ],
+   "glb": "public/models/items/keyboard.glb",
+   "content_bbox_512": [
+    40,
+    198,
+    472,
+    314
+   ],
+   "verts": 356,
+   "bbox_max_m": 0.424,
+   "yaw_tilt_deg": [
+    90,
+    0
+   ]
+  },
+  "lamp_desk": {
+   "files": [
+    "shop_lamp_desk.png",
+    "shop_lamp_desk_256.png"
+   ],
+   "glb": "public/models/items/lamp_desk.glb",
+   "content_bbox_512": [
+    126,
+    40,
+    386,
+    472
+   ],
+   "verts": 829,
+   "bbox_max_m": 0.484,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "laptop": {
+   "files": [
+    "shop_laptop.png",
+    "shop_laptop_256.png"
+   ],
+   "glb": "public/models/items/laptop.glb",
+   "content_bbox_512": [
+    40,
+    55,
+    472,
+    458
+   ],
+   "verts": 196,
+   "bbox_max_m": 0.32,
+   "yaw_tilt_deg": [
+    180,
+    0
+   ]
+  },
+  "mattress": {
+   "files": [
+    "shop_mattress.png",
+    "shop_mattress_256.png"
+   ],
+   "glb": "public/models/items/mattress.glb",
+   "content_bbox_512": [
+    40,
+    145,
+    472,
+    367
+   ],
+   "verts": 522,
+   "bbox_max_m": 1.67,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "monitor": {
+   "files": [
+    "shop_monitor.png",
+    "shop_monitor_256.png"
+   ],
+   "glb": "public/models/items/monitor.glb",
+   "content_bbox_512": [
+    81,
+    40,
+    431,
+    472
+   ],
+   "verts": 688,
+   "bbox_max_m": 0.64,
+   "yaw_tilt_deg": [
+    180,
+    0
+   ]
+  },
+  "monitor2": {
+   "files": [
+    "shop_monitor2.png",
+    "shop_monitor2_256.png"
+   ],
+   "glb": "public/models/items/monitor2.glb",
+   "content_bbox_512": [
+    94,
+    40,
+    418,
+    472
+   ],
+   "verts": 688,
+   "bbox_max_m": 0.51,
+   "yaw_tilt_deg": [
+    180,
+    0
+   ]
+  },
+  "mug": {
+   "files": [
+    "shop_mug.png",
+    "shop_mug_256.png"
+   ],
+   "glb": "public/models/items/mug.glb",
+   "content_bbox_512": [
+    86,
+    40,
+    426,
+    472
+   ],
+   "verts": 857,
+   "bbox_max_m": 0.145,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "nightstand": {
+   "files": [
+    "shop_nightstand.png",
+    "shop_nightstand_256.png"
+   ],
+   "glb": "public/models/items/nightstand.glb",
+   "content_bbox_512": [
+    74,
+    40,
+    438,
+    472
+   ],
+   "verts": 957,
+   "bbox_max_m": 0.62,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "plant_big": {
+   "files": [
+    "shop_plant_big.png",
+    "shop_plant_big_256.png"
+   ],
+   "glb": "public/models/items/plant_big.glb",
+   "content_bbox_512": [
+    105,
+    40,
+    407,
+    472
+   ],
+   "verts": 1813,
+   "bbox_max_m": 0.792,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "plant_small": {
+   "files": [
+    "shop_plant_small.png",
+    "shop_plant_small_256.png"
+   ],
+   "glb": "public/models/items/plant_small.glb",
+   "content_bbox_512": [
+    96,
+    40,
+    416,
+    472
+   ],
+   "verts": 1813,
+   "bbox_max_m": 0.29,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "poster_vn": {
+   "files": [
+    "shop_poster_vn.png",
+    "shop_poster_vn_256.png"
+   ],
+   "glb": "public/models/items/poster_vn.glb",
+   "content_bbox_512": [
+    173,
+    40,
+    339,
+    472
+   ],
+   "verts": 505,
+   "bbox_max_m": 0.6,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "stool_plastic": {
+   "files": [
+    "shop_stool_plastic.png",
+    "shop_stool_plastic_256.png"
+   ],
+   "glb": "public/models/items/stool_plastic.glb",
+   "content_bbox_512": [
+    48,
+    40,
+    464,
+    472
+   ],
+   "verts": 1288,
+   "bbox_max_m": 0.468,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  },
+  "table_folding": {
+   "files": [
+    "shop_table_folding.png",
+    "shop_table_folding_256.png"
+   ],
+   "glb": "public/models/items/table_folding.glb",
+   "content_bbox_512": [
+    40,
+    86,
+    472,
+    426
+   ],
+   "verts": 378,
+   "bbox_max_m": 0.6,
+   "yaw_tilt_deg": [
+    0,
+    0
+   ]
+  }
+ }
+}
