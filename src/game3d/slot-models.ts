@@ -9,6 +9,11 @@ import { STORE_ITEMS, type StoreItem } from "@/game/life/furniture";
  * the owned-gated store item that auto-replaces it). A loadout entry then
  * overrides the slot — `null` empties it, a catalog id or a `store:<id>`
  * value renders that item's GLB instead.
+ *
+ * A GLB is drawn when the slot holding its loadout entry says so (or its
+ * untouched default allows it) and nothing hid it — `drawn` wins over
+ * `hidden`, so two slots of the same category (the three floor_decor slots,
+ * say) never fight over each other's picks.
  */
 
 export const STORE_SLOT_PREFIX = "store:";
@@ -66,6 +71,23 @@ const STORE_OVERLAY: ReadonlySet<string> = new Set(["mattress", "monitor2"]);
 /** Owned items that auto-replace the slot base while the loadout is untouched. */
 const AUTO_REPLACE: ReadonlySet<string> = new Set(["ergo_chair", "bed_vip"]);
 
+/**
+ * Categories whose variants share one physical spot — picking one hides the
+ * others (bed/bed_vip/mat all stand where the bed is). floor_decor is NOT one:
+ * fan, books and plants each have their own corner, so they coexist.
+ */
+const SHARED_SPOT_CATEGORIES: ReadonlySet<string> = new Set([
+  "bed",
+  "chair",
+  "display",
+  "keyboard",
+  "cup",
+  "desk",
+  "appliance",
+  "cabinet",
+  "desk_plant",
+]);
+
 /** Catalog entries that swap the slot base: draw at floor level, not overlay. */
 export const POSITION_OVERRIDES: Record<string, [number, number, number]> = {
   // "Floor mattress" as the bed-slot pick: mattress GLB's manifest spot is the
@@ -92,8 +114,10 @@ function glbForEntry(entry: string): { glb: string | null; storeId: string | nul
 }
 
 export type RoomFurniturePlan = {
-  /** GLB key → visible. Only slot-bound keys appear here. */
-  visible: Record<string, boolean>;
+  /** GLB keys the room draws (their slots decided so). */
+  drawn: Set<string>;
+  /** GLB keys explicitly hidden (emptied slot / replaced by a pick). */
+  hidden: Set<string>;
   /** GLB key → position taken from the manifest. */
   positionOverrides: Record<string, [number, number, number]>;
 };
@@ -109,27 +133,35 @@ export function resolveRoomFurniture(
   loadout: LoadoutLike,
   owned: ReadonlySet<string>,
 ): RoomFurniturePlan {
-  const visible: Record<string, boolean> = {};
+  const drawn = new Set<string>();
+  const hidden = new Set<string>();
   const positionOverrides: RoomFurniturePlan["positionOverrides"] = {};
+
+  // Which GLB each loadout entry actually draws (owned picks only) — a pick
+  // belongs to its slot and other slots must not hide it.
+  const placed = new Map<string, string>();
+  for (const slot of slots) {
+    const entry = loadout[slot.id];
+    if (entry == null) continue;
+    const { glb, storeId } = glbForEntry(entry);
+    if (!glb) continue;
+    if (storeId != null && !owned.has(storeId)) continue;
+    placed.set(glb, slot.id);
+  }
 
   const applyUntouched = (slot: SlotLike) => {
     const base = SLOT_BASE_MODEL[slot.id];
-    if (base) visible[base] = !isOwnedOnly(base) || owned.has(base);
     for (const item of slotStoreItems(slot.accepts)) {
       if (!owned.has(item.id)) continue;
       const glb = STORE_TO_KEY[item.id];
       if (!glb) continue;
-      if (AUTO_REPLACE.has(item.id) && base) visible[base] = false;
-      visible[glb] = true;
-    }
-  };
-
-  const emptySlot = (slot: SlotLike) => {
-    const base = SLOT_BASE_MODEL[slot.id];
-    if (base) visible[base] = false;
-    for (const item of slotStoreItems(slot.accepts)) {
-      const glb = STORE_TO_KEY[item.id];
-      if (glb) visible[glb] = false;
+      // Owned auto-replacements swap the base while the slot is untouched;
+      // every other owned variant shows at its own spot through the default
+      // rule (owned-gated → visible), unless it was hidden elsewhere.
+      if (AUTO_REPLACE.has(item.id) && !placed.has(glb)) {
+        if (base) hidden.add(base);
+        drawn.add(glb);
+      }
     }
   };
 
@@ -139,8 +171,17 @@ export function resolveRoomFurniture(
       continue;
     }
     const entry = loadout[slot.id];
+    const base = SLOT_BASE_MODEL[slot.id];
     if (entry === null) {
-      emptySlot(slot);
+      // Emptied slot: hide the base and the unplaced family members that
+      // share its spot (a pick placed in a sibling slot keeps drawing).
+      if (base) hidden.add(base);
+      if (SHARED_SPOT_CATEGORIES.has(slot.accepts[0] ?? "")) {
+        for (const item of slotStoreItems(slot.accepts)) {
+          const glb = STORE_TO_KEY[item.id];
+          if (glb && !placed.has(glb)) hidden.add(glb);
+        }
+      }
       continue;
     }
     const { glb, storeId } = glbForEntry(entry);
@@ -150,17 +191,19 @@ export function resolveRoomFurniture(
       applyUntouched(slot);
       continue;
     }
-    const base = SLOT_BASE_MODEL[slot.id];
+    drawn.add(glb);
     const overlay = storeId != null && STORE_OVERLAY.has(storeId);
-    for (const key of [
-      base,
-      ...slotStoreItems(slot.accepts).map((item) => STORE_TO_KEY[item.id]),
-    ]) {
-      // Overlays keep their base; replacements hide it.
-      if (key && key !== glb && !(overlay && key === base)) visible[key] = false;
+    const shared = SHARED_SPOT_CATEGORIES.has(slot.accepts[0] ?? "");
+    if (!overlay && base && base !== glb) hidden.add(base);
+    if (shared) {
+      // Same-spot siblings yield to this pick unless they are placed
+      // elsewhere (that slot's own entry draws them).
+      for (const item of slotStoreItems(slot.accepts)) {
+        const other = STORE_TO_KEY[item.id];
+        if (!other || other === glb) continue;
+        if (!placed.has(other)) hidden.add(other);
+      }
     }
-    visible[glb] = true;
-    if (overlay && base) visible[base] = true;
     const override = POSITION_OVERRIDES[entry];
     if (override) positionOverrides[glb] = override;
     if (entry === "student.laptop") {
@@ -180,5 +223,5 @@ export function resolveRoomFurniture(
     }
   }
 
-  return { visible, positionOverrides };
+  return { drawn, hidden, positionOverrides };
 }

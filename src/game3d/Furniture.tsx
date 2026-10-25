@@ -44,7 +44,8 @@ export function Furniture() {
   );
 
   const visibleFor = (key: string): boolean => {
-    if (key in plan.visible) return plan.visible[key] && !hidden.has(key);
+    if (plan.drawn.has(key)) return !hidden.has(key);
+    if (plan.hidden.has(key)) return false;
     if (isOwnedOnly(key)) {
       const storeId = KEY_TO_STORE.get(key);
       return storeId != null && ownedSet.has(storeId) && !hidden.has(key);
@@ -72,7 +73,7 @@ export function Furniture() {
         // The fresh-student scene draws the stage0 set as shipped; otherwise
         // these GLBs (folding table, laptop) only appear when a slot pick
         // resolves to them — at the overridden position where needed.
-        const slotDriven = !stage0Active && plan.visible[item.key] === true;
+        const slotDriven = !stage0Active && plan.drawn.has(item.key);
         const override = plan.positionOverrides[item.key];
         return (
           <ItemModel
