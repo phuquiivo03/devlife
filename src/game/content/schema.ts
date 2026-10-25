@@ -38,17 +38,15 @@ export const poseSchema = z.object({
   hipFromBottom: z.number().int(),
 });
 
-export const slotSchema = z.object({
+/**
+ * One room's half of a shared slot: just the default item and the 2D anchor.
+ * The id/kind/accepts/parent half lives in rooms/slots.shared.ts and is
+ * merged in by `buildRoomSlots` at load time.
+ */
+export const roomSlotEntrySchema = z.object({
   id: z.string(),
-  kind: z.enum(["floor", "surface", "seat", "wall", "decal"]),
-  accepts: z.array(z.string()),
   default: z.string().nullable(),
   anchor: vec.optional(),
-  parent: z.string().optional(),
-  socket: z.string().optional(),
-  required: z.boolean().optional(),
-  label: localizedSchema.optional(),
-  group: z.enum(["desk", "room", "wall"]).optional(),
 });
 
 export const roomSchema = z.object({
@@ -67,7 +65,7 @@ export const roomSchema = z.object({
   }),
   focusX: z.number().int(),
   letterbox: z.string().optional(),
-  slots: z.array(slotSchema),
+  slots: z.array(roomSlotEntrySchema),
 });
 
 export const catalogSchema = z.object({

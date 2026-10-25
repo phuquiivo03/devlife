@@ -48,13 +48,14 @@ export const STORE_TO_KEY: Record<string, string> = {
 };
 
 /**
- * Manifest items gated behind store ownership: every purchasable key.
- * Everything else in STUDENT_MANIFEST.items is base furniture, always visible.
+ * Item keys that render only through the loadout (a slot entry or its room
+ * default resolving to them). Everything else in STUDENT_MANIFEST.items is
+ * base furniture, always visible. Ownership alone no longer draws anything.
  */
-const OWNED_ONLY_KEYS = new Set(Object.keys(STORE_TO_KEY));
+const LOADOUT_ONLY_KEYS = new Set(Object.keys(STORE_TO_KEY));
 
-export function isOwnedOnly(key: string): boolean {
-  return OWNED_ONLY_KEYS.has(key);
+export function isLoadoutOnly(key: string): boolean {
+  return LOADOUT_ONLY_KEYS.has(key);
 }
 
 /** Item keys whose GLB is not shipped yet (flagged by scripts/3d/merge-manifest.ts). */

@@ -12,8 +12,8 @@ export type StoreItem = {
   stage?: StageId;
   /**
    * Room-slot category (`RoomSlot.accepts`) the item can be placed into,
-   * e.g. "bed" for bed_vip. Items without one (aircon, lamp_desk) are
-   * always-on decor that cannot be placed or removed.
+   * e.g. "bed" for bed_vip. Every furniture item has one; only the room
+   * purchases (room_junior, room_senior) go without.
    */
   category?: string;
   skills?: number;

@@ -435,9 +435,6 @@ export function eatMeal(state: CareerState, foodId: FoodId): LifeResult {
     return { state, events: [], skipDays: 0 };
   }
   const price = foodPrice(food.price, state);
-  if (state.players.money < price) {
-    return { state, events: [], skipDays: 0 };
-  }
   const life = lifeOf(state);
   const spent = applyActionStats(
     state,
@@ -457,12 +454,11 @@ export function eatMeal(state: CareerState, foodId: FoodId): LifeResult {
   return { ...spent, state: notePurse(spent.state, -price, "food") };
 }
 
-/** Order: unknown food → not hungry enough (`fullness_eat_below`) → not enough money. */
+/** Order: unknown food → not hungry enough (`fullness_eat_below`). Money never blocks a meal — eating while broke takes the balance negative. */
 export function mealBlocked(state: CareerState, foodId: FoodId): string | null {
   const food = foodById(foodId);
   if (!food) return "Không có món này";
   if (state.players.fullness >= LIFE.fullness_eat_below) return LIFE.fullness_eat_block;
-  if (state.players.money < foodPrice(food.price, state)) return "Không đủ tiền";
   return null;
 }
 

@@ -3,8 +3,12 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type { Loadout, StageId } from "../types";
-import { PERSIST_KEY, PERSIST_VERSION } from "../config";
+import { PERSIST_KEY, PERSIST_VERSION, STAGES } from "../config";
 import { getCatalog, getRoom } from "../content";
+import {
+  firstUntouchedAcceptingSlot,
+  STORE_SLOT_PREFIX,
+} from "../../game3d/slot-models";
 import {
   applyDayStarted,
   applyStudy,
@@ -76,7 +80,7 @@ import {
 } from "../life/events";
 import type { LifeStep } from "../life/events";
 import { dialogCueKey, noticeCueKey, pickMomentCue, playLifeSound } from "../life/sounds";
-import { pinItem, roomOwned } from "../life/furniture";
+import { pinItem, roomOwned, storeItem } from "../life/furniture";
 import { buyShopItem } from "../life/store-buy";
 import { acceptJobFromNotice, dismissNoticeById, noticeForAction, tickJobOffers } from "../jobs/offers";
 import {
@@ -833,6 +837,29 @@ export const useGameStore = create<GameState>()(
           selectedSlot: bought.moveTo ? null : get().selectedSlot,
           career: bought.state,
         });
+        // The room renders from the loadout, so a fresh purchase lands in the
+        // first untouched accepting slot of every room — the buyer sees it at
+        // once, no trip to the owned tab. Slots with an entry (even null)
+        // stay as the player left them.
+        const item = storeItem(id);
+        if (item?.category) {
+          const current = get();
+          const loadouts = { ...current.loadouts };
+          for (const stageId of STAGES) {
+            const slot = firstUntouchedAcceptingSlot(
+              getRoom(stageId).slots,
+              loadouts[stageId],
+              item.category,
+            );
+            if (slot) {
+              loadouts[stageId] = {
+                ...loadouts[stageId],
+                [slot.id]: `${STORE_SLOT_PREFIX}${id}`,
+              };
+            }
+          }
+          set({ loadouts });
+        }
         emitGame(bought.events);
         get().syncLifeSurface();
       },

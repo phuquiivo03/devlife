@@ -1,6 +1,11 @@
 import { STAGES, type StageId } from "../config";
 import { defaultCareer } from "../career/actions";
 import { SIM_CATALOG } from "../career/content";
+import { getRoom } from "../content";
+import {
+  firstUntouchedAcceptingSlot,
+  STORE_SLOT_PREFIX,
+} from "../../game3d/slot-models";
 import {
   LOCAL_PLAYER_ID,
   SKILL_IDS,
@@ -27,7 +32,7 @@ import type { Loadout } from "../types";
 import { snapshot, totalMinutesFromPersisted } from "../time";
 import { clampEnergy } from "../vitals/logic";
 import { LIFE } from "../life/content";
-import { normalizeShop } from "../life/furniture";
+import { normalizeShop, STORE_ITEMS } from "../life/furniture";
 import { defaultLife } from "../life/logic";
 import { isTraitId, MIGRATION_TRAIT, rollTrait } from "../life/traits";
 import { defaultFeed } from "../life/events";
@@ -636,6 +641,13 @@ function strOrNull(value: unknown): string | null {
  * Version 22 adds `career.employment` (full-time job). An older save starts
  * with no job; every existing `player_jobs` row, including legacy `remote`
  * offers, keeps running as `source: "freelance"`.
+ * Version 23 gives every room the same shared slot set and makes the room
+ * render from the loadout only (no owned-item ambience). Slot ids are the
+ * union of the old per-room ids, so no entry is renamed; each owned store
+ * item is placed into the first untouched accepting slot of every stage
+ * (`store:<id>`), with aircon and lamp_desk landing in their new slots.
+ * Existing loadout entries — including an explicit `null` — are never
+ * overwritten, so no placed item is lost and no choice is reversed.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -732,6 +744,30 @@ export function migrateSave(
         fullness: fullnessOrDefault(career.players.fullness),
       },
     };
+  }
+  if (version < 23) {
+    // v23: shared room slots + loadout-only rendering. Owned items used to
+    // show through an ownership gate with no slot entry; now each one needs
+    // `store:<id>` in a slot. Place them into the first untouched accepting
+    // slot of every stage so nothing the player could see disappears. Slots
+    // with an entry (any value, including null) keep the player's choice.
+    const owned = new Set(career.shop.owned);
+    for (const stageId of STAGES) {
+      const slots = getRoom(stageId).slots;
+      const stageLoadout: Loadout = { ...loadouts[stageId] };
+      const placed = new Set(Object.values(stageLoadout));
+      for (const item of STORE_ITEMS) {
+        if (item.category == null || item.stage) continue;
+        if (!owned.has(item.id)) continue;
+        const entry = `${STORE_SLOT_PREFIX}${item.id}`;
+        if (placed.has(entry)) continue;
+        const slot = firstUntouchedAcceptingSlot(slots, stageLoadout, item.category);
+        if (!slot) continue;
+        stageLoadout[slot.id] = entry;
+        placed.add(entry);
+      }
+      loadouts[stageId] = stageLoadout;
+    }
   }
 
   return {

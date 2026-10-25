@@ -33,6 +33,7 @@
       "label": "Máy lạnh",
       "price": 7000000,
       "icon": "shop_aircon.png",
+      "category": "aircon",
       "sleep": 10
     },
     {
@@ -107,7 +108,8 @@
       "id": "lamp_desk",
       "label": "Đèn bàn",
       "price": 250000,
-      "icon": "shop_lamp_desk.png"
+      "icon": "shop_lamp_desk.png",
+      "category": "desk_lamp"
     },
     {
       "id": "poster_vn",

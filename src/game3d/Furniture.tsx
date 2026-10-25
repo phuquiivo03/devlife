@@ -3,22 +3,18 @@
 import { useMemo } from "react";
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
-import { isOwnedOnly, STORE_TO_KEY } from "./assets";
+import { isLoadoutOnly } from "./assets";
 import { STUDENT_MANIFEST } from "./manifest";
 import { resolveRoomFurniture } from "./slot-models";
 import { ItemModel } from "./ItemModel";
-
-/** Invert STORE_TO_KEY so manifest item keys can ask "is this owned?". */
-const KEY_TO_STORE: ReadonlyMap<string, string> = new Map(
-  Object.entries(STORE_TO_KEY).map(([storeId, key]) => [key, storeId]),
-);
 
 /**
  * Slot-driven room furniture:
  * - room shell always visible
  * - slots follow the loadout (see slot-models.ts): untouched slots keep the
  *   shipped scene, a loadout entry replaces/overlays/empties the slot
- * - keys outside every slot (aircon, lamp_desk, …) stay owned-gated
+ * - store items (aircon, lamp_desk, …) draw only when a slot resolves to
+ *   them — ownership alone never renders anything
  * - the fresh-student scene (no monitor2/ergo_chair owned) swaps in the
  *   stage0 set (folding table + laptop) and hides the desk set — independent
  *   of the player pose, which floors separately when the seat is emptied
@@ -46,10 +42,8 @@ export function Furniture() {
   const visibleFor = (key: string): boolean => {
     if (plan.drawn.has(key)) return !hidden.has(key);
     if (plan.hidden.has(key)) return false;
-    if (isOwnedOnly(key)) {
-      const storeId = KEY_TO_STORE.get(key);
-      return storeId != null && ownedSet.has(storeId) && !hidden.has(key);
-    }
+    // Store items need a slot to resolve to them; base furniture ships as-is.
+    if (isLoadoutOnly(key)) return false;
     return !hidden.has(key);
   };
 

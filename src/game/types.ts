@@ -14,7 +14,9 @@ export type SocketName =
   | "gadget"
   | "under"
   | "top"
-  | "top2";
+  | "top2"
+  | "lamp"
+  | "seat";
 
 export type Category =
   | "bed"
@@ -30,6 +32,8 @@ export type Category =
   | "under_desk"
   | "cabinet"
   | "appliance"
+  | "aircon"
+  | "desk_lamp"
   | "shelf"
   | "wardrobe"
   | "floor_decor"

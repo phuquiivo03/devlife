@@ -108,9 +108,13 @@ describe("eating", () => {
     expect(mealBlocked(start, "phantom" as FoodId)).toBe("Không có món này");
   });
 
-  it("still blocks on money after the fullness gate passes", () => {
+  it("eating while broke is allowed and takes the balance negative", () => {
     const start = { ...freshCareer(), players: { ...freshCareer().players, fullness: 20, money: 100 } };
-    expect(mealBlocked(start, "bun_bo")).toBe("Không đủ tiền");
+    expect(mealBlocked(start, "bun_bo")).toBeNull();
+    const eaten = eatMeal(start, "bun_bo");
+    expect(eaten.state.players.fullness).toBe(LIFE.fullness_after_meal);
+    expect(eaten.state.players.money).toBe(100 - 40_000);
+    expect(eaten.state.life.mealsToday).toBe(1);
   });
 
   it("eating sets fullness_after_meal, charges the price, and keeps the food health", () => {

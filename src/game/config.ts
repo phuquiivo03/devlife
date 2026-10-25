@@ -15,7 +15,7 @@ export const STAGES = ["student", "junior", "senior"] as const;
 export type StageId = (typeof STAGES)[number];
 
 export const PERSIST_KEY = "devlife:v1";
-export const PERSIST_VERSION = 22;
+export const PERSIST_VERSION = 23;
 /**
  * v1: stage, loadouts, showCharacter.
  * v2: in-game `totalMinutes` (see docs/systems/time.md).
@@ -39,6 +39,7 @@ export const PERSIST_VERSION = 22;
  * v20: slot hunger (`life.slotsSinceMeal`) became the continuous `players.fullness` stat (0–100). Older saves start full (`fullness_default_migrate`).
  * v21: the 3D store renamed `plant`→`plant_big` and `fan`→`fan_standing` in `shop.owned` and `shop.pin`.
  * v22: full-time career. `career.employment` starts empty (no job, no applications, no board); every existing `player_jobs` row, including legacy `remote` offers, keeps running as `source: "freelance"`.
+ * v23: all rooms share one slot set (rooms/slots.shared.ts) and the room renders from the loadout only. Every owned store item is placed into the first untouched accepting slot of each stage's loadout (aircon and lamp_desk gain slots); existing entries, including explicit `null`, are never overwritten.
  */
 
 export const CHAR_POSE_SIT_BACK = "character/derived/char_sit_back";

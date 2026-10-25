@@ -22,7 +22,7 @@ export type OwnedItemStatus = "active" | "inactive";
  * wardrobe, armchair, rug, posters, mouse, …) are kept out of the owned tab
  * instead of drawing their old pixel sprites.
  */
-const CATALOG_SHOP_ICONS: Record<string, string> = {
+export const CATALOG_SHOP_ICONS: Record<string, string> = {
   "student.mattress": "mattress",
   "student.folding_table": "table_folding",
   "student.laptop": "laptop",

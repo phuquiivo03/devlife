@@ -110,7 +110,8 @@ describe("Owned Items Tab", () => {
   });
 
   it("reports store furniture per slot and honors the ownership rule", () => {
-    // Unplaced store furniture reads "Chưa dùng"; aircon has no slot at all.
+    // Unplaced store furniture reads "Chưa dùng"; aircon has its own slot in
+    // every room now (v23), so it is placeable, not locked.
     const idle = getOwnedItems(
       mockCareer(["bed_vip", "mattress", "aircon"]),
       "student",
@@ -120,7 +121,8 @@ describe("Owned Items Tab", () => {
     expect(vip?.status).toBe("inactive");
     expect(vip?.category).toBe("bed");
     const aircon = idle.find((i) => i.storeId === "aircon");
-    expect(aircon?.noSlotInRoom).toBe(true);
+    expect(aircon?.noSlotInRoom).toBe(false);
+    expect(aircon?.category).toBe("aircon");
 
     // Placing them writes `store:` entries into the loadout.
     const placed = getOwnedItems(

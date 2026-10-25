@@ -1,4 +1,4 @@
-import { isOwnedOnly, STORE_TO_KEY } from "./assets";
+import { STORE_TO_KEY } from "./assets";
 import { STORE_ITEMS, type StoreItem } from "@/game/life/furniture";
 
 /**
@@ -25,6 +25,22 @@ export type SlotLike = {
 };
 
 export type LoadoutLike = Record<string, string | null>;
+
+/**
+ * First slot accepting `category` that the loadout has not touched (no entry
+ * at all — an explicit pick, including `null`, is a player choice and stays).
+ * Migration and the buy flow use this to auto-place store items without
+ * ever overwriting a choice. Null when every accepting slot has an entry.
+ */
+export function firstUntouchedAcceptingSlot(
+  slots: readonly SlotLike[],
+  loadout: LoadoutLike,
+  category: string,
+): SlotLike | null {
+  return (
+    slots.find((slot) => slot.accepts.includes(category) && !(slot.id in loadout)) ?? null
+  );
+}
 
 /** Catalog item id → GLB key: exact model matches plus the closest shipped one. */
 export const CATALOG_TO_GLB: Record<string, string> = {

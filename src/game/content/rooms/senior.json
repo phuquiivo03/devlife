@@ -40,292 +40,33 @@
   },
   "focusX": 218,
   "slots": [
-    {
-      "id": "wall_art_1",
-      "kind": "wall",
-      "accepts": [
-        "wall_art"
-      ],
-      "default": "senior.frame_1",
-      "anchor": [
-        100,
-        74
-      ],
-      "label": {
-        "en": "Wall art",
-        "vi": "Trang trí tường"
-      },
-      "group": "wall"
-    },
-    {
-      "id": "wall_art_2",
-      "kind": "wall",
-      "accepts": [
-        "wall_art"
-      ],
-      "default": "senior.frame_2",
-      "anchor": [
-        310,
-        79
-      ],
-      "label": {
-        "en": "Wall art",
-        "vi": "Trang trí tường"
-      },
-      "group": "wall"
-    },
-    {
-      "id": "rug",
-      "kind": "decal",
-      "accepts": [
-        "rug"
-      ],
-      "default": "senior.rug",
-      "anchor": [
-        217,
-        222
-      ],
-      "label": {
-        "en": "Rug",
-        "vi": "Thảm"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cabinet",
-      "kind": "floor",
-      "accepts": [
-        "cabinet"
-      ],
-      "default": "senior.sideboard",
-      "anchor": [
-        60,
-        152
-      ],
-      "label": {
-        "en": "Cabinet",
-        "vi": "Tủ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cabinet_top",
-      "kind": "surface",
-      "accepts": [
-        "appliance"
-      ],
-      "default": "senior.espresso_machine",
-      "parent": "cabinet",
-      "socket": "top",
-      "label": {
-        "en": "On cabinet",
-        "vi": "Trên tủ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cabinet_top_2",
-      "kind": "surface",
-      "accepts": [
-        "appliance"
-      ],
-      "default": "senior.coffee_grinder",
-      "parent": "cabinet",
-      "socket": "top2",
-      "label": {
-        "en": "On cabinet",
-        "vi": "Trên tủ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "lounge",
-      "kind": "floor",
-      "accepts": [
-        "lounge"
-      ],
-      "default": "senior.armchair",
-      "anchor": [
-        39,
-        220
-      ],
-      "label": {
-        "en": "Lounge",
-        "vi": "Ghế thư giãn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "desk",
-      "kind": "floor",
-      "accepts": [
-        "desk"
-      ],
-      "default": "senior.standing_desk",
-      "anchor": [
-        218,
-        175
-      ],
-      "required": true,
-      "label": {
-        "en": "Desk",
-        "vi": "Bàn"
-      },
-      "group": "desk"
-    },
-    {
-      "id": "under_desk",
-      "kind": "surface",
-      "accepts": [
-        "under_desk"
-      ],
-      "default": "senior.drawer_pedestal",
-      "parent": "desk",
-      "socket": "under",
-      "label": {
-        "en": "Under desk",
-        "vi": "Dưới bàn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "display",
-      "kind": "surface",
-      "accepts": [
-        "display"
-      ],
-      "default": "senior.dual_monitor",
-      "parent": "desk",
-      "socket": "display",
-      "label": {
-        "en": "Screen",
-        "vi": "Màn hình"
-      },
-      "group": "room"
-    },
-    {
-      "id": "keyboard",
-      "kind": "surface",
-      "accepts": [
-        "keyboard"
-      ],
-      "default": "senior.keyboard_mat",
-      "parent": "desk",
-      "socket": "keyboard",
-      "label": {
-        "en": "Keyboard",
-        "vi": "Bàn phím"
-      },
-      "group": "room"
-    },
-    {
-      "id": "mouse",
-      "kind": "surface",
-      "accepts": [
-        "mouse"
-      ],
-      "default": null,
-      "parent": "desk",
-      "socket": "mouse",
-      "label": {
-        "en": "Mouse",
-        "vi": "Chuột"
-      },
-      "group": "room"
-    },
-    {
-      "id": "cup",
-      "kind": "surface",
-      "accepts": [
-        "cup"
-      ],
-      "default": null,
-      "parent": "desk",
-      "socket": "cup",
-      "label": {
-        "en": "Cup",
-        "vi": "Cốc"
-      },
-      "group": "room"
-    },
-    {
-      "id": "desk_plant",
-      "kind": "surface",
-      "accepts": [
-        "desk_plant"
-      ],
-      "default": "senior.plant_small",
-      "parent": "desk",
-      "socket": "plant",
-      "label": {
-        "en": "Desk plant",
-        "vi": "Cây bàn"
-      },
-      "group": "room"
-    },
-    {
-      "id": "gadget",
-      "kind": "surface",
-      "accepts": [
-        "gadget"
-      ],
-      "default": "senior.smart_speaker",
-      "parent": "desk",
-      "socket": "gadget",
-      "label": {
-        "en": "Gadget",
-        "vi": "Thiết bị"
-      },
-      "group": "room"
-    },
-    {
-      "id": "seat",
-      "kind": "seat",
-      "accepts": [
-        "chair"
-      ],
-      "default": "senior.ergo_chair",
-      "parent": "desk",
-      "socket": "seat",
-      "label": {
-        "en": "Chair",
-        "vi": "Ghế"
-      },
-      "group": "room"
-    },
-    {
-      "id": "shelf",
-      "kind": "floor",
-      "accepts": [
-        "shelf"
-      ],
-      "default": "senior.bookshelf",
-      "anchor": [
-        361,
-        149
-      ],
-      "label": {
-        "en": "Shelf",
-        "vi": "Kệ"
-      },
-      "group": "room"
-    },
-    {
-      "id": "decor_1",
-      "kind": "floor",
-      "accepts": [
-        "floor_decor"
-      ],
-      "default": "senior.monstera",
-      "anchor": [
-        380,
-        171
-      ],
-      "label": {
-        "en": "Floor decor",
-        "vi": "Đồ sàn"
-      },
-      "group": "room"
-    }
+    { "id": "bed", "default": null },
+    { "id": "desk", "default": "senior.standing_desk", "anchor": [218, 175] },
+    { "id": "under_desk", "default": "senior.drawer_pedestal" },
+    { "id": "side_device", "default": null },
+    { "id": "display", "default": "senior.dual_monitor" },
+    { "id": "keyboard", "default": "senior.keyboard_mat" },
+    { "id": "mouse", "default": null },
+    { "id": "cup", "default": null },
+    { "id": "desk_plant", "default": "senior.plant_small" },
+    { "id": "gadget", "default": "senior.smart_speaker" },
+    { "id": "desk_lamp", "default": null },
+    { "id": "seat", "default": "senior.ergo_chair" },
+    { "id": "cabinet", "default": "senior.sideboard", "anchor": [60, 152] },
+    { "id": "cabinet_top", "default": "senior.espresso_machine" },
+    { "id": "cabinet_top_2", "default": "senior.coffee_grinder" },
+    { "id": "shelf", "default": "senior.bookshelf", "anchor": [361, 149] },
+    { "id": "wardrobe", "default": null },
+    { "id": "lounge", "default": "senior.armchair", "anchor": [39, 220] },
+    { "id": "decor_1", "default": "senior.monstera", "anchor": [380, 171] },
+    { "id": "decor_2", "default": null },
+    { "id": "decor_3", "default": null },
+    { "id": "snack_1", "default": null },
+    { "id": "snack_2", "default": null },
+    { "id": "rug", "default": "senior.rug", "anchor": [217, 222] },
+    { "id": "wall_hanging", "default": null },
+    { "id": "wall_art_1", "default": "senior.frame_1", "anchor": [100, 74] },
+    { "id": "wall_art_2", "default": "senior.frame_2", "anchor": [310, 79] },
+    { "id": "aircon", "default": null }
   ]
 }
