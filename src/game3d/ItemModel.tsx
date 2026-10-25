@@ -40,7 +40,8 @@ export function ItemModel({
   shadows = "both",
   spinBlades = false,
 }: Props) {
-  const url = kind === "character" ? characterUrl(item.key) : itemUrl(item.key);
+  const url =
+    kind === "character" ? characterUrl(item.key) : item.url ?? itemUrl(item.key);
   const { scene } = useGLTF(url);
   const clone = useMemo(() => {
     const copy = scene.clone(true) as Group;

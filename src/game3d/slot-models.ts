@@ -1,5 +1,6 @@
 import { STORE_TO_KEY } from "./assets";
 import { STORE_ITEMS, type StoreItem } from "@/game/life/furniture";
+import type { StageId } from "@/game/config";
 
 /**
  * Slot-driven furniture resolution for the 3D room.
@@ -42,7 +43,10 @@ export function firstUntouchedAcceptingSlot(
   );
 }
 
-/** Catalog item id → GLB key: exact model matches plus the closest shipped one. */
+/** Catalog item id → GLB key: exact model matches plus the closest shipped one.
+ * Junior/senior defaults without a dedicated GLB map to the nearest shipped
+ * model (a nightstand stands in for the bookshelf/wardrobe/drawer, the kettle
+ * for the espresso machines, etc.) until their own GLBs land. */
 export const CATALOG_TO_GLB: Record<string, string> = {
   "student.mattress": "mattress",
   "student.folding_table": "table_folding",
@@ -59,8 +63,30 @@ export const CATALOG_TO_GLB: Record<string, string> = {
   "junior.mug": "mug",
   "junior.plant_small": "plant_small",
   "junior.office_chair": "ergo_chair", // no office_chair GLB — ergo is the closest
+  "junior.bookshelf": "nightstand",
+  "junior.drawer_pedestal": "nightstand",
+  "junior.keyboard_mat": "keyboard",
+  "junior.laptop_stand": "laptop",
+  "junior.mouse": "mug", // no mouse GLB — the mug is the closest desk-side object
+  "junior.poster_1": "poster_vn",
+  "junior.poster_2": "poster_vn",
+  "junior.wardrobe": "nightstand",
   "senior.ergo_chair": "ergo_chair",
   "senior.plant_small": "plant_small",
+  "senior.armchair": "ergo_chair", // lounge stand-in until an armchair GLB ships
+  "senior.bookshelf": "nightstand",
+  "senior.coffee_grinder": "kettle",
+  "senior.dual_monitor": "monitor2",
+  "senior.drawer_pedestal": "nightstand",
+  "senior.espresso_machine": "kettle",
+  "senior.frame_1": "poster_vn",
+  "senior.frame_2": "poster_vn",
+  "senior.keyboard_mat": "keyboard",
+  "senior.monstera": "plant_big",
+  "senior.rug": "bed_floor_mat", // floor mat doubles as the rug
+  "senior.sideboard": "nightstand",
+  "senior.smart_speaker": "mug",
+  "senior.standing_desk": "desk",
 };
 
 /**
@@ -104,16 +130,36 @@ const SHARED_SPOT_CATEGORIES: ReadonlySet<string> = new Set([
   "desk_plant",
 ]);
 
-/** Catalog entries that swap the slot base: draw at floor level, not overlay. */
-export const POSITION_OVERRIDES: Record<string, [number, number, number]> = {
-  // "Floor mattress" as the bed-slot pick: mattress GLB's manifest spot is the
-  // overlay on the wooden bed — as a replacement it sits on the floor instead.
-  "student.mattress": [-0.315, 0.02, -1.445],
+/**
+ * Catalog entries that swap the slot base: draw at floor level, not overlay.
+ * Keyed per stage — a pick's replacement spot follows that room's layout.
+ */
+const POSITION_OVERRIDES_BY_STAGE: Record<StageId, Record<string, [number, number, number]>> = {
+  student: {
+    // "Floor mattress" as the bed-slot pick: mattress GLB's manifest spot is
+    // the overlay on the wooden bed — as a replacement it sits on the floor.
+    "student.mattress": [-0.315, 0.02, -1.445],
+  },
+  junior: {
+    "student.mattress": [-0.9, 0.02, -1.44],
+  },
+  senior: {
+    "student.mattress": [-1.05, 0.02, -1.42],
+    // The mat's manifest spot is the rug centre — as a bed pick it goes
+    // beside the bed instead.
+    "store:bed_floor_mat": [-0.15, 0.01, -1.42],
+  },
 };
 
-/** Laptop GLB spots: on the folding table (stage0) vs on the wooden desk (the monitor's place). */
-const LAPTOP_ON_FOLDING_TABLE: [number, number, number] = [-1.535, 0.32, -0.1];
-const LAPTOP_ON_DESK: [number, number, number] = [-1.76, 0.74, -0.12];
+/** Laptop GLB spots per room: on the folding table vs on the desk (the monitor's place). */
+const LAPTOP_SPOTS: Record<
+  StageId,
+  { folding: [number, number, number]; desk: [number, number, number] }
+> = {
+  student: { folding: [-1.535, 0.32, -0.1], desk: [-1.76, 0.74, -0.12] },
+  junior: { folding: [-1.535, 0.32, 0.475], desk: [-1.76, 0.74, 0.255] },
+  senior: { folding: [0.2, 0.32, -1.5], desk: [0.245, 0.74, -1.76] },
+};
 
 function slotStoreItems(accepts: readonly string[]): StoreItem[] {
   return STORE_ITEMS.filter(
@@ -143,15 +189,23 @@ export type RoomFurniturePlan = {
  * loadout reproduce the pre-loadout scene (base model, owned auto-replaces
  * and overlays); a touched slot draws exactly its entry — `null` empties it,
  * an entry without a GLB keeps the untouched look.
+ *
+ * Junior/senior have no shipped baseline of their own (their stage0 is
+ * empty), so there the room default of an untouched slot draws like an entry
+ * — `null` hides the base, a catalog id renders its GLB. Student keeps the
+ * manifest-as-baseline grammar: its defaults never draw on their own.
  */
 export function resolveRoomFurniture(
   slots: readonly SlotLike[],
   loadout: LoadoutLike,
   owned: ReadonlySet<string>,
+  stage: StageId = "student",
 ): RoomFurniturePlan {
   const drawn = new Set<string>();
   const hidden = new Set<string>();
   const positionOverrides: RoomFurniturePlan["positionOverrides"] = {};
+  const overrides = POSITION_OVERRIDES_BY_STAGE[stage];
+  const useDefaults = stage !== "student";
 
   // Which GLB each loadout entry actually draws (owned picks only) — a pick
   // belongs to its slot and other slots must not hide it.
@@ -165,8 +219,9 @@ export function resolveRoomFurniture(
     placed.set(glb, slot.id);
   }
 
-  const applyUntouched = (slot: SlotLike) => {
+  const applyUntouched = (slot: SlotLike): boolean => {
     const base = SLOT_BASE_MODEL[slot.id];
+    let replaced = false;
     for (const item of slotStoreItems(slot.accepts)) {
       if (!owned.has(item.id)) continue;
       const glb = STORE_TO_KEY[item.id];
@@ -177,35 +232,33 @@ export function resolveRoomFurniture(
       if (AUTO_REPLACE.has(item.id) && !placed.has(glb)) {
         if (base) hidden.add(base);
         drawn.add(glb);
+        replaced = true;
+      }
+    }
+    return replaced;
+  };
+
+  const hideBaseAndFamily = (slot: SlotLike) => {
+    // Emptied slot: hide the base and the unplaced family members that
+    // share its spot (a pick placed in a sibling slot keeps drawing).
+    const base = SLOT_BASE_MODEL[slot.id];
+    if (base) hidden.add(base);
+    if (SHARED_SPOT_CATEGORIES.has(slot.accepts[0] ?? "")) {
+      for (const item of slotStoreItems(slot.accepts)) {
+        const glb = STORE_TO_KEY[item.id];
+        if (glb && !placed.has(glb)) hidden.add(glb);
       }
     }
   };
 
-  for (const slot of slots) {
-    if (!(slot.id in loadout)) {
-      applyUntouched(slot);
-      continue;
-    }
-    const entry = loadout[slot.id];
+  const drawEntry = (slot: SlotLike, entry: string) => {
     const base = SLOT_BASE_MODEL[slot.id];
-    if (entry === null) {
-      // Emptied slot: hide the base and the unplaced family members that
-      // share its spot (a pick placed in a sibling slot keeps drawing).
-      if (base) hidden.add(base);
-      if (SHARED_SPOT_CATEGORIES.has(slot.accepts[0] ?? "")) {
-        for (const item of slotStoreItems(slot.accepts)) {
-          const glb = STORE_TO_KEY[item.id];
-          if (glb && !placed.has(glb)) hidden.add(glb);
-        }
-      }
-      continue;
-    }
     const { glb, storeId } = glbForEntry(entry);
     // An unowned store pick or a catalog entry without a GLB keeps the slot
     // looking untouched instead of vanishing.
     if (!glb || (storeId != null && !owned.has(storeId))) {
       applyUntouched(slot);
-      continue;
+      return;
     }
     drawn.add(glb);
     const overlay = storeId != null && STORE_OVERLAY.has(storeId);
@@ -220,23 +273,41 @@ export function resolveRoomFurniture(
         if (!placed.has(other)) hidden.add(other);
       }
     }
-    const override = POSITION_OVERRIDES[entry];
+    const override = overrides[entry];
     if (override) positionOverrides[glb] = override;
     if (entry === "student.laptop") {
       // The laptop follows whichever desk is actually drawn: on the folding
-      // table it keeps its stage0 spot; on the wooden desk it takes the
-      // monitor's place so it never floats above the low table.
+      // table it stays low; on a real desk it takes the monitor's place so
+      // it never floats above the low table.
       const deskSlot = slots.find((s) => s.id === "desk");
       const deskEntry = deskSlot
         ? deskSlot.id in loadout
           ? loadout[deskSlot.id]
-          : null
+          : useDefaults
+            ? deskSlot.default
+            : null
         : null;
+      const spots = LAPTOP_SPOTS[stage];
       positionOverrides.laptop =
-        deskEntry === "student.folding_table"
-          ? LAPTOP_ON_FOLDING_TABLE
-          : LAPTOP_ON_DESK;
+        deskEntry === "student.folding_table" ? spots.folding : spots.desk;
     }
+  };
+
+  for (const slot of slots) {
+    if (!(slot.id in loadout)) {
+      if (applyUntouched(slot)) continue;
+      if (useDefaults) {
+        if (slot.default === null) hideBaseAndFamily(slot);
+        else if (slot.default != null) drawEntry(slot, slot.default);
+      }
+      continue;
+    }
+    const entry = loadout[slot.id];
+    if (entry === null) {
+      hideBaseAndFamily(slot);
+      continue;
+    }
+    drawEntry(slot, entry);
   }
 
   return { drawn, hidden, positionOverrides };

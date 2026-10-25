@@ -2,7 +2,7 @@
 
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
-import { STUDENT_MANIFEST } from "./manifest";
+import { getRoomManifest } from "./manifest";
 import { ItemModel } from "./ItemModel";
 
 export type PlayerPose = "floor" | "sit" | "stand" | "sleep";
@@ -38,23 +38,23 @@ export function usePlayerPose(): PlayerPose {
 export function Player() {
   const pose = usePlayerPose();
   const showCharacter = useGameStore((s) => s.showCharacter);
+  const stage = useGameStore((s) => s.stage);
+  const poses = getRoomManifest(stage).poses;
 
   return (
     <>
-      {(Object.keys(STUDENT_MANIFEST.poses) as Array<keyof typeof STUDENT_MANIFEST.poses>).map(
-        (name) => {
-          const item = STUDENT_MANIFEST.poses[name];
-          if (item.missing) return null;
-          return (
-            <ItemModel
-              key={`pose:${name}`}
-              item={item}
-              kind="character"
-              visible={showCharacter && pose === name}
-            />
-          );
-        },
-      )}
+      {(Object.keys(poses) as Array<keyof typeof poses>).map((name) => {
+        const item = poses[name];
+        if (item.missing) return null;
+        return (
+          <ItemModel
+            key={`pose:${name}`}
+            item={item}
+            kind="character"
+            visible={showCharacter && pose === name}
+          />
+        );
+      })}
     </>
   );
 }

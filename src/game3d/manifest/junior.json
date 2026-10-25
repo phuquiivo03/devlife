@@ -1,0 +1,189 @@
+{
+ "version": "junior_3d_v1",
+ "character_scale": 1.4,
+ "items": [
+  {
+   "key": "room_shell",
+   "category": "room_shell",
+   "position": [0, 0, 0],
+   "rotationY": 0,
+   "url": "/models/room/junior/room_shell.glb",
+   "note": "single merged shell; window + wall tiles baked in; origin matches student v4.1"
+  },
+  {
+   "key": "bed",
+   "category": "furniture",
+   "position": [-0.9, 0.02, -1.44],
+   "rotationY": 0
+  },
+  {
+   "key": "mattress",
+   "category": "furniture",
+   "position": [-0.84, 0.28, -1.46],
+   "rotationY": 0,
+   "note": "overlay on the bed; owned only"
+  },
+  {
+   "key": "bed_vip",
+   "category": "furniture",
+   "position": [-0.9, 0.02, -1.44],
+   "rotationY": 0,
+   "note": "replaces bed; owned only"
+  },
+  {
+   "key": "bed_floor_mat",
+   "category": "furniture",
+   "position": [0.35, 0.01, -1.44],
+   "rotationY": 0
+  },
+  {
+   "key": "desk",
+   "category": "furniture",
+   "position": [-1.62, 0, 0.375],
+   "rotationY": 0
+  },
+  {
+   "key": "table_folding",
+   "category": "furniture",
+   "position": [-1.6, 0.02, 0.475],
+   "rotationY": 1.5708,
+   "note": "drawn only when the desk slot picks student.folding_table"
+  },
+  {
+   "key": "monitor",
+   "category": "decor",
+   "position": [-1.76, 0.74, 0.255],
+   "rotationY": -1.7802
+  },
+  {
+   "key": "monitor2",
+   "category": "decor",
+   "position": [-1.74, 0.74, -0.195],
+   "rotationY": -1.3614,
+   "note": "secondary screen; owned only"
+  },
+  {
+   "key": "keyboard",
+   "category": "decor",
+   "position": [-1.384, 0.745, 0.175],
+   "rotationY": 0
+  },
+  {
+   "key": "laptop",
+   "category": "decor",
+   "position": [-1.5, 0.74, 0.62],
+   "rotationY": -1.5708,
+   "note": "side_device default spot; display-slot picks override to the monitor place"
+  },
+  {
+   "key": "mug",
+   "category": "decor",
+   "position": [-1.48, 0.745, 0.7225],
+   "rotationY": 0
+  },
+  {
+   "key": "cup",
+   "category": "decor",
+   "position": [-1.25, 0.745, 0.55],
+   "rotationY": 0
+  },
+  {
+   "key": "plant_small",
+   "category": "decor",
+   "position": [-1.7974, 0.74, 1.019],
+   "rotationY": 0
+  },
+  {
+   "key": "lamp_desk",
+   "category": "decor",
+   "position": [-1.86, 0.74, 0.675],
+   "rotationY": -1.5708
+  },
+  {
+   "key": "ergo_chair",
+   "category": "furniture",
+   "position": [-0.8239, 0.02, 0.15],
+   "rotationY": 1.5708
+  },
+  {
+   "key": "stool_plastic",
+   "category": "furniture",
+   "position": [1.15, 0.02, 0.85],
+   "rotationY": 0
+  },
+  {
+   "key": "nightstand",
+   "category": "furniture",
+   "position": [1.6, 0.02, -1.45],
+   "rotationY": 0,
+   "note": "stands in for shelf/wardrobe/under_desk defaults until their GLBs ship"
+  },
+  {
+   "key": "kettle",
+   "category": "decor",
+   "position": [1.6981, 0.64, -1.52],
+   "rotationY": 0
+  },
+  {
+   "key": "fan_standing",
+   "category": "furniture",
+   "position": [1.0, 0.01, -1.68],
+   "rotationY": 2.0944
+  },
+  {
+   "key": "plant_big",
+   "category": "decor",
+   "position": [-1.7028, 0.02, 1.7811],
+   "rotationY": 0
+  },
+  {
+   "key": "books_stack",
+   "category": "decor",
+   "position": [-1.05, 0.02, 1.65],
+   "rotationY": 0
+  },
+  {
+   "key": "poster_vn",
+   "category": "decor",
+   "position": [-1.963, 1.32, -0.5],
+   "rotationY": 0
+  },
+  {
+   "key": "fairy_lights",
+   "category": "decor",
+   "position": [0.1375, 1.8226, -0.1378],
+   "rotationY": 0
+  },
+  {
+   "key": "aircon",
+   "category": "decor",
+   "position": [1.35, 1.55, -1.89],
+   "rotationY": 3.141592653589793,
+   "note": "back wall, right of the window opening (x 0.6..1.3 is clear)"
+  }
+ ],
+ "stage0": {
+  "items": [],
+  "hide": []
+ },
+ "poses": {
+  "sit": {
+   "key": "player",
+   "category": "character",
+   "position": [-0.958, 0.236, 0.15],
+   "rotationY": 1.5708
+  },
+  "stand": {
+   "key": "player_standing",
+   "category": "character",
+   "position": [-0.95, 0.02, 0.9],
+   "rotationY": 1.5708
+  },
+  "floor": {
+   "key": "player_floor",
+   "category": "character",
+   "position": [-1.0, 0.02, 0.15],
+   "rotationY": 1.5708
+  }
+ }
+}

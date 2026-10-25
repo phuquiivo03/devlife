@@ -96,13 +96,15 @@ describe("resolveRoomFurniture", () => {
   });
 
   it("keeps the untouched look for catalog entries without a GLB", () => {
+    // senior.dual_monitor used to be the unmapped example — it maps to
+    // monitor2 now, so student.mouse (still GLB-less) carries the case.
     const plan = resolveRoomFurniture(
       SLOTS,
-      { display: "senior.dual_monitor" },
+      { display: "student.mouse" },
       OWNED([]),
     );
     expect(plan.hidden.has("monitor")).toBe(false);
-    expect(plan.drawn.has("dual_monitor")).toBe(false);
+    expect(plan.drawn.has("mouse")).toBe(false);
   });
 
   it("moves the floor mattress to floor level when it replaces the bed", () => {

@@ -29,6 +29,20 @@ const VIEW_DIST = new Vector3(6, 5.2, 6).length();
 /** Screen-up axis of the iso view, precomputed from VIEW_DIR. */
 const UP_SCREEN = new Vector3(0, 1, 0).addScaledVector(VIEW_DIR, -VIEW_DIR.y)
   .normalize();
+/** Base orbit angles of the classic iso view (yaw around +Y from +Z, pitch up from XZ). */
+const BASE_YAW = Math.atan2(VIEW_DIR.x, VIEW_DIR.z);
+const BASE_PITCH = Math.asin(VIEW_DIR.y);
+/** Drag-orbit pitch clamps: low grazing shots are allowed, but never under the
+ * floor and never fully top-down (both look broken with the iso framing). */
+const MIN_PITCH = 0.12;
+const MAX_PITCH = 1.5;
+const clampPitch = (pitch: number) => Math.min(MAX_PITCH, Math.max(MIN_PITCH, pitch));
+const dirFromAngles = (yaw: number, pitch: number) =>
+  new Vector3(
+    Math.cos(pitch) * Math.sin(yaw),
+    Math.sin(pitch),
+    Math.cos(pitch) * Math.cos(yaw),
+  );
 
 type RoomFrame = { zoom: number; position: Vector3; target: Vector3 };
 

@@ -290,6 +290,7 @@ export type GameState = {
   debugForceEvent: () => void;
   syncLifeSurface: () => void;
   debugAddMoney: () => void;
+  debugAddReputation: () => void;
   debugFillEnergy: () => void;
   debugMakeHungry: () => void;
   debugLevelUp: () => void;
@@ -937,6 +938,15 @@ export const useGameStore = create<GameState>()(
         const result = changeMoney(get().career, 500_000);
         set({ career: result.state });
         emitGame(result.events);
+      },
+      debugAddReputation: () => {
+        const career = get().career;
+        set({
+          career: {
+            ...career,
+            players: { ...career.players, reputation: career.players.reputation + 10 },
+          },
+        });
       },
       debugFillEnergy: () => {
         const result = fillEnergy(get().career, SIM_CATALOG);
