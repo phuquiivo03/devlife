@@ -65,11 +65,21 @@ export function Furniture() {
           />
         );
       })}
-      {STUDENT_MANIFEST.stage0.items.map((item) =>
-        item.missing ? null : (
-          <ItemModel key={`stage0:${item.key}`} item={item} visible={floorPose} />
-        ),
-      )}
+      {STUDENT_MANIFEST.stage0.items.map((item) => {
+        if (item.missing) return null;
+        // Floor pose draws the stage0 set as shipped; outside it these GLBs
+        // (folding table, laptop) only appear when a slot pick resolves to
+        // them — at the overridden desk position where needed.
+        const slotDriven = !floorPose && plan.visible[item.key] === true;
+        const override = plan.positionOverrides[item.key];
+        return (
+          <ItemModel
+            key={`stage0:${item.key}`}
+            item={override ? { ...item, position: override } : item}
+            visible={floorPose || slotDriven}
+          />
+        );
+      })}
     </>
   );
 }

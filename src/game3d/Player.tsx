@@ -1,6 +1,7 @@
 "use client";
 
 import { useGameStore } from "@/game/state/store";
+import { getRoom } from "@/game/content";
 import { STUDENT_MANIFEST } from "./manifest";
 import { ItemModel } from "./ItemModel";
 
@@ -10,17 +11,25 @@ export type PlayerPose = "floor" | "sit" | "stand" | "sleep";
  * Pose precedence:
  * 1. sleeping → player hidden (`sleepTransition` runs its own overlay)
  *    // TODO lying pose when a lying GLB lands
- * 2. fresh student room (no monitor2/ergo_chair yet) → sits on the floor at
+ * 2. seat slot emptied (`null`) → standing — nothing to sit on
+ * 3. fresh student room (no monitor2/ergo_chair yet) → sits on the floor at
  *    the folding table + laptop (stage0 set)
- * 3. otherwise (working or idle) → seated on the chair at the desk
+ * 4. otherwise (working or idle) → seated on the chair at the desk
  */
 export function usePlayerPose(): PlayerPose {
   const stage = useGameStore((s) => s.stage);
   const hasMonitor2 = useGameStore((s) => s.career.shop?.owned.includes("monitor2") ?? false);
   const hasErgoChair = useGameStore((s) => s.career.shop?.owned.includes("ergo_chair") ?? false);
   const sleeping = useGameStore((s) => s.sleepTransition?.active ?? false);
+  const loadout = useGameStore((s) => s.loadouts[s.stage]);
 
   if (sleeping) return "sleep";
+  // The seat slot mirrors what the room actually draws: untouched keeps the
+  // base chair, an explicit `null` empties it — nothing to sit on then.
+  const seatSlot = getRoom(stage).slots.find((slot) => slot.id === "seat");
+  if (seatSlot && seatSlot.id in loadout && loadout[seatSlot.id] === null) {
+    return "stand";
+  }
   if (stage === "student" && !hasMonitor2 && !hasErgoChair) return "floor";
   return "sit";
 }

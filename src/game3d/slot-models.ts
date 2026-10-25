@@ -71,6 +71,9 @@ export const POSITION_OVERRIDES: Record<string, [number, number, number]> = {
   // "Floor mattress" as the bed-slot pick: mattress GLB's manifest spot is the
   // overlay on the wooden bed — as a replacement it sits on the floor instead.
   "student.mattress": [-0.315, 0.02, -1.445],
+  // Laptop as the display pick: its stage0 spot is on the low folding table —
+  // as a replacement for the monitor it sits on the desk surface instead.
+  "student.laptop": [-1.52, 0.745, -0.12],
 };
 
 function slotStoreItems(accepts: readonly string[]): StoreItem[] {

@@ -115,6 +115,17 @@ describe("resolveRoomFurniture", () => {
     expect(plan.positionOverrides.mattress).toEqual([-0.315, 0.02, -1.445]);
   });
 
+  it("raises the laptop to the desk surface when it replaces the monitor", () => {
+    const plan = resolveRoomFurniture(
+      SLOTS,
+      { display: "student.laptop" },
+      OWNED([]),
+    );
+    expect(plan.visible.monitor).toBe(false);
+    expect(plan.visible.laptop).toBe(true);
+    expect(plan.positionOverrides.laptop).toEqual([-1.52, 0.745, -0.12]);
+  });
+
   it("hides slot-bound store items when the store pick replaces them", () => {
     const plan = resolveRoomFurniture(
       SLOTS,
