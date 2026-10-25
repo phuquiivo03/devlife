@@ -1,22 +1,7 @@
 import storeConfig from "../../../config/store.json";
-import placementFile from "./placement.json";
 import type { CareerState, ShopState } from "../career/types";
 import type { StageId } from "../config";
 import { LIFE } from "./content";
-
-type PlacementRow = {
-  item: string;
-  room: StageId;
-  anchor: { x: number; y: number };
-  size: { w: number; h: number };
-  facing: string;
-  replaces: string | null;
-  kind: "floor" | "wall" | "surface";
-  sprite?: string;
-};
-
-// PLACEMENT_ITEMS kept for potential future use
-const _PLACEMENT_ITEMS = (placementFile as { items: PlacementRow[] }).items;
 
 export type StoreItem = {
   id: string;
@@ -25,6 +10,12 @@ export type StoreItem = {
   icon: string;
   /** Set on a room. Its bonuses apply only while the player lives there. */
   stage?: StageId;
+  /**
+   * Room-slot category (`RoomSlot.accepts`) the item can be placed into,
+   * e.g. "bed" for bed_vip. Items without one (aircon, lamp_desk) are
+   * always-on decor that cannot be placed or removed.
+   */
+  category?: string;
   skills?: number;
   level?: number;
   reputation?: number;
@@ -47,6 +38,7 @@ export const STORE_ITEMS: readonly StoreItem[] = storeConfig.items.map((item) =>
   price: item.price,
   icon: item.icon,
   stage: "stage" in item ? asStage(item.stage) : undefined,
+  category: "category" in item ? (item as { category?: string }).category : undefined,
   skills: "skills" in item ? item.skills : undefined,
   level: "level" in item ? item.level : undefined,
   reputation: "reputation" in item ? item.reputation : undefined,

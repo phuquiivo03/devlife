@@ -17,7 +17,8 @@ import { cn } from "@/lib/utils";
 import { PixelIcon } from "./PixelIcon";
 import { STORE_GRID, storeGridCss, storeIconSize } from "./store-grid.config";
 import { filterStoreItems, STORE_MODE_TABS, STORE_TABS, storeCardAction, type StoreModeId, type StoreTabId } from "./store-shelf";
-import { getOwnedItems, findAcceptingSlots, type OwnedItemModel } from "./owned-items";
+import { getOwnedItems, findAcceptingSlots, findAcceptingSlotsByCategory, type OwnedItemModel } from "./owned-items";
+import { STORE_SLOT_PREFIX } from "@/game3d/slot-models";
 import styles from "./store-grid.module.css";
 
 type CardModel = {
@@ -41,7 +42,10 @@ function storeIconSrc(icon: string): string {
 function cardModel(item: StoreItem, career: CareerState, day: number): CardModel {
   const shop = shopOf(career);
   const owned = shop.owned.includes(item.id);
-  const locked = !owned && true; // No more unlock blocks based on room
+  // Unlock gates are gone (v19+): nothing locks a card anymore — buyBlock
+  // drives the disabled state and its reason tooltip instead. Keeping
+  // `locked` true here hid the Mua button on every unowned item.
+  const locked = false;
   const block = owned ? null : buyBlock(career, item.id);
   const price = storePrice(item, day);
   return {
@@ -267,23 +271,24 @@ function OwnedCard({
 
   const icon = storeIconSize(item.icon);
   const isActive = item.status === "active";
-  const isOverlay = item.isOverlay;
   const noSlotInRoom = item.noSlotInRoom;
-  const canActivate = item.catalogId !== "" && !isOverlay && !noSlotInRoom; // Replacement items with accepting slots
-  const acceptingSlots = canActivate ? findAcceptingSlots(item.catalogId, stage as StageId) : [];
+  const acceptingSlots = item.category
+    ? findAcceptingSlotsByCategory(item.category, stage as StageId)
+    : findAcceptingSlots(item.catalogId, stage as StageId);
+  const canActivate = acceptingSlots.length > 0;
   const hasRequiredSlot = acceptingSlots.some((s) => s.required);
 
   const handleClick = () => {
-    // Overlay items: toggle visibility (to be implemented with save migration)
-    if (isOverlay) {
-      // TODO: implement toggle for overlay items
-      return;
-    }
-
     if (!canActivate) return;
+    const entryId = item.storeId
+      ? `${STORE_SLOT_PREFIX}${item.storeId}`
+      : item.catalogId;
 
-    // If already active, try to remove (only if slot is not required)
-    if (isActive && item.activeSlot) {
+    // Removing only applies to an explicitly placed item. An item that is
+    // active through the room default (the folding table on a fresh save,
+    // say) gets placed explicitly on click — that is how the folding table
+    // ever replaces the wooden desk on the canvas.
+    if (isActive && item.placedExplicitly && item.activeSlot) {
       const slot = acceptingSlots.find((s) => s.id === item.activeSlot);
       if (slot?.required) {
         return; // Block removal of required slot
@@ -292,10 +297,10 @@ function OwnedCard({
       return;
     }
 
-    // Activate: find first accepting slot and place item there
+    // Activate: first accepting slot; store furniture goes in as `store:<id>`.
     const targetSlot = acceptingSlots[0];
     if (targetSlot) {
-      onActivate(targetSlot.id, item.catalogId);
+      onActivate(targetSlot.id, entryId);
     }
   };
 
@@ -305,13 +310,11 @@ function OwnedCard({
 
   const tooltipText = noSlotInRoom
     ? "Phòng này không có chỗ đặt món này"
-    : isOverlay
-      ? "Đồ chồng lên phòng (bấm để ẩn/hiện - đang phát triển)"
-      : isActive && hasRequiredSlot
-        ? "Không thể gỡ đồ bắt buộc"
-        : !canActivate
-          ? "Đồ này không thể đặt vào phòng"
-          : `Bấm để ${isActive ? "gỡ ra" : "đặt vào phòng"}`;
+    : isActive && item.placedExplicitly && hasRequiredSlot
+      ? "Không thể gỡ đồ bắt buộc"
+      : !canActivate
+        ? "Đồ này không thể đặt vào phòng"
+        : `Bấm để ${isActive && item.placedExplicitly ? "gỡ ra" : "đặt vào phòng"}`;
 
   return (
     <Tooltip>
@@ -325,7 +328,7 @@ function OwnedCard({
           data-testid={`owned-item-${item.catalogId || item.storeId}`}
           data-status={item.status}
           onClick={handleClick}
-          style={{ cursor: noSlotInRoom || (!canActivate && !isOverlay) ? "not-allowed" : "pointer", opacity: noSlotInRoom ? 0.5 : 1 }}
+          style={{ cursor: noSlotInRoom || !canActivate ? "not-allowed" : "pointer", opacity: noSlotInRoom ? 0.5 : 1 }}
         >
           {isActive ? (
             <span className={styles.badge}>

@@ -19,10 +19,13 @@ import { STORE_ITEMS } from "@/game/life/furniture";
 import storeConfig from "../../config/store.json";
 
 describe("store shelves", () => {
-  it("derives rooms and furniture without a category field", () => {
+  it("derives rooms and furniture from the stage/prefix, not the category", () => {
+    // store.json rows may carry a `category` (slot placement) — room rows
+    // never do, and the shelf split still only looks at id/stage.
     for (const item of storeConfig.items) {
-      expect(item).not.toHaveProperty("category");
+      if (item.stage != null) expect(item.category).toBeUndefined();
     }
+    expect(storeShelf({ id: "bed_vip" })).toBe("furniture");
     expect(STORE_ITEMS.map((item) => [item.id, storeShelf(item)])).toEqual([
       ["room_junior", "room"],
       ["room_senior", "room"],

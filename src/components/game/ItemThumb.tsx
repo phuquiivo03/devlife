@@ -11,6 +11,8 @@ type Props = {
   selected?: boolean;
   badge?: string;
   onClick?: () => void;
+  /** 3D shop icon URL — draws an <img> instead of the pixel-atlas canvas. */
+  imageUrl?: string;
 };
 
 export function ItemThumb({
@@ -20,10 +22,12 @@ export function ItemThumb({
   selected,
   badge,
   onClick,
+  imageUrl,
 }: Props) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (imageUrl) return;
     const c = ref.current;
     if (!c) return;
     const ctx = c.getContext("2d");
@@ -70,7 +74,17 @@ export function ItemThumb({
           : "border-border hover:border-foreground",
       )}
     >
-      <canvas ref={ref} width={48} height={48} className="pixelated" />
+      <canvas ref={ref} width={48} height={48} className="pixelated" hidden={!!imageUrl} />
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          width={48}
+          height={48}
+          alt=""
+          draggable={false}
+          className="object-contain"
+        />
+      ) : null}
       {badge && (
         <span className="absolute -right-1 -top-1 rounded-full border border-foreground bg-accent px-1.5 text-[9px] font-bold text-accent-foreground">
           {badge}
