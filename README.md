@@ -4,7 +4,7 @@
 
 Cuộc sống từ sinh viên IT đến khi trở thành super senior siêu cấp vip pro plus promax ultra fullhd limited
 
-A cozy 2D pixel-art developer life-sim for the web: decorate your room as you grow from **student → junior → senior** developer. Play at [deflife.vercel.app](https://deflife.vercel.app).
+A cozy isometric 3D developer life-sim for the web: decorate your room as you grow from **student → junior → senior** developer. Play at [deflife.vercel.app](https://deflife.vercel.app).
 
 ## Run locally
 
@@ -27,16 +27,15 @@ Other commands:
 
 ## Milestone 1
 
-- **World resolution:** 427×240 native pixels (`src/game/config.ts` — single source of truth).
-- **Rendering:** Canvas2D, integer device-pixel upscale, data-driven layout JSON.
+- **Rendering:** React Three Fiber — isometric orthographic room in a fixed 4:3 well, data-driven GLB manifest (`src/game3d`).
 - **State:** Zustand + `localStorage` (`devlife:v1`), per-stage loadouts.
-- **UI:** Stage tabs, customize panel (docked ≥1280px, sheet on tablet/desktop, bottom section on portrait mobile).
+- **UI:** Customize panel in the sidebar block (docked ≥1280px, stacked below on mobile).
 
 ### Debug overlay
 
-Add `?debug=1` to the URL (or press **D**) to draw anchors, baselines, and room bounds on the scene.
+Add `?debug=1` to the URL (or press **D**) for the debug shell: orbit camera controls, the room label, the skills card, and the time debug panel.
 
-Dev-only full-canvas route: `/debug?stage=student&scale=3&character=1` (404 in production).
+Dev-only button specimen route: `/debug/buttons`.
 
 ### Asset pipeline
 
@@ -54,8 +53,9 @@ Planning doc: [`docs/PLAN.md`](docs/PLAN.md). Art backlog: [`docs/ART_TODO.md`](
 ## Folder map
 
 ```
-src/game/           config, content JSON, layout (resolveScene), view, render, store
-src/components/     GameShell, SceneCanvas, CustomizePanel, shadcn/ui
+src/game/           config, content JSON, life logic, state store
+src/game3d/         R3F room (Scene3D, RoomShell, Furniture, Player, manifest)
+src/components/     GameShell, SceneCard, CustomizePanel, shadcn/ui
 app/                Next.js App Router pages
 tests/              unit + e2e
 ```

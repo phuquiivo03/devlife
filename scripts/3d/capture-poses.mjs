@@ -1,6 +1,6 @@
 /**
- * Capture the 3D room poses + 2D baseline for the ?3d=1 flag (dev server on
- * :4317 must be running). Screenshots land in /tmp/devlife-3d/.
+ * Capture the 3D room poses (dev server on :4317 must be running).
+ * Screenshots land in /tmp/devlife-3d/.
  *
  *   node scripts/3d/capture-poses.mjs
  */
@@ -54,25 +54,23 @@ async function setStore(state) {
 
 async function shot(name, path, state) {
   await page.goto(`${baseUrl}${path}`, { waitUntil: "networkidle" });
-  await page.waitForSelector(path.includes("3d=1") ? "canvas" : "canvas");
+  await page.waitForSelector("canvas");
   await setStore(state);
   await page.waitForTimeout(2600);
   await page.screenshot({ path: `${outDir}/${name}.png` });
   console.log(`saved ${name}.png`);
 }
 
-// 1. 2D baseline — must render exactly as before the flag.
-await shot("2d-baseline", "/", { owned: [] });
-// 2. Fresh student: floor pose at the folding table + laptop.
-await shot("3d-floor", "/?3d=1", { owned: [] });
-// 3. Own the desk upgrades: seated on the chair (idle — no longer standing).
-await shot("3d-idle-sit", "/?3d=1", { owned: ["monitor2", "ergo_chair"] });
-// 4. CRT task open: sitting on the chair.
-await shot("3d-sit", "/?3d=1", { owned: ["monitor2", "ergo_chair"], taskJobId: "debug-task" });
-// 5. Sleep transition: player hidden.
-await shot("3d-sleep", "/?3d=1", { owned: ["monitor2", "ergo_chair"], sleep: true });
-// 6. Everything owned: plant_big + fan_standing visible (4 wave2 GLBs missing → skipped).
-await shot("3d-all-owned", "/?3d=1", {
+// 1. Fresh student: floor pose at the folding table + laptop.
+await shot("3d-floor", "/", { owned: [] });
+// 2. Own the desk upgrades: seated on the chair (idle — no longer standing).
+await shot("3d-idle-sit", "/", { owned: ["monitor2", "ergo_chair"] });
+// 3. CRT task open: sitting on the chair.
+await shot("3d-sit", "/", { owned: ["monitor2", "ergo_chair"], taskJobId: "debug-task" });
+// 4. Sleep transition: player hidden.
+await shot("3d-sleep", "/", { owned: ["monitor2", "ergo_chair"], sleep: true });
+// 5. Everything owned: plant_big + fan_standing visible (4 wave2 GLBs missing → skipped).
+await shot("3d-all-owned", "/", {
   owned: ["plant", "fan", "monitor2", "mattress", "aircon", "ergo_chair"],
 });
 

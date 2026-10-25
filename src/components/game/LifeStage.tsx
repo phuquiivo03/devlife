@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { LIFE_EVENTS } from "@/game/life/events-content";
 import { diaryWhen } from "@/game/life/events";
-import { m5AssetPath, m51AssetPath, type M5AssetKey } from "@/game/life/assets";
+import { m51AssetPath } from "@/game/life/assets";
 import {
   CONFETTI_PIECES,
   bannerArtFile,
@@ -16,12 +16,7 @@ import {
 } from "@/game/life/m51-art";
 import type { LifeDiary } from "@/game/career/types";
 import { useGameStore } from "@/game/state/store";
-import { lifeEmote } from "@/components/game/life-emote";
 import { formatVnd } from "@/lib/format-currency";
-
-function art(key: string): string {
-  return m5AssetPath(key as M5AssetKey);
-}
 
 export function LifeStage() {
   const diary = useGameStore((s) => s.career.feed?.diary ?? null);
@@ -193,10 +188,7 @@ function DiarySpends({ diary }: { diary: LifeDiary }) {
   );
 }
 
-export function LifeRoomFx({ is3d }: { is3d: boolean }) {
-  const health = useGameStore((s) => s.career.players.health);
-  const mood = useGameStore((s) => s.career.players.mood);
-  const energy = useGameStore((s) => s.career.players.energy);
+export function LifeRoomFx() {
   const bubble = useGameStore((s) => s.lifeBubble);
   const [now, setNow] = useState(() => Date.now());
 
@@ -207,22 +199,10 @@ export function LifeRoomFx({ is3d }: { is3d: boolean }) {
     return () => window.clearTimeout(timer);
   }, [bubble]);
 
-  const emote = lifeEmote({ health, mood, energy }, is3d);
   const showBubble = bubble != null && bubble.until > now;
 
   return (
     <>
-      {emote ? (
-        <img
-          src={art(emote)}
-          width={32}
-          height={32}
-          alt=""
-          className="pixel-img pointer-events-none absolute left-1/2 top-[22%] z-10"
-          data-testid="life-emote"
-          data-emote={emote}
-        />
-      ) : null}
       {showBubble ? (
         <p
           className="life-bubble pointer-events-none absolute left-1/2 top-[8%] z-10 max-w-[180px] px-3 py-2 font-galmuri-7 text-galmuri-small text-[var(--foreground)]"

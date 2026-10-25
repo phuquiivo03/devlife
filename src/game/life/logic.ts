@@ -444,6 +444,7 @@ export function eatMeal(state: CareerState, foodId: FoodId): LifeResult {
     {
       money: -price,
       health: food.health,
+      mood: food.mood,
       fullness: LIFE.fullness_after_meal - state.players.fullness,
     },
     {

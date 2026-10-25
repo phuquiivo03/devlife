@@ -20,39 +20,6 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         console.log("[LoadingScreen] Starting asset load...");
 
         const tasks = [
-          // Load atlas JSON
-          fetch("/atlas/devlife.json")
-            .then((res) => {
-              console.log("[LoadingScreen] Atlas JSON response:", res.status);
-              if (!res.ok) throw new Error(`Atlas JSON: HTTP ${res.status}`);
-              return res.json();
-            })
-            .then((data) => {
-              console.log("[LoadingScreen] Atlas JSON loaded");
-              return data;
-            })
-            .catch((err) => {
-              console.error("[LoadingScreen] Atlas JSON failed:", err);
-              throw new Error("Lỗi tải atlas JSON");
-            }),
-          // Load atlas image
-          new Promise((resolve, reject) => {
-            if (typeof window === "undefined") {
-              reject(new Error("Window không khả dụng"));
-              return;
-            }
-            const img = document.createElement("img");
-            img.onload = () => {
-              console.log("[LoadingScreen] Atlas image loaded successfully");
-              resolve(img);
-            };
-            img.onerror = (e) => {
-              console.error("[LoadingScreen] Atlas image failed to load:", e);
-              reject(new Error("Lỗi tải hình atlas"));
-            };
-            console.log("[LoadingScreen] Starting atlas image load...");
-            img.src = "/atlas/devlife.png";
-          }),
           // Load audio manifest
           fetch("/audio/manifest.json")
             .then((res) => {
