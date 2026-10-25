@@ -112,12 +112,22 @@ export function weekStartOf(day: number): number {
   return Math.max(1, day - calendar(day).weekday);
 }
 
-/** Deterministic 0..1 from an integer seed, same LCG family as `shuffleSeeded`. */
+/**
+ * Deterministic 0..1 from an integer seed. A single LCG step maps linear
+ * seeds (day × k) to a near-linear ramp, so roll the seed through three
+ * xorshift+LCG rounds first — neighbouring days must look independent.
+ * Ends with `>>> 0`: `^` works on signed int32, so the last round can leave
+ * a negative value that would poison every `<` comparison downstream.
+ */
 function hashUnit(seed: number): number {
   let state = seed >>> 0;
   if (state === 0) state = 1;
-  state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
-  return state / 4294967296;
+  for (let round = 0; round < 3; round += 1) {
+    state ^= state >>> 15;
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    state ^= state >>> 13;
+  }
+  return (state >>> 0) / 4294967296;
 }
 
 function hashString(text: string): number {

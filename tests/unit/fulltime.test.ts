@@ -3,7 +3,7 @@ import { SIM_CATALOG } from "@/game/career/content";
 import { defaultCareer } from "@/game/career/actions";
 import { PERSIST_VERSION } from "@/game/config";
 import { LIFE } from "@/game/life/content";
-import { monthKey } from "@/game/life/logic";
+import { calendar, monthKey } from "@/game/life/logic";
 import { migrateSave } from "@/game/storage/migrate";
 import {
   FULLTIME,
@@ -363,6 +363,37 @@ describe("weekly board and company tasks", () => {
     expect(sunday.player_jobs.filter((job) => job.source === "company")).toHaveLength(0);
   });
 
+  it("posts a company task notice on a fair share of workdays", () => {
+    for (const positionId of [FE_INTERN.id, "fe-junior-caphencode"]) {
+      let state = employed(positionId, 2);
+      state = fulltimeDayStart(state, 2, 6 * 60);
+      let workdays = 0;
+      let taskDays = 0;
+      for (let day = 3; day <= 16; day += 1) {
+        state = { ...state, players: { ...state.players, game_day: day } };
+        state = fulltimeDayStart(state, day, 6 * 60);
+        if (calendar(day).weekday < 5) workdays += 1;
+        const hasTask = state.player_jobs.some(
+          (job) => job.source === "company" && job.offered_day === day,
+        );
+        if (hasTask) {
+          taskDays += 1;
+          expect(
+            state.feed.notices.some(
+              (row) =>
+                row.payload?.jobId ===
+                state.player_jobs.find((job) => job.source === "company" && job.offered_day === day)?.id,
+            ),
+          ).toBe(true);
+        }
+      }
+      // Intern draws 0–1 tasks (≈40% of workdays), Junior 0–2 (≈53%). Two
+      // seeded weeks must surface tasks on some days but never all of them.
+      expect(taskDays).toBeGreaterThan(0);
+      expect(taskDays).toBeLessThan(workdays);
+    }
+  });
+
   it("auto-accepts an untouched company task overnight", () => {
     const state = { ...employed(FE_INTERN.id, 2), player_jobs: [companyJob({ offered_day: 2 })] };
     const next = fulltimeDayStart(state, 3, 6 * 60);
@@ -516,6 +547,54 @@ describe("freelance pacing while employed", () => {
     expect(
       state.feed.notices.filter((row) => row.actions?.some((button) => button.id === "acceptJob")),
     ).toHaveLength(1);
+  });
+});
+
+describe("company task notices survive midnight", () => {
+  it("keeps the task through the hour-0 tick; the overnight auto-accept closes it", () => {
+    const employedDay3 = employed(FE_INTERN.id, 3);
+    const state: CareerState = {
+      ...employedDay3,
+      player_jobs: [companyJob({ offered_day: 3 })],
+      feed: {
+        ...employedDay3.feed,
+        notices: [
+          ...employedDay3.feed.notices,
+          {
+            id: "ft-task-ctask-2-landing-html-0",
+            day: 3,
+            minute: 0,
+            severity: "info" as const,
+            icon: "icon_notif_job.png",
+            title: "Landing page HTML",
+            text: "📋 Task mới từ PixelWeb: Landing page HTML",
+            action: "acceptJob" as const,
+            actions: [
+              { id: "acceptJob" as const, label: "Nhận", variant: "primary" as const },
+            ],
+            payload: { jobId: "ctask-2-landing-html-0" },
+            read: false,
+          },
+        ],
+      },
+    };
+    // At midnight hourChanged(0) runs before dayStarted; the 1-day offer
+    // expiry must not eat the company task.
+    const afterHourTick = tickJobOffers(state, 4, 0);
+    expect(
+      afterHourTick.feed.notices.some((row) => row.id === "ft-task-ctask-2-landing-html-0"),
+    ).toBe(true);
+    expect(afterHourTick.player_jobs[0]!.status).toBe("offered");
+
+    const nextDay = fulltimeDayStart(
+      { ...afterHourTick, players: { ...afterHourTick.players, game_day: 4 } },
+      4,
+      6 * 60,
+    );
+    expect(nextDay.player_jobs[0]!.status).toBe("active");
+    expect(
+      nextDay.feed.notices.some((row) => row.id === "ft-task-ctask-2-landing-html-0"),
+    ).toBe(false);
   });
 });
 
