@@ -52,6 +52,12 @@ export type OwnedItemModel = {
   status: OwnedItemStatus;
   /** Slot ID where this item is active, or null. */
   activeSlot: string | null;
+  /**
+   * True when the loadout entry itself points at this item. False for an
+   * item that is only active through the room default — clicking those
+   * places them explicitly (re-assert) instead of asking for a removal.
+   */
+  placedExplicitly?: boolean;
   /** True if the current room has no slot accepting this item. */
   noSlotInRoom?: boolean;
 };
@@ -94,6 +100,8 @@ export function getOwnedItems(
       category: item.category,
       status: activeSlot ? "active" : "inactive",
       activeSlot,
+      // Store picks are always explicit loadout entries.
+      placedExplicitly: activeSlot != null,
       noSlotInRoom,
     });
   }
@@ -131,6 +139,9 @@ export function getOwnedItems(
         stage: catalogItem.stage,
         status,
         activeSlot,
+        // An untouched slot matches through its room default, not through a
+        // loadout entry — clicking such an item must place it explicitly.
+        placedExplicitly: activeSlot != null && loadout[activeSlot] === defaultId,
         noSlotInRoom,
       });
 

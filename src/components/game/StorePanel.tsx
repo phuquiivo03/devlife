@@ -280,9 +280,15 @@ function OwnedCard({
 
   const handleClick = () => {
     if (!canActivate) return;
+    const entryId = item.storeId
+      ? `${STORE_SLOT_PREFIX}${item.storeId}`
+      : item.catalogId;
 
-    // If already active, try to remove (only if slot is not required)
-    if (isActive && item.activeSlot) {
+    // Removing only applies to an explicitly placed item. An item that is
+    // active through the room default (the folding table on a fresh save,
+    // say) gets placed explicitly on click — that is how the folding table
+    // ever replaces the wooden desk on the canvas.
+    if (isActive && item.placedExplicitly && item.activeSlot) {
       const slot = acceptingSlots.find((s) => s.id === item.activeSlot);
       if (slot?.required) {
         return; // Block removal of required slot
@@ -294,12 +300,7 @@ function OwnedCard({
     // Activate: first accepting slot; store furniture goes in as `store:<id>`.
     const targetSlot = acceptingSlots[0];
     if (targetSlot) {
-      onActivate(
-        targetSlot.id,
-        item.storeId
-          ? `${STORE_SLOT_PREFIX}${item.storeId}`
-          : item.catalogId,
-      );
+      onActivate(targetSlot.id, entryId);
     }
   };
 
@@ -309,11 +310,11 @@ function OwnedCard({
 
   const tooltipText = noSlotInRoom
     ? "Phòng này không có chỗ đặt món này"
-    : isActive && hasRequiredSlot
+    : isActive && item.placedExplicitly && hasRequiredSlot
       ? "Không thể gỡ đồ bắt buộc"
       : !canActivate
         ? "Đồ này không thể đặt vào phòng"
-        : `Bấm để ${isActive ? "gỡ ra" : "đặt vào phòng"}`;
+        : `Bấm để ${isActive && item.placedExplicitly ? "gỡ ra" : "đặt vào phòng"}`;
 
   return (
     <Tooltip>

@@ -135,6 +135,36 @@ describe("Owned Items Tab", () => {
     expect(mattress?.status).toBe("inactive");
   });
 
+  it("distinguishes default-active from explicitly placed items", () => {
+    // Fresh save: the folding table is active through the room default.
+    const fresh = getOwnedItems(mockCareer(), "student", {});
+    const table = fresh.find((i) => i.catalogId === "student.folding_table");
+    expect(table?.status).toBe("active");
+    expect(table?.activeSlot).toBe("desk");
+    expect(table?.placedExplicitly).toBe(false);
+
+    // A store pick only counts as explicit once its loadout entry exists.
+    const idleStore = getOwnedItems(mockCareer(["bed_vip"]), "student", {});
+    expect(
+      idleStore.find((i) => i.storeId === "bed_vip")?.placedExplicitly,
+    ).toBe(false);
+    const placedStore = getOwnedItems(mockCareer(["bed_vip"]), "student", {
+      bed: "store:bed_vip",
+    } as Loadout);
+    expect(
+      placedStore.find((i) => i.storeId === "bed_vip")?.placedExplicitly,
+    ).toBe(true);
+
+    // Placing the default item explicitly flips the flag.
+    const placed = getOwnedItems(mockCareer(), "student", {
+      desk: "student.folding_table",
+    });
+    expect(
+      placed.find((i) => i.catalogId === "student.folding_table")
+        ?.placedExplicitly,
+    ).toBe(true);
+  });
+
   it("shows default items from all rooms", () => {
     const career = mockCareer();
     const items = getOwnedItems(career, "student", {});
