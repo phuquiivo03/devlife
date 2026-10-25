@@ -35,7 +35,7 @@
       "mp3": "mp3/sfx/sfx_ui_panel_open.mp3",
       "wav": "masters/sfx/sfx_ui_panel_open.wav",
       "category": "ui",
-      "duration": 0.18,
+      "duration": 0.3,
       "loop": false,
       "volume": 0.7,
       "description": "Quick rising 4-note arp"
@@ -47,7 +47,7 @@
       "mp3": "mp3/sfx/sfx_ui_panel_close.mp3",
       "wav": "masters/sfx/sfx_ui_panel_close.wav",
       "category": "ui",
-      "duration": 0.18,
+      "duration": 0.3,
       "loop": false,
       "volume": 0.7,
       "description": "Quick falling 4-note arp"
@@ -59,7 +59,7 @@
       "mp3": "mp3/sfx/sfx_ui_tab_switch.mp3",
       "wav": "masters/sfx/sfx_ui_tab_switch.wav",
       "category": "ui",
-      "duration": 0.1,
+      "duration": 0.14,
       "loop": false,
       "volume": 0.5,
       "description": "Two-step blip for tab change"
@@ -71,7 +71,7 @@
       "mp3": "mp3/sfx/sfx_ui_locked_denied.mp3",
       "wav": "masters/sfx/sfx_ui_locked_denied.wav",
       "category": "ui",
-      "duration": 0.28,
+      "duration": 0.3,
       "loop": false,
       "volume": 0.7,
       "description": "Low two-tone buzz, locked/disabled button"
@@ -83,7 +83,7 @@
       "mp3": "mp3/sfx/sfx_ui_toast.mp3",
       "wav": "masters/sfx/sfx_ui_toast.wav",
       "category": "ui",
-      "duration": 0.398,
+      "duration": 0.42,
       "loop": false,
       "volume": 0.7,
       "description": "Gentle two-note ping for toast popups"
@@ -95,7 +95,7 @@
       "mp3": "mp3/sfx/sfx_ui_error_invalid.mp3",
       "wav": "masters/sfx/sfx_ui_error_invalid.wav",
       "category": "ui",
-      "duration": 0.243,
+      "duration": 0.26,
       "loop": false,
       "volume": 0.7,
       "description": "Short descending low beep, invalid action"
@@ -107,7 +107,7 @@
       "mp3": "mp3/sfx/sfx_ui_purchase_confirm.mp3",
       "wav": "masters/sfx/sfx_ui_purchase_confirm.wav",
       "category": "ui",
-      "duration": 0.399,
+      "duration": 0.42,
       "loop": false,
       "volume": 0.7,
       "description": "Bright 3-note confirm for purchases"
@@ -119,7 +119,7 @@
       "mp3": "mp3/sfx/sfx_ui_notification_badge.mp3",
       "wav": "masters/sfx/sfx_ui_notification_badge.wav",
       "category": "ui",
-      "duration": 0.209,
+      "duration": 0.24,
       "loop": false,
       "volume": 0.7,
       "description": "High double ping for unread badge"
@@ -131,7 +131,7 @@
       "mp3": "mp3/sfx/sfx_ui_save_game.mp3",
       "wav": "masters/sfx/sfx_ui_save_game.wav",
       "category": "ui",
-      "duration": 0.557,
+      "duration": 0.58,
       "loop": false,
       "volume": 0.7,
       "description": "Rising triangle arp, game saved"
@@ -143,7 +143,7 @@
       "mp3": "mp3/sfx/sfx_money_gain.mp3",
       "wav": "masters/sfx/sfx_money_gain.wav",
       "category": "economy",
-      "duration": 0.88,
+      "duration": 0.9,
       "loop": false,
       "volume": 0.7,
       "description": "Clunk + two-step B6->E7 coin ting + light coin jingle (juiciest, most 'ka-ching')"
@@ -155,7 +155,7 @@
       "mp3": "mp3/sfx/sfx_money_spend.mp3",
       "wav": "masters/sfx/sfx_money_spend.wav",
       "category": "economy",
-      "duration": 0.49,
+      "duration": 0.5,
       "loop": false,
       "volume": 0.7,
       "description": "Two fast swipes 'xet xet' + E6-A6 double confirm beep (closest to the brief)"
@@ -167,7 +167,7 @@
       "mp3": "mp3/sfx/sfx_xp_gain.mp3",
       "wav": "masters/sfx/sfx_xp_gain.wav",
       "category": "economy",
-      "duration": 0.16,
+      "duration": 0.2,
       "loop": false,
       "volume": 0.5,
       "description": "Fast sparkly rising arp"
@@ -191,7 +191,7 @@
       "mp3": "mp3/sfx/sfx_tier_up.mp3",
       "wav": "masters/sfx/sfx_tier_up.wav",
       "category": "economy",
-      "duration": 0.808,
+      "duration": 0.85,
       "loop": false,
       "volume": 0.8,
       "description": "Full fanfare: student->junior->senior promotion"
@@ -215,7 +215,7 @@
       "mp3": "mp3/sfx/sfx_job_accepted.mp3",
       "wav": "masters/sfx/sfx_job_accepted.wav",
       "category": "economy",
-      "duration": 0.25,
+      "duration": 0.27,
       "loop": false,
       "volume": 0.7,
       "description": "Short positive two-note"
@@ -251,7 +251,7 @@
       "mp3": "mp3/sfx/sfx_phase_morning.mp3",
       "wav": "masters/sfx/sfx_phase_morning.wav",
       "category": "time",
-      "duration": 0.778,
+      "duration": 0.8,
       "loop": false,
       "volume": 0.7,
       "description": "Warm arp + chiptune birds"
@@ -263,7 +263,7 @@
       "mp3": "mp3/sfx/sfx_phase_noon.mp3",
       "wav": "masters/sfx/sfx_phase_noon.wav",
       "category": "time",
-      "duration": 0.785,
+      "duration": 0.8,
       "loop": false,
       "volume": 0.7,
       "description": "Bright bell-like square motif"
@@ -275,7 +275,7 @@
       "mp3": "mp3/sfx/sfx_phase_evening.mp3",
       "wav": "masters/sfx/sfx_phase_evening.wav",
       "category": "time",
-      "duration": 0.837,
+      "duration": 0.85,
       "loop": false,
       "volume": 0.7,
       "description": "Mellow descending triangle with echo"
@@ -299,7 +299,7 @@
       "mp3": "mp3/sfx/sfx_sleep.mp3",
       "wav": "masters/sfx/sfx_sleep.wav",
       "category": "time",
-      "duration": 0.87,
+      "duration": 0.88,
       "loop": false,
       "volume": 0.7,
       "description": "Lullaby phrase fading out over pad"
@@ -323,7 +323,7 @@
       "mp3": "mp3/sfx/sfx_energy_low.mp3",
       "wav": "masters/sfx/sfx_energy_low.wav",
       "category": "time",
-      "duration": 0.849,
+      "duration": 0.86,
       "loop": false,
       "volume": 0.7,
       "description": "Two soft low double-beeps"
@@ -335,7 +335,7 @@
       "mp3": "mp3/sfx/sfx_energy_restored.mp3",
       "wav": "masters/sfx/sfx_energy_restored.wav",
       "category": "time",
-      "duration": 0.677,
+      "duration": 0.7,
       "loop": false,
       "volume": 0.7,
       "description": "Rising F-major refresh arp"

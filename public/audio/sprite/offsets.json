@@ -8,155 +8,159 @@
     "cues": {
       "sfx_ui_click": {
         "offset": 0,
-        "duration": 0.042063
+        "duration": 0.042094
       },
       "sfx_ui_hover": {
-        "offset": 0.122063,
+        "offset": 0.122094,
         "duration": 0.037125
       },
       "sfx_ui_panel_open": {
-        "offset": 0.239188,
-        "duration": 0.176938
+        "offset": 0.239219,
+        "duration": 0.297125
       },
       "sfx_ui_panel_close": {
-        "offset": 0.496125,
-        "duration": 0.176938
+        "offset": 0.616344,
+        "duration": 0.297125
       },
       "sfx_ui_tab_switch": {
-        "offset": 0.753063,
-        "duration": 0.097031
+        "offset": 0.993469,
+        "duration": 0.137125
       },
       "sfx_ui_locked_denied": {
-        "offset": 0.930094,
-        "duration": 0.276813
+        "offset": 1.210594,
+        "duration": 0.297125
       },
       "sfx_ui_toast": {
-        "offset": 1.286906,
-        "duration": 0.395313
+        "offset": 1.587719,
+        "duration": 0.417125
       },
       "sfx_ui_error_invalid": {
-        "offset": 1.762219,
-        "duration": 0.239969
+        "offset": 2.084844,
+        "duration": 0.257125
       },
       "sfx_ui_purchase_confirm": {
-        "offset": 2.082187,
-        "duration": 0.395781
+        "offset": 2.421969,
+        "duration": 0.417125
       },
       "sfx_ui_notification_badge": {
-        "offset": 2.557969,
-        "duration": 0.2065
+        "offset": 2.919094,
+        "duration": 0.262688
       },
       "sfx_ui_save_game": {
-        "offset": 2.844469,
-        "duration": 0.554531
+        "offset": 3.261781,
+        "duration": 0.577125
       },
       "sfx_money_gain": {
-        "offset": 3.479,
-        "duration": 0.877094
+        "offset": 3.918906,
+        "duration": 0.897125
       },
       "sfx_money_spend": {
-        "offset": 4.436094,
-        "duration": 0.487031
+        "offset": 4.896031,
+        "duration": 0.521
       },
       "sfx_xp_gain": {
-        "offset": 5.003125,
-        "duration": 0.181406
+        "offset": 5.497031,
+        "duration": 0.197125
       },
       "sfx_skill_levelup": {
-        "offset": 5.264531,
+        "offset": 5.774156,
         "duration": 0.917125
       },
       "sfx_tier_up": {
-        "offset": 6.261656,
-        "duration": 0.831594
+        "offset": 6.771281,
+        "duration": 0.847125
       },
       "sfx_freelance_milestone": {
-        "offset": 7.17325,
+        "offset": 7.698406,
         "duration": 0.917125
       },
       "sfx_job_accepted": {
-        "offset": 8.170375,
-        "duration": 0.246781
+        "offset": 8.695531,
+        "duration": 0.267125
       },
       "sfx_job_complete": {
-        "offset": 8.497156,
+        "offset": 9.042656,
         "duration": 0.897125
       },
       "sfx_job_failed": {
-        "offset": 9.474281,
+        "offset": 10.019781,
         "duration": 0.917125
       },
       "sfx_phase_morning": {
-        "offset": 10.471406,
-        "duration": 0.774875
+        "offset": 11.016906,
+        "duration": 0.797125
       },
       "sfx_phase_noon": {
-        "offset": 11.326281,
-        "duration": 0.782313
+        "offset": 11.894031,
+        "duration": 0.797125
       },
       "sfx_phase_evening": {
-        "offset": 12.188594,
-        "duration": 0.833906
+        "offset": 12.771156,
+        "duration": 0.847125
       },
       "sfx_phase_night": {
-        "offset": 13.1025,
-        "duration": 0.941875
+        "offset": 13.698281,
+        "duration": 0.917125
       },
       "sfx_sleep": {
-        "offset": 14.124375,
-        "duration": 0.867375
+        "offset": 14.695406,
+        "duration": 0.877125
       },
       "sfx_time_skip": {
-        "offset": 15.07175,
+        "offset": 15.652531,
         "duration": 0.941875
       },
       "sfx_energy_low": {
-        "offset": 16.093625,
-        "duration": 0.846438
+        "offset": 16.674406,
+        "duration": 0.857125
       },
       "sfx_energy_restored": {
-        "offset": 17.020063,
-        "duration": 0.674344
+        "offset": 17.611531,
+        "duration": 0.697094
       },
       "sfx_day_summary": {
-        "offset": 17.774406,
-        "duration": 0.941875
+        "offset": 18.388625,
+        "duration": 0.917125
       },
       "sfx_notif_info": {
-        "offset": 18.796281,
+        "offset": 19.38575,
         "duration": 0.517094
       },
       "sfx_notif_warn": {
-        "offset": 19.393375,
+        "offset": 19.982844,
         "duration": 0.406219
       },
       "sfx_notif_urgent": {
-        "offset": 19.879594,
+        "offset": 20.469063,
         "duration": 0.582031
       },
       "sfx_event_open": {
-        "offset": 20.541625,
+        "offset": 21.131094,
         "duration": 0.446656
       },
       "sfx_landlord_knock": {
-        "offset": 21.068281,
+        "offset": 21.65775,
         "duration": 1.08
       },
       "sfx_salary": {
-        "offset": 22.228281,
+        "offset": 22.81775,
         "duration": 1.4
       },
       "sfx_store_buy": {
-        "offset": 23.708281,
+        "offset": 24.29775,
         "duration": 0.717094
       },
       "sfx_diary_flip": {
-        "offset": 24.505375,
+        "offset": 25.094844,
         "duration": 0.378
       },
       "sfx_sick_cough": {
-        "offset": 24.963375,
+        "offset": 25.552844,
         "duration": 0.635875
+      },
+      "sfx_ambulance": {
+        "offset": 26.268719,
+        "duration": 3
       }
     }
   },
@@ -166,155 +170,159 @@
     "cues": {
       "sfx_ui_click": {
         "offset": 0.034531,
-        "duration": 0.042063
+        "duration": 0.042094
       },
       "sfx_ui_hover": {
-        "offset": 0.156594,
+        "offset": 0.156625,
         "duration": 0.037125
       },
       "sfx_ui_panel_open": {
-        "offset": 0.273719,
-        "duration": 0.176938
+        "offset": 0.27375,
+        "duration": 0.297125
       },
       "sfx_ui_panel_close": {
-        "offset": 0.530656,
-        "duration": 0.176938
+        "offset": 0.650875,
+        "duration": 0.297125
       },
       "sfx_ui_tab_switch": {
-        "offset": 0.787594,
-        "duration": 0.097031
+        "offset": 1.028,
+        "duration": 0.137125
       },
       "sfx_ui_locked_denied": {
-        "offset": 0.964625,
-        "duration": 0.276813
+        "offset": 1.245125,
+        "duration": 0.297125
       },
       "sfx_ui_toast": {
-        "offset": 1.321438,
-        "duration": 0.395313
+        "offset": 1.62225,
+        "duration": 0.417125
       },
       "sfx_ui_error_invalid": {
-        "offset": 1.79675,
-        "duration": 0.239969
+        "offset": 2.119375,
+        "duration": 0.257125
       },
       "sfx_ui_purchase_confirm": {
-        "offset": 2.116719,
-        "duration": 0.395781
+        "offset": 2.4565,
+        "duration": 0.417125
       },
       "sfx_ui_notification_badge": {
-        "offset": 2.5925,
-        "duration": 0.2065
+        "offset": 2.953625,
+        "duration": 0.262688
       },
       "sfx_ui_save_game": {
-        "offset": 2.879,
-        "duration": 0.554531
+        "offset": 3.296313,
+        "duration": 0.577125
       },
       "sfx_money_gain": {
-        "offset": 3.513531,
-        "duration": 0.877094
+        "offset": 3.953438,
+        "duration": 0.897125
       },
       "sfx_money_spend": {
-        "offset": 4.470625,
-        "duration": 0.487031
+        "offset": 4.930563,
+        "duration": 0.521
       },
       "sfx_xp_gain": {
-        "offset": 5.037656,
-        "duration": 0.181406
+        "offset": 5.531563,
+        "duration": 0.197125
       },
       "sfx_skill_levelup": {
-        "offset": 5.299063,
+        "offset": 5.808688,
         "duration": 0.917125
       },
       "sfx_tier_up": {
-        "offset": 6.296188,
-        "duration": 0.831594
+        "offset": 6.805813,
+        "duration": 0.847125
       },
       "sfx_freelance_milestone": {
-        "offset": 7.207781,
+        "offset": 7.732938,
         "duration": 0.917125
       },
       "sfx_job_accepted": {
-        "offset": 8.204906,
-        "duration": 0.246781
+        "offset": 8.730063,
+        "duration": 0.267125
       },
       "sfx_job_complete": {
-        "offset": 8.531688,
+        "offset": 9.077188,
         "duration": 0.897125
       },
       "sfx_job_failed": {
-        "offset": 9.508813,
+        "offset": 10.054313,
         "duration": 0.917125
       },
       "sfx_phase_morning": {
-        "offset": 10.505938,
-        "duration": 0.774875
+        "offset": 11.051438,
+        "duration": 0.797125
       },
       "sfx_phase_noon": {
-        "offset": 11.360813,
-        "duration": 0.782313
+        "offset": 11.928563,
+        "duration": 0.797125
       },
       "sfx_phase_evening": {
-        "offset": 12.223125,
-        "duration": 0.833906
+        "offset": 12.805688,
+        "duration": 0.847125
       },
       "sfx_phase_night": {
-        "offset": 13.137031,
-        "duration": 0.941875
+        "offset": 13.732813,
+        "duration": 0.917125
       },
       "sfx_sleep": {
-        "offset": 14.158906,
-        "duration": 0.867375
+        "offset": 14.729938,
+        "duration": 0.877125
       },
       "sfx_time_skip": {
-        "offset": 15.106281,
+        "offset": 15.687063,
         "duration": 0.941875
       },
       "sfx_energy_low": {
-        "offset": 16.128156,
-        "duration": 0.846438
+        "offset": 16.708938,
+        "duration": 0.857125
       },
       "sfx_energy_restored": {
-        "offset": 17.054594,
-        "duration": 0.674344
+        "offset": 17.646063,
+        "duration": 0.697094
       },
       "sfx_day_summary": {
-        "offset": 17.808938,
-        "duration": 0.941875
+        "offset": 18.423156,
+        "duration": 0.917125
       },
       "sfx_notif_info": {
-        "offset": 18.830813,
+        "offset": 19.420281,
         "duration": 0.517094
       },
       "sfx_notif_warn": {
-        "offset": 19.427906,
+        "offset": 20.017375,
         "duration": 0.406219
       },
       "sfx_notif_urgent": {
-        "offset": 19.914125,
+        "offset": 20.503594,
         "duration": 0.582031
       },
       "sfx_event_open": {
-        "offset": 20.576156,
+        "offset": 21.165625,
         "duration": 0.446656
       },
       "sfx_landlord_knock": {
-        "offset": 21.102813,
+        "offset": 21.692281,
         "duration": 1.08
       },
       "sfx_salary": {
-        "offset": 22.262813,
+        "offset": 22.852281,
         "duration": 1.4
       },
       "sfx_store_buy": {
-        "offset": 23.742813,
+        "offset": 24.332281,
         "duration": 0.717094
       },
       "sfx_diary_flip": {
-        "offset": 24.539906,
+        "offset": 25.129375,
         "duration": 0.378
       },
       "sfx_sick_cough": {
-        "offset": 24.997906,
+        "offset": 25.587375,
         "duration": 0.635875
+      },
+      "sfx_ambulance": {
+        "offset": 26.30325,
+        "duration": 3
       }
     }
   },
