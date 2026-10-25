@@ -10,10 +10,12 @@ import { timeBus } from "@/game/time";
 import { formatVnd } from "@/lib/format-currency";
 import { Button, PixelButton } from "@/components/ui/button";
 import { PanelCard, PanelCardTitle } from "@/components/ui/panel-card";
+import { FiredPopup } from "../FiredPopup";
 import { JobManageBoard } from "./JobManageBoard";
 import { RankBadge } from "./RankBadge";
 import { SkillRankPanel } from "./SkillRankPanel";
 import { StudyPanel } from "./StudyPanel";
+import { employmentOf, positionById } from "@/game/jobs/fulltime";
 
 type FloatNote = { id: number; label: string };
 type LevelPopup = { skillId: string; level: number; rankId: string };
@@ -54,6 +56,11 @@ export function CareerChrome({
   useCareerSim();
   const panel = useGameStore((s) => s.careerPanel);
   const close = useGameStore((s) => s.closeCareerPanel);
+  const offerConfirm = useGameStore((s) => s.offerConfirm);
+  const confirmJobSwitch = useGameStore((s) => s.confirmJobSwitch);
+  const cancelJobSwitch = useGameStore((s) => s.cancelJobSwitch);
+  const fired = useGameStore((s) => s.career.employment?.fired ?? null);
+  const closeFired = useGameStore((s) => s.closeFired);
   const debugAddMoney = useGameStore((s) => s.debugAddMoney);
   const debugFillEnergy = useGameStore((s) => s.debugFillEnergy);
   const debugMakeHungry = useGameStore((s) => s.debugMakeHungry);
@@ -187,6 +194,7 @@ export function CareerChrome({
       {panel === "jobs" ? (
         <JobManageBoard
           open
+          iconFiles={iconFiles}
           onOpenChange={(next) => {
             if (!next) close();
           }}
@@ -253,6 +261,60 @@ export function CareerChrome({
             >
               Đóng
             </Button>
+          </PanelCard>
+        </div>
+      ) : null}
+      {fired?.open ? (
+        <FiredPopup
+          open
+          company={fired.company}
+          days={fired.days}
+          lateTasks={fired.lateTasks}
+          payout={fired.payout}
+          onClose={closeFired}
+        />
+      ) : null}
+
+      {offerConfirm ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2A2548]/35 p-4"
+          data-testid="job-switch-popup"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Đổi việc"
+        >
+          <PanelCard className="w-full max-w-sm p-5 text-center">
+            {(() => {
+              const career = useGameStore.getState().career;
+              const app = employmentOf(career).applications.find(
+                (row) => row.id === offerConfirm.applicationId,
+              );
+              const position = app ? positionById(app.positionId) : null;
+              const oldCompany = employmentOf(career).current?.company ?? "";
+              return (
+                <>
+                  <p className="mb-3 font-galmuri-11 text-galmuri-title text-[var(--foreground)]">
+                    Nghỉ việc ở {oldCompany} để sang {position?.company ?? "công ty mới"}?
+                  </p>
+                  <p className="mb-4 font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
+                    Lương cũ tính theo số ngày đã làm, trả vào cuối tháng.
+                  </p>
+                  <div className="flex justify-center gap-2">
+                    <PixelButton
+                      type="button"
+                      variant="primary"
+                      data-testid="job-switch-confirm"
+                      onClick={confirmJobSwitch}
+                    >
+                      Đồng ý
+                    </PixelButton>
+                    <PixelButton type="button" variant="light" onClick={cancelJobSwitch}>
+                      Hủy
+                    </PixelButton>
+                  </div>
+                </>
+              );
+            })()}
           </PanelCard>
         </div>
       ) : null}

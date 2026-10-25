@@ -1,0 +1,51 @@
+{
+  "base_salary": {
+    "intern": 5000000,
+    "junior": 10000000,
+    "middle": 18000000,
+    "senior": 30000000
+  },
+  "board_min": 4,
+  "board_max": 6,
+  "apply_max_pending": 3,
+  "apply_energy": 5,
+  "offer_expire_days": 2,
+  "pass": {
+    "fit_cap": 1.2,
+    "skill_weight": 0.8,
+    "rep_weight": 0.2,
+    "base": 0.85,
+    "exp": 3,
+    "min": 0.03,
+    "max": 0.9,
+    "extrovert_bonus": 0.05
+  },
+  "salary_factor_base": 0.9,
+  "salary_factor_step": 0.1,
+  "salary_fit_cap": 1.5,
+  "tasks": {
+    "counts": {
+      "intern": [0, 1],
+      "junior": [0, 2],
+      "middle": [1, 2],
+      "senior": [1, 3]
+    },
+    "empty_day_chance": 0.2,
+    "tiers": {
+      "intern": [1],
+      "junior": [1, 2],
+      "middle": [1, 2],
+      "senior": [2]
+    }
+  },
+  "late_penalty_pct": 0.05,
+  "late_reputation": -1,
+  "strike_warn": 2,
+  "strike_fire": 3,
+  "strike_clean_gain": 1,
+  "fire_mood": -10,
+  "fire_reputation": -10,
+  "block_days": 30,
+  "payday_mood": 5,
+  "freelance_notice_divisor": 2
+}

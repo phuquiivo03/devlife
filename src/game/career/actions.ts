@@ -21,6 +21,7 @@ import { LIFE } from "../life/content";
 import { defaultFeed } from "../life/events";
 import { defaultShop, scaleWorkXp } from "../life/furniture";
 import { MIGRATION_TRAIT, scaleTraitXp, type TraitId } from "../life/traits";
+import { defaultEmployment, fulltimeDayStart } from "../jobs/fulltime";
 import {
   applyActionStats,
   applyLifeDayStart,
@@ -115,6 +116,7 @@ export function defaultCareer(
     player_events: [],
     life: defaultLife(day),
     shop: defaultShop(),
+    employment: defaultEmployment(),
     feed: defaultFeed({
       day,
       money: config.starting_money,
@@ -171,7 +173,7 @@ function setEnergy(state: CareerState, target: number, max: number): ActionResul
 
 export function refreshBoard(state: CareerState, day: number, catalog: SimCatalog): ActionResult {
   const expired: PlayerJob[] = state.player_jobs.map((job) =>
-    job.status === "offered" && job.offered_day < day
+    job.status === "offered" && job.offered_day < day && job.source !== "company"
       ? { ...job, status: "expired" }
       : job,
   );
@@ -225,7 +227,8 @@ export function applyDayStarted(
     resolveMorning: options?.resolveMorning ?? minuteOfDay === 6 * 60,
   });
   const synced = syncPlayerClock(lived.state, day, minuteOfDay, stage);
-  const board = refreshBoard(synced, day, catalog);
+  const fulltime = fulltimeDayStart(synced, day, minuteOfDay, catalog);
+  const board = refreshBoard(fulltime, day, catalog);
   return {
     ...ok(board.state, [...lived.events, ...board.events]),
     skipDays: lived.skipDays,

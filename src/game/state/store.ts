@@ -79,6 +79,14 @@ import { dialogCueKey, noticeCueKey, pickMomentCue, playLifeSound } from "../lif
 import { pinItem, roomOwned } from "../life/furniture";
 import { buyShopItem } from "../life/store-buy";
 import { acceptJobFromNotice, dismissNoticeById, noticeForAction, tickJobOffers } from "../jobs/offers";
+import {
+  acceptApplication,
+  applyToPosition as applyToPositionState,
+  closeFiredPopup,
+  declineApplication,
+  paydayDue,
+  settlePayday,
+} from "../jobs/fulltime";
 
 let clockSkip = false;
 let handlingHospital = false;
@@ -225,6 +233,15 @@ export type GameState = {
   playGame: () => void;
   /** Job whose CRT task is on screen. Not persisted. */
   taskJobId: string | null;
+  /** Full-time offer waiting for the quit-old-job confirm. Not persisted. */
+  offerConfirm: { applicationId: string } | null;
+  /** Nộp đơn cho một vị trí tuyển dụng (tốn năng lượng, kết quả ngẫu nhiên theo seed ngày). */
+  applyToPosition: (positionId: string) => void;
+  /** Đồng ý nghỉ việc cũ để nhận việc mới (popup xác nhận). */
+  confirmJobSwitch: () => void;
+  cancelJobSwitch: () => void;
+  /** Đóng popup sa thải và nhận phần lương còn lại. */
+  closeFired: () => void;
   acceptJob: (jobId: string, force?: boolean) => void;
   openTask: (jobId: string) => void;
   closeTask: () => void;
@@ -396,6 +413,7 @@ export const useGameStore = create<GameState>()(
       career: defaultCareer(1, DEFAULT_START_MINUTES, "student", SIM_CATALOG, rollTrait()),
       careerPanel: null,
       taskJobId: null,
+      offerConfirm: null,
       storeOpen: false,
       notificationOpen: false,
       foodOpen: false,
@@ -466,6 +484,19 @@ export const useGameStore = create<GameState>()(
         if (clockSkip) return;
         const snap = snapshot(totalMinutes);
         if (snap.minute !== 0 || hour % 2 !== 0) return;
+        if (hour === 18) {
+          // Month-end payday. The day-1 fallback in fulltimeDayStart catches a
+          // missed 18:00 (hospital jumps, closed tab).
+          const career = get().career;
+          if (paydayDue(career, snap.day)) {
+            const paid = settlePayday(career, snap.day, snap.minuteOfDay);
+            const delta = paid.players.money - career.players.money;
+            set({ career: paid });
+            if (delta !== 0) {
+              emitGame([{ type: "moneyChanged", delta, money: paid.players.money }]);
+            }
+          }
+        }
         if (hour === 6) {
           const morning = resolveMorning(get().career, snap.day);
           const offered = tickJobOffers(morning.state, snap.day, snap.minuteOfDay);
@@ -601,6 +632,35 @@ export const useGameStore = create<GameState>()(
         maybeHospital(result.skipDays);
         get().syncLifeSurface();
       },
+      applyToPosition: (positionId) => {
+        const current = get();
+        const snap = snapshot(current.totalMinutes);
+        const synced = syncPlayerClock(current.career, snap.day, snap.minuteOfDay, current.stage);
+        const result = applyToPositionState(synced, positionId);
+        if (result.error) {
+          set({ terminalLines: [...current.terminalLines, `❌ ${result.error}`].slice(-8) });
+          return;
+        }
+        const delta = result.state.players.energy - synced.players.energy;
+        set({ career: result.state });
+        if (delta !== 0) {
+          emitGame([{ type: "energyChanged", delta, energy: result.state.players.energy }]);
+        }
+      },
+      confirmJobSwitch: () => {
+        const pending = get().offerConfirm;
+        if (!pending) return;
+        const joined = acceptApplication(get().career, pending.applicationId);
+        set({ offerConfirm: null });
+        if (joined.error) return;
+        set({ career: joined.state });
+      },
+      cancelJobSwitch: () => set({ offerConfirm: null }),
+      closeFired: () => {
+        const closed = closeFiredPopup(get().career);
+        set({ career: closed.state });
+        emitGame(closed.events);
+      },
       openTask: (jobId) => set({ careerPanel: null, taskJobId: jobId }),
       closeTask: () => {
         set({ taskJobId: null, terminalLines: [] });
@@ -661,6 +721,23 @@ export const useGameStore = create<GameState>()(
           set({ career: accepted });
           // Close the notice panel after accepting
           set({ careerPanel: "jobs" });
+          return;
+        }
+        if (id === "acceptPosition") {
+          const applicationId = picked?.payload?.applicationId;
+          if (!applicationId) return;
+          if (get().career.employment?.current) {
+            // Confirm before quitting the current job for the new one.
+            set({ offerConfirm: { applicationId } });
+            return;
+          }
+          const joined = acceptApplication(get().career, applicationId);
+          if (!joined.error) set({ career: joined.state });
+          return;
+        }
+        if (id === "declinePosition") {
+          const applicationId = picked?.payload?.applicationId;
+          if (applicationId) set({ career: declineApplication(get().career, applicationId) });
           return;
         }
         if (id === "dismissNotice") {

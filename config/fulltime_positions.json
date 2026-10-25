@@ -1,0 +1,249 @@
+[
+  {
+    "id": "fe-intern-pixelweb",
+    "title": "Frontend Developer",
+    "company": "PixelWeb",
+    "stack": "frontend",
+    "level_tier": "intern",
+    "requirements": [{ "skill_id": "frontend", "min_level": 2 }],
+    "min_reputation": 0,
+    "base_salary": null
+  },
+  {
+    "id": "fe-junior-caphencode",
+    "title": "Frontend Developer",
+    "company": "Cà Phê Code",
+    "stack": "frontend",
+    "level_tier": "junior",
+    "requirements": [{ "skill_id": "frontend", "min_level": 3 }],
+    "min_reputation": 3,
+    "base_salary": null
+  },
+  {
+    "id": "fe-junior-hueweb",
+    "title": "UI Engineer",
+    "company": "Huế Webworks",
+    "stack": "frontend",
+    "level_tier": "junior",
+    "requirements": [{ "skill_id": "frontend", "min_level": 4 }],
+    "min_reputation": 5,
+    "base_salary": 11000000
+  },
+  {
+    "id": "fe-middle-saigondev",
+    "title": "Senior Frontend Developer",
+    "company": "Sài Gòn Dev",
+    "stack": "frontend",
+    "level_tier": "middle",
+    "requirements": [
+      { "skill_id": "frontend", "min_level": 5 },
+      { "skill_id": "database", "min_level": 3 }
+    ],
+    "min_reputation": 10,
+    "base_salary": null
+  },
+  {
+    "id": "fe-senior-rongbay",
+    "title": "Frontend Tech Lead",
+    "company": "Rồng Bay Software",
+    "stack": "frontend",
+    "level_tier": "senior",
+    "requirements": [
+      { "skill_id": "frontend", "min_level": 7 },
+      { "skill_id": "soft", "min_level": 5 }
+    ],
+    "min_reputation": 18,
+    "base_salary": 32000000
+  },
+  {
+    "id": "be-intern-banhmibytes",
+    "title": "Backend Intern",
+    "company": "Bánh Mì Bytes",
+    "stack": "backend",
+    "level_tier": "intern",
+    "requirements": [{ "skill_id": "backend", "min_level": 2 }],
+    "min_reputation": 0,
+    "base_salary": null
+  },
+  {
+    "id": "be-junior-phostack",
+    "title": "Backend Developer",
+    "company": "Phở Stack",
+    "stack": "backend",
+    "level_tier": "junior",
+    "requirements": [{ "skill_id": "backend", "min_level": 3 }],
+    "min_reputation": 3,
+    "base_salary": null
+  },
+  {
+    "id": "be-middle-mekong",
+    "title": "Backend Engineer",
+    "company": "Mekong Labs",
+    "stack": "backend",
+    "level_tier": "middle",
+    "requirements": [
+      { "skill_id": "backend", "min_level": 5 },
+      { "skill_id": "database", "min_level": 4 }
+    ],
+    "min_reputation": 12,
+    "base_salary": null
+  },
+  {
+    "id": "be-middle-dalatdata",
+    "title": "API Platform Engineer",
+    "company": "Đà Lạt Data",
+    "stack": "backend",
+    "level_tier": "middle",
+    "requirements": [
+      { "skill_id": "backend", "min_level": 6 },
+      { "skill_id": "database", "min_level": 5 }
+    ],
+    "min_reputation": 14,
+    "base_salary": 20000000
+  },
+  {
+    "id": "be-senior-hanoi",
+    "title": "Principal Backend Engineer",
+    "company": "Hà Nội Tech",
+    "stack": "backend",
+    "level_tier": "senior",
+    "requirements": [
+      { "skill_id": "backend", "min_level": 7 },
+      { "skill_id": "database", "min_level": 6 }
+    ],
+    "min_reputation": 20,
+    "base_salary": null
+  },
+  {
+    "id": "fs-intern-tamgiac",
+    "title": "Fullstack Intern",
+    "company": "Tam Giác Tech",
+    "stack": "fullstack",
+    "level_tier": "intern",
+    "requirements": [{ "skill_id": "frontend", "min_level": 2 }],
+    "min_reputation": 0,
+    "base_salary": null
+  },
+  {
+    "id": "fs-junior-aodai",
+    "title": "Fullstack Developer",
+    "company": "Áo Dài Tech",
+    "stack": "fullstack",
+    "level_tier": "junior",
+    "requirements": [
+      { "skill_id": "frontend", "min_level": 3 },
+      { "skill_id": "backend", "min_level": 3 }
+    ],
+    "min_reputation": 5,
+    "base_salary": null
+  },
+  {
+    "id": "fs-middle-cloudkoi",
+    "title": "Fullstack Engineer",
+    "company": "Cloud Cá Koi",
+    "stack": "fullstack",
+    "level_tier": "middle",
+    "requirements": [
+      { "skill_id": "frontend", "min_level": 4 },
+      { "skill_id": "backend", "min_level": 5 }
+    ],
+    "min_reputation": 10,
+    "base_salary": null
+  },
+  {
+    "id": "fs-senior-tramhuong",
+    "title": "Fullstack Team Lead",
+    "company": "Trầm Hương Labs",
+    "stack": "fullstack",
+    "level_tier": "senior",
+    "requirements": [
+      { "skill_id": "frontend", "min_level": 6 },
+      { "skill_id": "backend", "min_level": 6 },
+      { "skill_id": "soft", "min_level": 5 }
+    ],
+    "min_reputation": 22,
+    "base_salary": 33000000
+  },
+  {
+    "id": "fs-senior-vinhhalong",
+    "title": "Principal Fullstack Engineer",
+    "company": "Vịnh Hạ Long Tech",
+    "stack": "fullstack",
+    "level_tier": "senior",
+    "requirements": [
+      { "skill_id": "frontend", "min_level": 7 },
+      { "skill_id": "backend", "min_level": 7 }
+    ],
+    "min_reputation": 25,
+    "base_salary": null
+  },
+  {
+    "id": "ops-intern-songnhiphan",
+    "title": "DevOps Intern",
+    "company": "Số Nhị Phân",
+    "stack": "devops",
+    "level_tier": "intern",
+    "requirements": [{ "skill_id": "devops", "min_level": 2 }],
+    "min_reputation": 0,
+    "base_salary": null
+  },
+  {
+    "id": "ops-junior-cantho",
+    "title": "DevOps Engineer",
+    "company": "Cần Thơ Cloud",
+    "stack": "devops",
+    "level_tier": "junior",
+    "requirements": [{ "skill_id": "devops", "min_level": 3 }],
+    "min_reputation": 4,
+    "base_salary": null
+  },
+  {
+    "id": "ops-middle-bonglua",
+    "title": "Platform Engineer",
+    "company": "Bông Lúa Digital",
+    "stack": "devops",
+    "level_tier": "middle",
+    "requirements": [
+      { "skill_id": "devops", "min_level": 5 },
+      { "skill_id": "backend", "min_level": 4 }
+    ],
+    "min_reputation": 12,
+    "base_salary": null
+  },
+  {
+    "id": "ops-senior-haiphong",
+    "title": "SRE Lead",
+    "company": "Hải Phòng Dev",
+    "stack": "devops",
+    "level_tier": "senior",
+    "requirements": [
+      { "skill_id": "devops", "min_level": 7 },
+      { "skill_id": "backend", "min_level": 5 }
+    ],
+    "min_reputation": 18,
+    "base_salary": 31000000
+  },
+  {
+    "id": "fe-middle-trasua",
+    "title": "Web Performance Engineer",
+    "company": "Trà Sữa Soft",
+    "stack": "frontend",
+    "level_tier": "middle",
+    "requirements": [{ "skill_id": "frontend", "min_level": 5 }],
+    "min_reputation": 8,
+    "base_salary": null
+  },
+  {
+    "id": "be-junior-saigondev",
+    "title": "Junior Backend Developer",
+    "company": "Sài Gòn Dev",
+    "stack": "backend",
+    "level_tier": "junior",
+    "requirements": [
+      { "skill_id": "backend", "min_level": 3 },
+      { "skill_id": "database", "min_level": 2 }
+    ],
+    "min_reputation": 6,
+    "base_salary": null
+  }
+]

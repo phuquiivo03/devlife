@@ -31,8 +31,10 @@ import { normalizeShop } from "../life/furniture";
 import { defaultLife } from "../life/logic";
 import { isTraitId, MIGRATION_TRAIT, rollTrait } from "../life/traits";
 import { defaultFeed } from "../life/events";
+import { defaultEmployment } from "../jobs/fulltime";
 import { emptyPurse } from "../life/purse";
 import type { LifeDiary, LifeFeed, LifeNotice, LifeSnapshot, NoticeSeverity } from "../career/types";
+import type { EmploymentApplication, EmploymentState } from "../career/types";
 
 export type PersistedSave = {
   stage: StageId;
@@ -120,6 +122,7 @@ function normalizeJobs(value: unknown): PlayerJob[] {
       id: row.id,
       template_id: row.template_id,
       job_type: jobType,
+      source: row.source === "company" ? "company" : "freelance",
       status,
       hours_required: decimal(row.hours_required),
       progress_hours: num(row.progress_hours),
@@ -258,6 +261,88 @@ function withRenamedShop(career: unknown): unknown {
   };
 }
 
+/**
+ * v22 keeps an existing employment document when it parses row by row, and
+ * otherwise starts empty: no job, no applications, no board, no blocks. All
+ * legacy jobs (including `remote` offers) keep running as `source: "freelance"`.
+ */
+export function normalizeEmployment(value: unknown): EmploymentState {
+  const fresh = defaultEmployment();
+  if (!isRecord(value)) return fresh;
+  const current = isRecord(value.current)
+    ? {
+        positionId: typeof value.current.positionId === "string" ? value.current.positionId : "",
+        company: typeof value.current.company === "string" ? value.current.company : "",
+        title: typeof value.current.title === "string" ? value.current.title : "",
+        salary: num(value.current.salary),
+        fit: finite(value.current.fit),
+        startDay: Math.max(1, num(value.current.startDay, 1)),
+        strikes: num(value.current.strikes),
+        monthPenalty: num(value.current.monthPenalty),
+        daysWorkedThisMonth: num(value.current.daysWorkedThisMonth),
+        countedMonthKey: strOrNull(value.current.countedMonthKey),
+        strikesThisMonth: num(value.current.strikesThisMonth),
+        totalDays: num(value.current.totalDays),
+        lateTasks: num(value.current.lateTasks),
+      }
+    : null;
+  const applications: EmploymentApplication[] = Array.isArray(value.applications)
+    ? value.applications.flatMap((row) => {
+        if (!isRecord(row) || typeof row.id !== "string" || typeof row.positionId !== "string") return [];
+        const outcome: EmploymentApplication["outcome"] =
+          row.outcome === "waiting" || row.outcome === "accepted" || row.outcome === "declined" || row.outcome === "expired"
+            ? row.outcome
+            : "waiting";
+        const application: EmploymentApplication = {
+          id: row.id,
+          positionId: row.positionId,
+          appliedDay: Math.max(1, num(row.appliedDay, 1)),
+          weekStart: Math.max(1, num(row.weekStart, 1)),
+          passed: row.passed === true,
+          notified: row.notified === true,
+          quotedSalary: num(row.quotedSalary),
+          outcome,
+        };
+        return [application];
+      })
+    : [];
+  const board =
+    isRecord(value.board) && Array.isArray(value.board.positionIds)
+      ? {
+          weekStart: Math.max(1, num(value.board.weekStart, 1)),
+          positionIds: value.board.positionIds.filter(
+            (id): id is string => typeof id === "string" && id.length > 0,
+          ),
+        }
+      : null;
+  const blockedCompanies = numberMap(value.blockedCompanies);
+  const pendingPayouts = Array.isArray(value.pendingPayouts)
+    ? value.pendingPayouts.flatMap((row) => {
+        if (!isRecord(row) || typeof row.company !== "string" || typeof row.monthKey !== "string") return [];
+        return [{ company: row.company, amount: num(row.amount), monthKey: row.monthKey }];
+      })
+    : [];
+  const fired = isRecord(value.fired) && typeof value.fired.company === "string"
+    ? {
+        company: value.fired.company,
+        days: num(value.fired.days),
+        lateTasks: num(value.fired.lateTasks),
+        payout: num(value.fired.payout),
+        open: value.fired.open === true,
+      }
+    : null;
+  const validCurrent = current && current.positionId.length > 0 ? current : null;
+  return {
+    current: validCurrent,
+    applications,
+    board,
+    blockedCompanies,
+    pendingPayouts,
+    fired,
+    lastPaydayKey: strOrNull(value.lastPaydayKey),
+  };
+}
+
 export function careerFromUnknown(
   value: unknown,
   day: number,
@@ -299,6 +384,7 @@ export function careerFromUnknown(
     player_events: normalizeEvents(value.player_events),
     life: normalizeLife(value.life, day),
     shop: normalizeShop(value.shop),
+    employment: normalizeEmployment(value.employment),
     feed: normalizeFeed(value.feed, day, {
       money: Number.isFinite(Number(players.money)) ? Math.trunc(Number(players.money)) : fresh.players.money,
       health: Number.isFinite(Number(players.health)) ? Number(players.health) : fresh.players.health,
@@ -438,6 +524,8 @@ const NOTICE_ACTIONS: readonly NoticeActionId[] = [
   "acceptJob",
   "dismissNotice",
   "openJobs",
+  "acceptPosition",
+  "declinePosition",
 ];
 
 function noticeActionOf(value: unknown): NoticeActionId | null {
@@ -545,6 +633,9 @@ function strOrNull(value: unknown): string | null {
  * Version 21 renames the 3D store ids `plant`→`plant_big` and
  * `fan`→`fan_standing` in `shop.owned` and `shop.pin`; ids outside the new
  * catalog are dropped by `normalizeShop`.
+ * Version 22 adds `career.employment` (full-time job). An older save starts
+ * with no job; every existing `player_jobs` row, including legacy `remote`
+ * offers, keeps running as `source: "freelance"`.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(

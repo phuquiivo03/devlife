@@ -13,6 +13,7 @@ import { LIFE } from "../life/content";
 import { lifeOf } from "../life/logic";
 import { formatVnd } from "@/lib/format-currency";
 import { jobEligibility, jobRequirementsFor, offerJob, shuffleSeeded, skillNameMap } from "./logic";
+import { freelanceNoticeEvery } from "./fulltime";
 
 export const JOB_OFFER_ICON = "icon_notif_job.png";
 
@@ -26,6 +27,8 @@ const NOTICE_ACTION_IDS: readonly NoticeActionId[] = [
   "dismissNotice",
   "openJobs",
   "openNotification",
+  "acceptPosition",
+  "declinePosition",
 ];
 
 const DIFFICULTY_LABEL = {
@@ -195,7 +198,7 @@ function postOffer(state: CareerState, template: JobTemplate, day: number, minut
   };
 }
 
-/** One waking slot. At most one new job notice every `job_notice_every_slots` slots, and at most `job_notice_pending_max` open offers. */
+/** One waking slot. At most one new job notice every `job_notice_every_slots` slots (×2 while employed), and at most `job_notice_pending_max` open offers. */
 export function tickJobOffers(
   state: CareerState,
   day: number,
@@ -205,7 +208,7 @@ export function tickJobOffers(
   const expired = expireJobOffers(state, day);
   const life = lifeOf(expired);
   const slots = life.jobNoticeSlots + 1;
-  if (slots < LIFE.job_notice_every_slots) {
+  if (slots < freelanceNoticeEvery(expired)) {
     return { ...expired, life: { ...life, jobNoticeSlots: slots } };
   }
   const ready = { ...expired, life: { ...life, jobNoticeSlots: 0 } };

@@ -40,6 +40,8 @@ const JOB_BUTTON_IDS = new Set<NoticeActionId>([
   "acceptJob",
   "dismissNotice",
   "openJobs",
+  "acceptPosition",
+  "declinePosition",
 ]);
 
 function clock(minute: number): string {

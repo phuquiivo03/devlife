@@ -10,6 +10,9 @@ export type SkillId = (typeof SKILL_IDS)[number];
 
 export type JobType = "freelance" | "remote";
 
+/** Where a PlayerJob row came from: the freelance board or a company task. */
+export type JobSource = "freelance" | "company";
+
 export type JobStatus =
   | "offered"
   | "active"
@@ -193,7 +196,9 @@ export type NoticeActionId =
   | "acceptJob"
   | "dismissNotice"
   | "openJobs"
-  | "openNotification";
+  | "openNotification"
+  | "acceptPosition"
+  | "declinePosition";
 
 export type NoticeActionVariant = "primary" | "secondary";
 
@@ -207,6 +212,8 @@ export type NoticeActionButton = {
 
 export type NoticePayload = {
   jobId?: string;
+  /** A full-time application offer notice carries its application row id. */
+  applicationId?: string;
 };
 
 export const NOTICE_ACTION_DEFAULT_LABEL: Record<NoticeActionId, string> = {
@@ -219,6 +226,8 @@ export const NOTICE_ACTION_DEFAULT_LABEL: Record<NoticeActionId, string> = {
   dismissNotice: "Bỏ qua",
   openJobs: "Làm",
   openNotification: "Mở notification",
+  acceptPosition: "Nhận việc",
+  declinePosition: "Từ chối",
 };
 
 export type NoticeSeverity = "info" | "warn" | "urgent";
@@ -356,6 +365,8 @@ export type PlayerJob = {
   id: string;
   template_id: string;
   job_type: JobType;
+  /** Company tasks carry "company". Absent reads as "freelance" (pre-v22 rows). */
+  source?: JobSource;
   status: JobStatus;
   hours_required: number;
   progress_hours: number;
@@ -381,6 +392,85 @@ export type PlayerEvent = {
   payload: Record<string, unknown>;
 };
 
+/** One full-time recruitment position from `config/fulltime_positions.json`. */
+export type LevelTier = "intern" | "junior" | "middle" | "senior";
+export type PositionStack = "frontend" | "backend" | "fullstack" | "devops";
+
+export type FulltimePosition = {
+  id: string;
+  title: string;
+  company: string;
+  stack: PositionStack;
+  level_tier: LevelTier;
+  requirements: { skill_id: SkillId; min_level: number }[];
+  min_reputation: number;
+  /** Null reads the tier base salary from `config/fulltime.json`. */
+  base_salary: number | null;
+};
+
+/** The job the player currently holds. Salary is fixed on the accept day. */
+export type CurrentEmployment = {
+  positionId: string;
+  company: string;
+  title: string;
+  salary: number;
+  fit: number;
+  startDay: number;
+  strikes: number;
+  /** Salary percent withheld this month because of late company tasks. */
+  monthPenalty: number;
+  daysWorkedThisMonth: number;
+  /** Month key the day/penalty/strike-month counters belong to. */
+  countedMonthKey: string | null;
+  /** Strikes added this calendar month. A clean month removes one strike. */
+  strikesThisMonth: number;
+  /** Total employed days, for the firing summary. */
+  totalDays: number;
+  /** Late company tasks, for the firing summary. */
+  lateTasks: number;
+};
+
+/** One sent application. The result is rolled on apply and revealed next day. */
+export type EmploymentApplication = {
+  id: string;
+  positionId: string;
+  appliedDay: number;
+  weekStart: number;
+  passed: boolean;
+  notified: boolean;
+  /** Salary quoted in the offer notice and locked in on accept. */
+  quotedSalary: number;
+  outcome: "waiting" | "accepted" | "declined" | "expired";
+};
+
+/** Payout of a job quit mid-month, held until the month's payday. */
+export type PendingPayout = {
+  company: string;
+  amount: number;
+  monthKey: string;
+};
+
+/** Full-screen firing summary. `open` drives the popup; pay-out happens on close. */
+export type FiredSummary = {
+  company: string;
+  days: number;
+  lateTasks: number;
+  payout: number;
+  open: boolean;
+};
+
+/** Full-time remote career: one job, weekly recruitment, company tasks. */
+export type EmploymentState = {
+  current: CurrentEmployment | null;
+  applications: EmploymentApplication[];
+  board: { weekStart: number; positionIds: string[] } | null;
+  blockedCompanies: Record<string, number>;
+  pendingPayouts: PendingPayout[];
+  fired: FiredSummary | null;
+  /** Month key already settled by payday. Guards the 18h/day-1 double pay. */
+  lastPaydayKey: string | null;
+};
+
 /** localStorage document. Keys match the Postgres tables. */
 export type CareerState = {
   players: PlayerRow;
@@ -392,6 +482,7 @@ export type CareerState = {
   life: LifeState;
   feed: LifeFeed;
   shop: ShopState;
+  employment: EmploymentState;
 };
 
 export type SimCatalog = {
