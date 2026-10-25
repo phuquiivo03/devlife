@@ -9,6 +9,7 @@ import { useGameStore } from "@/game/state/store";
 import { timeBus } from "@/game/time";
 import { formatVnd } from "@/lib/format-currency";
 import { Button, PixelButton } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 import { PanelCard, PanelCardTitle } from "@/components/ui/panel-card";
 import { FiredPopup } from "../FiredPopup";
 import { JobManageBoard } from "./JobManageBoard";
@@ -286,47 +287,47 @@ export function CareerChrome({
       ) : null}
 
       {offerConfirm ? (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#2A2548]/35 p-4"
-          data-testid="job-switch-popup"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Đổi việc"
-        >
-          <PanelCard className="w-full max-w-sm p-5 text-center">
-            {(() => {
-              const career = useGameStore.getState().career;
-              const app = employmentOf(career).applications.find(
-                (row) => row.id === offerConfirm.applicationId,
-              );
-              const position = app ? positionById(app.positionId) : null;
-              const oldCompany = employmentOf(career).current?.company ?? "";
-              return (
-                <>
-                  <p className="mb-3 font-galmuri-11 text-galmuri-title text-[var(--foreground)]">
-                    Nghỉ việc ở {oldCompany} để sang {position?.company ?? "công ty mới"}?
-                  </p>
-                  <p className="mb-4 font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
-                    Lương cũ tính theo số ngày đã làm, trả vào cuối tháng.
-                  </p>
-                  <div className="flex justify-center gap-2">
-                    <PixelButton
-                      type="button"
-                      variant="primary"
-                      data-testid="job-switch-confirm"
-                      onClick={confirmJobSwitch}
-                    >
-                      Đồng ý
-                    </PixelButton>
-                    <PixelButton type="button" variant="light" onClick={cancelJobSwitch}>
-                      Hủy
-                    </PixelButton>
-                  </div>
-                </>
-              );
-            })()}
-          </PanelCard>
-        </div>
+        (() => {
+          const career = useGameStore.getState().career;
+          const app = employmentOf(career).applications.find(
+            (row) => row.id === offerConfirm.applicationId,
+          );
+          const position = app ? positionById(app.positionId) : null;
+          const oldCompany = employmentOf(career).current?.company ?? "";
+          return (
+            <Modal
+              open
+              onOpenChange={(next) => {
+                if (!next) cancelJobSwitch();
+              }}
+              title="Đổi việc?"
+              testId="job-switch-popup"
+              closeLabel="Hủy"
+            >
+              <div className="flex flex-col items-center gap-3 py-2 text-center">
+                <p className="font-galmuri-11 text-galmuri-title text-[var(--foreground)]">
+                  Nghỉ việc ở {oldCompany} để sang {position?.company ?? "công ty mới"}?
+                </p>
+                <p className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
+                  Lương cũ tính theo số ngày đã làm, trả vào cuối tháng.
+                </p>
+                <div className="flex justify-center gap-2">
+                  <PixelButton
+                    type="button"
+                    variant="primary"
+                    data-testid="job-switch-confirm"
+                    onClick={confirmJobSwitch}
+                  >
+                    Đồng ý
+                  </PixelButton>
+                  <PixelButton type="button" variant="light" onClick={cancelJobSwitch}>
+                    Hủy
+                  </PixelButton>
+                </div>
+              </div>
+            </Modal>
+          );
+        })()
       ) : null}
     </>
   );

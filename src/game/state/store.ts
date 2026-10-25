@@ -658,7 +658,7 @@ export const useGameStore = create<GameState>()(
         const joined = acceptApplication(get().career, pending.applicationId);
         set({ offerConfirm: null });
         if (joined.error) return;
-        set({ career: joined.state });
+        set({ career: joined.state, notificationOpen: false, careerPanel: "jobs" });
       },
       cancelJobSwitch: () => set({ offerConfirm: null }),
       closeFired: () => {
@@ -732,12 +732,15 @@ export const useGameStore = create<GameState>()(
           const applicationId = picked?.payload?.applicationId;
           if (!applicationId) return;
           if (get().career.employment?.current) {
-            // Confirm before quitting the current job for the new one.
+            // Confirm before quitting the current job for the new one. The
+            // confirm dialog is a Radix portal, so it stacks above this panel.
             set({ offerConfirm: { applicationId } });
             return;
           }
           const joined = acceptApplication(get().career, applicationId);
-          if (!joined.error) set({ career: joined.state });
+          if (!joined.error) {
+            set({ career: joined.state, notificationOpen: false, careerPanel: "jobs" });
+          }
           return;
         }
         if (id === "declinePosition") {

@@ -92,7 +92,8 @@ function pendingOffers(state: CareerState, day: number): LifeNotice[] {
     if (!isJobOfferNotice(notice)) return false;
     if (day >= notice.day + LIFE.job_notice_expire_days) return false;
     const job = state.player_jobs.find((row) => row.id === noticeJobId(notice));
-    return job?.status === "offered";
+    // Company tasks reuse acceptJob but live on their own overnight schedule.
+    return job?.status === "offered" && job.source !== "company";
   });
 }
 
@@ -100,11 +101,17 @@ function expireJobOffers(state: CareerState, day: number): CareerState {
   const notices = state.feed?.notices ?? [];
   const drop = new Set<string>();
   const expireJobs = new Set<string>();
+  const companyIds = new Set(
+    state.player_jobs.filter((job) => job.source === "company").map((job) => job.id),
+  );
   for (const notice of notices) {
     if (!isJobOfferNotice(notice)) continue;
+    const jobId = noticeJobId(notice);
+    // A company task notice survives midnight; fulltimeDayStart's overnight
+    // auto-accept (not the 1-day offer expiry) closes it.
+    if (jobId && companyIds.has(jobId)) continue;
     if (day < notice.day + LIFE.job_notice_expire_days) continue;
     drop.add(notice.id);
-    const jobId = noticeJobId(notice);
     if (jobId) expireJobs.add(jobId);
   }
   if (drop.size === 0) return state;
