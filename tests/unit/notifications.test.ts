@@ -105,6 +105,21 @@ describe("notification metrics", () => {
 });
 
 describe("notification actions", () => {
+  it("counts the bell badge with the same hunger filter as the panel list", () => {
+    // The panel hides No bụng reminders; the badge must not advertise rows
+    // the opened panel never shows (reported as "badge 5, list 2").
+    const button = readFileSync(
+      join(process.cwd(), "src/components/game/NotificationsButton.tsx"),
+      "utf8",
+    );
+    expect(button).toContain("isHungerNotice");
+    const panel = readFileSync(
+      join(process.cwd(), "src/components/game/NotificationsPanel.tsx"),
+      "utf8",
+    );
+    expect(panel).toContain("isHungerNotice");
+  });
+
   it("maps the five spec glyphs and keeps the old labels", () => {
     expect(resolveNoticeAction("payRent")).toEqual({
       kind: "icon",
