@@ -1,5 +1,5 @@
 {
- "version": "junior_3d_v1",
+ "version": "junior_3d_v2",
  "character_scale": 1.4,
  "items": [
   {
@@ -13,140 +13,214 @@
   {
    "key": "bed",
    "category": "furniture",
-   "position": [-0.9, 0.02, -1.44],
-   "rotationY": 0
+   "position": [-1.45, 0.02, 1.05],
+   "rotationY": 1.5708,
+   "note": "junior.bed default; along the left wall, foot at the front wall"
   },
   {
    "key": "mattress",
    "category": "furniture",
-   "position": [-0.84, 0.28, -1.46],
-   "rotationY": 0,
+   "position": [-1.47, 0.28, 0.99],
+   "rotationY": 1.5708,
    "note": "overlay on the bed; owned only"
   },
   {
    "key": "bed_vip",
    "category": "furniture",
-   "position": [-0.9, 0.02, -1.44],
+   "position": [-1.45, 0.02, 0.95],
    "rotationY": 0,
-   "note": "replaces bed; owned only"
+   "note": "replaces bed; owned only. VIP bed is z-long, so it stays unrotated in the bed zone"
   },
   {
    "key": "bed_floor_mat",
    "category": "furniture",
-   "position": [0.35, 0.01, -1.44],
-   "rotationY": 0
+   "position": [0.02, 0.01, 1.05],
+   "rotationY": 0,
+   "note": "floor mat beside the bed"
   },
   {
    "key": "desk",
    "category": "furniture",
-   "position": [-1.62, 0, 0.375],
-   "rotationY": 0
-  },
-  {
-   "key": "table_folding",
-   "category": "furniture",
-   "position": [-1.6, 0.02, 0.475],
-   "rotationY": 1.5708,
-   "note": "drawn only when the desk slot picks student.folding_table"
+   "position": [-1.62, 0, -0.95],
+   "rotationY": 0,
+   "note": "junior.desk default; against the left wall so the back-wall window stays clear"
   },
   {
    "key": "monitor",
    "category": "decor",
-   "position": [-1.76, 0.74, 0.255],
-   "rotationY": -1.7802
+   "position": [-1.78, 0.74, -0.95],
+   "rotationY": -1.5708
   },
   {
    "key": "monitor2",
    "category": "decor",
-   "position": [-1.74, 0.74, -0.195],
-   "rotationY": -1.3614,
-   "note": "secondary screen; owned only"
+   "position": [-1.74, 0.74, -0.42],
+   "rotationY": -2.2,
+   "note": "secondary screen angled beside the monitor; owned only"
+  },
+  {
+   "key": "junior_keyboard_mat",
+   "category": "decor",
+   "position": [-1.48, 0.74, -0.95],
+   "rotationY": -1.5708,
+   "note": "junior.keyboard_mat default; mat + keyboard in one model"
   },
   {
    "key": "keyboard",
    "category": "decor",
-   "position": [-1.384, 0.745, 0.175],
-   "rotationY": 0
+   "position": [-1.384, 0.745, -0.95],
+   "rotationY": 0,
+   "note": "store keyboard; replaces the mat at the desk centre"
   },
   {
-   "key": "laptop",
+   "key": "junior_mouse",
    "category": "decor",
-   "position": [-1.5, 0.74, 0.62],
+   "position": [-1.45, 0.744, -1.27],
    "rotationY": -1.5708,
-   "note": "side_device default spot; display-slot picks override to the monitor place"
+   "note": "junior.mouse default"
+  },
+  {
+   "key": "junior_laptop_stand",
+   "category": "decor",
+   "position": [-1.72, 0.74, -1.52],
+   "rotationY": -1.13446,
+   "note": "junior.laptop_stand default; -65deg toward the player"
   },
   {
    "key": "mug",
    "category": "decor",
-   "position": [-1.48, 0.745, 0.7225],
-   "rotationY": 0
-  },
-  {
-   "key": "cup",
-   "category": "decor",
-   "position": [-1.25, 0.745, 0.55],
-   "rotationY": 0
+   "position": [-1.42, 0.74, -0.4],
+   "rotationY": 0,
+   "note": "junior.mug default (cup slot)"
   },
   {
    "key": "plant_small",
    "category": "decor",
-   "position": [-1.7974, 0.74, 1.019],
-   "rotationY": 0
+   "position": [-1.8, 0.74, -0.33],
+   "rotationY": 0,
+   "note": "junior.plant_small default (desk_plant slot)"
   },
   {
    "key": "lamp_desk",
    "category": "decor",
-   "position": [-1.86, 0.74, 0.675],
-   "rotationY": -1.5708
+   "position": [-1.35, 0.74, -0.2],
+   "rotationY": -1.5708,
+   "note": "store desk lamp; desk_lamp slot pick"
+  },
+  {
+   "key": "senior_smart_speaker",
+   "category": "decor",
+   "position": [-1.3, 0.74, -0.6],
+   "rotationY": -1.5708,
+   "note": "gadget slot pick (senior.smart_speaker) — desk front-right corner"
+  },
+  {
+   "key": "drawer_pedestal",
+   "category": "furniture",
+   "position": [-1.7, 0.02, -1.4],
+   "rotationY": -1.5708,
+   "note": "junior.drawer_pedestal default; under the desk"
+  },
+  {
+   "key": "junior_office_chair",
+   "category": "furniture",
+   "position": [-1.0, 0.02, -0.95],
+   "rotationY": 1.5708,
+   "note": "junior.office_chair default"
   },
   {
    "key": "ergo_chair",
    "category": "furniture",
-   "position": [-0.8239, 0.02, 0.15],
-   "rotationY": 1.5708
+   "position": [-1.0, 0.02, -0.95],
+   "rotationY": 1.5708,
+   "note": "seat pick / owned auto-replace; same spot as the office chair"
   },
   {
    "key": "stool_plastic",
    "category": "furniture",
-   "position": [1.15, 0.02, 0.85],
+   "position": [1.2, 0.02, 0.95],
    "rotationY": 0
+  },
+  {
+   "key": "junior_bookshelf",
+   "category": "furniture",
+   "position": [1.06, 0.02, -1.845],
+   "rotationY": 3.1416,
+   "note": "junior.bookshelf default; back wall right of the window"
+  },
+  {
+   "key": "junior_wardrobe",
+   "category": "furniture",
+   "position": [1.82, 0.02, -1.695],
+   "rotationY": 3.1416,
+   "note": "junior.wardrobe default; back-right corner"
   },
   {
    "key": "nightstand",
    "category": "furniture",
-   "position": [1.6, 0.02, -1.45],
+   "position": [1.7, 0.02, 0.35],
    "rotationY": 0,
-   "note": "stands in for shelf/wardrobe/under_desk defaults until their GLBs ship"
+   "note": "cabinet slot pick (student.bedside_cabinet)"
   },
   {
    "key": "kettle",
    "category": "decor",
-   "position": [1.6981, 0.64, -1.52],
-   "rotationY": 0
+   "position": [1.8, 0.64, 0.42],
+   "rotationY": 0,
+   "note": "on the nightstand; cabinet_top slot pick"
   },
   {
    "key": "fan_standing",
    "category": "furniture",
-   "position": [1.0, 0.01, -1.68],
+   "position": [1.7, 0.01, -0.95],
    "rotationY": 2.0944
   },
   {
    "key": "plant_big",
    "category": "decor",
-   "position": [-1.7028, 0.02, 1.7811],
+   "position": [1.6, 0.02, 1.6],
    "rotationY": 0
   },
   {
    "key": "books_stack",
    "category": "decor",
-   "position": [-1.05, 0.02, 1.65],
+   "position": [0.55, 0.02, 1.78],
    "rotationY": 0
+  },
+  {
+   "key": "senior_armchair",
+   "category": "furniture",
+   "position": [0.9, 0.02, -0.15],
+   "rotationY": 2.0944,
+   "note": "lounge slot pick (senior.armchair)"
+  },
+  {
+   "key": "senior_rug",
+   "category": "decor",
+   "position": [-0.35, 0.02, -0.3],
+   "rotationY": 0,
+   "note": "rug slot pick (senior.rug); 6mm thick, floor y=0.02"
+  },
+  {
+   "key": "junior_poster_1",
+   "category": "decor",
+   "position": [-1.986, 1.25, 1.45],
+   "rotationY": -1.5708,
+   "note": "junior.poster_1 default; left wall above the bed head"
+  },
+  {
+   "key": "junior_poster_2",
+   "category": "decor",
+   "position": [-1.986, 1.32, 0.85],
+   "rotationY": -1.5708,
+   "note": "junior.poster_2 default"
   },
   {
    "key": "poster_vn",
    "category": "decor",
    "position": [-1.963, 1.32, -0.5],
-   "rotationY": 0
+   "rotationY": 0,
+   "note": "wall_art pick; left wall above the desk"
   },
   {
    "key": "fairy_lights",
@@ -157,32 +231,55 @@
   {
    "key": "aircon",
    "category": "decor",
-   "position": [1.35, 1.55, -1.89],
-   "rotationY": 3.141592653589793,
-   "note": "back wall, right of the window opening (x 0.6..1.3 is clear)"
+   "position": [0.0, 1.75, 1.89],
+   "rotationY": 0,
+   "note": "front wall; the back wall is taken by window + bookshelf + wardrobe"
   }
  ],
  "stage0": {
-  "items": [],
+  "items": [
+   {
+    "key": "table_folding",
+    "category": "furniture",
+    "position": [-1.6, 0.02, -0.95],
+    "rotationY": 1.5708,
+    "note": "drawn only when the desk slot picks student.folding_table"
+   },
+   {
+    "key": "laptop",
+    "category": "decor",
+    "position": [-1.38, 0.74, -1.62],
+    "rotationY": -1.5708,
+    "note": "side_device pick; display-slot picks override to the monitor place"
+   },
+   {
+    "key": "cup",
+    "category": "decor",
+    "position": [-1.28, 0.745, -0.7],
+    "rotationY": 0,
+    "note": "cup/snack slot pick (student.noodle_cup)"
+   }
+  ],
   "hide": []
  },
  "poses": {
   "sit": {
    "key": "player",
    "category": "character",
-   "position": [-0.958, 0.236, 0.15],
-   "rotationY": 1.5708
+   "position": [-1.134, 0.47, -0.95],
+   "rotationY": 1.5708,
+   "note": "on the junior office chair seat (top y 0.487)"
   },
   "stand": {
    "key": "player_standing",
    "category": "character",
-   "position": [-0.95, 0.02, 0.9],
+   "position": [-0.55, 0.02, 0.9],
    "rotationY": 1.5708
   },
   "floor": {
    "key": "player_floor",
    "category": "character",
-   "position": [-1.0, 0.02, 0.15],
+   "position": [-0.85, 0.02, -0.35],
    "rotationY": 1.5708
   }
  }

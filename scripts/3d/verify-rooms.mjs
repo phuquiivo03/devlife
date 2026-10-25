@@ -20,29 +20,23 @@ async function settle(page) {
 }
 
 async function seedStage(page, stage) {
+  // Set state through the exposed store: localStorage surgery loses the race
+  // against the sim's per-minute re-persist.
   await page.evaluate(
-    ({ key, stage, owned }) => {
-      // Mutate the save the app itself wrote — a full, valid state.
-      const save = JSON.parse(localStorage.getItem(key));
-      const state = save.state ?? {};
-      const career = state.career ?? {};
-      const players = career.players ?? {};
-      const shop = career.shop ?? {};
-      save.state = {
-        ...state,
+    ({ stage, owned }) => {
+      const store = window.__store;
+      store.setState((s) => ({
         stage,
         career: {
-          ...career,
-          players: { ...players, stage },
-          shop: { ...shop, owned },
+          ...s.career,
+          players: { ...s.career.players, stage },
+          shop: { ...(s.career.shop ?? { owned: [], pin: null }), owned },
         },
-      };
-      localStorage.setItem(key, JSON.stringify(save));
+      }));
     },
-    { key: PERSIST_KEY, stage, owned: OWNED },
+    { stage, owned: OWNED },
   );
-  await page.reload();
-  await settle(page);
+  await page.waitForTimeout(2500); // let the 3D scene swap shells + settle
 }
 
 const openStore = async (page) => {

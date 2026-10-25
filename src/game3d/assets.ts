@@ -54,11 +54,45 @@ export const STORE_TO_KEY: Record<string, string> = {
 };
 
 /**
+ * Junior/senior default models from art/3d/room_defaults_v1. Not purchasable,
+ * but like store items they render only through the loadout — a slot's room
+ * default or an explicit pick. Without this they would show up as always-on
+ * base furniture and survive their slot being emptied.
+ */
+const STAGE_DEFAULT_KEYS = [
+  "drawer_pedestal",
+  "junior_keyboard_mat",
+  "junior_laptop_stand",
+  "junior_mouse",
+  "junior_office_chair",
+  "junior_bookshelf",
+  "junior_wardrobe",
+  "junior_poster_1",
+  "junior_poster_2",
+  "senior_standing_desk",
+  "senior_dual_monitor",
+  "senior_keyboard_mat",
+  "senior_smart_speaker",
+  "senior_sideboard",
+  "senior_espresso_machine",
+  "senior_coffee_grinder",
+  "senior_bookshelf",
+  "senior_monstera",
+  "senior_armchair",
+  "senior_rug",
+  "senior_frame_1",
+  "senior_frame_2",
+] as const;
+
+/**
  * Item keys that render only through the loadout (a slot entry or its room
  * default resolving to them). Everything else in a room manifest is base
  * furniture, always visible. Ownership alone no longer draws anything.
  */
-const LOADOUT_ONLY_KEYS = new Set(Object.keys(STORE_TO_KEY));
+const LOADOUT_ONLY_KEYS = new Set<string>([
+  ...Object.keys(STORE_TO_KEY),
+  ...STAGE_DEFAULT_KEYS,
+]);
 
 export function isLoadoutOnly(key: string): boolean {
   return LOADOUT_ONLY_KEYS.has(key);
