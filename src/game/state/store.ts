@@ -220,6 +220,8 @@ export type GameState = {
   setClockPaused: (paused: boolean) => void;
   sleep: () => void;
   jumpToPhase: (phaseId: PhaseId) => void;
+  /** Dev-only: skip ahead to tomorrow 06:00, same landing as a day-skip life event. */
+  debugSkipDay: () => void;
   career: CareerState;
   careerPanel: CareerPanel | null;
   fastForward: boolean;
@@ -414,6 +416,9 @@ export const useGameStore = create<GameState>()(
         const result = seekMinutes(current, target);
         set({ totalMinutes: result.totalMinutes });
         for (const event of result.events) timeBus.emit(event);
+      },
+      debugSkipDay: () => {
+        maybeHospital(1);
       },
       career: defaultCareer(1, DEFAULT_START_MINUTES, "student", SIM_CATALOG, rollTrait()),
       careerPanel: null,
