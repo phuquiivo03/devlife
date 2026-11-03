@@ -1544,6 +1544,14 @@ body:has(.theme-clay) {
   }
 }
 
+/* drei positions this wrapper. It must stay content-sized: a zoom-scaled
+   copy paints the violet Dùng button across the whole room. */
+.item-use-anchor {
+  width: max-content;
+  height: max-content;
+  pointer-events: none;
+}
+
 .item-use-card {
   display: flex;
   flex-direction: column;
