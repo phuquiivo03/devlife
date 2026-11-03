@@ -380,6 +380,7 @@ export function careerFromUnknown(
       reputation: num(players.reputation, fresh.players.reputation),
       freelance_completed: num(players.freelance_completed),
       trait: isTraitId(players.trait) ? players.trait : MIGRATION_TRAIT,
+      name: playerName(players.name),
       traitRolled: players.traitRolled === true,
       introSeen: players.introSeen === true,
     },
@@ -406,6 +407,12 @@ function fullnessOrDefault(value: unknown): number {
     return LIFE.fullness_default_migrate;
   }
   return value;
+}
+
+/** Display name: trimmed and clamped. Anything else stays empty (stub fallback on the card). */
+function playerName(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value.trim().slice(0, 24);
 }
 
 function normalizeLife(value: unknown, day: number): LifeState {
@@ -649,6 +656,9 @@ function strOrNull(value: unknown): string | null {
  * (`store:<id>`), with aircon and lamp_desk landing in their new slots.
  * Existing loadout entries — including an explicit `null` — are never
  * overwritten, so no placed item is lost and no choice is reversed.
+ * Version 24 adds `players.name`, entered in the creation popup after the
+ * trait roll. Older saves keep no name; the profile card falls back to the
+ * stub name until one is entered. `careerFromUnknown` trims and clamps it.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -769,6 +779,12 @@ export function migrateSave(
       }
       loadouts[stageId] = stageLoadout;
     }
+  }
+
+  if (version < 24) {
+    // v24: `players.name` entered after the trait roll. `careerFromUnknown`
+    // already trims and clamps it; older saves keep it empty and the profile
+    // card falls back to the stub name.
   }
 
   return {

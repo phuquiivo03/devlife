@@ -120,7 +120,8 @@ describe("store catalog", () => {
     const healed = applyLifeDayStart(mattress, 2, "student", { resolveMorning: false });
     expect(healed.state.players.health).toBe(71); // mattress applies when owned (v19); the meals-low penalty is gone in v20
     const rested = { ...planted, shop: { owned: ["fan_standing"], pin: null }, players: { ...planted.players, energy: 10 } };
-    expect(applySleepRest(rested, 1).state.players.energy).toBe(10 + 12.5 + 5);
+    // 1h sleep is 6h short of the 7h minimum: recovery scaled to 40%.
+    expect(applySleepRest(rested, 1).state.players.energy).toBe(10 + (12.5 + 5) * 0.4);
 
     const board = applyDayStarted(start, 1, 8 * 60, "student", SIM_CATALOG, { resolveMorning: false });
     const offer = board.state.player_jobs.find((job) => job.status === "offered");

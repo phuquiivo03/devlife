@@ -36,6 +36,7 @@ import {
   traitIconSrc,
 } from "@/game/life/traits";
 import { migrateSave } from "@/game/storage/migrate";
+import { useGameStore } from "@/game/state/store";
 import { chooseBuild, chooseTicket, startTask } from "@/game/task-run/apply";
 import { TASK_RUN } from "@/game/task-run/content";
 
@@ -345,6 +346,49 @@ describe("personality", () => {
     expect(pending.career.players.trait).toBe("frugal");
     expect(pending.career.players.introSeen).toBe(false);
     expect(pending.career.players.money).toBe(10);
+  });
+
+  it("saves the name entered after the trait roll", () => {
+    expect(career("optimist").players.name).toBe("");
+
+    const named = migrateSave(
+      {
+        stage: "student",
+        totalMinutes: 480,
+        career: { players: { money: 10, name: "  Bình  ", trait: "frugal", traitRolled: true, introSeen: true } },
+      },
+      24,
+      () => 0,
+    );
+    expect(named.career.players.name).toBe("Bình");
+
+    const unnamed = migrateSave(
+      {
+        stage: "student",
+        totalMinutes: 480,
+        career: { players: { money: 10, trait: "frugal", traitRolled: true, introSeen: true } },
+      },
+      23,
+      () => 0,
+    );
+    expect(unnamed.career.players.name).toBe("");
+
+    const long = migrateSave(
+      {
+        stage: "student",
+        totalMinutes: 480,
+        career: { players: { money: 10, name: "x".repeat(40), trait: "frugal", traitRolled: true, introSeen: true } },
+      },
+      24,
+      () => 0,
+    );
+    expect(long.career.players.name).toBe("x".repeat(24));
+
+    useGameStore.setState({ career: career("optimist") });
+    useGameStore.getState().dismissIntro("  Quí  ");
+    const state = useGameStore.getState();
+    expect(state.career.players.name).toBe("Quí");
+    expect(state.career.players.introSeen).toBe(true);
   });
 
   it("ships the 3D trait art at 256px for native and 2× paths", () => {

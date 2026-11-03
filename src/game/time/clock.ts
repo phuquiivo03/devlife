@@ -211,13 +211,16 @@ function pushDestinationDiff(events: TimeEvent[], from: number, to: number): voi
 }
 
 /**
- * Skip to 06:00 on the next day. Does not emit a `minute` per skipped minute —
- * listeners that care about rest subscribe to `sleep`.
+ * Skip to 06:00 on the next day. Sleeping past midnight (00:00–05:59) lands at
+ * 06:00 of the current day instead — the morning already ahead of the player.
+ * Does not emit a `minute` per skipped minute — listeners that care about rest
+ * subscribe to `sleep`.
  */
 export function sleepToNextMorning(totalMinutes: number): AdvanceResult {
   const from = sanitize(totalMinutes);
-  const day = snapshot(from).day;
-  const wake = day * MINUTES_PER_DAY + SLEEP_WAKE_MINUTE;
+  const snap = snapshot(from);
+  const dayIndex = snap.minuteOfDay < SLEEP_WAKE_MINUTE ? snap.day - 1 : snap.day;
+  const wake = dayIndex * MINUTES_PER_DAY + SLEEP_WAKE_MINUTE;
   const events: TimeEvent[] = [];
   pushDestinationDiff(events, from, wake);
   events.push({

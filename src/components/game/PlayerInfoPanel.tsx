@@ -45,6 +45,7 @@ export function ProfileCard({
   const p = STUB_PLAYER;
   const stage = useGameStore((s) => s.stage);
   const career = useGameStore((s) => s.career);
+  const playerName = career.players.name.trim().length > 0 ? career.players.name : p.name;
   const day = useGameStore((s) => snapshot(s.totalMinutes).day);
   const playerSkills = useGameStore((s) => s.career.player_skills);
   const reputation = useGameStore((s) => s.career.players.reputation);
@@ -72,11 +73,11 @@ export function ProfileCard({
       <div className="flex flex-none flex-col" style={statFxVars()}>
         <div className="flex items-center gap-3">
           <div className="clay-avatar">
-            <PixelAvatar role="player" size={56} alt={p.name} />
+            <PixelAvatar role="player" size={56} alt={playerName} />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1">
-              <p className="clay-name">{p.name}</p>
+              <p className="clay-name">{playerName}</p>
               <RankBadge rankId={overall.id} size={24} />
             </div>
             <p
@@ -178,10 +179,10 @@ export function ProfileCard({
   return (
     <PanelCard className="flex shrink-0 flex-col items-center p-3" style={statFxVars()}>
       <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-2 border-[var(--room-frame)] bg-[var(--scene-plate)]">
-        <PixelAvatar role="player" size={80} alt={p.name} />
+        <PixelAvatar role="player" size={80} alt={playerName} />
       </div>
       <div className="mt-2 flex items-center justify-center gap-1">
-        <p className="font-galmuri-11 text-galmuri-title text-[var(--foreground)]">{p.name}</p>
+        <p className="font-galmuri-11 text-galmuri-title text-[var(--foreground)]">{playerName}</p>
         <RankBadge rankId={overall.id} size={24} />
       </div>
       <p

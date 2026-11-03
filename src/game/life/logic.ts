@@ -742,14 +742,20 @@ export function isLowStat(key: "health" | "fullness", value: number): boolean {
 export function applySleepRest(state: CareerState, hours: number): LifeResult {
   const life = lifeOf(state);
   const safeHours = Number.isFinite(hours) && hours > 0 ? hours : 0;
+  const missing = Math.max(0, LIFE.sleep_short_hours - safeHours);
   const emax = energyMaxForHealth(state.players.health);
+  const scale = Math.max(0, 1 - LIFE.sleep_energy_loss_per_missing_hour * missing);
   const energy =
-    Math.min(emax, state.players.energy + LIFE.sleep_energy_per_hour * safeHours + furnitureSleepBonus(state)) -
+    Math.min(
+      emax,
+      state.players.energy +
+        (LIFE.sleep_energy_per_hour * safeHours + furnitureSleepBonus(state)) * scale,
+    ) -
     state.players.energy;
   let health = 0;
   let penalty = life.moodPenaltyTomorrow;
-  if (safeHours < LIFE.sleep_short_hours) {
-    health = -LIFE.sleep_short_health_per_missing_hour * (LIFE.sleep_short_hours - safeHours);
+  if (missing > 0) {
+    health = -LIFE.sleep_short_health_per_missing_hour * missing;
     penalty += Math.abs(LIFE.sleep_short_mood_tomorrow);
   }
   return applyDirect(state, { energy, health }, { ...life, moodPenaltyTomorrow: penalty });

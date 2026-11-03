@@ -318,6 +318,34 @@ describe("accepting a job", () => {
     // 10 days × 10tr ÷ 28 days
     expect(joined.state.employment.pendingPayouts).toHaveLength(1);
     expect(joined.state.employment.pendingPayouts[0]!.amount).toBe(Math.round((10_000_000 * 10) / 28));
+    // The new employer's first tasks land in the feed on the switch day itself.
+    const switchedTasks = joined.state.player_jobs.filter(
+      (job) => job.source === "company" && job.status === "offered",
+    );
+    expect(switchedTasks.length).toBeGreaterThanOrEqual(1);
+    expect(switchedTasks.every((job) => job.id.startsWith("ctask-3-"))).toBe(true);
+  });
+
+  it("hands the new employer's tasks into the feed right after accepting, even on a weekend", () => {
+    const applied = applyToPosition(base({ level: 2, day: 4 }), FE_INTERN.id).state;
+    const app = applied.employment.applications[0]!;
+    const passed = {
+      ...applied,
+      employment: { ...applied.employment, applications: [{ ...app, passed: true }] },
+    };
+    const day5 = fulltimeDayStart(passed, 5, 6 * 60);
+    const onDay6 = { ...day5, players: { ...day5.players, game_day: 6 } };
+    const joined = acceptApplication(onDay6, app.id);
+    expect(joined.error).toBeNull();
+    const tasks = joined.state.player_jobs.filter((job) => job.source === "company");
+    expect(tasks.length).toBeGreaterThanOrEqual(1);
+    expect(tasks.every((job) => job.status === "offered" && job.pay === 0)).toBe(true);
+    for (const task of tasks) {
+      const notice = joined.state.feed.notices.find((row) => row.id === `ft-task-${task.id}`);
+      expect(notice).toBeTruthy();
+      expect(notice?.text).toContain(FE_INTERN.company);
+      expect(notice?.actions?.map((button) => button.id)).toContain("acceptJob");
+    }
   });
 });
 

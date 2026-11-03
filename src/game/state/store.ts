@@ -182,7 +182,10 @@ function maybeHospital(skipDays: number | undefined) {
   clockSkip = false;
   handlingHospital = false;
   const landed = snapshot(result.totalMinutes);
-  const morning = resolveMorning(state.career, landed.day);
+  // The dayStarted event emitted by the seek ran the full day-start housekeeping
+  // (board roll, company tasks) and committed a newer career — the pre-seek
+  // snapshot would clobber it, so resolve the morning on the fresh state.
+  const morning = resolveMorning(useGameStore.getState().career, landed.day);
   useGameStore.setState({ career: morning.state });
   emitGame(morning.events);
 }
@@ -206,7 +209,8 @@ export type GameState = {
   selectSlot: (id: string | null) => void;
   setHover: (id: string | null) => void;
   setShowCharacter: (v: boolean) => void;
-  dismissIntro: () => void;
+  /** Close the creation popup, saving the name entered after the trait roll. */
+  dismissIntro: (name?: string) => void;
   setCameraX: (stage: StageId, x: number | null) => void;
   setCustomizeOpen: (v: boolean) => void;
   /** In-game minutes since day 1, 00:00. Persisted. */
@@ -358,10 +362,17 @@ export const useGameStore = create<GameState>()(
       selectSlot: (id) => set({ selectedSlot: id }),
       setHover: (id) => set({ hoveredSlot: id }),
       setShowCharacter: (v) => set({ showCharacter: v }),
-      dismissIntro: () => {
+      dismissIntro: (name) => {
         const career = get().career;
         set({
-          career: { ...career, players: { ...career.players, introSeen: true } },
+          career: {
+            ...career,
+            players: {
+              ...career.players,
+              name: typeof name === "string" ? name.trim().slice(0, 24) : career.players.name,
+              introSeen: true,
+            },
+          },
         });
       },
       setCameraX: (stage, x) =>
@@ -776,14 +787,6 @@ export const useGameStore = create<GameState>()(
           money: career.players.money,
         };
 
-        // Apply hospital effects
-        const newHealth = LIFE.hospital_discharge_health;
-        const newMoney = career.players.money - LIFE.hospital_cost;
-        let newEnergy = career.players.energy;
-        if (newHealth < LIFE.sick_below) {
-          newEnergy = Math.min(career.players.energy, LIFE.sick_energy_max);
-        }
-
         // Process hospital discharge time
         handlingHospital = true;
         clockSkip = true;
@@ -797,18 +800,28 @@ export const useGameStore = create<GameState>()(
 
         // Update career state
         const landed = snapshot(result.totalMinutes);
+        // The seek's dayStarted event ran the day-start housekeeping (board
+        // roll, company tasks) and committed a newer career — rebase the
+        // discharge on it, not on the pre-seek snapshot.
+        const afterSeek = useGameStore.getState().career;
+        const newHealth = LIFE.hospital_discharge_health;
+        const newMoney = afterSeek.players.money - LIFE.hospital_cost;
+        let newEnergy = afterSeek.players.energy;
+        if (newHealth < LIFE.sick_below) {
+          newEnergy = Math.min(afterSeek.players.energy, LIFE.sick_energy_max);
+        }
         const updatedCareer = {
-          ...career,
+          ...afterSeek,
           players: {
-            ...career.players,
+            ...afterSeek.players,
             health: newHealth,
             money: newMoney,
             energy: newEnergy,
           },
           life: {
-            ...career.life!,
+            ...afterSeek.life!,
             workStreak: 0,
-            suppressEndOfDayUntil: career.players.game_day + skipDays,
+            suppressEndOfDayUntil: landed.day,
           },
         };
         const morning = resolveMorning(updatedCareer, landed.day);

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
 import { PixelButton } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PanelCard } from "@/components/ui/panel-card";
 import { TRAIT_IDS } from "@/game/career/types";
 import { useGameStore } from "@/game/state/store";
@@ -27,6 +28,9 @@ export function CharacterIntro() {
   const dismissIntro = useGameStore((s) => s.dismissIntro);
   const target = Math.max(0, TRAIT_IDS.indexOf(traitId));
   const [frame, setFrame] = useState(() => introIndex(0, INTRO_SPIN_MS, target));
+  const [name, setName] = useState("");
+
+  const confirmIntro = () => dismissIntro(name);
 
   useEffect(() => {
     if (introSeen) return;
@@ -97,11 +101,23 @@ export function CharacterIntro() {
               <p>Năng lượng: {Math.round(energy)}</p>
               <p data-testid="character-intro-money">Tiền: {formatVnd(money)}</p>
             </div>
+            <Input
+              data-testid="character-intro-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") confirmIntro();
+              }}
+              placeholder="Đặt tên cho nhân vật..."
+              maxLength={24}
+              autoFocus
+              className="mt-4 h-10 text-center font-galmuri-9 text-galmuri-body"
+            />
             <PixelButton
               variant="primary"
-              className="mt-4 w-full"
+              className="mt-2 w-full"
               data-testid="character-intro-start"
-              onClick={dismissIntro}
+              onClick={confirmIntro}
             >
               Bắt đầu
             </PixelButton>

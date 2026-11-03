@@ -80,9 +80,15 @@ describe("life stats", () => {
     expect(full.state.players.energy).toBe(100);
     expect(full.state.life.moodPenaltyTomorrow).toBe(0);
     const short = applySleepRest({ ...tired, players: { ...tired.players, health: 80 } }, 4);
-    expect(short.state.players.energy).toBe(90);
-    expect(short.state.players.health).toBe(72);
+    expect(short.state.players.energy).toBe(75);
+    expect(short.state.players.health).toBe(74);
     expect(short.state.life.moodPenaltyTomorrow).toBe(5);
+    const enough = applySleepRest(tired, 7);
+    expect(enough.state.life.moodPenaltyTomorrow).toBe(0);
+    expect(enough.state.players.health).toBe(70);
+    const barelyShort = applySleepRest(tired, 6);
+    expect(barelyShort.state.life.moodPenaltyTomorrow).toBe(5);
+    expect(barelyShort.state.players.health).toBe(68);
     const woke = applyWake({ ...tired, players: { ...tired.players, health: 80 } }, 4);
     expect(woke.state.players.mood).toBeCloseTo(70 - 5 - 1, 5);
   });
@@ -125,8 +131,9 @@ describe("life stats", () => {
       { health: -3 },
     );
     expect(sick.skipDays).toBe(2);
-    expect(sick.state.players.health).toBe(10);
-    expect(sick.state.players.money).toBe(SIM_CATALOG.config.starting_money - 1_000_000);
+    // Admission keeps health/money as-is; the stay is settled on discharge.
+    expect(sick.state.players.health).toBe(9);
+    expect(sick.state.players.money).toBe(SIM_CATALOG.config.starting_money);
   });
 });
 

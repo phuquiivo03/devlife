@@ -55,9 +55,10 @@
     { "id": "lose_streak", "label": "Thua liên tục, tụt mood.",            "weight": 5,  "mood_delta": -4 }
   ],
   "sleep_energy_per_hour": 12.5,
-  "sleep_short_hours": 6,
-  "sleep_short_health_per_missing_hour": 4,
+  "sleep_short_hours": 7,
+  "sleep_short_health_per_missing_hour": 2,
   "sleep_short_mood_tomorrow": -5,
+  "sleep_energy_loss_per_missing_hour": 0.1,
   "sick_below": 30,
   "sick_energy_max": 70,
   "healthy_energy_max": 100,
