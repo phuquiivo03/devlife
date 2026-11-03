@@ -15,7 +15,7 @@ import { STAGE_LABELS } from "@/lib/stage-labels";
 import { PanelCard } from "@/components/ui/panel-card";
 import { RankBadge } from "./career/RankBadge";
 import { PixelIcon } from "./PixelIcon";
-import { PixelAvatar } from "./PixelAvatar";
+import { PlayerMoodAvatar } from "./PlayerMoodAvatar";
 import { StatBar } from "./StatBar";
 import { statFxVars } from "./stat-fx.config";
 import { useTweenedNumber } from "./useTweenedNumber";
@@ -71,7 +71,7 @@ export function ProfileCard({
       <div className="flex flex-none flex-col" style={statFxVars()}>
         <div className="flex items-center gap-3">
           <div className="clay-avatar">
-            <PixelAvatar role="player" size={56} alt={name} />
+            <PlayerMoodAvatar size={56} alt={name} />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-1">
@@ -179,7 +179,7 @@ export function ProfileCard({
   return (
     <PanelCard className="flex shrink-0 flex-col items-center p-3" style={statFxVars()}>
       <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-2 border-[var(--room-frame)] bg-[var(--scene-plate)]">
-        <PixelAvatar role="player" size={80} alt={name} />
+        <PlayerMoodAvatar size={80} alt={name} />
       </div>
       <div className="mt-2 flex max-w-full items-center justify-center gap-1">
         <p
