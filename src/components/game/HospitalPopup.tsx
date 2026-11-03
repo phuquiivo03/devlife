@@ -15,6 +15,7 @@ export function HospitalPopup({
   hospitalCost: number;
   onDischarge: () => void;
 }) {
+  // The faint overlay delays `open` until the fall clip and the dim finish.
   useEffect(() => {
     if (open) {
       playCueKey("ambulance");

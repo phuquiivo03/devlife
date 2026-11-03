@@ -13,6 +13,7 @@ export type PlayerPose = RoomPose;
 
 /**
  * Pose precedence:
+ * 0. fainting → static meshes hide; FaintPlayer plays `fall` and holds the last frame
  * 1. sleeping → player hidden (`sleepTransition` runs its own overlay)
  *    // TODO lying pose when a lying GLB lands
  * 2. a chair is at the desk seat → seated on that chair
@@ -33,6 +34,7 @@ export function usePlayerPose(): PlayerPose {
 export function Player() {
   const pose = usePlayerPose();
   const showCharacter = useGameStore((s) => s.showCharacter);
+  const fainting = useGameStore((s) => s.faint != null);
   const stage = useGameStore((s) => s.stage);
   const loadout = useGameStore((s) => s.loadouts[stage]);
   const owned = useGameStore((s) => s.career.shop?.owned);
@@ -65,7 +67,7 @@ export function Player() {
             key={`pose:${name}`}
             item={positioned}
             kind="character"
-            visible={showCharacter && pose === name}
+            visible={showCharacter && pose === name && !fainting}
           />
         );
       })}

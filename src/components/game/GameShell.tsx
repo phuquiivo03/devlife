@@ -23,6 +23,7 @@ import { StoreModal } from "./StoreModal";
 import { AudioPopup } from "./AudioPopup";
 import { NotificationsPopup } from "./NotificationsPopup";
 import { HospitalPopup } from "./HospitalPopup";
+import { FaintOverlay } from "./FaintOverlay";
 import { LoadingScreen } from "./LoadingScreen";
 import { SleepTransition } from "./SleepTransition";
 import { useGameClock } from "./useGameClock";
@@ -231,6 +232,7 @@ export function GameShell({
       <CharacterIntro />
       <IntroVideo />
       <OpeningLock />
+      <FaintOverlay />
     </div>
   );
 }
