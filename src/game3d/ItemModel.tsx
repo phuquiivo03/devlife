@@ -17,6 +17,8 @@ type Props = {
   shadows?: Shadows;
   /** Spin the fan_standing "blades" child node around its hub axis. */
   spinBlades?: boolean;
+  /** Click selects the item for the Dùng prompt. Characters stay inert. */
+  onSelect?: (key: string) => void;
 };
 
 function applyShadows(root: Object3D, mode: Shadows) {
@@ -39,6 +41,7 @@ export function ItemModel({
   visible = true,
   shadows = "both",
   spinBlades = false,
+  onSelect,
 }: Props) {
   const url =
     kind === "character" ? characterUrl(item.key) : item.url ?? itemUrl(item.key);
@@ -59,11 +62,19 @@ export function ItemModel({
   });
 
   return (
-    <primitive
-      object={clone}
-      position={item.position}
-      rotation-y={item.rotationY}
-      visible={visible}
-    />
+    <group
+      onClick={(event) => {
+        if (!onSelect || !visible) return;
+        event.stopPropagation();
+        onSelect(item.key);
+      }}
+    >
+      <primitive
+        object={clone}
+        position={item.position}
+        rotation-y={item.rotationY}
+        visible={visible}
+      />
+    </group>
   );
 }

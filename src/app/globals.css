@@ -1544,6 +1544,59 @@ body:has(.theme-clay) {
   }
 }
 
+.item-use-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 108px;
+  padding: 8px 10px;
+  border-radius: var(--radius-tile);
+  background: var(--panel-bg);
+  box-shadow: var(--clay-shadow-chip);
+  pointer-events: auto;
+  user-select: none;
+}
+
+.item-use-label {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--foreground);
+  white-space: nowrap;
+}
+
+.item-use-btn {
+  min-width: 72px;
+  min-height: 28px;
+  padding: 4px 12px;
+  border: 0;
+  border-radius: var(--radius-ctrl);
+  background: var(--accent-violet, #7c6bd9);
+  box-shadow: var(--clay-shadow-ctrl);
+  color: #fff;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.item-use-btn:hover {
+  box-shadow: var(--clay-shadow-ctrl-hover);
+}
+
+.item-use-btn:active {
+  box-shadow: var(--clay-pressed);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item-use-btn {
+    transition: none;
+  }
+}
+
 @keyframes terminal-event-shake {
   0%,
   100% {
