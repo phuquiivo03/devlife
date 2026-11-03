@@ -1,9 +1,11 @@
 "use client";
 
+import { useMemo } from "react";
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
-import { getRoomManifest } from "./manifest";
+import { getRoomManifest, itemByKey } from "./manifest";
 import { ItemModel } from "./ItemModel";
+import { activeSeatKey, sitYOnChair } from "./sit-height";
 
 export type PlayerPose = "floor" | "sit" | "stand" | "sleep";
 
@@ -39,17 +41,33 @@ export function Player() {
   const pose = usePlayerPose();
   const showCharacter = useGameStore((s) => s.showCharacter);
   const stage = useGameStore((s) => s.stage);
+  const loadout = useGameStore((s) => s.loadouts[stage]);
+  const owned = useGameStore((s) => s.career.shop?.owned);
   const poses = getRoomManifest(stage).poses;
+  const ownedSet = useMemo(() => new Set(owned ?? []), [owned]);
+  // Hips follow whichever chair is actually in the seat. The manifest Y is the
+  // room's default chair; ergo_chair's cushion is a different height.
+  const sitY = useMemo(() => {
+    const seat = activeSeatKey(stage, getRoom(stage).slots, loadout, ownedSet);
+    if (!seat) return null;
+    const chair = itemByKey(stage, seat);
+    if (!chair) return null;
+    return sitYOnChair(seat, chair.position[1] ?? 0);
+  }, [stage, loadout, ownedSet]);
 
   return (
     <>
       {(Object.keys(poses) as Array<keyof typeof poses>).map((name) => {
         const item = poses[name];
         if (item.missing) return null;
+        const positioned =
+          name === "sit" && sitY != null
+            ? { ...item, position: [item.position[0], sitY, item.position[2]] }
+            : item;
         return (
           <ItemModel
             key={`pose:${name}`}
-            item={item}
+            item={positioned}
             kind="character"
             visible={showCharacter && pose === name}
           />

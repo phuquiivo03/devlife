@@ -218,6 +218,32 @@ describe("room manifests", () => {
     expect(senior.drawn.has("drawer_pedestal")).toBe(true);
   });
 
+  it("seats the chibi sit and floor poses on the retuned chairs", () => {
+    // Hips on the default seat, 0.16m toward the desk so the back clears the backrest.
+    expect(MANIFESTS.student.poses.sit.position).toEqual([-1.136, 0.013, -0.2]);
+    expect(MANIFESTS.student.poses.floor.position).toEqual([-1.39, 0.02, -0.1]);
+    expect(itemByKey("student", "chair_plastic")?.position).toEqual([-0.976, 0.02, -0.2]);
+    // Owned ergo_chair replaces the plastic chair at the same spot.
+    expect(itemByKey("student", "ergo_chair")?.position).toEqual([-0.976, 0.02, -0.2]);
+
+    expect(MANIFESTS.junior.poses.sit.position).toEqual([-1.296, 0.085, -0.95]);
+    expect(MANIFESTS.junior.poses.floor.position).toEqual([-1.39, 0.02, -0.95]);
+    expect(itemByKey("junior", "junior_office_chair")?.position).toEqual([-1.136, 0.02, -0.95]);
+    expect(itemByKey("junior", "ergo_chair")?.position).toEqual([-1.136, 0.02, -0.95]);
+
+    expect(MANIFESTS.senior.poses.sit.position).toEqual([-1.31, 0.042, -0.55]);
+    expect(MANIFESTS.senior.poses.floor.position).toEqual([-1.435, 0.02, -0.35]);
+    expect(itemByKey("senior", "ergo_chair")?.position).toEqual([-1.15, 0.026, -0.55]);
+
+    for (const stage of STAGES) {
+      expect(MANIFESTS[stage].poses.sit.rotationY).toBe(1.5708);
+      expect(MANIFESTS[stage].poses.floor.rotationY).toBe(1.5708);
+      const seat =
+        stage === "junior" ? "junior_office_chair" : stage === "senior" ? "ergo_chair" : "chair_plastic";
+      expect(itemByKey(stage, seat)?.rotationY).toBe(1.5708);
+    }
+  });
+
   it("keeps student defaults out of the drawn set (manifest stays the baseline)", () => {
     const plan = resolveRoomFurniture(getRoom("student").slots, {}, new Set(), "student");
     expect(plan.drawn.size).toBe(0);

@@ -56,7 +56,7 @@
    "key": "chair_plastic",
    "category": "furniture",
    "position": [
-    -0.8239,
+    -0.976,
     0.02,
     -0.2
    ],
@@ -206,7 +206,7 @@
    "key": "ergo_chair",
    "category": "furniture",
    "position": [
-    -0.8239,
+    -0.976,
     0.02,
     -0.2
    ],
@@ -408,11 +408,12 @@
    "key": "player",
    "category": "character",
    "position": [
-    -0.958,
-    0.236,
+    -1.136,
+    0.013,
     -0.2
    ],
-   "rotationY": 1.5708
+   "rotationY": 1.5708,
+   "note": "chibi hips on chair_plastic (seat top 0.39, butt local 0.397). 0.16m toward the desk so the back clears the backrest. ergo_chair shares this x/z; Player raises y to that cushion"
   },
   "stand": {
    "key": "player_standing",
@@ -428,7 +429,7 @@
    "key": "player_floor",
    "category": "character",
    "position": [
-    -1,
+    -1.39,
     0.02,
     -0.1
    ],

@@ -125,7 +125,7 @@
   {
    "key": "ergo_chair",
    "category": "furniture",
-   "position": [-0.95, 0.026, -0.55],
+   "position": [-1.15, 0.026, -0.55],
    "rotationY": 1.5708,
    "note": "senior.ergo_chair default; y lifted onto the 6mm rug"
   },
@@ -296,9 +296,9 @@
   "sit": {
    "key": "player",
    "category": "character",
-   "position": [-1.084, 0.242, -0.55],
+   "position": [-1.31, 0.042, -0.55],
    "rotationY": 1.5708,
-   "note": "on the ergo chair (seat as in student, +6mm rug)"
+   "note": "chibi hips on the ergo cushion (seat top 0.413) plus the 6mm rug. 0.16m toward the desk so the back clears the backrest"
   },
   "stand": {
    "key": "player_standing",
@@ -309,7 +309,7 @@
   "floor": {
    "key": "player_floor",
    "category": "character",
-   "position": [-0.75, 0.02, -0.3],
+   "position": [-1.435, 0.02, -0.35],
    "rotationY": 1.5708
   }
  }
