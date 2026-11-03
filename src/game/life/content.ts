@@ -70,6 +70,8 @@ export type LifeConfig = {
   sleep_short_hours: number;
   sleep_short_health_per_missing_hour: number;
   sleep_short_mood_tomorrow: number;
+  /** Fraction of energy recovery lost per hour slept below `sleep_short_hours`. */
+  sleep_energy_loss_per_missing_hour: number;
   sick_below: number;
   sick_energy_max: number;
   healthy_energy_max: number;

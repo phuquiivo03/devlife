@@ -90,6 +90,8 @@ CREATE TABLE players (
   reputation integer NOT NULL CHECK (reputation >= 0),
   freelance_completed integer NOT NULL CHECK (freelance_completed >= 0),
   trait text NOT NULL CHECK (trait IN ('night_owl', 'diligent', 'extrovert', 'frugal', 'careful', 'optimist')),
+  -- Entered in the creation popup after the trait roll. Empty falls back to the stub name.
+  name text NOT NULL,
   trait_rolled boolean NOT NULL,
   intro_seen boolean NOT NULL,
   intro_video_seen boolean NOT NULL

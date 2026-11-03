@@ -2,14 +2,27 @@
 
 import type { CSSProperties } from "react";
 import { SIM_CATALOG } from "@/game/career/content";
-import { overallRankBracket, skillProgressList, type SkillProgress } from "@/game/knowledge/logic";
+import {
+  overallRankBracket,
+  skillProgressList,
+  type SkillProgress,
+} from "@/game/knowledge/logic";
 import { freelanceGoal } from "@/game/jobs/logic";
 import { useGameStore } from "@/game/state/store";
 import { LIFE } from "@/game/life/content";
 import { lifeOf, rentStatus } from "@/game/life/logic";
-import { traitDef, traitDetail, traitIconSrc, traitOf } from "@/game/life/traits";
+import {
+  traitDef,
+  traitDetail,
+  traitIconSrc,
+  traitOf,
+} from "@/game/life/traits";
 import { snapshot } from "@/game/time";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import type { StageId } from "@/game/config";
 import { STAGE_LABELS } from "@/lib/stage-labels";
 import { PanelCard } from "@/components/ui/panel-card";
@@ -51,7 +64,7 @@ export function ProfileCard({
   const skills = skillProgressList(playerSkills, SIM_CATALOG);
   const overall = overallRankBracket(
     skills.map((skill) => skill.level),
-    SIM_CATALOG.config.rank_brackets,
+    SIM_CATALOG.config.rank_brackets
   );
   const life = lifeOf(career);
   const trait = traitDef(traitOf(career));
@@ -75,7 +88,10 @@ export function ProfileCard({
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex min-w-0 items-center gap-1">
-              <p className="clay-name min-w-0 truncate" data-testid="player-name">
+              <p
+                className="clay-name min-w-0 truncate"
+                data-testid="player-name"
+              >
                 {name}
               </p>
               <RankBadge rankId={overall.id} size={24} />
@@ -134,13 +150,25 @@ export function ProfileCard({
             </TooltipContent>
           </Tooltip>
           <span className="clay-chip">
-            <PixelIcon name="reputation_medal" size={22} alt="" files={iconFiles} />
-            <span data-testid="player-reputation">{Math.round(tweenedRep)}</span>
+            <PixelIcon
+              name="reputation_medal"
+              size={22}
+              alt=""
+              files={iconFiles}
+            />
+            <span data-testid="player-reputation">
+              {Math.round(tweenedRep)}
+            </span>
             <StatFlash statKey="reputation" />
             <StatFloaters statKey="reputation" />
           </span>
           <span className="clay-chip">
-            <PixelIcon name="job_freelance" size={22} alt="" files={iconFiles} />
+            <PixelIcon
+              name="job_freelance"
+              size={22}
+              alt=""
+              files={iconFiles}
+            />
             <span
               data-testid="player-freelance"
               data-value={freelance}
@@ -158,8 +186,8 @@ export function ProfileCard({
             {rent === "paid"
               ? "Trọ tháng này: đã đóng"
               : rent === "late"
-                ? `Nợ trọ: ${life.rentDebtDays} ngày`
-                : "Trọ đóng vào ngày 1"}
+              ? `Nợ trọ: ${life.rentDebtDays} ngày`
+              : "Trọ đóng vào ngày 1"}
           </span>
         </div>
         {sick ? (
@@ -177,7 +205,10 @@ export function ProfileCard({
   }
 
   return (
-    <PanelCard className="flex shrink-0 flex-col items-center p-3" style={statFxVars()}>
+    <PanelCard
+      className="flex shrink-0 flex-col items-center p-3"
+      style={statFxVars()}
+    >
       <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-2 border-[var(--room-frame)] bg-[var(--scene-plate)]">
         <PlayerMoodAvatar size={80} alt={name} />
       </div>
@@ -204,7 +235,13 @@ export function ProfileCard({
             {xp.xp}/{xp.need} XP
           </span>
         </div>
-        <StatBar value={xp.xp} max={xp.need} tone="exp" stepped className="mt-1" />
+        <StatBar
+          value={xp.xp}
+          max={xp.need}
+          tone="exp"
+          stepped
+          className="mt-1"
+        />
       </div>
       <Tooltip>
         <TooltipTrigger
@@ -236,12 +273,18 @@ export function ProfileCard({
         </TooltipContent>
       </Tooltip>
       {sick ? (
-        <p className="mt-1 font-galmuri-7 text-galmuri-small text-[var(--accent-coral)]" data-testid="life-sick">
+        <p
+          className="mt-1 font-galmuri-7 text-galmuri-small text-[var(--accent-coral)]"
+          data-testid="life-sick"
+        >
           Đang ốm
         </p>
       ) : null}
       {burned ? (
-        <p className="mt-1 font-galmuri-7 text-galmuri-small text-[var(--accent-coral)]" data-testid="life-burnout">
+        <p
+          className="mt-1 font-galmuri-7 text-galmuri-small text-[var(--accent-coral)]"
+          data-testid="life-burnout"
+        >
           Hôm nay kiệt sức, chưa nhận freelance
         </p>
       ) : null}
@@ -283,8 +326,8 @@ export function ProfileCard({
         {rent === "paid"
           ? "Trọ tháng này: đã đóng"
           : rent === "late"
-            ? `Nợ trọ: ${life.rentDebtDays} ngày`
-            : "Trọ đóng vào ngày 1"}
+          ? `Nợ trọ: ${life.rentDebtDays} ngày`
+          : "Trọ đóng vào ngày 1"}
       </p>
     </PanelCard>
   );
@@ -314,7 +357,11 @@ export function SkillsCard({
         </summary>
         <ul data-testid="player-skills">
           {skills.map((skill) => (
-            <PlayerSkillRow key={skill.id} skill={skill} iconFiles={iconFiles} />
+            <PlayerSkillRow
+              key={skill.id}
+              skill={skill}
+              iconFiles={iconFiles}
+            />
           ))}
         </ul>
       </details>
@@ -350,7 +397,12 @@ function PlayerSkillRow({
         <p className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]">
           {skill.rankLabel} {skill.rankPercent}%
         </p>
-        <StatBar value={skill.rankPercent} tone="mint" stepped className="mt-1" />
+        <StatBar
+          value={skill.rankPercent}
+          tone="mint"
+          stepped
+          className="mt-1"
+        />
       </div>
     </li>
   );

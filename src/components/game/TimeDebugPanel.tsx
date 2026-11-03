@@ -13,6 +13,7 @@ export function TimeDebugPanel() {
   const setPaused = useGameStore((s) => s.setClockPaused);
   const jumpToPhase = useGameStore((s) => s.jumpToPhase);
   const debugForceEvent = useGameStore((s) => s.debugForceEvent);
+  const debugSkipDay = useGameStore((s) => s.debugSkipDay);
   const phaseId = useGameStore((s) => snapshot(s.totalMinutes).phaseId);
 
   return (
@@ -62,6 +63,16 @@ export function TimeDebugPanel() {
             onClick={debugForceEvent}
           >
             Sự kiện
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            showArrow={false}
+            variant="outline"
+            data-testid="debug-skip-day"
+            onClick={debugSkipDay}
+          >
+            Bỏ qua 1 ngày
           </Button>
           {PHASES.map((phase) => (
             <Button

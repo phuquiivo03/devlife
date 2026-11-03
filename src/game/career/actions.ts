@@ -107,6 +107,7 @@ export function defaultCareer(
       reputation: config.starting_reputation,
       freelance_completed: 0,
       trait,
+      name: "",
       traitRolled: true,
       introSeen: false,
       introVideoSeen: false,

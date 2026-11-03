@@ -231,9 +231,26 @@ describe("sleep", () => {
     });
   });
 
-  it("increments the day when already past midnight", () => {
+  it("lands at 06:00 of the same day when already past midnight", () => {
     const result = sleepToNextMorning(MINUTES_PER_DAY + 2 * 60);
-    expect(snapshot(result.totalMinutes)).toMatchObject({ day: 3, hour: 6, minute: 0 });
+    expect(snapshot(result.totalMinutes)).toMatchObject({
+      day: 2,
+      hour: 6,
+      minute: 0,
+      phaseId: "morning",
+    });
+    expect(result.events.map((event) => event.type)).toEqual([
+      "hourChanged",
+      "phaseChanged",
+      "sleep",
+    ]);
+    expect(ofType(result.events, "dayStarted")).toHaveLength(0);
+  });
+
+  it("lands the same morning for a midnight bedtime", () => {
+    const result = sleepToNextMorning(MINUTES_PER_DAY);
+    expect(snapshot(result.totalMinutes)).toMatchObject({ day: 2, hour: 6, minute: 0 });
+    expect(ofType(result.events, "dayStarted")).toHaveLength(0);
   });
 });
 

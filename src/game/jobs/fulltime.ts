@@ -480,6 +480,9 @@ export function acceptApplication(state: CareerState, applicationId: string): Ap
     },
     feed: next.feed ? { ...next.feed, notices } : next.feed,
   };
+  // Joining mid-day skips that morning's handout, so the new employer's first
+  // tasks land in the feed right after accepting.
+  next = rollJoinDayCompanyTasks(next, day, state.players.game_minute);
   return { state: next, error: null };
 }
 
@@ -532,7 +535,42 @@ export function rollDailyCompanyTasks(
   const [min, max] = FULLTIME.tasks.counts[position.level_tier] ?? [0, 1];
   const count = min + Math.floor(hashUnit(Math.imul(day, 31) + 7) * (max - min + 1));
   if (count <= 0) return state;
+  return handOutCompanyTasks(state, day, minute, count, catalog, position, current);
+}
 
+/**
+ * First-day handout for a fresh employment: the weekday/empty-day gates do not
+ * apply, and at least one task is guaranteed so the feed has work immediately.
+ */
+export function rollJoinDayCompanyTasks(
+  state: CareerState,
+  day: number,
+  minute: number,
+  catalog = SIM_CATALOG,
+): CareerState {
+  const employment = employmentOf(state);
+  const current = employment.current;
+  if (!current || !state.feed) return state;
+  const position = positionById(current.positionId);
+  if (!position) return state;
+
+  const [min, max] = FULLTIME.tasks.counts[position.level_tier] ?? [1, 1];
+  const count = Math.max(
+    1,
+    min + Math.floor(hashUnit(Math.imul(day, 31) + 13) * (max - min + 1)),
+  );
+  return handOutCompanyTasks(state, day, minute, count, catalog, position, current);
+}
+
+function handOutCompanyTasks(
+  state: CareerState,
+  day: number,
+  minute: number,
+  count: number,
+  catalog: typeof SIM_CATALOG,
+  position: FulltimePosition,
+  current: CurrentEmployment,
+): CareerState {
   const busy = new Set(
     state.player_jobs
       .filter((job) => job.status === "offered" || job.status === "active")

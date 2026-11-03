@@ -382,6 +382,7 @@ export function careerFromUnknown(
       reputation: num(players.reputation, fresh.players.reputation),
       freelance_completed: num(players.freelance_completed),
       trait: isTraitId(players.trait) ? players.trait : MIGRATION_TRAIT,
+      name: playerName(players.name),
       traitRolled: players.traitRolled === true,
       introSeen: players.introSeen === true,
       introVideoSeen: players.introVideoSeen === true,
@@ -409,6 +410,12 @@ function fullnessOrDefault(value: unknown): number {
     return LIFE.fullness_default_migrate;
   }
   return value;
+}
+
+/** Display name: trimmed and clamped. Anything else stays empty (stub fallback on the card). */
+function playerName(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value.trim().slice(0, 24);
 }
 
 function normalizeLife(value: unknown, day: number): LifeState {
@@ -789,6 +796,12 @@ export function migrateSave(
       }
       loadouts[stageId] = stageLoadout;
     }
+  }
+
+  if (version < 24) {
+    // v24: `players.name` entered after the trait roll. `careerFromUnknown`
+    // already trims and clamps it; older saves keep it empty and the profile
+    // card falls back to the stub name.
   }
 
   return {
