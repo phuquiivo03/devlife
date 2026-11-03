@@ -78,6 +78,7 @@ CREATE TABLE game_config (
 
 CREATE TABLE players (
   id text PRIMARY KEY,
+  name text NOT NULL,
   stage text NOT NULL,
   game_day integer NOT NULL CHECK (game_day >= 1),
   game_minute integer NOT NULL CHECK (game_minute BETWEEN 0 AND 1439),
@@ -92,7 +93,8 @@ CREATE TABLE players (
   -- Entered in the creation popup after the trait roll. Empty falls back to the stub name.
   name text NOT NULL,
   trait_rolled boolean NOT NULL,
-  intro_seen boolean NOT NULL
+  intro_seen boolean NOT NULL,
+  intro_video_seen boolean NOT NULL
 );
 
 CREATE TABLE player_skills (

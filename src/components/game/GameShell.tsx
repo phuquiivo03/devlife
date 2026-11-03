@@ -10,6 +10,7 @@ import { useGameStore } from "@/game/state/store";
 import { LifeRoomFx, LifeStage } from "./LifeStage";
 import { LifeEventPopup } from "./LifeEventPopup";
 import { CharacterIntro } from "./CharacterIntro";
+import { IntroVideo } from "./IntroVideo";
 import { CustomizePanel } from "./CustomizePanel";
 import { TopBar, StatsCard, ActionsCard } from "./PlayerHudCard";
 import { ProfileCard, SkillsCard } from "./PlayerInfoPanel";
@@ -227,6 +228,7 @@ export function GameShell({
         </aside>
       </div>
       <CharacterIntro />
+      <IntroVideo />
     </div>
   );
 }

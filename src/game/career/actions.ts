@@ -95,6 +95,7 @@ export function defaultCareer(
   return {
     players: {
       id: LOCAL_PLAYER_ID,
+      name: "",
       stage,
       game_day: day,
       game_minute: minuteOfDay,
@@ -109,6 +110,7 @@ export function defaultCareer(
       name: "",
       traitRolled: true,
       introSeen: false,
+      introVideoSeen: false,
     },
     player_skills: SKILL_IDS.map((skill_id) => ({ skill_id, level: 1, xp: 0 })),
     player_study_completions: [],

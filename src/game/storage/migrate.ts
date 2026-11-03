@@ -34,6 +34,7 @@ import { clampEnergy } from "../vitals/logic";
 import { LIFE } from "../life/content";
 import { normalizeShop, STORE_ITEMS } from "../life/furniture";
 import { defaultLife } from "../life/logic";
+import { MIGRATED_PLAYER_NAME, normalizePlayerName } from "../career/name";
 import { isTraitId, MIGRATION_TRAIT, rollTrait } from "../life/traits";
 import { defaultFeed } from "../life/events";
 import { defaultEmployment } from "../jobs/fulltime";
@@ -361,6 +362,7 @@ export function careerFromUnknown(
   return {
     players: {
       id: typeof players.id === "string" ? players.id : LOCAL_PLAYER_ID,
+      name: normalizePlayerName(players.name),
       stage,
       game_day: day,
       game_minute: minuteOfDay,
@@ -383,6 +385,7 @@ export function careerFromUnknown(
       name: playerName(players.name),
       traitRolled: players.traitRolled === true,
       introSeen: players.introSeen === true,
+      introVideoSeen: players.introVideoSeen === true,
     },
     player_skills: normalizeSkills(value.player_skills),
     player_study_completions: normalizeCompletions(value.player_study_completions),
@@ -656,9 +659,11 @@ function strOrNull(value: unknown): string | null {
  * (`store:<id>`), with aircon and lamp_desk landing in their new slots.
  * Existing loadout entries — including an explicit `null` — are never
  * overwritten, so no placed item is lost and no choice is reversed.
- * Version 24 adds `players.name`, entered in the creation popup after the
- * trait roll. Older saves keep no name; the profile card falls back to the
- * stub name until one is entered. `careerFromUnknown` trims and clamps it.
+ * Version 24 adds `players.name`. A save that already started and has no
+ * name becomes Quí. A creation popup that is still open keeps the name empty.
+ * Version 25 adds `players.introVideoSeen`. An older save counts as seen, so
+ * the opening dream never plays. A new game stays unseen until the film ends
+ * or is skipped. `players.introSeen` is still the creation popup.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -754,6 +759,18 @@ export function migrateSave(
         ...career.players,
         fullness: fullnessOrDefault(career.players.fullness),
       },
+    };
+  }
+  if (version < 24 && !career.players.name && career.players.introSeen) {
+    career = {
+      ...career,
+      players: { ...career.players, name: MIGRATED_PLAYER_NAME },
+    };
+  }
+  if (version < 25) {
+    career = {
+      ...career,
+      players: { ...career.players, introVideoSeen: true },
     };
   }
   if (version < 23) {

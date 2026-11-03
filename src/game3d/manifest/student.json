@@ -56,11 +56,12 @@
    "key": "chair_plastic",
    "category": "furniture",
    "position": [
-    -0.8239,
+    -0.976,
     0.02,
     -0.2
    ],
-   "rotationY": 1.5708
+   "rotationY": 3.1416,
+   "note": "seat faces the desk; the mesh's front is opposite the other chairs' yaw"
   },
   {
    "key": "desk",
@@ -206,12 +207,23 @@
    "key": "ergo_chair",
    "category": "furniture",
    "position": [
-    -0.8239,
+    -0.976,
     0.02,
     -0.2
    ],
    "rotationY": 1.5708,
    "note": "replaces chair_plastic at the rot2 seat when owned; wave2 spot was provisional"
+  },
+  {
+   "key": "junior_office_chair",
+   "category": "furniture",
+   "position": [
+    -0.976,
+    0.02,
+    -0.2
+   ],
+   "rotationY": 1.5708,
+   "note": "junior.office_chair equipped from the shop; same desk seat as the ergo chair"
   },
   {
    "key": "monitor2",
@@ -408,11 +420,12 @@
    "key": "player",
    "category": "character",
    "position": [
-    -0.958,
-    0.236,
+    -1.136,
+    0.217,
     -0.2
    ],
-   "rotationY": 1.5708
+   "rotationY": 1.5708,
+   "note": "shorts on chair_plastic (seat top 0.39, butt local 0.193) so the legs hang in front. 0.16m toward the desk so the back clears the backrest. Player raises y for a taller cushion"
   },
   "stand": {
    "key": "player_standing",
@@ -428,7 +441,7 @@
    "key": "player_floor",
    "category": "character",
    "position": [
-    -1,
+    -1.39,
     0.02,
     -0.1
    ],

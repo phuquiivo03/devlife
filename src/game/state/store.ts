@@ -22,6 +22,8 @@ import {
   xpNeededForNextLevel,
 } from "../career/actions";
 import { SIM_CATALOG } from "../career/content";
+import { normalizePlayerName } from "../career/name";
+import { INTRO_WAKE_MINUTE } from "../../content/intro";
 import type { CareerState, Notice, NoticeActionId } from "../career/types";
 import { playCueKey } from "../audio/client";
 import type { CueKey } from "../audio/cues";
@@ -81,6 +83,7 @@ import {
 import type { LifeStep } from "../life/events";
 import { dialogCueKey, noticeCueKey, pickMomentCue, playLifeSound } from "../life/sounds";
 import { pinItem, roomOwned, storeItem } from "../life/furniture";
+import { applyItemUse, ITEM_USE_COOLDOWN_MS } from "../life/item-use";
 import { buyShopItem } from "../life/store-buy";
 import { acceptJobFromNotice, dismissNoticeById, noticeForAction, tickJobOffers } from "../jobs/offers";
 import {
@@ -209,8 +212,9 @@ export type GameState = {
   selectSlot: (id: string | null) => void;
   setHover: (id: string | null) => void;
   setShowCharacter: (v: boolean) => void;
-  /** Close the creation popup, saving the name entered after the trait roll. */
-  dismissIntro: (name?: string) => void;
+  dismissIntro: (name: string) => void;
+  /** Marks the opening dream seen and, on day 1, wakes the clock at 07:00. */
+  finishIntroVideo: () => void;
   setCameraX: (stage: StageId, x: number | null) => void;
   setCustomizeOpen: (v: boolean) => void;
   /** In-game minutes since day 1, 00:00. Persisted. */
@@ -262,6 +266,9 @@ export type GameState = {
   finishTaskTest: () => void;
   retryTaskRun: () => void;
   /** Ephemeral life UI. Not persisted. */
+  /** Last successful use of a room item, keyed by GLB. Not persisted. */
+  itemUseAt: Record<string, number>;
+  useRoomItem: (key: string) => void;
   storeOpen: boolean;
   notificationOpen: boolean;
   /** Ăn uống modal. Not persisted. */
@@ -362,17 +369,31 @@ export const useGameStore = create<GameState>()(
       selectSlot: (id) => set({ selectedSlot: id }),
       setHover: (id) => set({ hoveredSlot: id }),
       setShowCharacter: (v) => set({ showCharacter: v }),
-      dismissIntro: (name) => {
+      dismissIntro: (rawName) => {
+        const name = normalizePlayerName(rawName);
+        if (!name) return;
         const career = get().career;
         set({
-          career: {
-            ...career,
-            players: {
-              ...career.players,
-              name: typeof name === "string" ? name.trim().slice(0, 24) : career.players.name,
-              introSeen: true,
-            },
-          },
+          career: { ...career, players: { ...career.players, name, introSeen: true } },
+        });
+      },
+      finishIntroVideo: () => {
+        const current = get();
+        if (current.career.players.introVideoSeen) return;
+        const snap = snapshot(current.totalMinutes);
+        // The dream ends on the morning of day 1. A clock that already left
+        // day 1 (the name screen was left running) keeps its time.
+        const wake = snap.day === 1;
+        const totalMinutes = wake ? INTRO_WAKE_MINUTE : current.totalMinutes;
+        const landed = snapshot(totalMinutes);
+        const career = {
+          ...current.career,
+          players: { ...current.career.players, introVideoSeen: true },
+        };
+        set({
+          clockPaused: false,
+          totalMinutes,
+          career: syncPlayerClock(career, landed.day, landed.minuteOfDay, current.stage),
         });
       },
       setCameraX: (stage, x) =>
@@ -441,6 +462,25 @@ export const useGameStore = create<GameState>()(
       audioPopupOpen: false,
       hospitalOpen: false,
       hospitalCost: 0,
+      itemUseAt: {},
+      useRoomItem: (key) => {
+        const now = Date.now();
+        const last = get().itemUseAt[key] ?? 0;
+        if (now - last < ITEM_USE_COOLDOWN_MS) {
+          set({ lifeBubble: { text: "Vừa dùng rồi.", until: now + LIFE_EVENTS.bubble_ms } });
+          playCueKey("locked");
+          return;
+        }
+        const applied = applyItemUse(get().career, key);
+        if (!applied.notice) return;
+        set({
+          career: applied.state,
+          itemUseAt: { ...get().itemUseAt, [key]: now },
+          lifeBubble: { text: applied.notice, until: now + LIFE_EVENTS.bubble_ms },
+        });
+        emitGame(applied.events);
+        playCueKey("toast");
+      },
       lifeBubble: null,
       lifeBanner: null,
       terminalLines: [],

@@ -36,12 +36,16 @@ export function HospitalPopup({
       <div className="flex flex-col items-center gap-4 py-2">
         {/* eslint-disable-next-line @next/next/no-img-element -- scene art stays unoptimized */}
         <img
-          src="/ui/scenes/scene_hospital.png"
+          src="/ui/scenes/scene_hospital.jpg"
           alt="Nhân vật kiệt sức nằm trên giường bệnh"
           width={256}
           height={256}
           className="size-auto max-w-none shrink-0"
-          style={{ width: 256, height: 256, borderRadius: "var(--radius-tile)" }}
+          style={{
+            width: 320,
+            height: 180,
+            borderRadius: "var(--radius-tile)",
+          }}
           draggable={false}
         />
 
@@ -51,7 +55,10 @@ export function HospitalPopup({
           </p>
 
           <p className="font-galmuri-9 text-galmuri-body text-[var(--foreground-muted)]">
-            Viện phí: <span className="text-[var(--status-money)]">{formatVnd(hospitalCost)}</span>
+            Viện phí:{" "}
+            <span className="text-[var(--status-money)]">
+              {formatVnd(hospitalCost)}
+            </span>
           </p>
         </div>
 

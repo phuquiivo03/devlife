@@ -525,12 +525,12 @@
     "source": "new",
     "file": "junior_office_chair.glb",
     "position_blender_zup": [
-     -1.0,
+     -1.136,
      0.95,
      0.02
     ],
     "position_gltf_yup": [
-     -1.0,
+     -1.136,
      0.02,
      -0.95
     ],
@@ -941,12 +941,12 @@
     "source": "reuse (main public/models/items/)",
     "file": "items/ergo_chair.glb",
     "position_blender_zup": [
-     -0.95,
+     -1.15,
      0.55,
      0.026
     ],
     "position_gltf_yup": [
-     -0.95,
+     -1.15,
      0.026,
      -0.55
     ],

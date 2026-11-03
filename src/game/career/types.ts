@@ -125,6 +125,8 @@ export type TraitId = (typeof TRAIT_IDS)[number];
 
 export type PlayerRow = {
   id: string;
+  /** Chosen on the creation popup. Empty until then. Older saves migrate to Quí. */
+  name: string;
   stage: string;
   game_day: number;
   game_minute: number;
@@ -147,6 +149,11 @@ export type PlayerRow = {
   traitRolled: boolean;
   /** The creation popup has been dismissed. Existing saves migrate as seen. */
   introSeen: boolean;
+  /**
+   * The opening dream has played. Existing saves migrate as seen so they
+   * never see it. A new game stays false until the film ends or is skipped.
+   */
+  introVideoSeen: boolean;
 };
 
 /** Counters for the life-sim day. */

@@ -3,10 +3,13 @@
 import { useMemo } from "react";
 import { useGameStore } from "@/game/state/store";
 import { getRoom } from "@/game/content";
+import { itemUseAction } from "@/game/life/item-use";
 import { isLoadoutOnly } from "./assets";
+import { manifestMeshVisible, realDeskDrawn, stage0MeshVisible } from "./furniture-visibility";
 import { STUDENT_MANIFEST, getRoomManifest } from "./manifest";
-import { resolveRoomFurniture } from "./slot-models";
 import { ItemModel } from "./ItemModel";
+import { usePlayerPose } from "./Player";
+import { laptopDeskSpot, resolveRoomFurniture } from "./slot-models";
 
 /**
  * Slot-driven room furniture:
@@ -16,13 +19,17 @@ import { ItemModel } from "./ItemModel";
  * - store items (aircon, lamp_desk, …) draw only when a slot resolves to
  *   them — ownership alone never renders anything
  * - the fresh-student scene (no monitor2/ergo_chair owned) swaps in the
- *   stage0 set (folding table + laptop) and hides the desk set — independent
- *   of the player pose, which floors separately when the seat is emptied
+ *   stage0 set (folding table + laptop) and hides the desk set, unless the
+ *   player has explicitly equipped one of those meshes
+ * - while the player sits on the floor, desk chairs stay out of that spot
+ * - a click on a usable mesh applies its action; a drag orbits the camera
  */
 export function Furniture() {
   const owned = useGameStore((s) => s.career.shop?.owned);
   const stage = useGameStore((s) => s.stage);
   const loadout = useGameStore((s) => s.loadouts[stage]);
+  const pose = usePlayerPose();
+  const applyUse = useGameStore((s) => s.useRoomItem);
 
   const ownedSet = useMemo(() => new Set(owned ?? []), [owned]);
 
@@ -37,18 +44,25 @@ export function Furniture() {
   // Junior/senior ship an empty stage0 — their default look comes from the
   // slot defaults drawn by resolveRoomFurniture, not a stage0 swap.
   const manifest = getRoomManifest(stage);
-
-  const hidden = useMemo(
+  const stage0Hide = useMemo(
     () => new Set<string>(stage0Active ? STUDENT_MANIFEST.stage0.hide : []),
     [stage0Active],
   );
+  const deskDrawn = realDeskDrawn(plan.drawn);
 
-  const visibleFor = (key: string): boolean => {
-    if (plan.drawn.has(key)) return !hidden.has(key);
-    if (plan.hidden.has(key)) return false;
-    // Store items need a slot to resolve to them; base furniture ships as-is.
-    if (isLoadoutOnly(key)) return false;
-    return !hidden.has(key);
+  const visibleFor = (key: string): boolean =>
+    manifestMeshVisible({
+      key,
+      drawn: plan.drawn,
+      hiddenBySlot: plan.hidden,
+      stage0Hide,
+      loadoutOnly: isLoadoutOnly(key),
+      pose,
+    });
+
+  const onUse = (key: string) => {
+    if (!itemUseAction(key)) return;
+    applyUse(key);
   };
 
   return (
@@ -57,12 +71,16 @@ export function Furniture() {
         if (item.category === "room_shell") return null;
         if (item.missing) return null;
         const override = plan.positionOverrides[item.key];
+        const placed = override ? { ...item, position: override } : item;
+        const visible = visibleFor(item.key);
+        const usable = visible && itemUseAction(item.key) != null;
         return (
           <ItemModel
             key={item.key}
-            item={override ? { ...item, position: override } : item}
-            visible={visibleFor(item.key)}
+            item={placed}
+            visible={visible}
             spinBlades={item.key === "fan_standing"}
+            onUse={usable ? onUse : undefined}
           />
         );
       })}
@@ -71,13 +89,23 @@ export function Furniture() {
         // The fresh-student scene draws the stage0 set as shipped; otherwise
         // these GLBs (folding table, laptop) only appear when a slot pick
         // resolves to them — at the overridden position where needed.
-        const slotDriven = !stage0Active && plan.drawn.has(item.key);
         const override = plan.positionOverrides[item.key];
+        const onDesk = stage0Active && item.key === "laptop" && deskDrawn;
+        const position = override ?? (onDesk ? laptopDeskSpot(stage) : item.position);
+        const placed = position === item.position ? item : { ...item, position };
+        const visible = stage0MeshVisible({
+          key: item.key,
+          stage0Active,
+          drawn: plan.drawn,
+          realDeskDrawn: deskDrawn,
+        });
+        const usable = visible && itemUseAction(item.key) != null;
         return (
           <ItemModel
             key={`stage0:${item.key}`}
-            item={override ? { ...item, position: override } : item}
-            visible={stage0Active || slotDriven}
+            item={placed}
+            visible={visible}
+            onUse={usable ? onUse : undefined}
           />
         );
       })}

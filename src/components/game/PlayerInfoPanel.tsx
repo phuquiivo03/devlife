@@ -4,7 +4,6 @@ import type { CSSProperties } from "react";
 import { SIM_CATALOG } from "@/game/career/content";
 import { overallRankBracket, skillProgressList, type SkillProgress } from "@/game/knowledge/logic";
 import { freelanceGoal } from "@/game/jobs/logic";
-import { STUB_PLAYER } from "@/game/state/playerStats";
 import { useGameStore } from "@/game/state/store";
 import { LIFE } from "@/game/life/content";
 import { lifeOf, rentStatus } from "@/game/life/logic";
@@ -16,7 +15,7 @@ import { STAGE_LABELS } from "@/lib/stage-labels";
 import { PanelCard } from "@/components/ui/panel-card";
 import { RankBadge } from "./career/RankBadge";
 import { PixelIcon } from "./PixelIcon";
-import { PixelAvatar } from "./PixelAvatar";
+import { PlayerMoodAvatar } from "./PlayerMoodAvatar";
 import { StatBar } from "./StatBar";
 import { statFxVars } from "./stat-fx.config";
 import { useTweenedNumber } from "./useTweenedNumber";
@@ -42,7 +41,7 @@ export function ProfileCard({
   iconFiles?: readonly string[];
   clay?: boolean;
 }) {
-  const p = STUB_PLAYER;
+  const name = useGameStore((s) => s.career.players.name);
   const stage = useGameStore((s) => s.stage);
   const career = useGameStore((s) => s.career);
   const playerName = career.players.name.trim().length > 0 ? career.players.name : p.name;
@@ -73,11 +72,13 @@ export function ProfileCard({
       <div className="flex flex-none flex-col" style={statFxVars()}>
         <div className="flex items-center gap-3">
           <div className="clay-avatar">
-            <PixelAvatar role="player" size={56} alt={playerName} />
+            <PlayerMoodAvatar size={56} alt={name} />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1">
-              <p className="clay-name">{playerName}</p>
+            <div className="flex min-w-0 items-center gap-1">
+              <p className="clay-name min-w-0 truncate" data-testid="player-name">
+                {name}
+              </p>
               <RankBadge rankId={overall.id} size={24} />
             </div>
             <p
@@ -179,10 +180,15 @@ export function ProfileCard({
   return (
     <PanelCard className="flex shrink-0 flex-col items-center p-3" style={statFxVars()}>
       <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border-2 border-[var(--room-frame)] bg-[var(--scene-plate)]">
-        <PixelAvatar role="player" size={80} alt={playerName} />
+        <PlayerMoodAvatar size={80} alt={name} />
       </div>
-      <div className="mt-2 flex items-center justify-center gap-1">
-        <p className="font-galmuri-11 text-galmuri-title text-[var(--foreground)]">{playerName}</p>
+      <div className="mt-2 flex max-w-full items-center justify-center gap-1">
+        <p
+          className="truncate font-galmuri-11 text-galmuri-title text-[var(--foreground)]"
+          data-testid="player-name"
+        >
+          {name}
+        </p>
         <RankBadge rankId={overall.id} size={24} />
       </div>
       <p
