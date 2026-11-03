@@ -23,6 +23,7 @@ import {
 } from "../career/actions";
 import { SIM_CATALOG } from "../career/content";
 import { normalizePlayerName } from "../career/name";
+import { INTRO_WAKE_MINUTE } from "../../content/intro";
 import type { CareerState, Notice, NoticeActionId } from "../career/types";
 import { playCueKey } from "../audio/client";
 import type { CueKey } from "../audio/cues";
@@ -208,6 +209,8 @@ export type GameState = {
   setHover: (id: string | null) => void;
   setShowCharacter: (v: boolean) => void;
   dismissIntro: (name: string) => void;
+  /** Marks the opening dream seen and, on day 1, wakes the clock at 07:00. */
+  finishIntroVideo: () => void;
   setCameraX: (stage: StageId, x: number | null) => void;
   setCustomizeOpen: (v: boolean) => void;
   /** In-game minutes since day 1, 00:00. Persisted. */
@@ -363,6 +366,25 @@ export const useGameStore = create<GameState>()(
         const career = get().career;
         set({
           career: { ...career, players: { ...career.players, name, introSeen: true } },
+        });
+      },
+      finishIntroVideo: () => {
+        const current = get();
+        if (current.career.players.introVideoSeen) return;
+        const snap = snapshot(current.totalMinutes);
+        // The dream ends on the morning of day 1. A clock that already left
+        // day 1 (the name screen was left running) keeps its time.
+        const wake = snap.day === 1;
+        const totalMinutes = wake ? INTRO_WAKE_MINUTE : current.totalMinutes;
+        const landed = snapshot(totalMinutes);
+        const career = {
+          ...current.career,
+          players: { ...current.career.players, introVideoSeen: true },
+        };
+        set({
+          clockPaused: false,
+          totalMinutes,
+          career: syncPlayerClock(career, landed.day, landed.minuteOfDay, current.stage),
         });
       },
       setCameraX: (stage, x) =>

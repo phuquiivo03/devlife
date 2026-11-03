@@ -15,7 +15,7 @@ export const STAGES = ["student", "junior", "senior"] as const;
 export type StageId = (typeof STAGES)[number];
 
 export const PERSIST_KEY = "devlife:v1";
-export const PERSIST_VERSION = 24;
+export const PERSIST_VERSION = 25;
 /**
  * v1: stage, loadouts, showCharacter.
  * v2: in-game `totalMinutes` (see docs/systems/time.md).
@@ -41,6 +41,7 @@ export const PERSIST_VERSION = 24;
  * v22: full-time career. `career.employment` starts empty (no job, no applications, no board); every existing `player_jobs` row, including legacy `remote` offers, keeps running as `source: "freelance"`.
  * v23: all rooms share one slot set (rooms/slots.shared.ts) and the room renders from the loadout only. Every owned store item is placed into the first untouched accepting slot of each stage's loadout (aircon and lamp_desk gain slots); existing entries, including explicit `null`, are never overwritten.
  * v24: `players.name`. A save that already started and has no name becomes Quí. A new game, or a creation popup still open, keeps the name empty until the player types one.
+ * v25: `players.introVideoSeen`. The opening dream plays once after a new game names the character. Older saves count as seen, so they never play it. `players.introSeen` stays the creation popup (v13).
  */
 
 export const CHAR_POSE_SIT_BACK = "character/derived/char_sit_back";

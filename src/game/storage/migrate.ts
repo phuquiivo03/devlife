@@ -384,6 +384,7 @@ export function careerFromUnknown(
       trait: isTraitId(players.trait) ? players.trait : MIGRATION_TRAIT,
       traitRolled: players.traitRolled === true,
       introSeen: players.introSeen === true,
+      introVideoSeen: players.introVideoSeen === true,
     },
     player_skills: normalizeSkills(value.player_skills),
     player_study_completions: normalizeCompletions(value.player_study_completions),
@@ -653,6 +654,9 @@ function strOrNull(value: unknown): string | null {
  * overwritten, so no placed item is lost and no choice is reversed.
  * Version 24 adds `players.name`. A save that already started and has no
  * name becomes Quí. A creation popup that is still open keeps the name empty.
+ * Version 25 adds `players.introVideoSeen`. An older save counts as seen, so
+ * the opening dream never plays. A new game stays unseen until the film ends
+ * or is skipped. `players.introSeen` is still the creation popup.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -754,6 +758,12 @@ export function migrateSave(
     career = {
       ...career,
       players: { ...career.players, name: MIGRATED_PLAYER_NAME },
+    };
+  }
+  if (version < 25) {
+    career = {
+      ...career,
+      players: { ...career.players, introVideoSeen: true },
     };
   }
   if (version < 23) {
