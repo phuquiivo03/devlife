@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { PixelAvatar } from "@/components/game/PixelAvatar";
 import { PixelButton } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { PanelCard } from "@/components/ui/panel-card";
+import { normalizePlayerName, PLAYER_NAME_MAX } from "@/game/career/name";
 import { TRAIT_IDS } from "@/game/career/types";
 import { useGameStore } from "@/game/state/store";
 import {
@@ -27,6 +29,8 @@ export function CharacterIntro() {
   const dismissIntro = useGameStore((s) => s.dismissIntro);
   const target = Math.max(0, TRAIT_IDS.indexOf(traitId));
   const [frame, setFrame] = useState(() => introIndex(0, INTRO_SPIN_MS, target));
+  const [name, setName] = useState("");
+  const chosenName = normalizePlayerName(name);
 
   useEffect(() => {
     if (introSeen) return;
@@ -56,7 +60,7 @@ export function CharacterIntro() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(42,37,72,0.45)] p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[rgba(42,37,72,0.45)] p-4"
       data-testid="character-intro"
       data-stopped={frame.stopped ? "1" : "0"}
       data-trait={traitId}
@@ -97,14 +101,41 @@ export function CharacterIntro() {
               <p>Năng lượng: {Math.round(energy)}</p>
               <p data-testid="character-intro-money">Tiền: {formatVnd(money)}</p>
             </div>
-            <PixelButton
-              variant="primary"
-              className="mt-4 w-full"
-              data-testid="character-intro-start"
-              onClick={dismissIntro}
+            <form
+              className="mt-4"
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (!chosenName) return;
+                dismissIntro(chosenName);
+              }}
             >
-              Bắt đầu
-            </PixelButton>
+              <label
+                htmlFor="character-name"
+                className="font-galmuri-7 text-galmuri-small text-[var(--muted-foreground)]"
+              >
+                Đặt tên nhân vật
+              </label>
+              <Input
+                id="character-name"
+                data-testid="character-intro-name"
+                value={name}
+                maxLength={PLAYER_NAME_MAX}
+                autoFocus
+                autoComplete="nickname"
+                placeholder="Tên của bạn"
+                onChange={(event) => setName(event.target.value)}
+                className="mt-1 text-center font-galmuri-9 text-galmuri-body"
+              />
+              <PixelButton
+                type="submit"
+                variant="primary"
+                className="mt-3 w-full"
+                data-testid="character-intro-start"
+                disabled={!chosenName}
+              >
+                Bắt đầu
+              </PixelButton>
+            </form>
           </div>
         ) : null}
       </PanelCard>

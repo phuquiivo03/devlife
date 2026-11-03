@@ -125,6 +125,8 @@ export type TraitId = (typeof TRAIT_IDS)[number];
 
 export type PlayerRow = {
   id: string;
+  /** Chosen on the creation popup. Empty until then. Older saves migrate to Quí. */
+  name: string;
   stage: string;
   game_day: number;
   game_minute: number;

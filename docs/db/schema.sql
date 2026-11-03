@@ -78,6 +78,7 @@ CREATE TABLE game_config (
 
 CREATE TABLE players (
   id text PRIMARY KEY,
+  name text NOT NULL,
   stage text NOT NULL,
   game_day integer NOT NULL CHECK (game_day >= 1),
   game_minute integer NOT NULL CHECK (game_minute BETWEEN 0 AND 1439),

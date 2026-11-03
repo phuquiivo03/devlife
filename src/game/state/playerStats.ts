@@ -1,14 +1,2 @@
-/** The display name stays a placeholder. Health and mood live on the career player. */
-export type PlayerStats = {
-  name: string;
-  health: number;
-  mood: number;
-};
-
+/** HUD stat ceiling. The display name lives on the career player. */
 export const VITAL_MAX = 100;
-
-export const STUB_PLAYER: PlayerStats = {
-  name: "Quí",
-  health: 78,
-  mood: 85,
-};

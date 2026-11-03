@@ -34,6 +34,7 @@ import { clampEnergy } from "../vitals/logic";
 import { LIFE } from "../life/content";
 import { normalizeShop, STORE_ITEMS } from "../life/furniture";
 import { defaultLife } from "../life/logic";
+import { MIGRATED_PLAYER_NAME, normalizePlayerName } from "../career/name";
 import { isTraitId, MIGRATION_TRAIT, rollTrait } from "../life/traits";
 import { defaultFeed } from "../life/events";
 import { defaultEmployment } from "../jobs/fulltime";
@@ -361,6 +362,7 @@ export function careerFromUnknown(
   return {
     players: {
       id: typeof players.id === "string" ? players.id : LOCAL_PLAYER_ID,
+      name: normalizePlayerName(players.name),
       stage,
       game_day: day,
       game_minute: minuteOfDay,
@@ -649,6 +651,8 @@ function strOrNull(value: unknown): string | null {
  * (`store:<id>`), with aircon and lamp_desk landing in their new slots.
  * Existing loadout entries — including an explicit `null` — are never
  * overwritten, so no placed item is lost and no choice is reversed.
+ * Version 24 adds `players.name`. A save that already started and has no
+ * name becomes Quí. A creation popup that is still open keeps the name empty.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -744,6 +748,12 @@ export function migrateSave(
         ...career.players,
         fullness: fullnessOrDefault(career.players.fullness),
       },
+    };
+  }
+  if (version < 24 && !career.players.name && career.players.introSeen) {
+    career = {
+      ...career,
+      players: { ...career.players, name: MIGRATED_PLAYER_NAME },
     };
   }
   if (version < 23) {

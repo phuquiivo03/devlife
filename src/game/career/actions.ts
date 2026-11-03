@@ -95,6 +95,7 @@ export function defaultCareer(
   return {
     players: {
       id: LOCAL_PLAYER_ID,
+      name: "",
       stage,
       game_day: day,
       game_minute: minuteOfDay,

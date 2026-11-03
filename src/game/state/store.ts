@@ -22,6 +22,7 @@ import {
   xpNeededForNextLevel,
 } from "../career/actions";
 import { SIM_CATALOG } from "../career/content";
+import { normalizePlayerName } from "../career/name";
 import type { CareerState, Notice, NoticeActionId } from "../career/types";
 import { playCueKey } from "../audio/client";
 import type { CueKey } from "../audio/cues";
@@ -206,7 +207,7 @@ export type GameState = {
   selectSlot: (id: string | null) => void;
   setHover: (id: string | null) => void;
   setShowCharacter: (v: boolean) => void;
-  dismissIntro: () => void;
+  dismissIntro: (name: string) => void;
   setCameraX: (stage: StageId, x: number | null) => void;
   setCustomizeOpen: (v: boolean) => void;
   /** In-game minutes since day 1, 00:00. Persisted. */
@@ -356,10 +357,12 @@ export const useGameStore = create<GameState>()(
       selectSlot: (id) => set({ selectedSlot: id }),
       setHover: (id) => set({ hoveredSlot: id }),
       setShowCharacter: (v) => set({ showCharacter: v }),
-      dismissIntro: () => {
+      dismissIntro: (rawName) => {
+        const name = normalizePlayerName(rawName);
+        if (!name) return;
         const career = get().career;
         set({
-          career: { ...career, players: { ...career.players, introSeen: true } },
+          career: { ...career, players: { ...career.players, name, introSeen: true } },
         });
       },
       setCameraX: (stage, x) =>

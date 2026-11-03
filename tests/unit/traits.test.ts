@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { SIM_CATALOG } from "@/game/career/content";
+import { MIGRATED_PLAYER_NAME, normalizePlayerName } from "@/game/career/name";
 import { applyStudy, defaultCareer, ensureTodayBoard } from "@/game/career/actions";
 import { TRAIT_IDS } from "@/game/career/types";
 import { jobEligibility, skillNameMap } from "@/game/jobs/logic";
@@ -51,6 +52,7 @@ describe("personality", () => {
   it("spins the creation icons for 1.5s and lands on the rolled trait", () => {
     expect(INTRO_SPIN_MS).toBe(1500);
     expect(career("optimist").players.introSeen).toBe(false);
+    expect(career("optimist").players.name).toBe("");
     expect(introIndex(0, 1500, 5).stopped).toBe(false);
     expect(introIndex(1499, 1500, 5).stopped).toBe(false);
     expect(introIndex(1500, 1500, 5)).toEqual({ index: 5, stopped: true });
@@ -344,7 +346,30 @@ describe("personality", () => {
     );
     expect(pending.career.players.trait).toBe("frugal");
     expect(pending.career.players.introSeen).toBe(false);
+    expect(pending.career.players.name).toBe("");
     expect(pending.career.players.money).toBe(10);
+
+    const named = migrateSave(
+      {
+        stage: "student",
+        totalMinutes: 480,
+        career: {
+          players: { money: 10, name: "  Lan  ", trait: "frugal", traitRolled: true, introSeen: true },
+        },
+      },
+      23,
+      () => 0,
+    );
+    expect(named.career.players.name).toBe("Lan");
+    expect(named.career.players.introSeen).toBe(true);
+
+    const legacy = migrateSave(
+      { stage: "student", totalMinutes: 480, career: { players: { money: 10, introSeen: true } } },
+      23,
+      () => 0,
+    );
+    expect(legacy.career.players.name).toBe(MIGRATED_PLAYER_NAME);
+    expect(normalizePlayerName(`  ${"a".repeat(30)}  `)).toBe("a".repeat(20));
   });
 
   it("ships the 3D trait art at 256px for native and 2× paths", () => {
