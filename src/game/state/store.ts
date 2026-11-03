@@ -56,6 +56,7 @@ import {
   type SpeedPreset,
 } from "../time";
 import { LIFE, type FoodId } from "../life/content";
+import { collapsedOnReload, faintBlocksInput, type FaintState } from "../life/faint";
 import { crossWakingSlot, eatMeal, gameBlocked, gameBubbleText, hoursUntilWake, mealBlocked, playGameSlot, resolveMorning, setFullness, tickFullness } from "../life/logic";
 import { rollTrait } from "../life/traits";
 import { LIFE_EVENTS } from "../life/events-content";
@@ -136,14 +137,16 @@ function commitLife(result: LifeStep, extraCues: readonly CueKey[] = []) {
   const warns = current.taskJobId ? result.warns : [];
   const updatedCareer = result.state;
 
-  // Check for hospital admission
-  let hospitalOpen = current.hospitalOpen;
+  // Check for hospital admission. The popup and siren wait for the fall.
+  const hospitalOpen = current.hospitalOpen;
   let hospitalCost = current.hospitalCost;
-  if (result.skipDays > 0 && !hospitalOpen && updatedCareer.players.health <= LIFE.hospital_below) {
-    // Hospital admission triggered - open popup, DON'T process skipDays yet
-    hospitalOpen = true;
+  const collapsing =
+    result.skipDays > 0 &&
+    !hospitalOpen &&
+    !current.faint?.admitted &&
+    updatedCareer.players.health <= LIFE.hospital_below;
+  if (collapsing) {
     hospitalCost = LIFE.hospital_cost;
-    // Override skipDays to prevent immediate time advancement
     result.skipDays = 0;
   }
 
@@ -151,6 +154,9 @@ function commitLife(result: LifeStep, extraCues: readonly CueKey[] = []) {
     career: updatedCareer,
     hospitalOpen,
     hospitalCost,
+    ...(collapsing && !current.faint
+      ? { faint: { startedAt: Date.now(), admitted: false } }
+      : {}),
     terminalLines: warns.length ? [...current.terminalLines, ...warns].slice(-8) : current.terminalLines,
     lifeBubble: result.bubble
       ? { text: result.bubble, until: Date.now() + LIFE_EVENTS.bubble_ms }
@@ -158,7 +164,7 @@ function commitLife(result: LifeStep, extraCues: readonly CueKey[] = []) {
   });
   emitGame(result.events);
   maybeHospital(result.skipDays);
-  if (result.skipMinutes > 0) {
+  if (result.skipMinutes > 0 && !faintBlocksInput(useGameStore.getState().faint)) {
     clockSkip = true;
     const advanced = advanceMinutes(useGameStore.getState().totalMinutes, result.skipMinutes);
     useGameStore.setState({ totalMinutes: advanced.totalMinutes });
@@ -174,9 +180,18 @@ function emitGame(events: readonly GameEvent[]) {
 function maybeHospital(skipDays: number | undefined) {
   if (!skipDays || skipDays <= 0 || handlingHospital) return;
   handlingHospital = true;
-  // Check if hospital is open - if so, just skip time advancement
+  // The popup owns the stay. A faint (or an open bill) must not jump the clock.
   const state = useGameStore.getState();
-  if (state.hospitalOpen) {
+  if (state.hospitalOpen || state.faint) {
+    handlingHospital = false;
+    return;
+  }
+  if (state.career.players.health <= LIFE.hospital_below) {
+    useGameStore.setState({
+      faint: { startedAt: Date.now(), admitted: false },
+      hospitalOpen: false,
+      hospitalCost: LIFE.hospital_cost,
+    });
     handlingHospital = false;
     return;
   }
@@ -287,9 +302,16 @@ export type GameState = {
   foodOpen: boolean;
   /** Audio settings popup. Not persisted. */
   audioPopupOpen: boolean;
-  /** Hospital admission popup. Not persisted. */
+  /** Hospital admission popup. Not persisted. Opens after the faint. */
   hospitalOpen: boolean;
   hospitalCost: number;
+  /**
+   * Collapse cinematic. Not persisted: a reload with health still under the
+   * hospital line opens the popup immediately so input cannot stay locked.
+   */
+  faint: FaintState | null;
+  /** Ends the fall, holds the pose, and opens the hospital popup (siren). */
+  completeFaint: () => void;
   lifeBubble: { text: string; until: number } | null;
   lifeBanner: { label: string; until: number } | null;
   terminalLines: string[];
@@ -413,6 +435,7 @@ export const useGameStore = create<GameState>()(
       setCameraX: (stage, x) =>
         set((st) => ({ cameraX: { ...st.cameraX, [stage]: x } })),
       setCustomizeOpen: (v) => {
+        if (faintBlocksInput(get().faint)) return;
         if (v && openingLocksInput(get().openingStep, get().openingDone)) return;
         set({ customizeOpen: v });
       },
@@ -429,6 +452,7 @@ export const useGameStore = create<GameState>()(
       setClockSpeed: (speed) => set({ clockSpeed: speed }),
       setClockPaused: (paused) => set({ clockPaused: paused }),
       sleep: () => {
+        if (faintBlocksInput(get().faint)) return;
         if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const current = get().totalMinutes;
         console.log('[SLEEP] Button clicked, current minutes:', current);
@@ -461,6 +485,7 @@ export const useGameStore = create<GameState>()(
         // Events will be fired at the end of the transition
       },
       jumpToPhase: (phaseId) => {
+        if (faintBlocksInput(get().faint)) return;
         const current = get().totalMinutes;
         const target = minutesForPhaseStart(current, phaseId);
         const result = seekMinutes(current, target);
@@ -482,8 +507,19 @@ export const useGameStore = create<GameState>()(
       audioPopupOpen: false,
       hospitalOpen: false,
       hospitalCost: 0,
+      faint: null,
+      completeFaint: () => {
+        const state = get();
+        if (!state.faint || state.faint.admitted) return;
+        set({
+          faint: { startedAt: state.faint.startedAt, admitted: true },
+          hospitalOpen: true,
+          hospitalCost: state.hospitalCost || LIFE.hospital_cost,
+        });
+      },
       itemUseAt: {},
       useRoomItem: (key) => {
+        if (faintBlocksInput(get().faint)) return;
         if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const now = Date.now();
         const last = get().itemUseAt[key] ?? 0;
@@ -508,6 +544,7 @@ export const useGameStore = create<GameState>()(
       sleepTransition: null,
       fastForward: false,
       openCareerPanel: (panel) => {
+        if (faintBlocksInput(get().faint)) return;
         const { openingStep, openingDone } = get();
         if (openingLocksInput(openingStep, openingDone)) {
           if (openingStep === "study" && panel === "study") set({ careerPanel: panel });
@@ -643,12 +680,13 @@ export const useGameStore = create<GameState>()(
         // Sleep (SleepTransition) and hospital jumps both hold clockSkip; the
         // hospital popup holds the clock still. Waking fast-forwards land here
         // as coalesced minute events and drain in one batch.
-        if (clockSkip || get().hospitalOpen) return;
+        if (clockSkip || get().hospitalOpen || faintBlocksInput(get().faint)) return;
         const result = tickFullness(get().career, count);
         if (result.state === get().career) return;
         commitLife({ ...result, skipMinutes: 0, bubble: null, warns: [] });
       },
       eat: (foodId) => {
+        if (faintBlocksInput(get().faint)) return;
         if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const current = get().career;
         if (mealBlocked(current, foodId)) return;
@@ -659,6 +697,7 @@ export const useGameStore = create<GameState>()(
         get().syncLifeSurface();
       },
       playGame: () => {
+        if (faintBlocksInput(get().faint)) return;
         if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const current = get();
         const snapNow = snapshot(current.totalMinutes);
@@ -685,6 +724,7 @@ export const useGameStore = create<GameState>()(
         maybeHospital(result.skipDays);
       },
       buyCourse: (activityId, force = false) => {
+        if (faintBlocksInput(get().faint)) return;
         const current = get();
         const snapNow = snapshot(current.totalMinutes);
         const synced = syncPlayerClock(
@@ -719,6 +759,7 @@ export const useGameStore = create<GameState>()(
         }, 800);
       },
       acceptJob: (jobId, force = false) => {
+        if (faintBlocksInput(get().faint)) return;
         const current = get();
         const snap = snapshot(current.totalMinutes);
         const synced = syncPlayerClock(
@@ -790,6 +831,7 @@ export const useGameStore = create<GameState>()(
         );
       },
       chooseLife: (choiceId) => {
+        if (faintBlocksInput(get().faint)) return;
         commitLife(chooseLifeEvent(get().career, choiceId, SIM_CATALOG, Math.random));
         get().syncLifeSurface();
       },
@@ -874,6 +916,7 @@ export const useGameStore = create<GameState>()(
         console.warn(`Unknown notice action "${id}"`);
       },
       setStoreOpen: (open) => {
+        if (faintBlocksInput(get().faint)) return;
         if (open && openingLocksInput(get().openingStep, get().openingDone)) return;
         set({ storeOpen: open });
       },
@@ -907,6 +950,7 @@ export const useGameStore = create<GameState>()(
         set({ notificationOpen: open });
       },
       setFoodOpen: (open) => {
+        if (faintBlocksInput(get().faint)) return;
         if (open && openingLocksInput(get().openingStep, get().openingDone)) return;
         set({ foodOpen: open });
       },
@@ -986,6 +1030,7 @@ export const useGameStore = create<GameState>()(
           career: morning.state,
           hospitalOpen: false,
           hospitalCost: 0,
+          faint: null,
         });
         handlingHospital = false;
       },
@@ -1154,6 +1199,11 @@ export const useGameStore = create<GameState>()(
         );
         state.openingStep = next.openingStep;
         state.openingDone = next.openingDone;
+        state.faint = null;
+        if (collapsedOnReload(state.career?.players?.health)) {
+          state.hospitalOpen = true;
+          state.hospitalCost = LIFE.hospital_cost;
+        }
         state.setHasHydrated(true);
       },
     },

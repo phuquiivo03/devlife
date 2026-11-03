@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { faintBlocksInput } from "@/game/life/faint";
 import { useGameStore } from "@/game/state/store";
 import { createTimeLoop, timeBus } from "@/game/time";
 
@@ -15,7 +16,7 @@ export function useGameClock(active: boolean) {
       getSpeed: () => useGameStore.getState().clockSpeed,
       isPaused: () => {
         const state = useGameStore.getState();
-        return state.clockPaused || state.career.feed?.pendingId != null;
+        return state.clockPaused || state.career.feed?.pendingId != null || faintBlocksInput(state.faint);
       },
       emit: (event) => timeBus.emit(event),
     });

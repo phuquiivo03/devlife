@@ -21,6 +21,9 @@ export function characterUrl(poseKey: string): string {
   return `/models/characters/${CHARACTER_FILES[poseKey] ?? poseKey}.glb`;
 }
 
+/** Rigged body. Clips: fall, idle, pushup, sit_chair, sit_floor, walk. */
+export const PLAYER_ANIM_URL = "/models/characters/player_anim.glb";
+
 /** Resolve a manifest item to its GLB URL (custom `url` wins over the items dir). */
 export function manifestItemUrl(item: ManifestItem): string {
   return item.url ?? itemUrl(item.key);
@@ -116,6 +119,7 @@ function preloadAll(): void {
       if (!pose.missing) urls.add(characterUrl(pose.key));
     }
   }
+  urls.add(PLAYER_ANIM_URL);
   for (const url of urls) useGLTF.preload(url);
 }
 preloadAll();

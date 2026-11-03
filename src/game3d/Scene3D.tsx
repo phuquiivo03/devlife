@@ -12,6 +12,7 @@ import {
 } from "three";
 import { Furniture } from "./Furniture";
 import { Lights } from "./lights";
+import { FaintPlayer } from "./FaintPlayer";
 import { Player } from "./Player";
 import { RoomShell } from "./RoomShell";
 
@@ -301,6 +302,9 @@ export default function Scene3D({ debug = false }: { debug?: boolean }) {
           <RoomShell />
           <Furniture />
           <Player />
+        </Suspense>
+        <Suspense fallback={null}>
+          <FaintPlayer />
         </Suspense>
         <RoomCameraRig interactive={!debug} />
         {/* Debug gets full orbit (with panning); players get drag-orbit +
