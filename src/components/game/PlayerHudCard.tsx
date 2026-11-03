@@ -96,15 +96,15 @@ export function TopBar({
   const phaseLabel = phaseById(phaseId).label;
 
   const moneyChip = (
-    <span className="hud-chip relative whitespace-nowrap" style={{ position: "relative" }}>
+    <span
+      className="hud-chip relative whitespace-nowrap"
+      style={{ position: "relative" }}
+    >
       <PixelIcon name="savings" size={ROOM_STATUS_BAR.iconPx} alt="" />
       <span
         data-testid="hud-money"
         style={{
-          color:
-            shownMoney > 0
-              ? "var(--accent-mint)"
-              : "var(--accent-coral)",
+          color: shownMoney > 0 ? "var(--accent-mint)" : "var(--accent-coral)",
         }}
       >
         {formatVnd(shownMoney)}
@@ -115,7 +115,10 @@ export function TopBar({
   );
   const clockChip = (
     <span
-      className={cn("hud-chip whitespace-nowrap", fastForward && "fast-forward-flash")}
+      className={cn(
+        "hud-chip whitespace-nowrap",
+        fastForward && "fast-forward-flash",
+      )}
       data-testid="game-clock"
       data-day={day}
       data-weekday={weekdayLabel}
@@ -153,16 +156,16 @@ export function TopBar({
         data-testid="room-status-bar"
       >
         <div className="flex min-w-0 items-center justify-self-start">
-          <span className="clay-logo-pill">
+          <span className="">
             {/* eslint-disable-next-line @next/next/no-img-element -- 3D logo icon stays unoptimized */}
             <img
-              src="/ui/icons/icon_logo.png"
+              src="/ui/logo.webp"
               alt="devlife"
-              width={34}
-              height={34}
+              width={100}
+              height={50}
               draggable={false}
               className="block size-auto"
-              style={{ width: 34, height: 34 }}
+              style={{ height: 50 }}
             />
           </span>
         </div>
