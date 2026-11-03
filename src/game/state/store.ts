@@ -82,6 +82,7 @@ import {
 import type { LifeStep } from "../life/events";
 import { dialogCueKey, noticeCueKey, pickMomentCue, playLifeSound } from "../life/sounds";
 import { pinItem, roomOwned, storeItem } from "../life/furniture";
+import { applyItemUse, ITEM_USE_COOLDOWN_MS } from "../life/item-use";
 import { buyShopItem } from "../life/store-buy";
 import { acceptJobFromNotice, dismissNoticeById, noticeForAction, tickJobOffers } from "../jobs/offers";
 import {
@@ -257,6 +258,9 @@ export type GameState = {
   finishTaskTest: () => void;
   retryTaskRun: () => void;
   /** Ephemeral life UI. Not persisted. */
+  /** Last successful use of a room item, keyed by GLB. Not persisted. */
+  itemUseAt: Record<string, number>;
+  useRoomItem: (key: string) => void;
   storeOpen: boolean;
   notificationOpen: boolean;
   /** Ăn uống modal. Not persisted. */
@@ -428,6 +432,25 @@ export const useGameStore = create<GameState>()(
       audioPopupOpen: false,
       hospitalOpen: false,
       hospitalCost: 0,
+      itemUseAt: {},
+      useRoomItem: (key) => {
+        const now = Date.now();
+        const last = get().itemUseAt[key] ?? 0;
+        if (now - last < ITEM_USE_COOLDOWN_MS) {
+          set({ lifeBubble: { text: "Vừa dùng rồi.", until: now + LIFE_EVENTS.bubble_ms } });
+          playCueKey("locked");
+          return;
+        }
+        const applied = applyItemUse(get().career, key);
+        if (!applied.notice) return;
+        set({
+          career: applied.state,
+          itemUseAt: { ...get().itemUseAt, [key]: now },
+          lifeBubble: { text: applied.notice, until: now + LIFE_EVENTS.bubble_ms },
+        });
+        emitGame(applied.events);
+        playCueKey("toast");
+      },
       lifeBubble: null,
       lifeBanner: null,
       terminalLines: [],
