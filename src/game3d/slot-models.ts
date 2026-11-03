@@ -153,6 +153,21 @@ const POSITION_OVERRIDES_BY_STAGE: Record<StageId, Record<string, [number, numbe
   },
 };
 
+/** Desk-seat anchors. A chair pick (office, ergo, stool, plastic) draws here,
+ * not at a corner the GLB happens to occupy in the manifest. */
+export const SEAT_ANCHOR: Record<StageId, [number, number, number]> = {
+  student: [-0.976, 0.02, -0.2],
+  junior: [-1.136, 0.02, -0.95],
+  senior: [-1.15, 0.026, -0.55],
+};
+
+const SEAT_MESHES: ReadonlySet<string> = new Set([
+  "chair_plastic",
+  "ergo_chair",
+  "junior_office_chair",
+  "stool_plastic",
+]);
+
 /** Laptop GLB spots per room: on the folding table vs on the desk (the display's place). */
 const LAPTOP_SPOTS: Record<
   StageId,
@@ -162,6 +177,11 @@ const LAPTOP_SPOTS: Record<
   junior: { folding: [-1.535, 0.32, -0.95], desk: [-1.78, 0.74, -0.95] },
   senior: { folding: [-1.645, 0.32, -0.35], desk: [-1.83, 0.74, -0.55] },
 };
+
+/** Where the stage0 laptop sits once a wooden / standing desk replaces the folding table. */
+export function laptopDeskSpot(stage: StageId): [number, number, number] {
+  return LAPTOP_SPOTS[stage].desk;
+}
 
 function slotStoreItems(accepts: readonly string[]): StoreItem[] {
   return STORE_ITEMS.filter(
@@ -292,6 +312,11 @@ export function resolveRoomFurniture(
       const spots = LAPTOP_SPOTS[stage];
       positionOverrides.laptop =
         deskEntry === "student.folding_table" ? spots.folding : spots.desk;
+    }
+    // After other overrides, so a chair pick always sits at the desk seat
+    // (the stool's manifest spot is a corner, not the seat).
+    if (slot.id === "seat" && SEAT_MESHES.has(glb)) {
+      positionOverrides[glb] = SEAT_ANCHOR[stage];
     }
   };
 

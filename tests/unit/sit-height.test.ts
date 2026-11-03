@@ -5,11 +5,11 @@ import { activeSeatKey, sitYOnChair } from "@/game3d/sit-height";
 
 describe("sit height", () => {
   it("puts the hips on each chair's measured seat, including the senior rug", () => {
-    expect(sitYOnChair("chair_plastic", 0.02)).toBe(0.013);
-    expect(sitYOnChair("junior_office_chair", 0.02)).toBe(0.085);
-    expect(sitYOnChair("ergo_chair", 0.02)).toBe(0.036);
-    expect(sitYOnChair("ergo_chair", 0.026)).toBe(0.042);
-    expect(sitYOnChair("stool_plastic", 0.02)).toBeNull();
+    expect(sitYOnChair("chair_plastic", 0.02)).toBe(0.217);
+    expect(sitYOnChair("junior_office_chair", 0.02)).toBe(0.289);
+    expect(sitYOnChair("ergo_chair", 0.02)).toBe(0.24);
+    expect(sitYOnChair("ergo_chair", 0.026)).toBe(0.246);
+    expect(sitYOnChair("stool_plastic", 0.02)).toBe(0.247);
   });
 
   it("follows the chair that is actually in the seat", () => {
@@ -37,7 +37,7 @@ describe("sit height", () => {
       const chair = itemByKey(stage, seat);
       expect(sitYOnChair(seat, chair?.position[1] ?? 0)).toBeCloseTo(
         // manifest stores the default-chair hip height
-        stage === "student" ? 0.013 : stage === "junior" ? 0.085 : 0.042,
+        stage === "student" ? 0.217 : stage === "junior" ? 0.289 : 0.246,
       );
     }
   });

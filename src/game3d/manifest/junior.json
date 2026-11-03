@@ -266,9 +266,9 @@
   "sit": {
    "key": "player",
    "category": "character",
-   "position": [-1.296, 0.085, -0.95],
+   "position": [-1.296, 0.289, -0.95],
    "rotationY": 1.5708,
-   "note": "chibi hips on the office cushion (seat top 0.462). 0.16m toward the desk so the back clears the backrest. ergo_chair shares this x/z; Player lowers y onto that cushion"
+   "note": "shorts on the office cushion (seat top 0.462, butt local 0.193) so the legs hang in front. 0.16m toward the desk so the back clears the backrest. Player adjusts y for ergo_chair"
   },
   "stand": {
    "key": "player_standing",
