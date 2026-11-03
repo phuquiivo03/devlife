@@ -54,11 +54,19 @@ export type ActionResult = {
   skipDays?: number;
 };
 
-function draft(state: CareerState, events: GameEvent[], minutes = 0): ActionResult {
+function draft(
+  state: CareerState,
+  events: GameEvent[],
+  minutes = 0,
+): ActionResult {
   return { state, events, minutes, error: null };
 }
 
-function ok(state: CareerState, events: GameEvent[], minutes = 0): ActionResult {
+function ok(
+  state: CareerState,
+  events: GameEvent[],
+  minutes = 0,
+): ActionResult {
   return { state: withEvents(state, events), events, minutes, error: null };
 }
 
@@ -66,7 +74,10 @@ function fail(state: CareerState, error: string): ActionResult {
   return { state, events: [], minutes: 0, error };
 }
 
-function withEvents(state: CareerState, events: readonly GameEvent[]): CareerState {
+function withEvents(
+  state: CareerState,
+  events: readonly GameEvent[],
+): CareerState {
   if (events.length === 0) return state;
   const start = state.player_events.length;
   const appended: PlayerEvent[] = events.map((event, index) => {
@@ -107,7 +118,6 @@ export function defaultCareer(
       reputation: config.starting_reputation,
       freelance_completed: 0,
       trait,
-      name: "",
       traitRolled: true,
       introSeen: false,
       introVideoSeen: false,
@@ -148,7 +158,10 @@ export function syncPlayerClock(
   };
 }
 
-function skillById(skills: readonly PlayerSkill[], skillId: SkillId): PlayerSkill {
+function skillById(
+  skills: readonly PlayerSkill[],
+  skillId: SkillId,
+): PlayerSkill {
   return (
     skills.find((row) => row.skill_id === skillId) ?? {
       skill_id: skillId,
@@ -158,25 +171,37 @@ function skillById(skills: readonly PlayerSkill[], skillId: SkillId): PlayerSkil
   );
 }
 
-function replaceSkill(skills: readonly PlayerSkill[], next: PlayerSkill): PlayerSkill[] {
+function replaceSkill(
+  skills: readonly PlayerSkill[],
+  next: PlayerSkill,
+): PlayerSkill[] {
   const exists = skills.some((row) => row.skill_id === next.skill_id);
   if (!exists) return [...skills, next];
   return skills.map((row) => (row.skill_id === next.skill_id ? next : row));
 }
 
-function setEnergy(state: CareerState, target: number, max: number): ActionResult {
+function setEnergy(
+  state: CareerState,
+  target: number,
+  max: number,
+): ActionResult {
   const energy = clampEnergy(target, max);
   const current = state.players.energy;
   if (current === energy) return draft(state, []);
-  return draft(
-    { ...state, players: { ...state.players, energy } },
-    [{ type: "energyChanged", delta: energy - current, energy }],
-  );
+  return draft({ ...state, players: { ...state.players, energy } }, [
+    { type: "energyChanged", delta: energy - current, energy },
+  ]);
 }
 
-export function refreshBoard(state: CareerState, day: number, catalog: SimCatalog): ActionResult {
+export function refreshBoard(
+  state: CareerState,
+  day: number,
+  catalog: SimCatalog,
+): ActionResult {
   const expired: PlayerJob[] = state.player_jobs.map((job) =>
-    job.status === "offered" && job.offered_day < day && job.source !== "company"
+    job.status === "offered" &&
+    job.offered_day < day &&
+    job.source !== "company"
       ? { ...job, status: "expired" }
       : job,
   );
@@ -242,10 +267,19 @@ export function applyDayStarted(
  * Sleep recovery from hours asleep. Energy is not set to `energyOnSleep`.
  * The morning mood queue is applied when the wake lands at 06:00.
  */
-export function applyWake(state: CareerState, hoursSlept: number): ActionResult {
+export function applyWake(
+  state: CareerState,
+  hoursSlept: number,
+): ActionResult {
   const rested = applySleepRest(state, hoursSlept);
   if (rested.skipDays > 0) {
-    return { state: rested.state, events: rested.events, minutes: 0, error: null, skipDays: rested.skipDays };
+    return {
+      state: rested.state,
+      events: rested.events,
+      minutes: 0,
+      error: null,
+      skipDays: rested.skipDays,
+    };
   }
   const morning = resolveMorning(rested.state, rested.state.players.game_day);
   return {
@@ -287,7 +321,8 @@ export function applyStudy(
   if (!activity) return fail(state, "Không tìm thấy khóa học");
 
   const completions = state.player_study_completions ?? [];
-  if (!canStudyCourse(activity, completions)) return fail(state, "Đã học khóa này");
+  if (!canStudyCourse(activity, completions))
+    return fail(state, "Đã học khóa này");
 
   const cost = energyCost(activity.energy, lifeOf(state).workStreak);
   const broke = state.players.money < activity.price;
@@ -304,19 +339,27 @@ export function applyStudy(
   let next = notePurse(markWorked(spent.state), -activity.price, "other");
   const events: GameEvent[] = [...spent.events];
 
-  const grants = catalog.studyActivityXp.filter((row) => row.activity_id === activity.id);
+  const grants = catalog.studyActivityXp.filter(
+    (row) => row.activity_id === activity.id,
+  );
   let xpShown = 0;
   for (const grant of grants) {
     const skill = skillById(next.player_skills, grant.skill_id);
     const amount = scaleWorkXp(
-      scaleTraitXp(grantedXp(grant.xp, skill.level, "study", catalog.config), next, grant.skill_id, "study"),
+      scaleTraitXp(
+        grantedXp(grant.xp, skill.level, "study", catalog.config),
+        next,
+        grant.skill_id,
+        "study",
+      ),
       next,
     );
     const applied = grantToSkill(next, grant.skill_id, amount, catalog);
     next = applied.state;
     events.push(...applied.events);
     xpShown += applied.events.reduce(
-      (sum, event) => (event.type === "skillXpGained" ? sum + event.amount : sum),
+      (sum, event) =>
+        event.type === "skillXpGained" ? sum + event.amount : sum,
       0,
     );
   }
@@ -369,13 +412,24 @@ export function changeMoney(state: CareerState, delta: number): ActionResult {
   if (money === state.players.money) return ok(state, []);
   const applied = money - state.players.money;
   return ok(
-    notePurse({ ...state, players: { ...state.players, money } }, applied, applied > 0 ? "earn" : "other"),
+    notePurse(
+      { ...state, players: { ...state.players, money } },
+      applied,
+      applied > 0 ? "earn" : "other",
+    ),
     [{ type: "moneyChanged", delta: applied, money }],
   );
 }
 
-export function fillEnergy(state: CareerState, catalog: SimCatalog): ActionResult {
-  const filled = setEnergy(state, catalog.config.energy_max, catalog.config.energy_max);
+export function fillEnergy(
+  state: CareerState,
+  catalog: SimCatalog,
+): ActionResult {
+  const filled = setEnergy(
+    state,
+    catalog.config.energy_max,
+    catalog.config.energy_max,
+  );
   return ok(filled.state, filled.events);
 }
 
@@ -385,7 +439,9 @@ export function xpNeededForNextLevel(
   catalog: SimCatalog,
 ): number {
   const skill = skillById(state.player_skills, skillId);
-  const need = catalog.skillLevelXp.find((row) => row.level === skill.level)?.xp_to_next ?? 0;
+  const need =
+    catalog.skillLevelXp.find((row) => row.level === skill.level)?.xp_to_next ??
+    0;
   if (need <= 0) return 0;
   return Math.max(0, need - skill.xp);
 }

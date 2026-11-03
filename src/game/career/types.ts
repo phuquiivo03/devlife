@@ -144,7 +144,6 @@ export type PlayerRow = {
   /** One trait rolled at creation or once during migration. */
   trait: TraitId;
   /** Name entered after the trait roll. Empty falls back to the stub name. */
-  name: string;
   /** Set when the trait was rolled. Later migrations must not roll again. */
   traitRolled: boolean;
   /** The creation popup has been dismissed. Existing saves migrate as seen. */

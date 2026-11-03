@@ -39,7 +39,13 @@ import { isTraitId, MIGRATION_TRAIT, rollTrait } from "../life/traits";
 import { defaultFeed } from "../life/events";
 import { defaultEmployment } from "../jobs/fulltime";
 import { emptyPurse } from "../life/purse";
-import type { LifeDiary, LifeFeed, LifeNotice, LifeSnapshot, NoticeSeverity } from "../career/types";
+import type {
+  LifeDiary,
+  LifeFeed,
+  LifeNotice,
+  LifeSnapshot,
+  NoticeSeverity,
+} from "../career/types";
 import type { EmploymentApplication, EmploymentState } from "../career/types";
 
 export type PersistedSave = {
@@ -65,11 +71,16 @@ function emptyLoadouts(): Record<StageId, Loadout> {
 }
 
 function isStage(value: unknown): value is StageId {
-  return typeof value === "string" && (STAGES as readonly string[]).includes(value);
+  return (
+    typeof value === "string" && (STAGES as readonly string[]).includes(value)
+  );
 }
 
 function isSkillId(value: unknown): value is SkillId {
-  return typeof value === "string" && (SKILL_IDS as readonly string[]).includes(value);
+  return (
+    typeof value === "string" &&
+    (SKILL_IDS as readonly string[]).includes(value)
+  );
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -85,7 +96,9 @@ function normalizeSkills(value: unknown): PlayerSkill[] {
     const xp = Number(row.xp);
     byId.set(row.skill_id, {
       skill_id: row.skill_id,
-      level: Number.isFinite(level) ? Math.max(1, Math.min(10, Math.floor(level))) : 1,
+      level: Number.isFinite(level)
+        ? Math.max(1, Math.min(10, Math.floor(level)))
+        : 1,
       xp: Number.isFinite(xp) ? Math.max(0, Math.floor(xp)) : 0,
     });
   }
@@ -101,10 +114,15 @@ function deadlineDaysForTier(tier: number): number {
 }
 
 /** Offered and in-progress jobs become accepted. Deadline is counted from `today`. */
-function acceptOpenJobs(jobs: readonly PlayerJob[], today: number): PlayerJob[] {
+function acceptOpenJobs(
+  jobs: readonly PlayerJob[],
+  today: number,
+): PlayerJob[] {
   return jobs.map((job) => {
     if (job.status !== "offered" && job.status !== "active") return job;
-    const template = SIM_CATALOG.jobTemplates.find((row) => row.id === job.template_id);
+    const template = SIM_CATALOG.jobTemplates.find(
+      (row) => row.id === job.template_id,
+    );
     const days = deadlineDaysForTier(template?.tier ?? 2);
     return {
       ...job,
@@ -120,7 +138,8 @@ function normalizeJobs(value: unknown): PlayerJob[] {
   const jobs: PlayerJob[] = [];
   for (const row of value) {
     if (!isRecord(row)) continue;
-    if (typeof row.id !== "string" || typeof row.template_id !== "string") continue;
+    if (typeof row.id !== "string" || typeof row.template_id !== "string")
+      continue;
     const status = JOB_STATUSES.find((item) => item === row.status);
     const jobType: JobType = row.job_type === "remote" ? "remote" : "freelance";
     if (!status) continue;
@@ -149,7 +168,11 @@ function normalizeCompletions(value: unknown): PlayerStudyCompletion[] {
   if (!Array.isArray(value)) return [];
   const byId = new Map<string, PlayerStudyCompletion>();
   for (const row of value) {
-    if (!isRecord(row) || typeof row.activity_id !== "string" || row.activity_id.length === 0) {
+    if (
+      !isRecord(row) ||
+      typeof row.activity_id !== "string" ||
+      row.activity_id.length === 0
+    ) {
       continue;
     }
     if (!isSkillId(row.skill_id)) continue;
@@ -180,7 +203,11 @@ function normalizeEvents(value: unknown): PlayerEvent[] {
   if (!Array.isArray(value)) return [];
   const events: PlayerEvent[] = [];
   for (const row of value) {
-    if (!isRecord(row) || typeof row.id !== "string" || typeof row.type !== "string") {
+    if (
+      !isRecord(row) ||
+      typeof row.id !== "string" ||
+      typeof row.type !== "string"
+    ) {
       continue;
     }
     events.push({
@@ -204,7 +231,9 @@ function normalizeTaskRun(value: unknown): TaskRun | null {
   const ticket = TICKET_CHOICES.find((item) => item === value.ticket) ?? null;
   const build = BUILD_CHOICES.find((item) => item === value.build) ?? null;
   const outcome: TaskOutcome | null =
-    value.outcome === "success" || value.outcome === "fail" ? value.outcome : null;
+    value.outcome === "success" || value.outcome === "fail"
+      ? value.outcome
+      : null;
   return {
     step,
     seed: num(value.seed),
@@ -261,7 +290,9 @@ function withRenamedShop(career: unknown): unknown {
     ...career,
     shop: {
       ...career.shop,
-      owned: Array.isArray(career.shop.owned) ? career.shop.owned.map(rename) : career.shop.owned,
+      owned: Array.isArray(career.shop.owned)
+        ? career.shop.owned.map(rename)
+        : career.shop.owned,
       pin: rename(career.shop.pin),
     },
   };
@@ -277,9 +308,16 @@ export function normalizeEmployment(value: unknown): EmploymentState {
   if (!isRecord(value)) return fresh;
   const current = isRecord(value.current)
     ? {
-        positionId: typeof value.current.positionId === "string" ? value.current.positionId : "",
-        company: typeof value.current.company === "string" ? value.current.company : "",
-        title: typeof value.current.title === "string" ? value.current.title : "",
+        positionId:
+          typeof value.current.positionId === "string"
+            ? value.current.positionId
+            : "",
+        company:
+          typeof value.current.company === "string"
+            ? value.current.company
+            : "",
+        title:
+          typeof value.current.title === "string" ? value.current.title : "",
         salary: num(value.current.salary),
         fit: finite(value.current.fit),
         startDay: Math.max(1, num(value.current.startDay, 1)),
@@ -292,11 +330,21 @@ export function normalizeEmployment(value: unknown): EmploymentState {
         lateTasks: num(value.current.lateTasks),
       }
     : null;
-  const applications: EmploymentApplication[] = Array.isArray(value.applications)
+  const applications: EmploymentApplication[] = Array.isArray(
+    value.applications,
+  )
     ? value.applications.flatMap((row) => {
-        if (!isRecord(row) || typeof row.id !== "string" || typeof row.positionId !== "string") return [];
+        if (
+          !isRecord(row) ||
+          typeof row.id !== "string" ||
+          typeof row.positionId !== "string"
+        )
+          return [];
         const outcome: EmploymentApplication["outcome"] =
-          row.outcome === "waiting" || row.outcome === "accepted" || row.outcome === "declined" || row.outcome === "expired"
+          row.outcome === "waiting" ||
+          row.outcome === "accepted" ||
+          row.outcome === "declined" ||
+          row.outcome === "expired"
             ? row.outcome
             : "waiting";
         const application: EmploymentApplication = {
@@ -324,20 +372,33 @@ export function normalizeEmployment(value: unknown): EmploymentState {
   const blockedCompanies = numberMap(value.blockedCompanies);
   const pendingPayouts = Array.isArray(value.pendingPayouts)
     ? value.pendingPayouts.flatMap((row) => {
-        if (!isRecord(row) || typeof row.company !== "string" || typeof row.monthKey !== "string") return [];
-        return [{ company: row.company, amount: num(row.amount), monthKey: row.monthKey }];
+        if (
+          !isRecord(row) ||
+          typeof row.company !== "string" ||
+          typeof row.monthKey !== "string"
+        )
+          return [];
+        return [
+          {
+            company: row.company,
+            amount: num(row.amount),
+            monthKey: row.monthKey,
+          },
+        ];
       })
     : [];
-  const fired = isRecord(value.fired) && typeof value.fired.company === "string"
-    ? {
-        company: value.fired.company,
-        days: num(value.fired.days),
-        lateTasks: num(value.fired.lateTasks),
-        payout: num(value.fired.payout),
-        open: value.fired.open === true,
-      }
-    : null;
-  const validCurrent = current && current.positionId.length > 0 ? current : null;
+  const fired =
+    isRecord(value.fired) && typeof value.fired.company === "string"
+      ? {
+          company: value.fired.company,
+          days: num(value.fired.days),
+          lateTasks: num(value.fired.lateTasks),
+          payout: num(value.fired.payout),
+          open: value.fired.open === true,
+        }
+      : null;
+  const validCurrent =
+    current && current.positionId.length > 0 ? current : null;
   return {
     current: validCurrent,
     applications,
@@ -382,13 +443,14 @@ export function careerFromUnknown(
       reputation: num(players.reputation, fresh.players.reputation),
       freelance_completed: num(players.freelance_completed),
       trait: isTraitId(players.trait) ? players.trait : MIGRATION_TRAIT,
-      name: playerName(players.name),
       traitRolled: players.traitRolled === true,
       introSeen: players.introSeen === true,
       introVideoSeen: players.introVideoSeen === true,
     },
     player_skills: normalizeSkills(value.player_skills),
-    player_study_completions: normalizeCompletions(value.player_study_completions),
+    player_study_completions: normalizeCompletions(
+      value.player_study_completions,
+    ),
     player_jobs: normalizeJobs(value.player_jobs),
     player_unlocks: normalizeUnlocks(value.player_unlocks),
     player_events: normalizeEvents(value.player_events),
@@ -396,26 +458,33 @@ export function careerFromUnknown(
     shop: normalizeShop(value.shop),
     employment: normalizeEmployment(value.employment),
     feed: normalizeFeed(value.feed, day, {
-      money: Number.isFinite(Number(players.money)) ? Math.trunc(Number(players.money)) : fresh.players.money,
-      health: Number.isFinite(Number(players.health)) ? Number(players.health) : fresh.players.health,
-      mood: Number.isFinite(Number(players.mood)) ? Number(players.mood) : fresh.players.mood,
-      energy: Number.isFinite(Number(players.energy)) ? Number(players.energy) : fresh.players.energy,
+      money: Number.isFinite(Number(players.money))
+        ? Math.trunc(Number(players.money))
+        : fresh.players.money,
+      health: Number.isFinite(Number(players.health))
+        ? Number(players.health)
+        : fresh.players.health,
+      mood: Number.isFinite(Number(players.mood))
+        ? Number(players.mood)
+        : fresh.players.mood,
+      energy: Number.isFinite(Number(players.energy))
+        ? Number(players.energy)
+        : fresh.players.energy,
     }),
   };
 }
 
 /** Fullness for a pre-v20 save (or a corrupt value): freshly full. */
 function fullnessOrDefault(value: unknown): number {
-  if (typeof value !== "number" || !Number.isFinite(value) || value < 0 || value > LIFE.stat_max) {
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    value < 0 ||
+    value > LIFE.stat_max
+  ) {
     return LIFE.fullness_default_migrate;
   }
   return value;
-}
-
-/** Display name: trimmed and clamped. Anything else stays empty (stub fallback on the card). */
-function playerName(value: unknown): string {
-  if (typeof value !== "string") return "";
-  return value.trim().slice(0, 24);
 }
 
 function normalizeLife(value: unknown, day: number): LifeState {
@@ -434,13 +503,20 @@ function normalizeLife(value: unknown, day: number): LifeState {
     paidRentKey: strOrNull(value.paidRentKey),
     paidUtilitiesKey: strOrNull(value.paidUtilitiesKey),
     paidSalaryKey: strOrNull(value.paidSalaryKey),
-    burnoutDay: value.burnoutDay == null ? null : Math.max(1, num(value.burnoutDay, 1)),
+    burnoutDay:
+      value.burnoutDay == null ? null : Math.max(1, num(value.burnoutDay, 1)),
     lastEndedDay: value.lastEndedDay == null ? null : num(value.lastEndedDay),
     settledDay: value.settledDay == null ? null : num(value.settledDay),
-    morningResolvedDay: value.morningResolvedDay == null ? null : num(value.morningResolvedDay),
-    wakeBudget: value.wakeBudget == null ? fresh.wakeBudget : Math.max(1, num(value.wakeBudget, fresh.wakeBudget)),
+    morningResolvedDay:
+      value.morningResolvedDay == null ? null : num(value.morningResolvedDay),
+    wakeBudget:
+      value.wakeBudget == null
+        ? fresh.wakeBudget
+        : Math.max(1, num(value.wakeBudget, fresh.wakeBudget)),
     suppressEndOfDayUntil:
-      value.suppressEndOfDayUntil == null ? null : num(value.suppressEndOfDayUntil),
+      value.suppressEndOfDayUntil == null
+        ? null
+        : num(value.suppressEndOfDayUntil),
     homeDays: num(value.homeDays),
     hungryNoticed: value.hungryNoticed === true,
     starvingNoticed: value.starvingNoticed === true,
@@ -453,13 +529,24 @@ function normalizeFeed(
   day: number,
   vitals: { money: number; health: number; mood: number; energy: number },
 ): LifeFeed {
-  const fresh = defaultFeed({ day, money: vitals.money, xp: 0, health: vitals.health, mood: vitals.mood, energy: vitals.energy });
+  const fresh = defaultFeed({
+    day,
+    money: vitals.money,
+    xp: 0,
+    health: vitals.health,
+    mood: vitals.mood,
+    energy: vitals.energy,
+  });
   if (!isRecord(value)) return fresh;
-  const snapshot = isRecord(value.snapshot) ? normalizeSnapshot(value.snapshot, fresh.snapshot) : fresh.snapshot;
+  const snapshot = isRecord(value.snapshot)
+    ? normalizeSnapshot(value.snapshot, fresh.snapshot)
+    : fresh.snapshot;
   return {
     pity: Math.max(0, Math.min(3, num(value.pity))),
-    pityCountedDay: value.pityCountedDay == null ? null : num(value.pityCountedDay),
-    smallEventDay: value.smallEventDay == null ? null : num(value.smallEventDay),
+    pityCountedDay:
+      value.pityCountedDay == null ? null : num(value.pityCountedDay),
+    smallEventDay:
+      value.smallEventDay == null ? null : num(value.smallEventDay),
     cooldowns: numberMap(value.cooldowns),
     flags: stringList(value.flags),
     pendingId: strOrNull(value.pendingId),
@@ -467,7 +554,8 @@ function normalizeFeed(
     deferredRoll: value.deferredRoll === true,
     notices: normalizeNotices(value.notices),
     nextBugDelta: signed(value.nextBugDelta),
-    hackathonStart: value.hackathonStart == null ? null : num(value.hackathonStart),
+    hackathonStart:
+      value.hackathonStart == null ? null : num(value.hackathonStart),
     hackathonResolved: value.hackathonResolved === true,
     snapshot,
     diary: normalizeDiary(value.diary, vitals.money),
@@ -485,14 +573,23 @@ function signed(value: unknown): number {
   return Number.isFinite(parsed) ? Math.trunc(parsed) : 0;
 }
 
-function normalizeSnapshot(value: Record<string, unknown>, fresh: LifeSnapshot): LifeSnapshot {
+function normalizeSnapshot(
+  value: Record<string, unknown>,
+  fresh: LifeSnapshot,
+): LifeSnapshot {
   return {
     day: value.day == null ? fresh.day : num(value.day, fresh.day),
-    money: Number.isFinite(Number(value.money)) ? Math.trunc(Number(value.money)) : fresh.money,
+    money: Number.isFinite(Number(value.money))
+      ? Math.trunc(Number(value.money))
+      : fresh.money,
     xp: num(value.xp),
-    health: Number.isFinite(Number(value.health)) ? Number(value.health) : fresh.health,
+    health: Number.isFinite(Number(value.health))
+      ? Number(value.health)
+      : fresh.health,
     mood: Number.isFinite(Number(value.mood)) ? Number(value.mood) : fresh.mood,
-    energy: Number.isFinite(Number(value.energy)) ? Number(value.energy) : fresh.energy,
+    energy: Number.isFinite(Number(value.energy))
+      ? Number(value.energy)
+      : fresh.energy,
   };
 }
 
@@ -508,7 +605,10 @@ function normalizePurse(value: unknown) {
   };
 }
 
-function normalizeDiary(value: unknown, remainingFallback: number): LifeDiary | null {
+function normalizeDiary(
+  value: unknown,
+  remainingFallback: number,
+): LifeDiary | null {
   if (!isRecord(value)) return null;
   const money = signed(value.money);
   return {
@@ -520,14 +620,24 @@ function normalizeDiary(value: unknown, remainingFallback: number): LifeDiary | 
     energy: Number(value.energy) || 0,
     line: typeof value.line === "string" ? value.line : "",
     pin: typeof value.pin === "string" ? value.pin : "Chưa ghim món.",
-    earned: value.earned == null ? Math.max(0, money) : Math.max(0, signed(value.earned)),
-    spent: value.spent == null ? Math.max(0, -money) : Math.max(0, signed(value.spent)),
+    earned:
+      value.earned == null
+        ? Math.max(0, money)
+        : Math.max(0, signed(value.earned)),
+    spent:
+      value.spent == null
+        ? Math.max(0, -money)
+        : Math.max(0, signed(value.spent)),
     food: Math.max(0, signed(value.food)),
     rent: Math.max(0, signed(value.rent)),
     shop: Math.max(0, signed(value.shop)),
-    remaining: value.remaining == null ? remainingFallback : signed(value.remaining),
+    remaining:
+      value.remaining == null ? remainingFallback : signed(value.remaining),
     sleptDay: value.sleptDay == null ? null : num(value.sleptDay, 1),
-    sleptAt: typeof value.sleptAt === "string" && /^\d{2}:\d{2}$/.test(value.sleptAt) ? value.sleptAt : null,
+    sleptAt:
+      typeof value.sleptAt === "string" && /^\d{2}:\d{2}$/.test(value.sleptAt)
+        ? value.sleptAt
+        : null,
   };
 }
 
@@ -556,10 +666,15 @@ function noticeButton(value: unknown): NoticeActionButton | null {
   if (!isRecord(value)) return null;
   const id = noticeActionOf(value.id);
   if (!id) return null;
-  const label = typeof value.label === "string" && value.label.trim().length > 0 ? value.label : NOTICE_ACTION_DEFAULT_LABEL[id];
+  const label =
+    typeof value.label === "string" && value.label.trim().length > 0
+      ? value.label
+      : NOTICE_ACTION_DEFAULT_LABEL[id];
   const button: NoticeActionButton = { id, label };
-  if (typeof value.icon === "string" && value.icon.length > 0) button.icon = value.icon;
-  if (value.variant === "primary" || value.variant === "secondary") button.variant = value.variant;
+  if (typeof value.icon === "string" && value.icon.length > 0)
+    button.icon = value.icon;
+  if (value.variant === "primary" || value.variant === "secondary")
+    button.variant = value.variant;
   return button;
 }
 
@@ -567,17 +682,30 @@ function normalizeNotices(value: unknown): LifeNotice[] {
   if (!Array.isArray(value)) return [];
   const notices: LifeNotice[] = [];
   for (const row of value) {
-    if (!isRecord(row) || typeof row.id !== "string" || typeof row.text !== "string") continue;
-    const severity: NoticeSeverity = row.severity === "warn" || row.severity === "urgent" ? row.severity : "info";
+    if (
+      !isRecord(row) ||
+      typeof row.id !== "string" ||
+      typeof row.text !== "string"
+    )
+      continue;
+    const severity: NoticeSeverity =
+      row.severity === "warn" || row.severity === "urgent"
+        ? row.severity
+        : "info";
     const legacy = noticeActionOf(row.action);
-    const listed = Array.isArray(row.actions) ? row.actions.flatMap((item) => {
-      const parsed = noticeButton(item);
-      return parsed ? [parsed] : [];
-    }) : [];
-    const actions = listed.length > 0 ? listed : legacy ? [noticeButton(legacy)!] : [];
+    const listed = Array.isArray(row.actions)
+      ? row.actions.flatMap((item) => {
+          const parsed = noticeButton(item);
+          return parsed ? [parsed] : [];
+        })
+      : [];
+    const actions =
+      listed.length > 0 ? listed : legacy ? [noticeButton(legacy)!] : [];
     const payloadRecord = isRecord(row.payload) ? row.payload : null;
     const jobId =
-      payloadRecord && typeof payloadRecord.jobId === "string" && payloadRecord.jobId.length > 0
+      payloadRecord &&
+      typeof payloadRecord.jobId === "string" &&
+      payloadRecord.jobId.length > 0
         ? payloadRecord.jobId
         : typeof row.jobId === "string" && row.jobId.length > 0
           ? row.jobId
@@ -594,8 +722,10 @@ function normalizeNotices(value: unknown): LifeNotice[] {
       read: row.read === true,
       cue: typeof row.cue === "string" && row.cue.length > 0 ? row.cue : null,
     };
-    if (typeof row.title === "string" && row.title.length > 0) notice.title = row.title;
-    if (typeof row.detail === "string" && row.detail.length > 0) notice.detail = row.detail;
+    if (typeof row.title === "string" && row.title.length > 0)
+      notice.title = row.title;
+    if (typeof row.detail === "string" && row.detail.length > 0)
+      notice.detail = row.detail;
     if (jobId) notice.payload = { jobId };
     notices.push(notice);
   }
@@ -613,7 +743,9 @@ function numberMap(value: unknown): Record<string, number> {
 
 function stringList(value: unknown): string[] {
   if (!Array.isArray(value)) return [];
-  return value.filter((entry): entry is string => typeof entry === "string" && entry.length > 0);
+  return value.filter(
+    (entry): entry is string => typeof entry === "string" && entry.length > 0,
+  );
 }
 
 function finite(value: unknown): number {
@@ -679,11 +811,16 @@ export function migrateSave(
         student: isRecord(prev.loadouts.student)
           ? (prev.loadouts.student as Loadout)
           : {},
-        junior: isRecord(prev.loadouts.junior) ? (prev.loadouts.junior as Loadout) : {},
-        senior: isRecord(prev.loadouts.senior) ? (prev.loadouts.senior as Loadout) : {},
+        junior: isRecord(prev.loadouts.junior)
+          ? (prev.loadouts.junior as Loadout)
+          : {},
+        senior: isRecord(prev.loadouts.senior)
+          ? (prev.loadouts.senior as Loadout)
+          : {},
       }
     : emptyLoadouts();
-  const showCharacter = typeof prev.showCharacter === "boolean" ? prev.showCharacter : true;
+  const showCharacter =
+    typeof prev.showCharacter === "boolean" ? prev.showCharacter : true;
   const totalMinutes = totalMinutesFromPersisted(prev.totalMinutes, version);
   const snap = snapshot(totalMinutes);
   let career =
@@ -703,7 +840,10 @@ export function migrateSave(
       ...career,
       feed: {
         ...career.feed,
-        notices: career.feed.notices.map((notice) => ({ ...notice, cue: null })),
+        notices: career.feed.notices.map((notice) => ({
+          ...notice,
+          cue: null,
+        })),
       },
     };
   }
@@ -711,9 +851,14 @@ export function migrateSave(
     const rawCareer = isRecord(prev.career) ? prev.career : {};
     const rawPlayers = isRecord(rawCareer.players) ? rawCareer.players : {};
     const storedTrait = isTraitId(rawPlayers.trait) ? rawPlayers.trait : null;
-    const alreadyRolled = rawPlayers.traitRolled === true && storedTrait != null;
-    const keptV11 = version >= 11 && storedTrait != null && storedTrait !== MIGRATION_TRAIT;
-    const trait = alreadyRolled || keptV11 ? (storedTrait ?? career.players.trait) : rollTrait(random);
+    const alreadyRolled =
+      rawPlayers.traitRolled === true && storedTrait != null;
+    const keptV11 =
+      version >= 11 && storedTrait != null && storedTrait !== MIGRATION_TRAIT;
+    const trait =
+      alreadyRolled || keptV11
+        ? (storedTrait ?? career.players.trait)
+        : rollTrait(random);
     career = {
       ...career,
       players: { ...career.players, trait, traitRolled: true },
@@ -732,7 +877,10 @@ export function migrateSave(
   if (version < 16 && career.feed.diary) {
     career = {
       ...career,
-      feed: { ...career.feed, diary: { ...career.feed.diary, sleptDay: null, sleptAt: null } },
+      feed: {
+        ...career.feed,
+        diary: { ...career.feed.diary, sleptDay: null, sleptAt: null },
+      },
     };
   }
   if (version < 17) {
@@ -742,7 +890,10 @@ export function migrateSave(
     };
   }
   if (version < 18) {
-    career = { ...career, player_jobs: acceptOpenJobs(career.player_jobs, snap.day) };
+    career = {
+      ...career,
+      player_jobs: acceptOpenJobs(career.player_jobs, snap.day),
+    };
   }
   if (version < 19) {
     // v19: furniture placement overhaul - overlay items can appear in all rooms, replacement items use loadouts across rooms
@@ -789,7 +940,11 @@ export function migrateSave(
         if (!owned.has(item.id)) continue;
         const entry = `${STORE_SLOT_PREFIX}${item.id}`;
         if (placed.has(entry)) continue;
-        const slot = firstUntouchedAcceptingSlot(slots, stageLoadout, item.category);
+        const slot = firstUntouchedAcceptingSlot(
+          slots,
+          stageLoadout,
+          item.category,
+        );
         if (!slot) continue;
         stageLoadout[slot.id] = entry;
         placed.add(entry);
@@ -811,7 +966,12 @@ export function migrateSave(
     totalMinutes,
     career: {
       ...career,
-      players: { ...career.players, stage, game_day: snap.day, game_minute: snap.minuteOfDay },
+      players: {
+        ...career.players,
+        stage,
+        game_day: snap.day,
+        game_minute: snap.minuteOfDay,
+      },
     },
   };
 }
