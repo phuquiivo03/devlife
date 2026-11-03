@@ -5,6 +5,7 @@ import { PixelButton } from "@/components/ui/button";
 import {
   INTRO_SUBTITLE,
   INTRO_SUBTITLE_FROM_SECONDS,
+  INTRO_SUBTITLE_TO_SECONDS,
   INTRO_VIDEO_SRC,
 } from "@/content/intro";
 import { useGameStore } from "@/game/state/store";
@@ -79,7 +80,8 @@ export function IntroVideo() {
         preload="auto"
         disablePictureInPicture
         onTimeUpdate={(event) => {
-          const next = event.currentTarget.currentTime >= INTRO_SUBTITLE_FROM_SECONDS;
+          const t = event.currentTarget.currentTime;
+          const next = t >= INTRO_SUBTITLE_FROM_SECONDS && t < INTRO_SUBTITLE_TO_SECONDS;
           setShowLine((current) => (current === next ? current : next));
         }}
         onEnded={close}
