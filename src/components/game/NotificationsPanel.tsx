@@ -67,6 +67,7 @@ function NoticeOffer({
   onRead: (id: string) => void;
   onRun: (id: NoticeActionId, notice: Notice) => void;
 }) {
+  const guided = useGameStore((s) => !s.openingDone && s.openingStep === "bell");
   return (
     <div className={styles.offer}>
       <button
@@ -103,6 +104,7 @@ function NoticeOffer({
             key={button.id}
             variant={button.variant === "primary" ? "primary" : "secondary"}
             data-testid={`notice-action-${button.id}`}
+            data-opening-allow={guided && button.id === "acceptJob" ? "" : undefined}
             onClick={() => onRun(button.id, notice)}
           >
             {button.label}

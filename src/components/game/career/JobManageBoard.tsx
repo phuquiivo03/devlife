@@ -98,6 +98,7 @@ export function JobManageBoard({
   iconFiles?: readonly string[];
 }) {
   const [tab, setTab] = useState<JobsTab>("main");
+  const guided = useGameStore((s) => !s.openingDone && s.openingStep === "jobs");
   const jobs = useGameStore((s) => s.career.player_jobs);
   const day = useGameStore((s) => snapshot(s.totalMinutes).day);
   const openTask = useGameStore((s) => s.openTask);
@@ -112,6 +113,7 @@ export function JobManageBoard({
       testId="job-manage"
       closeLabel="Đóng"
       maxWidthPx={640}
+      allowDismiss={guided}
     >
       <div className="mb-3 flex flex-wrap gap-2" data-testid="jobs-tabs">
         {TABS.map((row) => (
@@ -192,6 +194,7 @@ export function JobManageBoard({
                           type="button"
                           variant="light"
                           data-testid={`job-do-${job.id}`}
+                          data-opening-allow={guided ? "" : undefined}
                           onClick={() => (job.task_run ? openTask(job.id) : acceptJob(job.id))}
                         >
                           Làm

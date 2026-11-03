@@ -22,6 +22,7 @@ export function Modal({
   testId,
   closeLabel = "Đóng",
   maxWidthPx = MODAL.maxWidthPx,
+  allowDismiss = false,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -30,11 +31,17 @@ export function Modal({
   testId?: string;
   closeLabel?: string;
   maxWidthPx?: number;
+  /** Lets the day-1 lock through to this popup's backdrop and close button. */
+  allowDismiss?: boolean;
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
-        <Dialog.Overlay className={styles.backdrop} style={modalOverlayStyle()} />
+        <Dialog.Overlay
+          className={styles.backdrop}
+          style={modalOverlayStyle()}
+          data-opening-allow={allowDismiss ? "" : undefined}
+        />
         <Dialog.Content
           className={cn(styles.content, "fixed left-1/2 top-1/2 flex flex-col overflow-hidden outline-none")}
           style={modalContentStyle(maxWidthPx)}
@@ -48,7 +55,11 @@ export function Modal({
                 {title}
               </Dialog.Title>
               <Dialog.Close asChild>
-                <PixelButton variant="secondary" data-testid={testId ? `${testId}-close` : undefined}>
+                <PixelButton
+                  variant="secondary"
+                  data-testid={testId ? `${testId}-close` : undefined}
+                  data-opening-allow={allowDismiss ? "" : undefined}
+                >
                   {closeLabel}
                 </PixelButton>
               </Dialog.Close>

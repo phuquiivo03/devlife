@@ -17,9 +17,14 @@ export function StudyPanel({ iconFiles }: { iconFiles: readonly string[] }) {
   const completions = useGameStore((s) => s.career.player_study_completions);
   const workStreak = useGameStore((s) => s.career.life.workStreak);
   const buyCourse = useGameStore((s) => s.buyCourse);
+  const guided = useGameStore((s) => !s.openingDone && s.openingStep === "study");
   const open = SIM_CATALOG.studyActivities.filter((activity) =>
     canStudyCourse(activity, completions),
   );
+  const anyNormal = open.some((activity) => {
+    const cost = energyCost(activity.energy, workStreak);
+    return studyBlockReason(money, energy, { price: activity.price, energy: cost }) == null;
+  });
   const done = completions.flatMap((completion) => {
     const activity = SIM_CATALOG.studyActivities.find(
       (row) => row.id === completion.activity_id,
@@ -55,6 +60,8 @@ export function StudyPanel({ iconFiles }: { iconFiles: readonly string[] }) {
                 workStreak={workStreak}
                 iconFiles={iconFiles}
                 onBuy={buyCourse}
+                guided={guided}
+                anyNormal={anyNormal}
               />
             ))}
           </ul>
@@ -100,6 +107,8 @@ function CourseOffer({
   workStreak,
   iconFiles,
   onBuy,
+  guided,
+  anyNormal,
 }: {
   activity: StudyActivity;
   index: number;
@@ -108,6 +117,8 @@ function CourseOffer({
   workStreak: number;
   iconFiles: readonly string[];
   onBuy: (activityId: string, force?: boolean) => void;
+  guided: boolean;
+  anyNormal: boolean;
 }) {
   const skill = SIM_CATALOG.skills.find((row) => row.id === activity.skill_id);
   const xp = SIM_CATALOG.studyActivityXp
@@ -119,6 +130,7 @@ function CourseOffer({
     energy: cost,
   });
   const canForce = money >= activity.price && energy < cost;
+  const guidedHit = guided && (reason == null || (!anyNormal && canForce));
   return (
     <li
       data-testid={`course-card-${activity.id}`}
@@ -141,6 +153,7 @@ function CourseOffer({
             <PixelButton
               type="button"
               data-testid={`course-force-${activity.id}`}
+              data-opening-allow={guidedHit ? "" : undefined}
               onClick={() => onBuy(activity.id, true)}
             >
               Cố học
@@ -157,6 +170,7 @@ function CourseOffer({
         <PixelButton
           type="button"
           data-testid={`course-buy-${activity.id}`}
+          data-opening-allow={guidedHit ? "" : undefined}
           onClick={() => onBuy(activity.id)}
         >
           Học

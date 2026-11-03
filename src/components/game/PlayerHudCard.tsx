@@ -478,11 +478,16 @@ function CareerTile({
   onClick: () => void;
   clay?: boolean;
 }) {
+  const openingStep = useGameStore((s) => (s.openingDone ? null : s.openingStep));
+  const pulse =
+    (action.id === "study" && openingStep === "study") ||
+    (action.id === "jobs" && openingStep === "jobs");
   return (
     <div
       className={cn(
         "flex min-w-[88px]",
         clay ? "clay-tile py-1.5" : "w-[calc((100%-16px)/3)]",
+        pulse && "opening-pulse",
       )}
       data-clay-tone={clay ? action.id : undefined}
     >
@@ -491,9 +496,11 @@ function CareerTile({
         variant="light"
         data-testid={action.testId}
         data-icon-key={action.icon}
+        data-opening-allow={pulse ? "" : undefined}
+        data-opening-target={pulse ? action.id : undefined}
         onClick={onClick}
         aria-label={action.label}
-        className={cn("w-full", clay && "clay-tile-inner")}
+        className={cn("w-full", clay && "clay-tile-inner", !clay && pulse && "opening-pulse")}
       >
         <span className="flex w-full flex-col items-center gap-1 py-1">
           <PixelIcon

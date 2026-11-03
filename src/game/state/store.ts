@@ -85,7 +85,12 @@ import { dialogCueKey, noticeCueKey, pickMomentCue, playLifeSound } from "../lif
 import { pinItem, roomOwned, storeItem } from "../life/furniture";
 import { applyItemUse, ITEM_USE_COOLDOWN_MS } from "../life/item-use";
 import { buyShopItem } from "../life/store-buy";
-import { acceptJobFromNotice, dismissNoticeById, noticeForAction, tickJobOffers } from "../jobs/offers";
+import { acceptJobFromNotice, dismissNoticeById, ensureFirstJobOffer, noticeForAction, tickJobOffers } from "../jobs/offers";
+import {
+  openingAfterReload,
+  openingLocksInput,
+  type OpeningStep,
+} from "../opening/flow";
 import {
   acceptApplication,
   applyToPosition as applyToPositionState,
@@ -212,6 +217,13 @@ export type GameState = {
   dismissIntro: (name: string) => void;
   /** Marks the opening dream seen and, on day 1, wakes the clock at 07:00. */
   finishIntroVideo: () => void;
+  /**
+   * Day-1 guided step. Null before the intro ends and after the sequence is
+   * done. Persisted.
+   */
+  openingStep: OpeningStep | null;
+  /** Existing saves migrate to done. A new game stays false until the job starts. Persisted. */
+  openingDone: boolean;
   setCameraX: (stage: StageId, x: number | null) => void;
   setCustomizeOpen: (v: boolean) => void;
   /** In-game minutes since day 1, 00:00. Persisted. */
@@ -385,15 +397,20 @@ export const useGameStore = create<GameState>()(
           ...current.career,
           players: { ...current.career.players, introVideoSeen: true },
         };
+        const beginOpening = !current.openingDone && current.openingStep == null;
         set({
           clockPaused: false,
           totalMinutes,
           career: syncPlayerClock(career, landed.day, landed.minuteOfDay, current.stage),
+          openingStep: beginOpening ? "study" : current.openingStep,
         });
       },
       setCameraX: (stage, x) =>
         set((st) => ({ cameraX: { ...st.cameraX, [stage]: x } })),
-      setCustomizeOpen: (v) => set({ customizeOpen: v }),
+      setCustomizeOpen: (v) => {
+        if (v && openingLocksInput(get().openingStep, get().openingDone)) return;
+        set({ customizeOpen: v });
+      },
       totalMinutes: DEFAULT_START_MINUTES,
       clockSpeed: 1,
       clockPaused: false,
@@ -407,6 +424,7 @@ export const useGameStore = create<GameState>()(
       setClockSpeed: (speed) => set({ clockSpeed: speed }),
       setClockPaused: (paused) => set({ clockPaused: paused }),
       sleep: () => {
+        if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const current = get().totalMinutes;
         console.log('[SLEEP] Button clicked, current minutes:', current);
         console.log('[SLEEP] Can sleep?', canSleepAt(current));
@@ -445,6 +463,8 @@ export const useGameStore = create<GameState>()(
         for (const event of result.events) timeBus.emit(event);
       },
       career: defaultCareer(1, DEFAULT_START_MINUTES, "student", SIM_CATALOG, rollTrait()),
+      openingStep: null,
+      openingDone: false,
       careerPanel: null,
       taskJobId: null,
       offerConfirm: null,
@@ -456,6 +476,7 @@ export const useGameStore = create<GameState>()(
       hospitalCost: 0,
       itemUseAt: {},
       useRoomItem: (key) => {
+        if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const now = Date.now();
         const last = get().itemUseAt[key] ?? 0;
         if (now - last < ITEM_USE_COOLDOWN_MS) {
@@ -478,8 +499,20 @@ export const useGameStore = create<GameState>()(
       terminalLines: [],
       sleepTransition: null,
       fastForward: false,
-      openCareerPanel: (panel) => set({ careerPanel: panel }),
-      closeCareerPanel: () => set({ careerPanel: null }),
+      openCareerPanel: (panel) => {
+        const { openingStep, openingDone } = get();
+        if (openingLocksInput(openingStep, openingDone)) {
+          if (openingStep === "study" && panel === "study") set({ careerPanel: panel });
+          if (openingStep === "jobs" && panel === "jobs") set({ careerPanel: panel });
+          return;
+        }
+        set({ careerPanel: panel });
+      },
+      closeCareerPanel: () => {
+        const { openingStep, openingDone } = get();
+        if (openingLocksInput(openingStep, openingDone) && openingStep === "study") return;
+        set({ careerPanel: null });
+      },
       ensureTodayBoard: () => {
         const current = get();
         const snap = snapshot(current.totalMinutes);
@@ -535,6 +568,9 @@ export const useGameStore = create<GameState>()(
       },
       onHour: (hour, totalMinutes) => {
         if (clockSkip) return;
+        // The guided morning should not roll a random event or a second offer
+        // over the one the study step posts.
+        if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const snap = snapshot(totalMinutes);
         if (snap.minute !== 0 || hour % 2 !== 0) return;
         if (hour === 18) {
@@ -605,6 +641,7 @@ export const useGameStore = create<GameState>()(
         commitLife({ ...result, skipMinutes: 0, bubble: null, warns: [] });
       },
       eat: (foodId) => {
+        if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const current = get().career;
         if (mealBlocked(current, foodId)) return;
         const result = eatMeal(current, foodId);
@@ -614,6 +651,7 @@ export const useGameStore = create<GameState>()(
         get().syncLifeSurface();
       },
       playGame: () => {
+        if (openingLocksInput(get().openingStep, get().openingDone)) return;
         const current = get();
         const snapNow = snapshot(current.totalMinutes);
         const synced = syncPlayerClock(current.career, snapNow.day, snapNow.minuteOfDay, current.stage);
@@ -660,7 +698,15 @@ export const useGameStore = create<GameState>()(
         for (const event of advanced.events) timeBus.emit(event);
         maybeHospital(result.skipDays);
         get().syncLifeSurface();
-        window.setTimeout(() => {
+        if (get().openingStep === "study" && !get().openingDone) {
+          const offeredAt = snapshot(get().totalMinutes);
+          set({
+            career: ensureFirstJobOffer(get().career, offeredAt.day, offeredAt.minuteOfDay),
+            careerPanel: null,
+            openingStep: "bell",
+          });
+        }
+        globalThis.setTimeout(() => {
           useGameStore.setState({ fastForward: false });
         }, 800);
       },
@@ -680,7 +726,13 @@ export const useGameStore = create<GameState>()(
           set({ terminalLines: [...current.terminalLines, `❌ ${result.error}`].slice(-8) });
           return;
         }
-        set({ career: result.state, careerPanel: null, taskJobId: jobId });
+        const guidedJob = get().openingStep === "jobs" && !get().openingDone;
+        set({
+          career: result.state,
+          careerPanel: null,
+          taskJobId: jobId,
+          ...(guidedJob ? { openingDone: true, openingStep: null } : {}),
+        });
         emitGame(result.events);
         maybeHospital(result.skipDays);
         get().syncLifeSurface();
@@ -714,7 +766,14 @@ export const useGameStore = create<GameState>()(
         set({ career: closed.state });
         emitGame(closed.events);
       },
-      openTask: (jobId) => set({ careerPanel: null, taskJobId: jobId }),
+      openTask: (jobId) => {
+        const guidedJob = get().openingStep === "jobs" && !get().openingDone;
+        set({
+          careerPanel: null,
+          taskJobId: jobId,
+          ...(guidedJob ? { openingDone: true, openingStep: null } : {}),
+        });
+      },
       closeTask: () => {
         set({ taskJobId: null, terminalLines: [] });
         const snap = snapshot(get().totalMinutes);
@@ -730,6 +789,8 @@ export const useGameStore = create<GameState>()(
       readAllNotices: () => set({ career: markAllNoticesRead(get().career) }),
       dismissDiary: () => set({ career: dismissDiary(get().career) }),
       runNoticeAction: (id, notice) => {
+        const guided = openingLocksInput(get().openingStep, get().openingDone);
+        if (guided && !(get().openingStep === "bell" && id === "acceptJob")) return;
         const picked = noticeForAction(get().career, id, notice);
         if (id === "payRent") {
           commitLife(payOutstandingRent(get().career));
@@ -771,9 +832,11 @@ export const useGameStore = create<GameState>()(
         }
         if (id === "acceptJob") {
           const accepted = acceptJobFromNotice(get().career, picked ?? undefined);
+          const duringOpening = get().openingStep === "bell" && !get().openingDone;
           set({ career: accepted });
-          // Close the notice panel after accepting
-          set({ careerPanel: "jobs" });
+          // The guided flow waits for the player to close the popup, then
+          // highlights Việc làm. Outside that step, accepting opens the board.
+          if (!duringOpening) set({ careerPanel: "jobs" });
           return;
         }
         if (id === "acceptPosition") {
@@ -802,10 +865,47 @@ export const useGameStore = create<GameState>()(
         }
         console.warn(`Unknown notice action "${id}"`);
       },
-      setStoreOpen: (open) => set({ storeOpen: open }),
-      setNotificationOpen: (open) => set({ notificationOpen: open }),
-      setFoodOpen: (open) => set({ foodOpen: open }),
-      setAudioPopupOpen: (open) => set({ audioPopupOpen: open }),
+      setStoreOpen: (open) => {
+        if (open && openingLocksInput(get().openingStep, get().openingDone)) return;
+        set({ storeOpen: open });
+      },
+      setNotificationOpen: (open) => {
+        const { openingStep, openingDone } = get();
+        const locked = openingLocksInput(openingStep, openingDone);
+        if (locked && openingStep !== "bell") {
+          if (!open) set({ notificationOpen: false });
+          return;
+        }
+        if (openingStep === "bell") {
+          const received = get().career.player_jobs.some(
+            (job) => job.status === "active" || job.status === "completed",
+          );
+          if (open) {
+            const snap = snapshot(get().totalMinutes);
+            const career = ensureFirstJobOffer(get().career, snap.day, snap.minuteOfDay);
+            const nowReceived = career.player_jobs.some(
+              (job) => job.status === "active" || job.status === "completed",
+            );
+            if (nowReceived) {
+              set({ career, notificationOpen: false, openingStep: "jobs" });
+              return;
+            }
+            set({ career, notificationOpen: true });
+            return;
+          }
+          set({ notificationOpen: false, openingStep: received ? "jobs" : "bell" });
+          return;
+        }
+        set({ notificationOpen: open });
+      },
+      setFoodOpen: (open) => {
+        if (open && openingLocksInput(get().openingStep, get().openingDone)) return;
+        set({ foodOpen: open });
+      },
+      setAudioPopupOpen: (open) => {
+        if (open && openingLocksInput(get().openingStep, get().openingDone)) return;
+        set({ audioPopupOpen: open });
+      },
       dischargeFromHospital: () => {
         const state = get();
         const career = state.career;
@@ -1029,11 +1129,22 @@ export const useGameStore = create<GameState>()(
           showCharacter: s.showCharacter,
           totalMinutes: s.totalMinutes,
           career: syncPlayerClock(s.career, snap.day, snap.minuteOfDay, s.stage),
+          openingStep: s.openingDone ? null : s.openingStep,
+          openingDone: s.openingDone,
         };
       },
       migrate: (persisted, version) => migrateSave(persisted, version),
       onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true);
+        // This runs synchronously inside create(), before `useGameStore` exists.
+        if (!state) return;
+        const next = openingAfterReload(
+          state.openingStep,
+          state.openingDone,
+          state.career?.player_jobs ?? [],
+        );
+        state.openingStep = next.openingStep;
+        state.openingDone = next.openingDone;
+        state.setHasHydrated(true);
       },
     },
   ),

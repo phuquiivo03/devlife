@@ -69,6 +69,7 @@ export function CareerChrome({
   const debugLevelUp = useGameStore((s) => s.debugLevelUp);
   const [floats, setFloats] = useState<FloatNote[]>([]);
   const [popup, setPopup] = useState<LevelPopup | null>(null);
+  const guided = useGameStore((s) => !s.openingDone && s.openingStep != null);
 
   useEffect(() => {
     const offXp = gameBus.on("skillXpGained", (event) => {
@@ -268,6 +269,7 @@ export function CareerChrome({
               type="button"
               size="sm"
               showArrow={false}
+              data-opening-allow={guided ? "" : undefined}
               onClick={() => setPopup(null)}
             >
               Đóng

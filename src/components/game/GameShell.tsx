@@ -11,6 +11,7 @@ import { LifeRoomFx, LifeStage } from "./LifeStage";
 import { LifeEventPopup } from "./LifeEventPopup";
 import { CharacterIntro } from "./CharacterIntro";
 import { IntroVideo } from "./IntroVideo";
+import { OpeningLock } from "./OpeningLock";
 import { CustomizePanel } from "./CustomizePanel";
 import { TopBar, StatsCard, ActionsCard } from "./PlayerHudCard";
 import { ProfileCard, SkillsCard } from "./PlayerInfoPanel";
@@ -229,6 +230,7 @@ export function GameShell({
       </div>
       <CharacterIntro />
       <IntroVideo />
+      <OpeningLock />
     </div>
   );
 }
