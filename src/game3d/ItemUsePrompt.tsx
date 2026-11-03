@@ -11,8 +11,17 @@ export function ItemUsePrompt({ item }: { item: ManifestItem }) {
   const applyUse = useGameStore((s) => s.useRoomItem);
   if (!action) return null;
   const [x, y, z] = item.position;
+  // The room camera is orthographic. drei multiplies `distanceFactor` by
+  // `camera.zoom` (hundreds), which blows this chip up until the violet
+  // button covers the canvas. Leave the scale at 1 so it stays a CSS chip.
   return (
-    <Html position={[x, y + 1.15, z]} center zIndexRange={[30, 0]} distanceFactor={6}>
+    <Html
+      position={[x, y + 0.45, z]}
+      center
+      zIndexRange={[30, 0]}
+      wrapperClass="item-use-anchor"
+      style={{ pointerEvents: "none" }}
+    >
       <div
         className="item-use-card"
         onPointerDown={(event) => event.stopPropagation()}
