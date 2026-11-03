@@ -6,6 +6,7 @@ import { getRoom } from "@/game/content";
 import { getRoomManifest, itemByKey } from "./manifest";
 import { ItemModel } from "./ItemModel";
 import { poseForRoom, type RoomPose } from "./pose";
+import { resolveRoomFurniture } from "./slot-models";
 import { activeSeatKey, sitYOnChair } from "./sit-height";
 
 export type PlayerPose = RoomPose;
@@ -40,11 +41,14 @@ export function Player() {
   // Hips follow whichever chair is actually in the seat. The manifest Y is the
   // room's default chair; ergo_chair's cushion is a different height.
   const sitY = useMemo(() => {
-    const seat = activeSeatKey(stage, getRoom(stage).slots, loadout, ownedSet);
+    const slots = getRoom(stage).slots;
+    const plan = resolveRoomFurniture(slots, loadout, ownedSet, stage);
+    const seat = activeSeatKey(stage, slots, loadout, ownedSet);
     if (!seat) return null;
     const chair = itemByKey(stage, seat);
-    if (!chair) return null;
-    return sitYOnChair(seat, chair.position[1] ?? 0);
+    const y = plan.positionOverrides[seat]?.[1] ?? chair?.position[1];
+    if (y == null) return null;
+    return sitYOnChair(seat, y);
   }, [stage, loadout, ownedSet]);
 
   return (

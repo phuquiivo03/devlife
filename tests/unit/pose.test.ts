@@ -8,6 +8,8 @@ describe("seat pose", () => {
     expect(hideChairForPose("floor", "chair_plastic")).toBe(true);
     expect(hideChairForPose("floor", "junior_office_chair")).toBe(true);
     expect(hideChairForPose("sit", "ergo_chair")).toBe(false);
+    expect(hideChairForPose("sit", "junior_office_chair")).toBe(false);
+    expect(hideChairForPose("sit", "stool_plastic")).toBe(false);
     expect(hideChairForPose("floor", "bed")).toBe(false);
   });
 

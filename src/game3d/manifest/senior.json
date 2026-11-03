@@ -46,6 +46,13 @@
    "note": "senior.standing_desk default; against the left wall facing the room"
   },
   {
+   "key": "desk",
+   "category": "furniture",
+   "position": [-1.645, 0.02, -0.55],
+   "rotationY": 0,
+   "note": "junior.desk (Bàn gỗ) equipped from the shop; same wall as the standing desk"
+  },
+  {
    "key": "senior_dual_monitor",
    "category": "decor",
    "position": [-1.83, 0.74, -0.55],
@@ -128,6 +135,13 @@
    "position": [-1.15, 0.026, -0.55],
    "rotationY": 1.5708,
    "note": "senior.ergo_chair default; y lifted onto the 6mm rug"
+  },
+  {
+   "key": "junior_office_chair",
+   "category": "furniture",
+   "position": [-1.15, 0.026, -0.55],
+   "rotationY": 1.5708,
+   "note": "junior.office_chair equipped from the shop; same desk seat as the ergo chair"
   },
   {
    "key": "senior_sideboard",
@@ -296,9 +310,9 @@
   "sit": {
    "key": "player",
    "category": "character",
-   "position": [-1.31, 0.042, -0.55],
+   "position": [-1.31, 0.246, -0.55],
    "rotationY": 1.5708,
-   "note": "chibi hips on the ergo cushion (seat top 0.413) plus the 6mm rug. 0.16m toward the desk so the back clears the backrest"
+   "note": "shorts on the ergo cushion (seat top 0.413, butt local 0.193) plus the 6mm rug, legs hanging in front. 0.16m toward the desk so the back clears the backrest"
   },
   "stand": {
    "key": "player_standing",

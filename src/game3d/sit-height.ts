@@ -2,20 +2,24 @@ import type { StageId } from "@/game/config";
 import { resolveRoomFurniture, type LoadoutLike, type SlotLike } from "./slot-models";
 
 /**
- * Underside of the seated hips in `player_sit.glb`, metres above the mesh
- * origin (the origin is the dangling feet, not the pelvis).
+ * Sitting contact on `player_sit.glb`, metres above the mesh origin.
+ * The origin is the feet. 0.397 was the pelvis centre, which sank the shorts
+ * through the cushion until the shoes touched the floor. 0.193 is the
+ * underside of the shorts, so the hips rest on the cushion and the legs hang
+ * in front of the seat.
  */
-export const SIT_BUTT_LOCAL_Y = 0.397;
+export const SIT_BUTT_LOCAL_Y = 0.193;
 
 /**
  * Top of the surface the hips rest on, in each chair GLB's local space.
- * Plastic pan, junior office cushion, and the ergo lavender cushion — measured
- * from upward-facing seat vertices, not the backrest.
+ * Plastic pan, junior office cushion, ergo lavender cushion, and the stool
+ * top — measured from the seat surface, not the backrest.
  */
 export const SEAT_TOP_LOCAL_Y: Record<string, number> = {
   chair_plastic: 0.39,
   junior_office_chair: 0.462,
   ergo_chair: 0.413,
+  stool_plastic: 0.42,
 };
 
 /** World Y that puts the chibi hips on `chairKey`'s seat. Null for an unknown chair. */
@@ -26,7 +30,12 @@ export function sitYOnChair(chairKey: string, chairY: number): number | null {
 }
 
 /** Prefer the chair that actually replaced the seat; student baseline is implicit. */
-const SEAT_DRAW_ORDER = ["ergo_chair", "junior_office_chair", "chair_plastic"] as const;
+const SEAT_DRAW_ORDER = [
+  "ergo_chair",
+  "junior_office_chair",
+  "stool_plastic",
+  "chair_plastic",
+] as const;
 
 /**
  * GLB drawn at the desk seat, or null when the seat slot is empty.
