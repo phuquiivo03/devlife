@@ -2,6 +2,7 @@
 
 import type React from "react";
 import { PixelButton } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { PixelIcon } from "./PixelIcon";
 import { isHungerNotice } from "./hunger-notice";
@@ -26,6 +27,7 @@ export function NotificationsButton({
   const buttonPx = compact ? 48 : metrics.buttonPx;
   const iconPx = compact ? 24 : metrics.iconPx;
   const label = "Thông báo";
+  const pulse = useGameStore((s) => !s.openingDone && s.openingStep === "bell");
   const notices = useGameStore((s) => s.career.feed?.notices ?? []);
   // Same filter as the panel list: hidden No bụng reminders must not count,
   // or the badge claims messages the opened panel never shows.
@@ -38,7 +40,9 @@ export function NotificationsButton({
           <PixelButton
             variant="icon"
             aria-label={label}
-            className="shrink-0"
+            className={cn("shrink-0", pulse && "opening-pulse")}
+            data-opening-allow={pulse ? "" : undefined}
+            data-opening-target={pulse ? "bell" : undefined}
             style={{
               width: buttonPx,
               height: buttonPx,

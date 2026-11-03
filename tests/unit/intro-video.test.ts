@@ -9,7 +9,7 @@ import { MINUTES_PER_DAY } from "@/game/time";
 
 describe("intro video save", () => {
   it("bumps the persist version and keeps the dream line in content", () => {
-    expect(PERSIST_VERSION).toBe(25);
+    expect(PERSIST_VERSION).toBe(26);
     expect(INTRO_SUBTITLE).toContain("Chỉ là giấc mơ thôi");
     expect(INTRO_WAKE_MINUTE).toBe(7 * 60);
   });
@@ -58,11 +58,15 @@ describe("intro video save", () => {
       clockPaused: true,
       stage: "student",
       career,
+      openingDone: false,
+      openingStep: null,
     });
     useGameStore.getState().finishIntroVideo();
     const next = useGameStore.getState();
     expect(next.career.players.introVideoSeen).toBe(true);
     expect(next.totalMinutes).toBe(INTRO_WAKE_MINUTE);
+    expect(next.openingStep).toBe("study");
+    expect(next.openingDone).toBe(false);
     expect(next.career.players.game_day).toBe(1);
     expect(next.career.players.game_minute).toBe(INTRO_WAKE_MINUTE);
     expect(next.clockPaused).toBe(false);

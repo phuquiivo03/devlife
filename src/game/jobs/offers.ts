@@ -126,7 +126,7 @@ function expireJobOffers(state: CareerState, day: number): CareerState {
   };
 }
 
-function pickTemplate(state: CareerState, catalog: SimCatalog, day: number): JobTemplate | null {
+function eligibleFreelance(state: CareerState, catalog: SimCatalog): JobTemplate[] {
   const busy = new Set(
     state.player_jobs
       .filter((job) => job.status === "offered" || job.status === "active")
@@ -135,40 +135,38 @@ function pickTemplate(state: CareerState, catalog: SimCatalog, day: number): Job
   const pool = catalog.jobTemplates.filter(
     (template) => template.job_type === "freelance" && !busy.has(template.id),
   );
-  if (pool.length === 0) return null;
+  if (pool.length === 0) return [];
 
-  // Filter to only eligible templates based on SKILLS/REPUTATION/PROGRESS only
-  // Energy/time-of-day checks happen when PLAYER STARTS WORK, not when offering
-  const names = skillNameMap(catalog.skills);
-  const eligible = pool.filter((template) => {
+  // Skills, reputation, and progress only. Energy is checked when work starts.
+  return pool.filter((template) => {
+    if (state.players.reputation < template.min_reputation) return false;
+    if (state.players.freelance_completed < template.unlock_freelance_completed) return false;
     const reqs = jobRequirementsFor(template.id, catalog.jobTemplateRequirements);
-
-    // Check reputation requirement
-    if (state.players.reputation < template.min_reputation) {
-      return false;
-    }
-
-    // Check freelance progress requirement
-    if (state.players.freelance_completed < template.unlock_freelance_completed) {
-      return false;
-    }
-
-    // Check skill requirements
     for (const req of reqs) {
-      const skill = state.player_skills.find((s) => s.skill_id === req.skill_id);
-      if (!skill || skill.level < req.min_level) {
-        return false;
-      }
+      const skill = state.player_skills.find((row) => row.skill_id === req.skill_id);
+      if (!skill || skill.level < req.min_level) return false;
     }
-
-    // If we got here, skills/reputation/progress are all met
-    // Energy check is DELIBERATELY skipped - checked at work start time
     return true;
   });
+}
 
+function pickTemplate(state: CareerState, catalog: SimCatalog, day: number): JobTemplate | null {
+  const eligible = eligibleFreelance(state, catalog);
   if (eligible.length === 0) return null;
   const shuffled = shuffleSeeded(eligible, day * 997 + state.player_jobs.length);
   return shuffled[0] ?? null;
+}
+
+/** Lowest-energy eligible freelance the player can still start. Stable for the day-1 offer. */
+function openingTemplate(state: CareerState, catalog: SimCatalog): JobTemplate | null {
+  const eligible = eligibleFreelance(state, catalog);
+  const affordable = eligible.filter((template) => state.players.energy >= template.energy);
+  const pool = affordable.length > 0 ? affordable : eligible;
+  let best: JobTemplate | null = null;
+  for (const template of pool) {
+    if (!best || template.energy < best.energy) best = template;
+  }
+  return best;
 }
 
 function postOffer(state: CareerState, template: JobTemplate, day: number, minute: number, catalog: SimCatalog): CareerState {
@@ -203,6 +201,26 @@ function postOffer(state: CareerState, template: JobTemplate, day: number, minut
     player_jobs: [...state.player_jobs, job],
     feed: state.feed ? { ...state.feed, notices } : state.feed,
   };
+}
+
+/**
+ * Day-1 guarantee. Posts one freelance offer when the bell step has nothing
+ * to accept yet. An offer already waiting, or a job already received, is left
+ * alone.
+ */
+export function ensureFirstJobOffer(
+  state: CareerState,
+  day: number,
+  minute: number,
+  catalog: SimCatalog = SIM_CATALOG,
+): CareerState {
+  if (!state.feed) return state;
+  if (pendingOffers(state, day).length > 0) return state;
+  const received = state.player_jobs.some((job) => job.status === "active" || job.status === "completed");
+  if (received) return state;
+  const template = openingTemplate(state, catalog);
+  if (!template) return state;
+  return postOffer(state, template, day, minute, catalog);
 }
 
 /** One waking slot. At most one new job notice every `job_notice_every_slots` slots (×2 while employed), and at most `job_notice_pending_max` open offers. */

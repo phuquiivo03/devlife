@@ -8,6 +8,7 @@ import { NotificationsPanel } from "./NotificationsPanel";
 export function NotificationsPopup() {
   const open = useGameStore((s) => s.notificationOpen);
   const setOpen = useGameStore((s) => s.setNotificationOpen);
+  const allowDismiss = useGameStore((s) => !s.openingDone && s.openingStep === "bell");
 
   return (
     <Modal
@@ -16,6 +17,7 @@ export function NotificationsPopup() {
       title="Thông báo"
       testId="notifications-modal"
       maxWidthPx={500}
+      allowDismiss={allowDismiss}
     >
       <NotificationsPanel />
     </Modal>

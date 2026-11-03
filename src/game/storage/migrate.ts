@@ -47,6 +47,7 @@ import type {
   NoticeSeverity,
 } from "../career/types";
 import type { EmploymentApplication, EmploymentState } from "../career/types";
+import { isOpeningStep, type OpeningStep } from "../opening/flow";
 
 export type PersistedSave = {
   stage: StageId;
@@ -54,6 +55,10 @@ export type PersistedSave = {
   showCharacter: boolean;
   totalMinutes: number;
   career: CareerState;
+  /** Null before the intro and after the sequence finishes. */
+  openingStep: OpeningStep | null;
+  /** Older saves are done. A new game is false until the first job starts. */
+  openingDone: boolean;
 };
 
 const JOB_STATUSES: readonly JobStatus[] = [
@@ -796,6 +801,9 @@ function strOrNull(value: unknown): string | null {
  * Version 25 adds `players.introVideoSeen`. An older save counts as seen, so
  * the opening dream never plays. A new game stays unseen until the film ends
  * or is skipped. `players.introSeen` is still the creation popup.
+ * Version 26 adds `openingStep` and `openingDone`. An older save is marked
+ * done so the day-1 highlight never starts. A save already on version 26
+ * keeps its step, including a reload mid-flow.
  * Money, skills, and progress are kept. See docs/systems/save.md.
  */
 export function migrateSave(
@@ -924,6 +932,9 @@ export function migrateSave(
       players: { ...career.players, introVideoSeen: true },
     };
   }
+  const openingDone = version < 26 ? true : prev.openingDone === true;
+  const openingStep =
+    openingDone || !isOpeningStep(prev.openingStep) ? null : prev.openingStep;
   if (version < 23) {
     // v23: shared room slots + loadout-only rendering. Owned items used to
     // show through an ownership gate with no slot entry; now each one needs
@@ -964,6 +975,8 @@ export function migrateSave(
     loadouts,
     showCharacter,
     totalMinutes,
+    openingStep,
+    openingDone,
     career: {
       ...career,
       players: {
