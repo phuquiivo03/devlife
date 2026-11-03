@@ -91,7 +91,8 @@ CREATE TABLE players (
   freelance_completed integer NOT NULL CHECK (freelance_completed >= 0),
   trait text NOT NULL CHECK (trait IN ('night_owl', 'diligent', 'extrovert', 'frugal', 'careful', 'optimist')),
   trait_rolled boolean NOT NULL,
-  intro_seen boolean NOT NULL
+  intro_seen boolean NOT NULL,
+  intro_video_seen boolean NOT NULL
 );
 
 CREATE TABLE player_skills (

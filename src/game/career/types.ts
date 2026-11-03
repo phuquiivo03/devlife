@@ -147,6 +147,11 @@ export type PlayerRow = {
   traitRolled: boolean;
   /** The creation popup has been dismissed. Existing saves migrate as seen. */
   introSeen: boolean;
+  /**
+   * The opening dream has played. Existing saves migrate as seen so they
+   * never see it. A new game stays false until the film ends or is skipped.
+   */
+  introVideoSeen: boolean;
 };
 
 /** Counters for the life-sim day. */
