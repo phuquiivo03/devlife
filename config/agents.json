@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "gate_freelance_completed": 1,
+  "intro_sec": 5,
+  "agents": [
+    {
+      "id": "claude_inspired",
+      "name": "Mọt Mơ",
+      "chip": "Nhẹ bug",
+      "price": 900000,
+      "time_multiplier": 0.9,
+      "bug_survival": 0.25,
+      "capabilities": ["code", "fix_bug"]
+    },
+    {
+      "id": "cursor_inspired",
+      "name": "Vút Vít",
+      "chip": "Chạy lẹ",
+      "price": 1200000,
+      "time_multiplier": 0.55,
+      "bug_survival": 0.8,
+      "capabilities": ["code", "fix_bug"]
+    },
+    {
+      "id": "copilot_inspired",
+      "name": "Kính Bay",
+      "chip": "Dễ mua",
+      "price": 180000,
+      "time_multiplier": 1.1,
+      "bug_survival": 0.6,
+      "capabilities": ["code", "fix_bug"]
+    }
+  ]
+}

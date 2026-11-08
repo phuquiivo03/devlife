@@ -8,6 +8,7 @@ import {
   catchBug,
   chooseBuild,
   chooseTicket,
+  commitTask,
   finishTest,
   retryTask,
   startTask,
@@ -129,8 +130,8 @@ describe("task run state machine", () => {
     expect(started.state.players.money).toBe(state.players.money);
     expect(started.state.player_jobs.find((row) => row.id === job.id)?.status).toBe("active");
     expect(started.events.map((event) => event.type)).toEqual([
-      "taskStarted",
       "jobAccepted",
+      "taskStarted",
       "energyChanged",
     ]);
   });
@@ -195,6 +196,11 @@ describe("task run state machine", () => {
       const step = catchBug(cursor.state, job.id, SIM_CATALOG);
       cursor = { ...cursor, state: step.state, events: [...cursor.events, ...step.events] };
     }
+    cursor = finishTest(cursor.state, job.id, SIM_CATALOG);
+    const readyRun = cursor.state.player_jobs.find((row) => row.id === job.id)?.task_run;
+    expect(readyRun?.step).toBe("ready");
+    expect(cursor.state.player_jobs.find((row) => row.id === job.id)?.status).toBe("active");
+    cursor = commitTask(cursor.state, job.id, SIM_CATALOG, readyRun!.revision);
     const done = cursor.state.player_jobs.find((row) => row.id === job.id);
     expect(done?.status).toBe("completed");
     expect(done?.bugs).toBe(0);

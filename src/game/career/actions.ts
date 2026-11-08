@@ -33,6 +33,7 @@ import {
   resolveMorning,
   scaleXpForMood,
 } from "../life/logic";
+import { defaultAgentsState } from "../agents/content";
 import {
   LOCAL_PLAYER_ID,
   SKILL_IDS,
@@ -129,6 +130,7 @@ export function defaultCareer(
     player_events: [],
     life: defaultLife(day),
     shop: defaultShop(),
+    agents: defaultAgentsState(),
     employment: defaultEmployment(),
     feed: defaultFeed({
       day,

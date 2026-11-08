@@ -26,6 +26,7 @@ import {
 } from "@/game/jobs/fulltime";
 import { applyJobDeadlines } from "@/game/jobs/deadlines";
 import { grantTaskSuccess } from "@/game/task-run/apply";
+import { freshRun } from "@/game/task-run/machine";
 import { tickJobOffers } from "@/game/jobs/offers";
 import type { CareerState, PlayerJob } from "@/game/career/types";
 
@@ -462,16 +463,12 @@ describe("company task rewards", () => {
       status: "active",
       accepted_day: 2,
       task_run: {
-        step: "test",
-        seed: 7,
+        ...freshRun(7),
+        step: "ready",
+        start_paid: true,
+        mode: "manual",
         ticket: "correct",
         build: "careful",
-        event_id: null,
-        bugs_total: 0,
-        bugs_caught: 0,
-        retries: 0,
-        outcome: null,
-        time_bonus_sec: 0,
       },
     });
     const withJob = { ...state, player_jobs: [job] };

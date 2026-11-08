@@ -32,7 +32,14 @@ import {
   type SimCatalog,
 } from "../career/types";
 import { TASK_RUN } from "./content";
+import { anyAgentOwned, retryEnergyCost } from "../agents/logic";
 import { bugCount, rollTaskEvent, taskSeed } from "./formula";
+import { primarySkillId, ticketForSkill } from "./helpers";
+import {
+  beginTaskRun,
+  openTaskRun,
+  pushAgentUnlockNoticeIfNeeded,
+} from "./transitions";
 import {
   applyBeginTest,
   applyBuildChoice,
@@ -40,10 +47,23 @@ import {
   applyRetry,
   applyTestFail,
   applyTicketChoice,
+  bumpRevision,
   canRetry,
-  freshRun,
   isCleared,
 } from "./machine";
+
+export { primarySkillId, ticketForSkill } from "./helpers";
+export {
+  beginTaskRun,
+  openTaskRun,
+  chooseTaskFixer,
+  checkpointBuildProgress,
+  checkpointManualTimer,
+  checkpointAgentFix,
+  takeOverManualBuild,
+  completeAgentBuild,
+  switchTaskFixerBack,
+} from "./transitions";
 import type { TaskBuildChoice, TaskRun, TaskTicket, TaskTicketChoice } from "./types";
 
 function withEvents(state: CareerState, events: readonly GameEvent[]): CareerState {
@@ -93,15 +113,6 @@ function findJob(state: CareerState, jobId: string): PlayerJob | undefined {
   return state.player_jobs.find((row) => row.id === jobId);
 }
 
-export function ticketForSkill(skillId: SkillId, tickets: readonly TaskTicket[]): TaskTicket | null {
-  return tickets.find((row) => row.skill_id === skillId) ?? tickets[0] ?? null;
-}
-
-export function primarySkillId(templateId: string, catalog: SimCatalog): SkillId {
-  const grant = catalog.jobTemplateXp.find((row) => row.template_id === templateId);
-  return grant?.skill_id ?? "frontend";
-}
-
 function requireRun(state: CareerState, jobId: string): { job: PlayerJob; run: TaskRun } | string {
   const job = findJob(state, jobId);
   if (!job) return "Không tìm thấy việc";
@@ -119,57 +130,18 @@ function gateFor(state: CareerState): JobGate {
   };
 }
 
+/** Opens then begins manual run (tests and Cố làm / Làm paths that start work immediately). */
 export function startTask(
   state: CareerState,
   jobId: string,
   catalog: SimCatalog,
   force = false,
 ): ActionResult {
-  const job = findJob(state, jobId);
-  if (!job) return fail(state, "Không tìm thấy việc");
-  if (job.status === "active" && job.task_run) return { state, events: [], minutes: 0, error: null };
-  const continuing = job.status === "active";
-  if (!continuing && job.status !== "offered") return fail(state, "Việc này không còn nhận được");
-
-  const template = catalog.jobTemplates.find((row) => row.id === job.template_id);
-  if (!template) return fail(state, "Không tìm thấy việc");
-
-  const names = skillNameMap(catalog.skills);
-  const check = jobEligibility(
-    state.players,
-    state.player_skills,
-    template,
-    jobRequirementsFor(template.id, catalog.jobTemplateRequirements),
-    names,
-    gateFor(state),
-  );
-  if (!check.ok && !(force && check.energyShort)) {
-    return fail(state, check.missing[0] ?? "Chưa đủ điều kiện");
-  }
-
-  const spent = applyActionStats(state, {
-    energy: -template.energy * jobEnergyFactor(state),
-    health: force && check.energyShort ? LIFE.force_health : 0,
-  });
-  const nextJob: PlayerJob = {
-    ...job,
-    status: "active",
-    accepted_day: job.accepted_day ?? state.players.game_day,
-    pay: continuing
-      ? job.pay
-      : scaleTraitPay(jobPay(template.pay, template.tier, state.players.reputation), state),
-    hours_required: continuing ? job.hours_required : traitJobHours(template.hours, state),
-    task_run: freshRun(taskSeed(job.id)),
-  };
-  const events: GameEvent[] = [
-    { type: "taskStarted", jobId: job.id, templateId: template.id },
-    ...(continuing ? [] : [{ type: "jobAccepted" as const, jobId: job.id, templateId: template.id }]),
-    ...spent.events,
-  ];
-  return {
-    ...ok(patchJob(spent.state, job.id, nextJob), events),
-    skipDays: spent.skipDays,
-  };
+  const opened = openTaskRun(state, jobId, catalog, force);
+  if (opened.error) return opened;
+  const began = beginTaskRun(opened.state, jobId, { mode: "manual" }, catalog);
+  if (began.error) return began;
+  return { ...began, events: [...opened.events, ...began.events] };
 }
 
 export function chooseTicket(
@@ -234,31 +206,30 @@ export function chooseBuild(
 export function beginTest(state: CareerState, jobId: string): ActionResult {
   const found = requireRun(state, jobId);
   if (typeof found === "string") return fail(state, found);
-  if (found.run.step === "test") return { state, events: [], minutes: 0, error: null };
+  if (found.run.step === "test" || found.run.step === "bug_choice") {
+    return { state, events: [], minutes: 0, error: null };
+  }
   if (found.run.step !== "build" || found.run.build === null) return fail(state, "Chưa đóng gói xong");
-  const run = applyBeginTest(found.run);
+  let run = applyBeginTest(found.run);
+  if (run.bug_ids.length > 0 && anyAgentOwned(state)) {
+    run = bumpRevision({ ...run, step: "bug_choice" });
+    return ok(patchJob(state, jobId, { ...found.job, task_run: run }), []);
+  }
   return ok(patchJob(state, jobId, { ...found.job, task_run: run }), []);
 }
 
 export function catchBug(state: CareerState, jobId: string, catalog: SimCatalog): ActionResult {
+  void catalog;
   const found = requireRun(state, jobId);
   if (typeof found === "string") return fail(state, found);
-  if (found.run.step !== "test" || found.run.bugs_caught >= found.run.bugs_total) {
+  if (found.run.step !== "test" || isCleared(found.run)) {
     return { state, events: [], minutes: 0, error: null };
   }
   const run = applyCatch(found.run);
   const events: GameEvent[] = [
     { type: "bugCaught", jobId, caught: run.bugs_caught, total: run.bugs_total },
   ];
-  const next = patchJob(state, jobId, { ...found.job, task_run: run });
-  if (!isCleared(run)) return ok(next, events);
-  const done = grantTaskSuccess(withEvents(next, events), jobId, catalog);
-  return {
-    state: done.state,
-    events: [...events, ...done.events],
-    minutes: 0,
-    error: done.error,
-  };
+  return ok(patchJob(state, jobId, { ...found.job, task_run: run }), events);
 }
 
 export function finishTest(state: CareerState, jobId: string, catalog: SimCatalog): ActionResult {
@@ -266,7 +237,10 @@ export function finishTest(state: CareerState, jobId: string, catalog: SimCatalo
   if (typeof found === "string") return fail(state, found);
   if (found.run.step === "result") return { state, events: [], minutes: 0, error: null };
   if (found.run.step !== "test") return fail(state, "Chưa tới bước kiểm tra");
-  if (isCleared(found.run)) return grantTaskSuccess(state, jobId, catalog);
+  if (isCleared(found.run)) {
+    const ready = bumpRevision({ ...found.run, step: "ready", outcome: null });
+    return ok(patchJob(state, jobId, { ...found.job, task_run: ready }), []);
+  }
 
   const escaped = found.run.bugs_total - found.run.bugs_caught;
   const failedRun = applyTestFail(found.run);
@@ -286,6 +260,21 @@ export function finishTest(state: CareerState, jobId: string, catalog: SimCatalo
   );
 }
 
+export function commitTask(state: CareerState, jobId: string, catalog: SimCatalog, revision: number): ActionResult {
+  const job = findJob(state, jobId);
+  if (!job?.task_run || job.status !== "active") return fail(state, "Việc này chưa bắt đầu");
+  if (job.task_run.step !== "ready" || job.task_run.revision !== revision) {
+    return fail(state, "Chưa sẵn sàng giao");
+  }
+  const beforeFreelance = state.players.freelance_completed;
+  const done = grantTaskSuccess(state, jobId, catalog);
+  if (done.error) return done;
+  return {
+    ...done,
+    state: pushAgentUnlockNoticeIfNeeded(done.state, beforeFreelance),
+  };
+}
+
 export function retryTask(state: CareerState, jobId: string, catalog: SimCatalog): ActionResult {
   void catalog;
   const existing = findJob(state, jobId);
@@ -293,12 +282,11 @@ export function retryTask(state: CareerState, jobId: string, catalog: SimCatalog
   const found = requireRun(state, jobId);
   if (typeof found === "string") return fail(state, found);
   if (!canRetry(found.run, TASK_RUN.max_retries)) return fail(state, "Hết lượt làm lại");
-  const retryEnergy = TASK_RUN.retry_energy * jobEnergyFactor(state);
-  const cost = energyCost(retryEnergy, lifeOf(state).workStreak);
+  const cost = retryEnergyCost(state);
   if (state.players.energy < cost) return fail(state, "Không đủ năng lượng");
 
-  const spent = applyActionStats(state, { energy: -retryEnergy });
-  const run = applyRetry(found.run);
+  const spent = applyActionStats(state, { energy: -cost });
+  const run = applyRetry(found.run, anyAgentOwned(spent.state));
   return {
     ...ok(
       patchJob(spent.state, jobId, { ...found.job, task_run: run }),
@@ -331,6 +319,7 @@ export function grantTaskSuccess(
 ): ActionResult {
   const job = findJob(state, jobId);
   if (!job || !job.task_run) return fail(state, "Không tìm thấy việc");
+  if (job.status !== "active") return fail(state, "Việc không còn active");
   const template = catalog.jobTemplates.find((row) => row.id === job.template_id);
   if (!template) return fail(state, "Không tìm thấy việc");
 

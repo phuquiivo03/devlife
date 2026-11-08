@@ -54,7 +54,7 @@ describe("store shelves", () => {
   });
 
   it("filters the three tabs and draws furniture before rooms", () => {
-    expect(STORE_TABS.map((tab) => tab.label)).toEqual(["Nội thất", "Phòng", "Tất cả"]);
+    expect(STORE_TABS.map((tab) => tab.label)).toEqual(["Nội thất", "Phòng", "AI Agent", "Tất cả"]);
     expect(filterStoreItems(STORE_ITEMS, "furniture").map((item) => item.id)).toEqual([
       "aircon",
       "ergo_chair",

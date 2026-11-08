@@ -1,3 +1,5 @@
+import type { AgentId, AgentSnapshot, AgentsState } from "../agents/types";
+
 export const SKILL_IDS = [
   "frontend",
   "backend",
@@ -352,8 +354,17 @@ export type PlayerStudyCompletion = {
 
 export type TaskTicketChoice = "correct" | "wrong" | "ask";
 export type TaskBuildChoice = "careful" | "rushed";
-export type TaskStep = "ticket" | "build" | "test" | "result";
+export type TaskStep =
+  | "select"
+  | "ticket"
+  | "build"
+  | "bug_choice"
+  | "test"
+  | "agent_fix"
+  | "ready"
+  | "result";
 export type TaskOutcome = "success" | "fail";
+export type TaskMode = "manual" | "agent";
 
 /** CRT task snapshot. Null while the job is only an offer. */
 export type TaskRun = {
@@ -367,7 +378,22 @@ export type TaskRun = {
   retries: number;
   outcome: TaskOutcome | null;
   time_bonus_sec: number;
+  revision: number;
+  start_paid: boolean;
+  force: boolean;
+  mode: TaskMode | null;
+  coder: AgentSnapshot | null;
+  build_runner: "manual" | "agent";
+  build_progress: number;
+  potential_bugs: number;
+  bug_ids: string[];
+  fixed_bug_ids: string[];
+  fix_partial: { bug_id: string; left: number } | null;
+  fixer_id: AgentId | null;
+  manual_left_sec: number | null;
 };
+
+export type { AgentsState };
 
 export type PlayerJob = {
   id: string;
@@ -496,6 +522,7 @@ export type CareerState = {
   life: LifeState;
   feed: LifeFeed;
   shop: ShopState;
+  agents: AgentsState;
   employment: EmploymentState;
 };
 

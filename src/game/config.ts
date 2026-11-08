@@ -15,7 +15,7 @@ export const STAGES = ["student", "junior", "senior"] as const;
 export type StageId = (typeof STAGES)[number];
 
 export const PERSIST_KEY = "devlife:v1";
-export const PERSIST_VERSION = 26;
+export const PERSIST_VERSION = 27;
 /**
  * v1: stage, loadouts, showCharacter.
  * v2: in-game `totalMinutes` (see docs/systems/time.md).
@@ -43,6 +43,7 @@ export const PERSIST_VERSION = 26;
  * v24: `players.name`. A save that already started and has no name becomes Quí. A new game, or a creation popup still open, keeps the name empty until the player types one.
  * v25: `players.introVideoSeen`. The opening dream plays once after a new game names the character. Older saves count as seen, so they never play it. `players.introSeen` stays the creation popup (v13).
  * v26: `openingStep` and `openingDone`. The day-1 guided sequence (study, bell, jobs). Older saves are already done, so the highlight never starts. A new game stays undone until the intro ends.
+ * v27: `career.agents` (AI license ownership) and extended `task_run` fields for agent-assisted runs, explicit READY/Xong, and checkpoints. Older saves get empty agent licenses and v26 task runs are mapped to manual with `start_paid: true` (energy was already spent at task start).
  */
 
 export const CHAR_POSE_SIT_BACK = "character/derived/char_sit_back";

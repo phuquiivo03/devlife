@@ -39,7 +39,7 @@ export function taskSeed(jobId: string): number {
   return hash >>> 0;
 }
 
-function mulberry32(seed: number): () => number {
+export function mulberry32(seed: number): () => number {
   let a = seed >>> 0;
   return () => {
     a |= 0;
@@ -48,6 +48,16 @@ function mulberry32(seed: number): () => number {
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+}
+
+export function qualitySeed(seed: number, coderId: string, index: number): number {
+  const key = `${seed}:coding-quality:${coderId}:${index}`;
+  let hash = 2166136261;
+  for (let i = 0; i < key.length; i++) {
+    hash ^= key.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
 }
 
 export function bugSpots(seed: number, count: number): { x: number; y: number }[] {

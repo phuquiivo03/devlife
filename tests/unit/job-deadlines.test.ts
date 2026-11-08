@@ -134,7 +134,7 @@ describe("job deadlines", () => {
     useGameStore.getState().runNoticeAction("openJobs", reminder);
     expect(useGameStore.getState().taskJobId).toBe("job-1");
     expect(useGameStore.getState().career.player_jobs.find((row) => row.id === "job-1")?.task_run?.step).toBe(
-      "ticket",
+      "select",
     );
     expect(useGameStore.getState().careerPanel).toBeNull();
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});

@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { PixelIcon } from "./PixelIcon";
 import { STORE_GRID, storeGridCss, storeIconSize } from "./store-grid.config";
 import { filterStoreItems, STORE_MODE_TABS, STORE_TABS, storeCardAction, type StoreModeId, type StoreTabId } from "./store-shelf";
+import { AgentShopGrid } from "./agents/AgentShopGrid";
 import { getOwnedItems, findAcceptingSlots, findAcceptingSlotsByCategory, type OwnedItemModel } from "./owned-items";
 import { STORE_SLOT_PREFIX } from "@/game3d/slot-models";
 import styles from "./store-grid.module.css";
@@ -63,7 +64,9 @@ function cardModel(item: StoreItem, career: CareerState, day: number): CardModel
 }
 
 export function StorePanel() {
+  const agentTabDefault = useGameStore((s) => s.storeAgentTab);
   const [mode, setMode] = useState<StoreModeId>("store");
+  const [storeTab, setStoreTab] = useState<StoreTabId>(agentTabDefault ? "agents" : STORE_TABS[0].id);
   const career = useGameStore((s) => s.career);
   const stage = useGameStore((s) => s.stage);
   const loadout = useGameStore((s) => s.loadouts[stage]);
@@ -95,34 +98,52 @@ export function StorePanel() {
 
         {/* Store mode: show sub-tabs for categories */}
         <TabsContent value="store">
-          <Tabs defaultValue={STORE_TABS[0].id} className={styles.subPanel}>
+          <Tabs value={storeTab} onValueChange={(v) => setStoreTab(v as StoreTabId)} className={styles.subPanel}>
             <TabsList
               aria-label="Danh mục cửa hàng"
-              className={cn(styles.tabs, "grid h-11 w-full")}
+              className={cn(styles.tabs, "grid min-h-11 w-full")}
               style={{ gridTemplateColumns: `repeat(${STORE_TABS.length}, minmax(0, 1fr))` }}
             >
               {STORE_TABS.map((tab) => (
-                <TabsTrigger key={tab.id} value={tab.id} className={styles.tab} data-testid={`store-tab-${tab.id}`}>
+                <TabsTrigger key={tab.id} value={tab.id} className={cn(styles.tab, "text-[length:var(--galmuri-8,11px)] leading-tight")} data-testid={`store-tab-${tab.id}`}>
                   {tab.label}
                 </TabsTrigger>
               ))}
             </TabsList>
-            {STORE_TABS.map((tab) => (
+            {STORE_TABS.filter((tab) => tab.id !== "agents").map((tab) => (
               <TabsContent key={tab.id} value={tab.id}>
-                <StoreGrid
-                  tab={tab.id}
-                  items={filterStoreItems(STORE_ITEMS, tab.id).map((item) => cardModel(item, career, day))}
-                  onBuy={buy}
-                  onPin={pin}
-                />
+                {tab.id === "all" ? (
+                  <>
+                    <StoreGrid
+                      tab="furniture"
+                      items={filterStoreItems(STORE_ITEMS, "furniture").map((item) => cardModel(item, career, day))}
+                      onBuy={buy}
+                      onPin={pin}
+                    />
+                    <p className="mt-3 font-galmuri-9 text-sm">AI Agent</p>
+                    <AgentShopGrid />
+                  </>
+                ) : (
+                  <StoreGrid
+                    tab={tab.id}
+                    items={filterStoreItems(STORE_ITEMS, tab.id).map((item) => cardModel(item, career, day))}
+                    onBuy={buy}
+                    onPin={pin}
+                  />
+                )}
               </TabsContent>
             ))}
+            <TabsContent value="agents">
+              <AgentShopGrid />
+            </TabsContent>
           </Tabs>
         </TabsContent>
 
         {/* Owned mode: show owned items */}
         <TabsContent value="owned">
           <OwnedGrid items={ownedItems} stage={stage} onActivate={setSlotItem} />
+          <p className="mt-4 font-galmuri-9 text-sm">License AI</p>
+          <AgentShopGrid ownedMode />
         </TabsContent>
       </Tabs>
     </div>
