@@ -1,0 +1,71 @@
+{
+ "version": "ai_agents_trio_v3",
+ "style": "2D outlined illustration, RGBA, transparent border",
+ "sizes": [
+  512,
+  256,
+  64
+ ],
+ "usage": {
+  "64": "shop card 1x, picker",
+  "256": "shop card hi-DPI (matches /icons/shop *_256 practice)",
+  "512": "detail / future large view"
+ },
+ "credits": "docs/design/ai-agents/CREDITS.md",
+ "agents": {
+  "claude_inspired": {
+   "display_name": "Cờlốt",
+   "files": {
+    "512": {
+     "file": "agent_claude_inspired_512.png",
+     "sha256": "9c9228895658a86acda23ae34325bac72273bdc109bffd025f0091aa6dd5ed28"
+    },
+    "256": {
+     "file": "agent_claude_inspired_256.png",
+     "sha256": "f0f36f12a49d328690e4aed85292c6aae611bee85cc0008f129ba1ffc714f7eb"
+    },
+    "64": {
+     "file": "agent_claude_inspired_64.png",
+     "sha256": "b5377682797fbd2f7097b6db4dafd519911cdd5f5f994ba33e4d6d16c50a1903"
+    }
+   },
+   "source": "art/2d/ai_agents_trio_v3/claude_inspired/"
+  },
+  "cursor_inspired": {
+   "display_name": "Củsỏ",
+   "files": {
+    "512": {
+     "file": "agent_cursor_inspired_512.png",
+     "sha256": "3ac3121a6c289e59d76d547802b0db1d212f84937b4d7ed4e900b33ebf150f4f"
+    },
+    "256": {
+     "file": "agent_cursor_inspired_256.png",
+     "sha256": "4a5a37b2a03d1ada09293439f256373c934146b12d4c9879ad4ea20c6657d920"
+    },
+    "64": {
+     "file": "agent_cursor_inspired_64.png",
+     "sha256": "7e4f97d6003d86991df6040ab6430b1de9402fff540e953ea670e2c424a5562f"
+    }
+   },
+   "source": "art/2d/ai_agents_trio_v3/cursor_inspired/"
+  },
+  "copilot_inspired": {
+   "display_name": "Câupilot",
+   "files": {
+    "512": {
+     "file": "agent_copilot_inspired_512.png",
+     "sha256": "fac187569c964d8c8dd7da929fa0763348c5fb7d524d493fcc350185b87a272b"
+    },
+    "256": {
+     "file": "agent_copilot_inspired_256.png",
+     "sha256": "50e77857a9298b3a4d00b8683adee4470aab5b18477bc25c1a3872fdb8012b00"
+    },
+    "64": {
+     "file": "agent_copilot_inspired_64.png",
+     "sha256": "c57f5e1a45dba5e949fd983ade9ba8334279effe7380d522d36229400d431bb7"
+    }
+   },
+   "source": "art/2d/ai_agents_trio_v3/copilot_inspired/"
+  }
+ }
+}

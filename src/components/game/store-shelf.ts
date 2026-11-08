@@ -13,6 +13,7 @@ export const STORE_MODE_TABS = [
 export const STORE_TABS = [
   { id: "furniture", label: "Nội thất" },
   { id: "room", label: "Phòng" },
+  { id: "agents", label: "AI Agent" },
   { id: "all", label: "Tất cả" },
 ] as const;
 

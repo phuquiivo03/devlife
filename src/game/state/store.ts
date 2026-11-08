@@ -27,14 +27,26 @@ import { INTRO_WAKE_MINUTE } from "../../content/intro";
 import type { CareerState, Notice, NoticeActionId } from "../career/types";
 import { playCueKey } from "../audio/client";
 import type { CueKey } from "../audio/cues";
+import { buyAgent } from "../agents/logic";
+import type { AgentId } from "../agents/types";
 import {
+  beginTaskRun,
   beginTest,
   catchBug,
   chooseBuild,
   chooseTicket,
+  chooseTaskFixer,
+  checkpointAgentFix,
+  checkpointBuildProgress,
+  checkpointManualTimer,
+  commitTask,
+  completeAgentBuild,
   finishTest,
+  openTaskRun,
   retryTask,
   startTask,
+  switchTaskFixerBack,
+  takeOverManualBuild,
 } from "../task-run/apply";
 import type { TaskBuildChoice, TaskTicketChoice } from "../task-run/types";
 import { gameBus } from "../events/bus";
@@ -274,6 +286,9 @@ export type GameState = {
   playGame: () => void;
   /** Job whose CRT task is on screen. Not persisted. */
   taskJobId: string | null;
+  /** When false, overlay shows Tiếp tục before timers run. Not persisted. */
+  taskLive: boolean;
+  storeAgentTab: boolean;
   /** Full-time offer waiting for the quit-old-job confirm. Not persisted. */
   offerConfirm: { applicationId: string } | null;
   /** Nộp đơn cho một vị trí tuyển dụng (tốn năng lượng, kết quả ngẫu nhiên theo seed ngày). */
@@ -292,6 +307,18 @@ export type GameState = {
   catchTaskBug: () => void;
   finishTaskTest: () => void;
   retryTaskRun: () => void;
+  beginTask: (choice: { mode: "manual" } | { mode: "agent"; coderId: AgentId }) => void;
+  resumeTask: () => void;
+  commitTaskRun: () => void;
+  chooseTaskFixer: (target: "manual" | AgentId) => void;
+  checkpointTaskBuild: (progress: number) => void;
+  finishAgentBuild: () => void;
+  takeOverTaskBuild: () => void;
+  checkpointTaskManual: (leftSec: number) => void;
+  checkpointTaskAgentFix: (workDone: number) => void;
+  switchTaskFixer: () => void;
+  buyAgentLicense: (id: AgentId) => void;
+  openStoreAgents: () => void;
   /** Ephemeral life UI. Not persisted. */
   /** Last successful use of a room item, keyed by GLB. Not persisted. */
   itemUseAt: Record<string, number>;
@@ -500,6 +527,8 @@ export const useGameStore = create<GameState>()(
       openingDone: false,
       careerPanel: null,
       taskJobId: null,
+      taskLive: false,
+      storeAgentTab: false,
       offerConfirm: null,
       storeOpen: false,
       notificationOpen: false,
@@ -768,10 +797,9 @@ export const useGameStore = create<GameState>()(
           snap.minuteOfDay,
           current.stage,
         );
-        const result = startTask(synced, jobId, SIM_CATALOG, force);
+        const result = openTaskRun(synced, jobId, SIM_CATALOG, force);
         if (result.error) {
           playCueKey("jobFailed");
-          // Show error to user
           set({ terminalLines: [...current.terminalLines, `❌ ${result.error}`].slice(-8) });
           return;
         }
@@ -780,6 +808,7 @@ export const useGameStore = create<GameState>()(
           career: result.state,
           careerPanel: null,
           taskJobId: jobId,
+          taskLive: false,
           ...(guidedJob ? { openingDone: true, openingStep: null } : {}),
         });
         emitGame(result.events);
@@ -817,14 +846,22 @@ export const useGameStore = create<GameState>()(
       },
       openTask: (jobId) => {
         const guidedJob = get().openingStep === "jobs" && !get().openingDone;
+        let career = get().career;
+        const job = career.player_jobs.find((row) => row.id === jobId);
+        if (job?.status === "active" && !job.task_run) {
+          const opened = openTaskRun(career, jobId, SIM_CATALOG);
+          if (!opened.error) career = opened.state;
+        }
         set({
+          career,
           careerPanel: null,
           taskJobId: jobId,
+          taskLive: false,
           ...(guidedJob ? { openingDone: true, openingStep: null } : {}),
         });
       },
       closeTask: () => {
-        set({ taskJobId: null, terminalLines: [] });
+        set({ taskJobId: null, taskLive: false, terminalLines: [] });
         const snap = snapshot(get().totalMinutes);
         commitLife(
           flushDeferred(get().career, snap.phaseId, snap.day, snap.minuteOfDay, Math.random, SIM_CATALOG),
@@ -865,7 +902,12 @@ export const useGameStore = create<GameState>()(
           return;
         }
           if (id === "openStore") {
-            set({ storeOpen: true, career: askStore(get().career) });
+            const agentNotice = picked?.id === "agent-shop-unlock";
+            set({
+              storeOpen: true,
+              storeAgentTab: agentNotice,
+              career: askStore(get().career),
+            });
             return;
           }
           if (id === "openNotification") {
@@ -1110,7 +1152,8 @@ export const useGameStore = create<GameState>()(
         if (!id) return;
         const result = beginTest(get().career, id);
         if (result.error) return;
-        set({ career: result.state });
+        const step = result.state.player_jobs.find((row) => row.id === id)?.task_run?.step;
+        set({ career: result.state, taskLive: step === "test" });
         emitGame(result.events);
       },
       catchTaskBug: () => {
@@ -1126,7 +1169,8 @@ export const useGameStore = create<GameState>()(
         if (!id) return;
         const result = finishTest(get().career, id, SIM_CATALOG);
         if (result.error) return;
-        set({ career: result.state });
+        const step = result.state.player_jobs.find((row) => row.id === id)?.task_run?.step;
+        set({ career: result.state, taskLive: step !== "ready" && step !== "result" });
         emitGame(result.events);
       },
       retryTaskRun: () => {
@@ -1137,8 +1181,103 @@ export const useGameStore = create<GameState>()(
           playCueKey("locked");
           return;
         }
-        set({ career: result.state });
+        set({ career: result.state, taskLive: false });
         emitGame(result.events);
+      },
+      beginTask: (choice) => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const result = beginTaskRun(get().career, id, choice, SIM_CATALOG);
+        if (result.error) {
+          set({ terminalLines: [...get().terminalLines, `❌ ${result.error}`].slice(-8) });
+          return;
+        }
+        set({ career: result.state, taskLive: true });
+        emitGame(result.events);
+        maybeHospital(result.skipDays);
+      },
+      resumeTask: () => set({ taskLive: true }),
+      commitTaskRun: () => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = commitTask(get().career, id, SIM_CATALOG, run.revision);
+        if (result.error) return;
+        set({ career: result.state, taskLive: false });
+        emitGame(result.events);
+        maybeHospital(result.skipDays);
+        get().syncLifeSurface();
+      },
+      chooseTaskFixer: (target) => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = chooseTaskFixer(get().career, id, run.revision, target);
+        if (result.error) return;
+        set({ career: result.state, taskLive: true });
+        emitGame(result.events);
+      },
+      checkpointTaskBuild: (progress) => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = checkpointBuildProgress(get().career, id, run.revision, progress);
+        if (result.state !== get().career) set({ career: result.state });
+      },
+      finishAgentBuild: () => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = completeAgentBuild(get().career, id, run.revision);
+        set({ career: result.state, taskLive: false });
+      },
+      takeOverTaskBuild: () => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = takeOverManualBuild(get().career, id, run.revision);
+        set({ career: result.state, taskLive: true });
+      },
+      checkpointTaskManual: (leftSec) => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = checkpointManualTimer(get().career, id, run.revision, leftSec);
+        if (result.state !== get().career) set({ career: result.state });
+      },
+      checkpointTaskAgentFix: (workDone) => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = checkpointAgentFix(get().career, id, run.revision, workDone);
+        if (result.state !== get().career) {
+          set({ career: result.state, taskLive: result.state.player_jobs.find((r) => r.id === id)?.task_run?.step !== "ready" });
+        }
+      },
+      switchTaskFixer: () => {
+        const id = get().taskJobId;
+        if (!id) return;
+        const run = get().career.player_jobs.find((row) => row.id === id)?.task_run;
+        if (!run) return;
+        const result = switchTaskFixerBack(get().career, id, run.revision);
+        set({ career: result.state, taskLive: false });
+      },
+      buyAgentLicense: (agentId) => {
+        const bought = buyAgent(get().career, agentId);
+        if (bought.error) return;
+        playLifeSound("sfx_store_buy");
+        set({ career: bought.state });
+        emitGame(bought.events);
+      },
+      openStoreAgents: () => {
+        set({ storeOpen: true, storeAgentTab: true, taskJobId: null, taskLive: false });
       },
       debugAddMoney: () => {
         const result = changeMoney(get().career, 500_000);

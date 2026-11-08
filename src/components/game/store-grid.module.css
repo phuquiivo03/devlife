@@ -19,7 +19,7 @@
 
 .tabs button {
   min-height: 44px;
-  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: var(--text-galmuri-small);
 }
 
@@ -91,7 +91,7 @@
 .reason,
 .empty {
   margin: 0;
-  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: var(--text-galmuri-small);
   line-height: 1.25;
   text-align: center;
@@ -120,7 +120,7 @@
 
 .actions button {
   width: 100%;
-  font-family: var(--font-galmuri-7), var(--font-galmuri-9), system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: var(--text-galmuri-small);
 }
 

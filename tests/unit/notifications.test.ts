@@ -282,7 +282,7 @@ describe("notification actions", () => {
     useGameStore.getState().runNoticeAction(button.id, notice);
     expect(useGameStore.getState().taskJobId).toBe("soon-job");
     expect(useGameStore.getState().career.player_jobs.find((row) => row.id === "soon-job")?.task_run?.step).toBe(
-      "ticket",
+      "select",
     );
   });
 });

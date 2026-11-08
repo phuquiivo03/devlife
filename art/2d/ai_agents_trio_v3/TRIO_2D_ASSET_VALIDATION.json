@@ -1,0 +1,812 @@
+{
+  "root": "/workspace/devlife-art/ai_agents_trio_v3",
+  "runtime_pngs": [
+    {
+      "id": "claude_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/claude_inspired/claude_inspired_512.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "claude_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/claude_inspired/claude_inspired_256.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "claude_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/claude_inspired/claude_inspired_64.png",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "cursor_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/cursor_inspired/cursor_inspired_512.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "cursor_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/cursor_inspired/cursor_inspired_256.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "cursor_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/cursor_inspired/cursor_inspired_64.png",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "copilot_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/copilot_inspired/copilot_inspired_512.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "copilot_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/copilot_inspired/copilot_inspired_256.png",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    },
+    {
+      "id": "copilot_inspired",
+      "path": "/workspace/devlife-art/ai_agents_trio_v3/copilot_inspired/copilot_inspired_64.png",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGBA",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "border_all_transparent": true,
+      "visible_magenta_dominant_pixels": 0
+    }
+  ],
+  "images": [
+    {
+      "path": "claude_inspired/claude_inspired_256.png",
+      "format": "PNG",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_512.png",
+      "format": "PNG",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_64.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_alpha_mask.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_cutout_master.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_generated_original.jpg",
+      "format": "JPEG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_master_1024.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "contact_sheet.png",
+      "format": "PNG",
+      "dimensions": [
+        1440,
+        600
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_256.png",
+      "format": "PNG",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_512.png",
+      "format": "PNG",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_64.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_alpha_mask.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_cutout_master.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_generated_original.jpg",
+      "format": "JPEG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_master_1024.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_256.png",
+      "format": "PNG",
+      "dimensions": [
+        256,
+        256
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_512.png",
+      "format": "PNG",
+      "dimensions": [
+        512,
+        512
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_64.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_alpha_mask.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "L"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_cutout_master.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_generated_original.jpg",
+      "format": "JPEG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_master_1024.png",
+      "format": "PNG",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "path": "preview_sheet.png",
+      "format": "PNG",
+      "dimensions": [
+        1320,
+        1100
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/claude_inspired_dark_24.png",
+      "format": "PNG",
+      "dimensions": [
+        40,
+        40
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/claude_inspired_dark_48.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/claude_inspired_dark_64.png",
+      "format": "PNG",
+      "dimensions": [
+        80,
+        80
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/claude_inspired_light_24.png",
+      "format": "PNG",
+      "dimensions": [
+        40,
+        40
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/claude_inspired_light_48.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/claude_inspired_light_64.png",
+      "format": "PNG",
+      "dimensions": [
+        80,
+        80
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/copilot_inspired_dark_24.png",
+      "format": "PNG",
+      "dimensions": [
+        40,
+        40
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/copilot_inspired_dark_48.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/copilot_inspired_dark_64.png",
+      "format": "PNG",
+      "dimensions": [
+        80,
+        80
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/copilot_inspired_light_24.png",
+      "format": "PNG",
+      "dimensions": [
+        40,
+        40
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/copilot_inspired_light_48.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/copilot_inspired_light_64.png",
+      "format": "PNG",
+      "dimensions": [
+        80,
+        80
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/cursor_inspired_dark_24.png",
+      "format": "PNG",
+      "dimensions": [
+        40,
+        40
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/cursor_inspired_dark_48.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/cursor_inspired_dark_64.png",
+      "format": "PNG",
+      "dimensions": [
+        80,
+        80
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/cursor_inspired_light_24.png",
+      "format": "PNG",
+      "dimensions": [
+        40,
+        40
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/cursor_inspired_light_48.png",
+      "format": "PNG",
+      "dimensions": [
+        64,
+        64
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/cursor_inspired_light_64.png",
+      "format": "PNG",
+      "dimensions": [
+        80,
+        80
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/text_audit_4x.png",
+      "format": "PNG",
+      "dimensions": [
+        2000,
+        280
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/trio_dark_audit_2x.png",
+      "format": "PNG",
+      "dimensions": [
+        1224,
+        740
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/trio_dark_native.png",
+      "format": "PNG",
+      "dimensions": [
+        612,
+        370
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/trio_light_audit_2x.png",
+      "format": "PNG",
+      "dimensions": [
+        1224,
+        740
+      ],
+      "mode": "RGB"
+    },
+    {
+      "path": "previews/trio_light_native.png",
+      "format": "PNG",
+      "dimensions": [
+        612,
+        370
+      ],
+      "mode": "RGB"
+    }
+  ],
+  "files": [
+    {
+      "path": "HANDOFF.md",
+      "bytes": 11891,
+      "sha256": "ed5c7303d7a14bdf65527500bfb538e3961b0dad1b5a079e69520a26e3b0bfd7"
+    },
+    {
+      "path": "ai_agents_trio_v3.zip",
+      "bytes": 4598802,
+      "sha256": "5f2be63d1323caf6d6081c16bef7f2fb1d9641b6b74bd6ec959f071e738e66cc"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_256.png",
+      "bytes": 61758,
+      "sha256": "f0f36f12a49d328690e4aed85292c6aae611bee85cc0008f129ba1ffc714f7eb"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_512.png",
+      "bytes": 192027,
+      "sha256": "9c9228895658a86acda23ae34325bac72273bdc109bffd025f0091aa6dd5ed28"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_64.png",
+      "bytes": 6949,
+      "sha256": "b5377682797fbd2f7097b6db4dafd519911cdd5f5f994ba33e4d6d16c50a1903"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_alpha_mask.png",
+      "bytes": 6631,
+      "sha256": "91dd8513e7289678023d2eb06b0f2fd47fb2a0649b2ef43122bf036bff45aaee"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_cutout_master.png",
+      "bytes": 542667,
+      "sha256": "42784ad83bf2c461df28758c138eb1977ede43d3fbc5376cc199cc776ae7fdb3"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_generated_original.jpg",
+      "bytes": 206722,
+      "sha256": "b4d750c1a32ac2faa00cf0dcca8eb0d2cd8076a9a77580978a6b2b1fccbe631d"
+    },
+    {
+      "path": "claude_inspired/claude_inspired_master_1024.png",
+      "bytes": 583021,
+      "sha256": "fb7acd1c1c1c4eab2304d99a180ff1d94a90615e7f0ec08513cff55dbab914e1"
+    },
+    {
+      "path": "contact_sheet.png",
+      "bytes": 306590,
+      "sha256": "14eb9911abb1430d8d1718bead0c71e02b98e6456e4e99a526722428db252ceb"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_256.png",
+      "bytes": 50704,
+      "sha256": "50e77857a9298b3a4d00b8683adee4470aab5b18477bc25c1a3872fdb8012b00"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_512.png",
+      "bytes": 154692,
+      "sha256": "fac187569c964d8c8dd7da929fa0763348c5fb7d524d493fcc350185b87a272b"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_64.png",
+      "bytes": 6161,
+      "sha256": "c57f5e1a45dba5e949fd983ade9ba8334279effe7380d522d36229400d431bb7"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_alpha_mask.png",
+      "bytes": 8329,
+      "sha256": "d331f70f5c0912b0fa449203b02d443b1c0ad371073b87b7a2a3bf4592ab63d0"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_cutout_master.png",
+      "bytes": 418992,
+      "sha256": "f2e3e91a7a59e97fc65e552a4aa9b03297ffa1e6d11d91bc71ff6c07e3cb27f6"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_generated_original.jpg",
+      "bytes": 166879,
+      "sha256": "d5870b9fd23a63471657c8d0ef9c75d256d14a3f08d97d7ed81c5efd13f6019b"
+    },
+    {
+      "path": "copilot_inspired/copilot_inspired_master_1024.png",
+      "bytes": 451738,
+      "sha256": "9eb98d4f7eb8737bac4090863ff20cd6afc27e23ed8ebf19b6e7a94bca86e1a0"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_256.png",
+      "bytes": 37008,
+      "sha256": "4a5a37b2a03d1ada09293439f256373c934146b12d4c9879ad4ea20c6657d920"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_512.png",
+      "bytes": 113917,
+      "sha256": "3ac3121a6c289e59d76d547802b0db1d212f84937b4d7ed4e900b33ebf150f4f"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_64.png",
+      "bytes": 4440,
+      "sha256": "7e4f97d6003d86991df6040ab6430b1de9402fff540e953ea670e2c424a5562f"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_alpha_mask.png",
+      "bytes": 8345,
+      "sha256": "92fd027fdc3a2be4b28f30970a95a01c4e5efc60d9febfd0a948acf9b1c52cec"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_cutout_master.png",
+      "bytes": 333065,
+      "sha256": "f193a55ce51acc010fd5786860106dd57ae1eef91519f2b113c818cb2c955f87"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_generated_original.jpg",
+      "bytes": 156611,
+      "sha256": "895bc277e400cbabf845b588296daf25bf998df9f2879c4e9d15c17e089ee5f0"
+    },
+    {
+      "path": "cursor_inspired/cursor_inspired_master_1024.png",
+      "bytes": 347842,
+      "sha256": "81f3ac705c6c03c55b01caf6965f23b183d7be08703cc621a5f3f175f6684eea"
+    },
+    {
+      "path": "preview_sheet.png",
+      "bytes": 301961,
+      "sha256": "c9b66244259c4b3aedf383eb7659fed02f4b74fb9f523023a77423731919767d"
+    },
+    {
+      "path": "previews/claude_inspired_dark_24.png",
+      "bytes": 1359,
+      "sha256": "56684503bf1b6171dc5761a03e750a2fbaa6a5b936fb898e0f834016c22222f7"
+    },
+    {
+      "path": "previews/claude_inspired_dark_48.png",
+      "bytes": 3763,
+      "sha256": "3fe61a80bd9c311eaaea0c36211136dd489fc69046138a58549b185cf37d142e"
+    },
+    {
+      "path": "previews/claude_inspired_dark_64.png",
+      "bytes": 5955,
+      "sha256": "c179c3fd2c9ec8b919662b90a2869e01734a30769518bb923ef2d9c1618b4da8"
+    },
+    {
+      "path": "previews/claude_inspired_light_24.png",
+      "bytes": 1409,
+      "sha256": "d092da9e2aa06aee831ec859d2c3a4848ff836fd62f38970960c3244fa0c29c6"
+    },
+    {
+      "path": "previews/claude_inspired_light_48.png",
+      "bytes": 3990,
+      "sha256": "d99cbc26c5de63c3c1cb262e8f1da9c8196d44e5b8c9abea26764e20bd6db478"
+    },
+    {
+      "path": "previews/claude_inspired_light_64.png",
+      "bytes": 6195,
+      "sha256": "0d2cbc35c4c6f52e2b956edb82b22fc01067f457359b73b5f6bbe64b3a2a8cc4"
+    },
+    {
+      "path": "previews/copilot_inspired_dark_24.png",
+      "bytes": 1258,
+      "sha256": "89df9509f9d726d45cd98400621782b8144f461c4a3f2fce144259642ac56c42"
+    },
+    {
+      "path": "previews/copilot_inspired_dark_48.png",
+      "bytes": 3368,
+      "sha256": "b4fc4c6a015d0b2c393f3d5907ad77190450dc683b628e556e22ff1ae0809263"
+    },
+    {
+      "path": "previews/copilot_inspired_dark_64.png",
+      "bytes": 5237,
+      "sha256": "ac11696be3d3d291b846e2a5dfab65f52a7fb5ef049119901581c5c2a4b050e9"
+    },
+    {
+      "path": "previews/copilot_inspired_light_24.png",
+      "bytes": 1267,
+      "sha256": "96513a39701167ef8b615194f946551f1679fbc6dc734f1e6be1512d848e1370"
+    },
+    {
+      "path": "previews/copilot_inspired_light_48.png",
+      "bytes": 3446,
+      "sha256": "cdb55a96dac7597edccef6ef2c76b11e8795ec812f43a1946d2a33d37681b27c"
+    },
+    {
+      "path": "previews/copilot_inspired_light_64.png",
+      "bytes": 5383,
+      "sha256": "6be5bb3fcc94ad44dbfd3b149ea39ccb96c59379a73f7c20f6f481932cc838c6"
+    },
+    {
+      "path": "previews/cursor_inspired_dark_24.png",
+      "bytes": 903,
+      "sha256": "433cdd55931baca79fdfe57f3e92aa4563f940696fe40296aa40039daab6c535"
+    },
+    {
+      "path": "previews/cursor_inspired_dark_48.png",
+      "bytes": 2419,
+      "sha256": "74c21a1c87dd0c653f1d14caf9a2c08c530f9b5497c97e69dfd9e1ade0be0da8"
+    },
+    {
+      "path": "previews/cursor_inspired_dark_64.png",
+      "bytes": 3689,
+      "sha256": "b4cf282e0e9c5cd87f1b93ef48373367102dc1d56373e11c9f210c82cb380951"
+    },
+    {
+      "path": "previews/cursor_inspired_light_24.png",
+      "bytes": 1006,
+      "sha256": "a837714151d0a6ceb8bc43f29043fc5351a083c99a4ab3f69d42e7a087b56d11"
+    },
+    {
+      "path": "previews/cursor_inspired_light_48.png",
+      "bytes": 2601,
+      "sha256": "67013aa5c33cb56394f7f35be74b550ece317bcaee47ec9a5dcd6da40a8370d8"
+    },
+    {
+      "path": "previews/cursor_inspired_light_64.png",
+      "bytes": 3967,
+      "sha256": "780bc8f70b36c4faec0821912c1e42df8bb772c265cd0de69c9f46ee0315db02"
+    },
+    {
+      "path": "previews/text_audit_4x.png",
+      "bytes": 2779,
+      "sha256": "b09dd8fe285996ed77a86aaf9ad552a0415f5a544eca0a756c9a4a34ca00ae3c"
+    },
+    {
+      "path": "previews/trio_dark_audit_2x.png",
+      "bytes": 42161,
+      "sha256": "17a88804bbdc9c6703c3975b0591e4708a4cd9d6485610e4971c85f5e60782a0"
+    },
+    {
+      "path": "previews/trio_dark_native.png",
+      "bytes": 29534,
+      "sha256": "12b9e24fca2eef8b1cc85c58171063ad1a7ff7f96aae4d7ca051e13427f84c83"
+    },
+    {
+      "path": "previews/trio_light_audit_2x.png",
+      "bytes": 43388,
+      "sha256": "1da51145ff4e275baa914c5cd756242e5a47277e9868710888c99d7aca25b10d"
+    },
+    {
+      "path": "previews/trio_light_native.png",
+      "bytes": 30841,
+      "sha256": "f061b3211d27a9c6870984f105d5099edc3069fcd9541010fef13c9916c67def"
+    },
+    {
+      "path": "qa.json",
+      "bytes": 2158,
+      "sha256": "8b3d3d0a2d14306f4c0c07663e4a294d76cbc10a13407474090d0dc6ecfa0346"
+    }
+  ],
+  "no_blender_required": true,
+  "art_zip": {
+    "path": "/workspace/devlife-art/ai_agents_trio_v3/ai_agents_trio_v3.zip",
+    "members": 48,
+    "crc": "PASS",
+    "path_safety": "PASS",
+    "all_entries_match_local": true,
+    "complete": true
+  }
+}

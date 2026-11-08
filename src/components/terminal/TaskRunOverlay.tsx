@@ -10,6 +10,16 @@ import { TASK_RUN, taskDurationSec } from "@/game/task-run/content";
 import { taskEventFlash } from "@/game/task-run/formula";
 import { bugHitPx, bugMotionRand, spawnBugs, stepBug, type BugBody } from "@/game/task-run/motion";
 import { canRetry } from "@/game/task-run/machine";
+import { retryEnergyCost } from "@/game/agents/logic";
+import {
+  AgentBuildStep,
+  AgentFixStep,
+  BugChoiceStep,
+  ReadyStep,
+  ResumeGate,
+  SelectStep,
+  manualTestLeftSec,
+} from "./task-run/AgentFlowSteps";
 import { primarySkillId, ticketForSkill } from "@/game/task-run/apply";
 import type { TaskRun } from "@/game/task-run/types";
 import { useGameStore } from "@/game/state/store";
@@ -25,6 +35,7 @@ export function TaskRunOverlay() {
   const jobId = useGameStore((s) => s.taskJobId);
   const job = useGameStore((s) => s.career.player_jobs.find((row) => row.id === jobId));
   const closeTask = useGameStore((s) => s.closeTask);
+  const taskLive = useGameStore((s) => s.taskLive);
   const terminalLines = useGameStore((s) => s.terminalLines);
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -64,6 +75,7 @@ export function TaskRunOverlay() {
   if (!jobId || !job?.task_run) return null;
   const template = SIM_CATALOG.jobTemplates.find((row) => row.id === job.template_id);
   if (!template) return null;
+  const templateEnergy = template.energy;
   const skillId = primarySkillId(job.template_id, SIM_CATALOG);
   const ticket = ticketForSkill(skillId, TASK_RUN.tickets);
   if (!ticket) return null;
@@ -73,7 +85,12 @@ export function TaskRunOverlay() {
       ? job.task_run.outcome === "success"
         ? "[ok] xong"
         : "[fail] chưa giao"
-      : "đang làm task";
+      : job.task_run.step === "ready"
+        ? "[ready] chờ Xong"
+        : job.task_run.step === "select"
+          ? "[select] chọn coder"
+          : "đang làm task";
+  const paused = !taskLive && job.task_run.step !== "select" && job.task_run.step !== "result";
 
   return (
     <div className="absolute inset-0 z-30 flex min-h-0 flex-col bg-black/55 p-2 sm:p-3">
@@ -98,7 +115,11 @@ export function TaskRunOverlay() {
               ))}
             </ul>
           ) : null}
-          {job.task_run.step === "ticket" ? (
+          {job.task_run.step === "select" ? (
+            <SelectStep jobId={job.id} pay={job.pay} energyCost={templateEnergy} />
+          ) : null}
+          {paused ? <ResumeGate step={job.task_run.step} /> : null}
+          {!paused && job.task_run.step === "ticket" ? (
             <TicketStep
               title={ticket.title}
               quote={ticket.quote}
@@ -109,8 +130,28 @@ export function TaskRunOverlay() {
               timeScale={timeScale}
             />
           ) : null}
-          {job.task_run.step === "build" ? <BuildStep run={job.task_run} timeScale={timeScale} /> : null}
-          {job.task_run.step === "test" ? <TestStep run={job.task_run} timeScale={timeScale} /> : null}
+          {!paused && job.task_run.step === "build" && job.task_run.build_runner === "agent" ? (
+            <AgentBuildStep run={job.task_run} timeScale={timeScale} />
+          ) : null}
+          {!paused && job.task_run.step === "build" && job.task_run.build_runner !== "agent" ? (
+            <BuildStep run={job.task_run} timeScale={timeScale} live={taskLive} />
+          ) : null}
+          {!paused && job.task_run.step === "bug_choice" ? <BugChoiceStep run={job.task_run} /> : null}
+          {!paused && job.task_run.step === "agent_fix" ? (
+            <AgentFixStep run={job.task_run} timeScale={timeScale} />
+          ) : null}
+          {!paused && job.task_run.step === "test" ? (
+            <TestStep run={job.task_run} timeScale={timeScale} live={taskLive} />
+          ) : null}
+          {!paused && job.task_run.step === "ready" ? (
+            <ReadyStep
+              run={job.task_run}
+              pay={job.pay}
+              skillId={skillId}
+              reputation={template.reputation_gain}
+              company={job.source === "company"}
+            />
+          ) : null}
           {job.task_run.step === "result" ? (
             <ResultStep
               run={job.task_run}
@@ -188,7 +229,7 @@ function TicketStep({
   );
 }
 
-function BuildStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
+function BuildStep({ run, timeScale, live }: { run: TaskRun; timeScale: number; live: boolean }) {
   const choose = useGameStore((s) => s.chooseBuild);
   const begin = useGameStore((s) => s.beginTaskTest);
   const event = TASK_RUN.events.find((row) => row.id === run.event_id) ?? null;
@@ -221,10 +262,11 @@ function BuildStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
   }, []);
 
   useEffect(() => {
-    if (run.build) return;
+    if (!live || run.build) return;
     let elapsed = 0;
     const stopAt = preChoice * TASK_RUN.choice_at;
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       elapsed += 0.1;
       setProgress(Math.min(TASK_RUN.choice_at, elapsed / preChoice));
       setLogCount(Math.min(TASK_RUN.build_logs.length, 1 + Math.floor(elapsed / 1.6)));
@@ -234,14 +276,15 @@ function BuildStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
       }
     }, 100);
     return () => window.clearInterval(id);
-  }, [preChoice, run.build]);
+  }, [live, preChoice, run.build]);
 
   useEffect(() => {
-    if (!run.build) return;
+    if (!live || !run.build) return;
     let elapsed = 0;
     const delta = run.build === "careful" ? TASK_RUN.careful_extra_sec : TASK_RUN.rushed_extra_sec;
     const after = Math.max(1.2, preChoice * (1 - TASK_RUN.choice_at) + delta);
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       elapsed += 0.1;
       const t = Math.min(1, elapsed / after);
       setProgress(TASK_RUN.choice_at + (1 - TASK_RUN.choice_at) * t);
@@ -253,7 +296,7 @@ function BuildStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
       }
     }, 100);
     return () => window.clearInterval(id);
-  }, [begin, preChoice, run.build]);
+  }, [begin, live, preChoice, run.build]);
 
   const logs = TASK_RUN.build_logs.slice(0, logCount);
   const percent = Math.round(progress * 100);
@@ -334,7 +377,7 @@ function useReducedMotion(): boolean {
   return reduced;
 }
 
-function TestStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
+function TestStep({ run, timeScale, live }: { run: TaskRun; timeScale: number; live: boolean }) {
   const catchTaskBug = useGameStore((s) => s.catchTaskBug);
   const finishTaskTest = useGameStore((s) => s.finishTaskTest);
   const reduced = useReducedMotion();
@@ -348,7 +391,8 @@ function TestStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
     spawnBugs(run.seed + run.retries, run.bugs_total, TASK_RUN.bug_motion),
   );
   const [hidden, setHidden] = useState<ReadonlySet<number>>(() => new Set());
-  const [left, setLeft] = useState(TASK_RUN.test_sec * timeScale);
+  const checkpointManual = useGameStore((s) => s.checkpointTaskManual);
+  const [left, setLeft] = useState(() => manualTestLeftSec(run, timeScale));
   const hit = bugHitPx(TASK_RUN.bug_motion);
 
   useEffect(() => {
@@ -368,9 +412,12 @@ function TestStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
   }, []);
 
   useEffect(() => {
+    if (!live) return;
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       setLeft((current) => {
         const next = Math.max(0, Math.round((current - 0.1) * 10) / 10);
+        if (Math.round(current * 10) % 5 === 0) checkpointManual(next);
         if (next <= 0) {
           window.clearInterval(id);
           finishTaskTest();
@@ -379,7 +426,7 @@ function TestStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
       });
     }, 100);
     return () => window.clearInterval(id);
-  }, [finishTaskTest]);
+  }, [finishTaskTest, live, checkpointManual]);
 
   return (
     <div data-testid="task-step-test">
@@ -455,7 +502,9 @@ function ResultStep({
   const success = run.outcome === "success";
   const xp = xpForJob(events, jobId);
   const showRetry = canRetry(run, TASK_RUN.max_retries) && !failed;
-  const canPayRetry = energy >= TASK_RUN.retry_energy;
+  const career = useGameStore((s) => s.career);
+  const retryCost = retryEnergyCost(career);
+  const canPayRetry = energy >= retryCost;
 
   return (
     <div data-testid="task-step-result" data-outcome={success ? "success" : "fail"}>
@@ -494,7 +543,7 @@ function ResultStep({
               disabled={!canPayRetry}
               onClick={() => retry()}
             >
-              ./retry tốn {TASK_RUN.retry_energy} năng lượng
+              ./retry tốn {retryCost} năng lượng
               {canPayRetry ? "" : " · không đủ"}
             </button>
           ) : null}

@@ -4,6 +4,7 @@ import type { PlayerJob } from "@/game/career/types";
 import { PERSIST_VERSION } from "@/game/config";
 import { LIFE } from "@/game/life/content";
 import { migrateSave } from "@/game/storage/migrate";
+import { freshRun } from "@/game/task-run/machine";
 import { snapshot } from "@/game/time";
 
 function job(partial: Partial<PlayerJob> & Pick<PlayerJob, "id" | "status" | "template_id">): PlayerJob {
@@ -59,16 +60,14 @@ describe("version 18 job migration", () => {
               progress_hours: 2,
               accepted_day: 1,
               task_run: {
+                ...freshRun(7),
                 step: "build",
-                seed: 7,
-                ticket: null,
+                start_paid: true,
+                mode: "manual",
                 build: "careful",
-                event_id: null,
                 bugs_total: 2,
                 bugs_caught: 1,
                 retries: 1,
-                outcome: null,
-                time_bonus_sec: 0,
               },
             }),
             job({

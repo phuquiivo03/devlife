@@ -48,6 +48,8 @@ import type {
 } from "../career/types";
 import type { EmploymentApplication, EmploymentState } from "../career/types";
 import { isOpeningStep, type OpeningStep } from "../opening/flow";
+import { grantGraceLicenses, normalizeAgents } from "../agents/logic";
+import { TASK_RUN_DEFAULTS } from "../task-run/machine";
 
 export type PersistedSave = {
   stage: StageId;
@@ -225,7 +227,16 @@ function normalizeEvents(value: unknown): PlayerEvent[] {
   return events;
 }
 
-const TASK_STEPS: readonly TaskStep[] = ["ticket", "build", "test", "result"];
+const TASK_STEPS: readonly TaskStep[] = [
+  "select",
+  "ticket",
+  "build",
+  "bug_choice",
+  "test",
+  "agent_fix",
+  "ready",
+  "result",
+];
 const TICKET_CHOICES: readonly TaskTicketChoice[] = ["correct", "wrong", "ask"];
 const BUILD_CHOICES: readonly TaskBuildChoice[] = ["careful", "rushed"];
 
@@ -239,19 +250,55 @@ function normalizeTaskRun(value: unknown): TaskRun | null {
     value.outcome === "success" || value.outcome === "fail"
       ? value.outcome
       : null;
+  const bugs_total = num(value.bugs_total);
+  const bugs_caught = num(value.bugs_caught);
+  const revision = num(value.revision);
+  const build_progress =
+    typeof value.build_progress === "number" && Number.isFinite(value.build_progress)
+      ? Math.min(1, Math.max(0, value.build_progress))
+      : build != null
+        ? 0.4
+        : 0;
+  const bug_ids = Array.isArray(value.bug_ids)
+    ? value.bug_ids.filter((id): id is string => typeof id === "string")
+    : Array.from({ length: bugs_total }, (_, i) => `b${i}`);
+  const fixed_bug_ids = Array.isArray(value.fixed_bug_ids)
+    ? value.fixed_bug_ids.filter((id): id is string => typeof id === "string")
+    : bug_ids.slice(0, bugs_caught);
+
   return {
     step,
     seed: num(value.seed),
     ticket,
     build,
     event_id: typeof value.event_id === "string" ? value.event_id : null,
-    bugs_total: num(value.bugs_total),
-    bugs_caught: num(value.bugs_caught),
+    bugs_total,
+    bugs_caught,
     retries: num(value.retries),
     outcome,
     time_bonus_sec: Number.isFinite(Number(value.time_bonus_sec))
       ? Math.trunc(Number(value.time_bonus_sec))
       : 0,
+    revision,
+    start_paid: value.start_paid === true,
+    force: value.force === true,
+    mode: value.mode === "agent" ? "agent" : value.mode === "manual" ? "manual" : null,
+    coder: null,
+    build_runner: value.build_runner === "agent" ? "agent" : "manual",
+    build_progress,
+    potential_bugs: num(value.potential_bugs, bugs_total),
+    bug_ids,
+    fixed_bug_ids,
+    fix_partial: isRecord(value.fix_partial) &&
+    typeof value.fix_partial.bug_id === "string" &&
+    typeof value.fix_partial.left === "number"
+      ? { bug_id: value.fix_partial.bug_id, left: Number(value.fix_partial.left) }
+      : null,
+    fixer_id: null,
+    manual_left_sec:
+      typeof value.manual_left_sec === "number" && Number.isFinite(value.manual_left_sec)
+        ? value.manual_left_sec
+        : null,
   };
 }
 
@@ -461,6 +508,7 @@ export function careerFromUnknown(
     player_events: normalizeEvents(value.player_events),
     life: normalizeLife(value.life, day),
     shop: normalizeShop(value.shop),
+    agents: normalizeAgents(value.agents),
     employment: normalizeEmployment(value.employment),
     feed: normalizeFeed(value.feed, day, {
       money: Number.isFinite(Number(players.money))
@@ -968,6 +1016,42 @@ export function migrateSave(
     // v24: `players.name` entered after the trait roll. `careerFromUnknown`
     // already trims and clamps it; older saves keep it empty and the profile
     // card falls back to the stub name.
+  }
+
+  if (version < 27) {
+    career = {
+      ...career,
+      agents: normalizeAgents(isRecord(prev.career) ? (prev.career as Record<string, unknown>).agents : null),
+      player_jobs: career.player_jobs.map((job) => {
+        if (!job.task_run) return job;
+        const run = job.task_run;
+        const legacyPaid = true;
+        if (run.step === "result" && run.outcome === "success") return { ...job, task_run: { ...run, start_paid: legacyPaid, mode: run.mode ?? "manual" } };
+        if (run.step === "result" && run.outcome === "fail") return { ...job, task_run: { ...run, start_paid: legacyPaid, mode: run.mode ?? "manual" } };
+        return {
+          ...job,
+          task_run: {
+            ...run,
+            start_paid: legacyPaid,
+            mode: run.mode ?? "manual",
+            build_runner: run.build_runner ?? "manual",
+            bug_ids:
+              run.bug_ids.length > 0
+                ? run.bug_ids
+                : Array.from({ length: run.bugs_total }, (_, i) => `b${i}`),
+            fixed_bug_ids:
+              run.fixed_bug_ids.length > 0 ? run.fixed_bug_ids : run.bug_ids.slice(0, run.bugs_caught),
+          },
+        };
+      }),
+    };
+  }
+
+  if (version < 28) {
+    career = {
+      ...career,
+      agents: grantGraceLicenses(normalizeAgents(career.agents), snap.day),
+    };
   }
 
   return {

@@ -1,0 +1,137 @@
+{
+  "claude_inspired/claude_inspired_512.png": {
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      49,
+      39,
+      462,
+      473
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "claude_inspired/claude_inspired_256.png": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      23,
+      18,
+      232,
+      238
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "claude_inspired/claude_inspired_64.png": {
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      4,
+      3,
+      60,
+      61
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "cursor_inspired/cursor_inspired_512.png": {
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      107,
+      39,
+      405,
+      473
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "cursor_inspired/cursor_inspired_256.png": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      52,
+      18,
+      204,
+      238
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "cursor_inspired/cursor_inspired_64.png": {
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      11,
+      3,
+      53,
+      61
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "copilot_inspired/copilot_inspired_512.png": {
+    "size": [
+      512,
+      512
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      39,
+      66,
+      473,
+      446
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "copilot_inspired/copilot_inspired_256.png": {
+    "size": [
+      256,
+      256
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      18,
+      32,
+      238,
+      224
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  },
+  "copilot_inspired/copilot_inspired_64.png": {
+    "size": [
+      64,
+      64
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      3,
+      6,
+      61,
+      58
+    ],
+    "border_max_alpha": 0,
+    "visible_magenta_pixels": 0
+  }
+}
