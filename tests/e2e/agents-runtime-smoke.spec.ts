@@ -20,7 +20,15 @@ async function bootSeeded(page: import("@playwright/test").Page, viewport: { wid
   if (await begin.isVisible().catch(() => false)) await begin.click();
 }
 
-test.describe.configure({ timeout: 120_000 });
+/** Clay sidebar: action tiles must receive real clicks (not force bypass). */
+async function openJobsManage(page: import("@playwright/test").Page) {
+  const jobs = page.getByTestId("open-jobs");
+  await jobs.scrollIntoViewIfNeeded();
+  await jobs.click();
+  await expect(page.getByTestId("job-manage")).toBeVisible({ timeout: 15_000 });
+}
+
+test.describe.configure({ mode: "serial", timeout: 120_000 });
 
 test.describe("agent runtime smoke (seeded save)", () => {
   test("shop AI tab desktop + mobile", async ({ page }) => {
@@ -41,8 +49,7 @@ test.describe("agent runtime smoke (seeded save)", () => {
 
   test("task bug choice desktop", async ({ page }) => {
     await bootSeeded(page, { width: 1440, height: 900 });
-    await page.getByTestId("open-jobs").click({ force: true });
-    await expect(page.getByTestId("job-manage")).toBeVisible();
+    await openJobsManage(page);
     await page.getByTestId("job-do-smoke-bugs").click();
     await page.getByTestId("task-resume").click();
     await expect(page.getByTestId("task-step-bug-choice")).toBeVisible();
@@ -51,7 +58,7 @@ test.describe("agent runtime smoke (seeded save)", () => {
 
   test("task ready and Xong desktop", async ({ page }) => {
     await bootSeeded(page, { width: 1440, height: 900 });
-    await page.getByTestId("open-jobs").click({ force: true });
+    await openJobsManage(page);
     await page.getByTestId("job-do-smoke-ready").click();
     await page.getByTestId("task-resume").click();
     await expect(page.getByTestId("task-step-ready")).toBeVisible();
@@ -88,13 +95,13 @@ test.describe("agent runtime smoke (seeded save)", () => {
       return doc.state.career.players.money;
     });
     expect(moneyReload).toBe(moneyAfter);
-    await page.getByTestId("open-jobs").click({ force: true });
+    await openJobsManage(page);
     await expect(page.getByTestId("job-row-smoke-ready")).toHaveCount(0);
   });
 
   test("task select desktop", async ({ page }) => {
     await bootSeeded(page, { width: 1440, height: 900 });
-    await page.getByTestId("open-jobs").click({ force: true });
+    await openJobsManage(page);
     await page.getByTestId("job-do-smoke-select").click();
     await expect(page.getByTestId("task-step-select")).toBeVisible();
     await page.screenshot({ path: "/opt/cursor/artifacts/runtime-task-select-desktop.png" });
@@ -102,7 +109,7 @@ test.describe("agent runtime smoke (seeded save)", () => {
 
   test("mobile select step", async ({ page }) => {
     await bootSeeded(page, { width: 390, height: 844 });
-    await page.getByTestId("open-jobs").click({ force: true });
+    await openJobsManage(page);
     await page.getByTestId("job-do-smoke-select").click();
     await expect(page.getByTestId("task-step-select")).toBeVisible();
     await expect(page.getByTestId("task-step-select")).toBeVisible();

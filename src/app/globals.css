@@ -998,6 +998,22 @@ body:has(.theme-clay) {
   border-radius: 18px;
   background: #f6edf0;
   box-shadow: 0 6px 20px rgba(80, 60, 110, 0.12);
+  position: relative;
+  z-index: 2;
+}
+
+@media (min-width: 1024px) {
+  .theme-clay .clay-side-block {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+/* Debug SkillsCard stacks after the side block; stretched action tiles can
+   bleed past the block box — keep the block above so HUD clicks stay real. */
+.theme-clay [data-side-panel="player"] > .rounded-panel {
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 1024px) {
@@ -1029,9 +1045,8 @@ body:has(.theme-clay) {
   border-radius: 10px;
 }
 
-/* Actions card absorbs the leftover height: the tile grid stretches
-   (2 equal rows of 3), so the buttons grow taller instead of leaving a
-   gap at the bottom of the block. */
+/* Actions card: on desktop the sidebar is height-locked to the room frame;
+   1fr grid rows used to bleed into the debug SkillsCard and steal hits. */
 .theme-clay .clay-actions-card {
   display: flex;
   min-height: 0;
@@ -1048,6 +1063,19 @@ body:has(.theme-clay) {
   grid-auto-rows: 1fr;
   /* Tall 1fr rows can paint past the grid box; clip so Cửa hàng stays clickable. */
   overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .theme-clay .clay-actions-card {
+    flex: 0 0 auto;
+    min-height: min-content;
+  }
+
+  .theme-clay .clay-actions-grid {
+    flex: 0 0 auto;
+    grid-auto-rows: minmax(52px, auto);
+    align-content: start;
+  }
 }
 
 .theme-clay .clay-actions-card > [data-testid="open-store-bar"],
