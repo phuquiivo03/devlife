@@ -63,7 +63,8 @@ const runOf = (s: CareerState) => s.player_jobs[0]!.task_run!;
 
 describe("checkpointAgentFix", () => {
   it("1 bug: progress updates without revision bump until ready", () => {
-    let { state, jobId } = seedAgentFix(["b1"]);
+    const { state: seeded, jobId } = seedAgentFix(["b1"]);
+    let state = seeded;
     const rev0 = runOf(state).revision;
     state = checkpointAgentFix(state, jobId, rev0, TICK).state;
     expect(runOf(state).step).toBe("agent_fix");
@@ -92,7 +93,8 @@ describe("checkpointAgentFix", () => {
   });
 
   it("3 bugs: reaches ready when cumulative work >= 1", () => {
-    let { state, jobId } = seedAgentFix(["b0", "b1", "b2"]);
+    const { state: seeded, jobId } = seedAgentFix(["b0", "b1", "b2"]);
+    let state = seeded;
     let ticks = 0;
     while (runOf(state).step === "agent_fix" && ticks < 200) {
       const rev = runOf(state).revision;
@@ -104,7 +106,8 @@ describe("checkpointAgentFix", () => {
   });
 
   it("2 of 3 fixed: only one bug worth of work remains", () => {
-    let { state, jobId } = seedAgentFix(["b0", "b1", "b2"], ["b0", "b1"]);
+    const { state: seeded, jobId } = seedAgentFix(["b0", "b1", "b2"], ["b0", "b1"]);
+    let state = seeded;
     expect(remainingFixWork(runOf(state))).toBeCloseTo(1 / 3, 5);
     const rev = runOf(state).revision;
     const ticksNeeded = Math.ceil((1 / 3) / TICK) + 2;
@@ -122,7 +125,8 @@ describe("checkpointAgentFix", () => {
   });
 
   it("switch fixer mid-fix preserves partial progress", () => {
-    let { state, jobId } = seedAgentFix(["b0", "b1"]);
+    const { state: seeded, jobId } = seedAgentFix(["b0", "b1"]);
+    let state = seeded;
     const rev = runOf(state).revision;
     state = checkpointAgentFix(state, jobId, rev, TICK).state;
     const partial = runOf(state).fix_partial;
