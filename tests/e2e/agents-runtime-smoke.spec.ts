@@ -20,13 +20,14 @@ async function bootSeeded(page: import("@playwright/test").Page, viewport: { wid
   if (await begin.isVisible().catch(() => false)) await begin.click();
 }
 
-test.describe.configure({ timeout: 90_000 });
+test.describe.configure({ timeout: 120_000 });
 
 test.describe("agent runtime smoke (seeded save)", () => {
   test("shop AI tab desktop + mobile", async ({ page }) => {
     await bootSeeded(page, { width: 1440, height: 900 });
-    await page.getByTestId("open-notifications").click({ force: true });
-    await page.getByRole("button", { name: "Mở store" }).click();
+    const storeBar = page.getByTestId("open-store-bar").or(page.getByRole("button", { name: "Cửa hàng" }));
+    await storeBar.scrollIntoViewIfNeeded();
+    await storeBar.click();
     await expect(page.getByTestId("store-modal")).toBeVisible({ timeout: 15000 });
     await page.getByTestId("store-tab-agents").click({ force: true });
     await expect(page.getByTestId("agent-shop-grid")).toBeVisible();

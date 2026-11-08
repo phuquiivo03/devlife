@@ -56,7 +56,7 @@ export function StoreButton({
             }
       }
       onClick={onOpen}
-      data-testid="open-store"
+      data-testid={wide ? "open-store-bar" : "open-store"}
     >
       <span data-icon-key="icon_store" className="inline-flex">
         <PixelIcon

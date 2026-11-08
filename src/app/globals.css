@@ -1046,6 +1046,15 @@ body:has(.theme-clay) {
   flex: 1 1 auto;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: 1fr;
+  /* Tall 1fr rows can paint past the grid box; clip so Cửa hàng stays clickable. */
+  overflow: hidden;
+}
+
+.theme-clay .clay-actions-card > [data-testid="open-store-bar"],
+.theme-clay .clay-actions-card > [data-testid="open-store"] {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
 }
 
 .theme-clay .clay-actions-grid .clay-tile {
