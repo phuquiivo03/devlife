@@ -96,6 +96,7 @@ export function AgentBuildStep({ run, timeScale }: { run: TaskRun; timeScale: nu
     let elapsed = 0;
     const budget = total * (1 - run.build_progress);
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       elapsed += 0.1;
       const p = Math.min(1, run.build_progress + elapsed / total);
       setLeft(Math.max(0, budget - elapsed));
@@ -168,6 +169,7 @@ export function AgentFixStep({ run, timeScale }: { run: TaskRun; timeScale: numb
     if (!live) return;
     let elapsed = 0;
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       elapsed += 0.1;
       workDoneRef.current = elapsed / total;
       if (Math.round(elapsed * 10) % 5 === 0) checkpoint(elapsed / total);

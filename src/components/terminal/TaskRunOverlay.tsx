@@ -266,6 +266,7 @@ function BuildStep({ run, timeScale, live }: { run: TaskRun; timeScale: number; 
     let elapsed = 0;
     const stopAt = preChoice * TASK_RUN.choice_at;
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       elapsed += 0.1;
       setProgress(Math.min(TASK_RUN.choice_at, elapsed / preChoice));
       setLogCount(Math.min(TASK_RUN.build_logs.length, 1 + Math.floor(elapsed / 1.6)));
@@ -283,6 +284,7 @@ function BuildStep({ run, timeScale, live }: { run: TaskRun; timeScale: number; 
     const delta = run.build === "careful" ? TASK_RUN.careful_extra_sec : TASK_RUN.rushed_extra_sec;
     const after = Math.max(1.2, preChoice * (1 - TASK_RUN.choice_at) + delta);
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       elapsed += 0.1;
       const t = Math.min(1, elapsed / after);
       setProgress(TASK_RUN.choice_at + (1 - TASK_RUN.choice_at) * t);
@@ -412,6 +414,7 @@ function TestStep({ run, timeScale, live }: { run: TaskRun; timeScale: number; l
   useEffect(() => {
     if (!live) return;
     const id = window.setInterval(() => {
+      if (document.hidden) return;
       setLeft((current) => {
         const next = Math.max(0, Math.round((current - 0.1) * 10) / 10);
         if (Math.round(current * 10) % 5 === 0) checkpointManual(next);

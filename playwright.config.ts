@@ -1,4 +1,8 @@
+import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
+
+const pinnedChromium =
+  "/home/quivo/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome";
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -10,10 +14,9 @@ export default defineConfig({
     trace: "on-first-retry",
     // Playwright 1.64 dropped ubuntu-20.04 browser builds; pin the last
     // cached chromium that still runs here (same pin as capture-poses.mjs).
-    launchOptions: {
-      executablePath:
-        "/home/quivo/.cache/ms-playwright/chromium-1217/chrome-linux64/chrome",
-    },
+    launchOptions: existsSync(pinnedChromium)
+      ? { executablePath: pinnedChromium }
+      : {},
   },
   webServer: {
     command: "pnpm dev",
