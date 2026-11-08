@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AGENTS, agentById, agentIconPath } from "@/game/agents/content";
 import { agentShopUnlocked, ownsAgent } from "@/game/agents/logic";
 import type { AgentId } from "@/game/agents/types";
 import { TASK_RUN } from "@/game/task-run/content";
 import { buildRemainingSec, agentFixTotalSec, manualBudgetSec } from "@/game/task-run/timing";
+import { remainingFixWork } from "@/game/task-run/machine";
 import type { TaskRun } from "@/game/task-run/types";
 import { useGameStore } from "@/game/state/store";
 import { formatVnd } from "@/lib/format-currency";
@@ -158,33 +159,51 @@ export function BugChoiceStep({ run }: { run: TaskRun }) {
 
 export function AgentFixStep({ run, timeScale }: { run: TaskRun; timeScale: number }) {
   const checkpoint = useGameStore((s) => s.checkpointTaskAgentFix);
+  const taskJobId = useGameStore((s) => s.taskJobId);
   const back = useGameStore((s) => s.switchTaskFixer);
   const live = useGameStore((s) => s.taskLive);
   const fixer = run.fixer_id ? agentById(run.fixer_id) : null;
   const m = fixer?.time_multiplier ?? 1;
-  const total = agentFixTotalSec(timeScale, m);
-  const workDoneRef = useRef(0);
+  const total = Math.max(0.1, agentFixTotalSec(timeScale, m));
+  const remainWork = remainingFixWork(run);
+  const etaSec = Math.ceil(remainWork * total);
+  const fixedCount = run.fixed_bug_ids.length;
+  const bugTotal = run.bug_ids.length;
 
   useEffect(() => {
-    if (!live) return;
-    let elapsed = 0;
+    if (!live || run.step !== "agent_fix") return;
+    let pending = 0;
+    let ticks = 0;
+    const fixerId = run.fixer_id;
     const id = window.setInterval(() => {
       if (document.hidden) return;
-      elapsed += 0.1;
-      workDoneRef.current = elapsed / total;
-      if (Math.round(elapsed * 10) % 5 === 0) checkpoint(elapsed / total);
-      if (elapsed >= total) {
-        window.clearInterval(id);
-        checkpoint(1);
+      pending += 0.1 / total;
+      ticks += 1;
+      if (ticks % 5 === 0 && pending > 0) {
+        checkpoint(pending);
+        pending = 0;
       }
     }, 100);
-    return () => window.clearInterval(id);
-  }, [live, total, run.revision, checkpoint]);
+    return () => {
+      window.clearInterval(id);
+      if (pending <= 0 || !taskJobId) return;
+      const current = useGameStore.getState().career.player_jobs.find((row) => row.id === taskJobId)
+        ?.task_run;
+      if (current?.step === "agent_fix" && current.fixer_id === fixerId) {
+        checkpoint(pending);
+      }
+    };
+  }, [live, run.step, run.fixer_id, total, checkpoint, taskJobId]);
 
   return (
     <div data-testid="task-step-agent-fix">
       <p className="terminal-prompt">$ agent fix — {fixer?.name ?? run.fixer_id}</p>
-      <p className="terminal-sage">Đang sửa bug… ~{total.toFixed(0)}s</p>
+      <p className="terminal-sage" data-testid="task-agent-fix-count">
+        Đã sửa {fixedCount}/{bugTotal} bug
+      </p>
+      <p className="terminal-sage" data-testid="task-agent-fix-eta">
+        Đang sửa bug… còn ~{etaSec}s
+      </p>
       <button type="button" className="terminal-cmd mt-3" onClick={() => back()}>
         Đổi cách sửa
       </button>

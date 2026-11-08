@@ -26,21 +26,23 @@ function job(id: string, partial: Partial<PlayerJob> & { task_run?: TaskRun | nu
   };
 }
 
-const bugChoiceRun: TaskRun = {
-  ...freshRun(42),
-  step: "bug_choice",
-  start_paid: true,
-  mode: "agent",
-  ticket: "correct",
-  build: "careful",
-  build_runner: "agent",
-  coder: agentSnapshot("claude_inspired"),
-  bug_ids: ["b0", "b1", "b2"],
-  fixed_bug_ids: [],
-  bugs_total: 3,
-  bugs_caught: 0,
-  build_progress: 1,
-};
+function bugChoiceRun(bugIds: string[], seed: number): TaskRun {
+  return {
+    ...freshRun(seed),
+    step: "bug_choice",
+    start_paid: true,
+    mode: "agent",
+    ticket: "correct",
+    build: "careful",
+    build_runner: "agent",
+    coder: agentSnapshot("claude_inspired"),
+    bug_ids: bugIds,
+    fixed_bug_ids: [],
+    bugs_total: bugIds.length,
+    bugs_caught: 0,
+    build_progress: 1,
+  };
+}
 
 const readyRun: TaskRun = {
   ...freshRun(99),
@@ -92,7 +94,9 @@ career = {
   agents: { owned: ["copilot_inspired", "claude_inspired"] },
   player_jobs: [
     job("smoke-select", { task_run: selectRun }),
-    job("smoke-bugs", { task_run: bugChoiceRun, bugs: 3 }),
+    job("smoke-bugs", { task_run: bugChoiceRun(["b0", "b1", "b2"], 42), bugs: 3 }),
+    job("smoke-fix-1bug", { task_run: bugChoiceRun(["only"], 51), bugs: 1 }),
+    job("smoke-fix-3bug", { task_run: bugChoiceRun(["b0", "b1", "b2"], 52), bugs: 3 }),
     job("smoke-ready", { task_run: readyRun }),
   ],
 };

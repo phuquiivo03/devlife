@@ -6,6 +6,8 @@ commit (Cờlốt / Củsỏ / Câupilot); do not rename.
 
 P2 starts only after P1 is merged into this branch and its tests pass.
 
+**P1 status:** implemented (see commit after `5aeccd1`). Smoke: 8/8 with `--workers=1`.
+
 ---
 
 ## P1 — "Agent fix bug" screen stuck, no visible progress

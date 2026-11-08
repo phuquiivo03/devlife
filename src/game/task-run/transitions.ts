@@ -265,7 +265,11 @@ export function chooseTaskFixer(
     next = { ...next, step: "test", fixer_id: null };
   } else {
     if (!ownsAgent(state, target)) return fail(state, "Chưa sở hữu agent này.");
-    next = { ...next, step: "agent_fix", fixer_id: target };
+    if (remainingFixWork(job.task_run) <= 1e-9) {
+      next = { ...next, step: "ready", fixer_id: null };
+    } else {
+      next = { ...next, step: "agent_fix", fixer_id: target };
+    }
   }
   return ok(patchJob(state, jobId, { ...job, task_run: next }), []);
 }
@@ -318,42 +322,47 @@ export function checkpointAgentFix(
   state: CareerState,
   jobId: string,
   revision: number,
-  workDone: number,
+  workDelta: number,
 ): ActionResult {
   const job = findJob(state, jobId);
   if (!job?.task_run || job.task_run.step !== "agent_fix" || job.task_run.revision !== revision) {
     return ok(state, []);
   }
   const run = job.task_run;
-  const fixer = run.fixer_id;
-  if (!fixer) return ok(state, []);
+  if (!run.fixer_id) return ok(state, []);
 
-  const remaining = Math.max(0, remainingFixWork(run) - workDone);
   const total = run.bug_ids.length;
-  if (total === 0) return ok(state, []);
+  if (total === 0 || remainingFixWork(run) <= 1e-9) {
+    const nextRun = bumpRevision(
+      syncBugCounters({ ...run, step: "ready", fixer_id: null }),
+    );
+    return ok(patchJob(state, jobId, { ...job, task_run: nextRun }), []);
+  }
 
+  const weight = 1 / total;
+  let budget = Math.min(1, Math.max(0, workDelta));
   const fixed = [...run.fixed_bug_ids];
   let partial = run.fix_partial;
-  const weight = 1 / total;
-  let workLeft = remaining * total;
 
   for (const id of run.bug_ids) {
     if (fixed.includes(id)) continue;
-    const need = partial?.bug_id === id ? partial.left * weight : weight;
-    if (workLeft <= 0) break;
-    if (workLeft >= need) {
-      fixed.push(id);
-      partial = null;
-      workLeft -= need;
-    } else {
-      partial = { bug_id: id, left: (need - workLeft) / weight };
-      workLeft = 0;
+    const need = (partial?.bug_id === id ? partial.left : 1) * weight;
+    if (budget < need - 1e-9) {
+      partial = { bug_id: id, left: (need - budget) / weight };
+      budget = 0;
+      break;
     }
+    fixed.push(id);
+    partial = null;
+    budget -= need;
   }
 
-  let nextRun = syncBugCounters(bumpRevision({ ...run, fixed_bug_ids: fixed, fix_partial: partial }));
-  if (nextRun.fixed_bug_ids.length >= nextRun.bug_ids.length) {
-    nextRun = { ...nextRun, step: "ready", fixer_id: null };
+  let nextRun = syncBugCounters({ ...run, fixed_bug_ids: fixed, fix_partial: partial });
+  if (
+    nextRun.fixed_bug_ids.length >= nextRun.bug_ids.length ||
+    remainingFixWork(nextRun) <= 1e-9
+  ) {
+    nextRun = bumpRevision({ ...nextRun, step: "ready", fixer_id: null });
   }
   return ok(patchJob(state, jobId, { ...job, task_run: nextRun }), []);
 }
