@@ -4,7 +4,7 @@ Freelance **Nhận** opens a CRT terminal over the center column (`TaskRunOverla
 
 Each run is about 30 seconds for the manual path. Agent paths scale with `time_multiplier`. Copy is Vietnamese. Technical words stay in English and have a tap/hover tooltip from `glossary`.
 
-Licensed coding agents live in the store tab **AI Agent** (`config/agents.json`). After `freelance_completed >= 1`, the shop sells Cờlốt, Củsỏ, and Câupilot. Agents can code (careful path, seeded event + bug filter) and optionally fix bugs on step `bug_choice`.
+Licensed coding agents live in the store tab **AI Agent** (`config/agents.json`). After `freelance_completed >= 1`, the shop sells monthly licenses (default **28 in-game days**, `license_days`, same length as `LIFE.days_per_month`) for Cờlốt, Củsỏ, and Câupilot. Active while `game_day < expires_day`; repurchase only after expiry (no auto-renew). Agents can code (careful path, seeded event + bug filter) and optionally fix bugs on step `bug_choice` when the license is active. In-flight build/fix on a run keeps its snapshot even if the license expires before **Xong**.
 
 ## Steps
 
@@ -37,4 +37,4 @@ Success also emits the existing `jobCompleted`, `moneyChanged`, and `skillXpGain
 
 ## Save
 
-`player_jobs.task_run` holds the step, seed, choices, bug ids, agent fields, retries, and outcome. Persist version **27** adds `career.agents`, task steps `select|bug_choice|agent_fix|ready`, and migration for in-flight runs. Older saves load with `task_run` null or normalized defaults.
+`player_jobs.task_run` holds the step, seed, choices, bug ids, agent fields, retries, and outcome. Persist version **27** adds `career.agents`, task steps `select|bug_choice|agent_fix|ready`, and migration for in-flight runs. Version **28** adds `career.agents.licenses` for monthly windows. Older saves load with `task_run` null or normalized defaults.

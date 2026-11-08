@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { AGENTS, agentById, agentIconPath } from "@/game/agents/content";
-import { agentBuyBlock, ownsAgent } from "@/game/agents/logic";
+import {
+  agentActive,
+  agentBuyBlock,
+  agentDaysLeft,
+  agentLicenseExpired,
+  ownsAgent,
+} from "@/game/agents/logic";
 import type { AgentId } from "@/game/agents/types";
 import { useGameStore } from "@/game/state/store";
 import { formatVnd } from "@/lib/format-currency";
@@ -25,26 +31,31 @@ export function AgentShopGrid({ ownedMode = false }: { ownedMode?: boolean }) {
     : AGENTS.agents;
 
   if (list.length === 0) {
-    return <p className={agentStyles.empty}>{ownedMode ? "Chưa sở hữu license AI." : ""}</p>;
+    return <p className={agentStyles.empty}>{ownedMode ? "Chưa từng mua license AI." : ""}</p>;
   }
 
   return (
     <div className={agentStyles.wrap}>
       {!ownedMode ? (
         <p className={agentStyles.disclaimer}>
-          Giá và chỉ số agent đang thử nghiệm — có thể chỉnh sau khi cân bằng.
+          Giá thuê license 1 tháng trong game ({AGENTS.license_days ?? 28} ngày) — có thể chỉnh sau khi cân bằng.
         </p>
       ) : null}
       <ul className={agentStyles.grid} data-agent-shop-grid="" data-testid={ownedMode ? "owned-agents-grid" : "agent-shop-grid"}>
         {list.map((agent) => {
           const id = agent.id as AgentId;
-          const owned = ownsAgent(career, id);
-          const reason = owned ? null : agentBuyBlock(career, id);
-          const busy = taskJobId != null && owned;
+          const everOwned = ownsAgent(career, id);
+          const active = agentActive(career, id);
+          const expired = agentLicenseExpired(career, id);
+          const daysLeft = agentDaysLeft(career, id);
+          const reason = active ? null : agentBuyBlock(career, id);
+          const canPurchase = !active && reason == null;
+          const busy = taskJobId != null && active;
           const bugPct = Math.round(agent.bug_survival * 100);
+          const lowDays = active && daysLeft <= 3;
 
           return (
-            <li key={id} className={cn(agentStyles.card, owned && agentStyles.owned)} data-testid={`agent-card-${id}`}>
+            <li key={id} className={cn(agentStyles.card, active && agentStyles.owned)} data-testid={`agent-card-${id}`}>
               <div className={agentStyles.header}>
                 <img src={agentIconPath(id, 64)} width={52} height={52} alt="" className={agentStyles.art} />
                 <div className={agentStyles.titleBlock}>
@@ -54,7 +65,7 @@ export function AgentShopGrid({ ownedMode = false }: { ownedMode?: boolean }) {
               </div>
 
               <dl className={agentStyles.stats}>
-                <dt>Giá</dt>
+                <dt>Giá / tháng</dt>
                 <dd>{formatVnd(agent.price)}</dd>
                 <dt>Thời gian</dt>
                 <dd title={`Hệ số thời gian code/fix so với manual (1 = như tự làm).`}>
@@ -75,22 +86,30 @@ export function AgentShopGrid({ ownedMode = false }: { ownedMode?: boolean }) {
               </dl>
 
               <p
-                className={cn(agentStyles.status, reason != null && !owned && agentStyles.statusBlock)}
+                className={cn(
+                  agentStyles.status,
+                  lowDays && agentStyles.statusWarn,
+                  reason != null && !active && agentStyles.statusBlock,
+                  expired && agentStyles.statusExpired,
+                )}
+                data-testid={`agent-license-status-${id}`}
               >
-                {owned
+                {active
                   ? busy
-                    ? "Đang giúp task"
-                    : "Đã sở hữu · sẵn sàng"
-                  : reason ?? "Chưa sở hữu"}
+                    ? `Đang giúp task · còn ${daysLeft} ngày`
+                    : `Còn ${daysLeft} ngày`
+                  : expired
+                    ? "Hết hạn"
+                    : reason ?? "Chưa mua license"}
               </p>
 
-              {!ownedMode && !owned ? (
+              {!ownedMode && canPurchase ? (
                 <div className={agentStyles.actions}>
                   {confirmId === id ? (
                     <>
                       <p className={agentStyles.confirmCopy}>
-                        Mua {agent.name}? Số dư {formatVnd(career.players.money)} →{" "}
-                        {formatVnd(career.players.money - agent.price)}
+                        {expired ? "Mua lại" : "Mua"} {agent.name} ({AGENTS.license_days ?? 28} ngày)? Số dư{" "}
+                        {formatVnd(career.players.money)} → {formatVnd(career.players.money - agent.price)}
                       </p>
                       <PixelButton
                         variant="primary"
@@ -100,7 +119,7 @@ export function AgentShopGrid({ ownedMode = false }: { ownedMode?: boolean }) {
                           setConfirmId(null);
                         }}
                       >
-                        Xác nhận mua
+                        Xác nhận {expired ? "mua lại" : "mua"}
                       </PixelButton>
                       <PixelButton variant="secondary" onClick={() => setConfirmId(null)}>
                         Hủy
@@ -110,10 +129,10 @@ export function AgentShopGrid({ ownedMode = false }: { ownedMode?: boolean }) {
                     <PixelButton
                       variant="primary"
                       disabled={reason != null}
-                      data-testid={`agent-buy-${id}`}
+                      data-testid={expired ? `agent-rebuy-${id}` : `agent-buy-${id}`}
                       onClick={() => setConfirmId(id)}
                     >
-                      Mua
+                      {expired || everOwned ? "Mua lại" : "Mua"}
                     </PixelButton>
                   )}
                 </div>

@@ -21,12 +21,19 @@ export type AgentDef = {
 export type AgentsCatalog = {
   version: number;
   gate_freelance_completed: number;
+  license_days: number;
   intro_sec: number;
   agents: readonly AgentDef[];
 };
 
+export type AgentLicenseRecord = {
+  bought_day: number;
+  expires_day: number;
+};
+
 export type AgentsState = {
   owned: AgentId[];
+  licenses: Partial<Record<AgentId, AgentLicenseRecord>>;
 };
 
 export type AgentSnapshot = {

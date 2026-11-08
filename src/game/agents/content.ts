@@ -1,5 +1,5 @@
 import agentsConfig from "../../../config/agents.json";
-import type { AgentId, AgentsCatalog, AgentDef } from "./types";
+import type { AgentId, AgentsCatalog, AgentDef, AgentsState } from "./types";
 import { AGENT_IDS } from "./types";
 
 export const AGENTS = agentsConfig as AgentsCatalog;
@@ -20,6 +20,6 @@ export function agentIconPath(id: AgentId, size: 64 | 256 | 512): string {
   return `/icons/agents/agent_${id}_${size}.png`;
 }
 
-export function defaultAgentsState() {
-  return { owned: [] as AgentId[] };
+export function defaultAgentsState(): AgentsState {
+  return { owned: [], licenses: {} };
 }

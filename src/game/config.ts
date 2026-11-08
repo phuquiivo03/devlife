@@ -15,7 +15,7 @@ export const STAGES = ["student", "junior", "senior"] as const;
 export type StageId = (typeof STAGES)[number];
 
 export const PERSIST_KEY = "devlife:v1";
-export const PERSIST_VERSION = 27;
+export const PERSIST_VERSION = 28;
 /**
  * v1: stage, loadouts, showCharacter.
  * v2: in-game `totalMinutes` (see docs/systems/time.md).

@@ -91,7 +91,13 @@ career = {
     introVideoSeen: true,
     name: "Smoke",
   },
-  agents: { owned: ["copilot_inspired", "claude_inspired"] },
+  agents: {
+    owned: ["copilot_inspired", "claude_inspired"],
+    licenses: {
+      copilot_inspired: { bought_day: 1, expires_day: 29 },
+      claude_inspired: { bought_day: 1, expires_day: 29 },
+    },
+  },
   player_jobs: [
     job("smoke-select", { task_run: selectRun }),
     job("smoke-bugs", { task_run: bugChoiceRun(["b0", "b1", "b2"], 42), bugs: 3 }),
@@ -118,6 +124,24 @@ mkdirSync(outDir, { recursive: true });
 writeFileSync(
   join(outDir, "agent-smoke-persist.json"),
   JSON.stringify({ version: PERSIST_VERSION, state: migrated }),
+);
+
+const licenseUi = {
+  ...migrated,
+  career: {
+    ...migrated.career,
+    agents: {
+      owned: ["copilot_inspired", "claude_inspired"],
+      licenses: {
+        claude_inspired: { bought_day: 1, expires_day: 29 },
+        copilot_inspired: { bought_day: 1, expires_day: 4 },
+      },
+    },
+  },
+};
+writeFileSync(
+  join(outDir, "agent-license-ui-persist.json"),
+  JSON.stringify({ version: PERSIST_VERSION, state: licenseUi }),
 );
 
 const B = 4;

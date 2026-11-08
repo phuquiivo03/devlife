@@ -129,6 +129,14 @@
   color: var(--accent-coral);
 }
 
+.statusWarn {
+  color: var(--accent-coral);
+}
+
+.statusExpired {
+  color: var(--accent-coral);
+}
+
 .actions {
   display: flex;
   flex-direction: column;

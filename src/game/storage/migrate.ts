@@ -48,7 +48,7 @@ import type {
 } from "../career/types";
 import type { EmploymentApplication, EmploymentState } from "../career/types";
 import { isOpeningStep, type OpeningStep } from "../opening/flow";
-import { normalizeAgents } from "../agents/logic";
+import { grantGraceLicenses, normalizeAgents } from "../agents/logic";
 import { TASK_RUN_DEFAULTS } from "../task-run/machine";
 
 export type PersistedSave = {
@@ -1044,6 +1044,13 @@ export function migrateSave(
           },
         };
       }),
+    };
+  }
+
+  if (version < 28) {
+    career = {
+      ...career,
+      agents: grantGraceLicenses(normalizeAgents(career.agents), snap.day),
     };
   }
 

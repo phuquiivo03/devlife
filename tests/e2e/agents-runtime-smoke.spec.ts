@@ -9,13 +9,21 @@ const PERSIST = readFileSync(
   join(process.cwd(), "tests/e2e/fixtures/agent-smoke-persist.json"),
   "utf8",
 );
+const LICENSE_UI_PERSIST = readFileSync(
+  join(process.cwd(), "tests/e2e/fixtures/agent-license-ui-persist.json"),
+  "utf8",
+);
 
-async function bootSeeded(page: import("@playwright/test").Page, viewport: { width: number; height: number }) {
+async function bootSeeded(
+  page: import("@playwright/test").Page,
+  viewport: { width: number; height: number },
+  persist = PERSIST,
+) {
   await page.setViewportSize(viewport);
   await page.addInitScript((raw) => {
     if (localStorage.getItem("devlife:v1")) return;
     localStorage.setItem("devlife:v1", raw);
-  }, PERSIST);
+  }, persist);
   await page.goto("/?debug=1");
   await expect(page.locator("canvas").first()).toBeVisible({ timeout: 20000 });
   await expect(page.getByTestId("intro-video")).toBeHidden({ timeout: 15000 }).catch(() => {});
@@ -75,6 +83,19 @@ async function openJobsManage(page: import("@playwright/test").Page) {
 test.describe.configure({ mode: "serial", timeout: 180_000 });
 
 test.describe("agent runtime smoke (seeded save)", () => {
+  test("license days left and expired Mua lại UI", async ({ page }) => {
+    await page.addInitScript(() => localStorage.removeItem("devlife:v1"));
+    await bootSeeded(page, { width: 1440, height: 900 }, LICENSE_UI_PERSIST);
+    const storeBar = page.getByTestId("open-store-bar").or(page.getByRole("button", { name: "Cửa hàng" }));
+    await storeBar.scrollIntoViewIfNeeded();
+    await storeBar.click();
+    await page.getByTestId("store-tab-agents").click({ force: true });
+    await expect(page.getByTestId("agent-license-status-claude_inspired")).toContainText(/Còn \d+ ngày/);
+    await expect(page.getByTestId("agent-license-status-copilot_inspired")).toContainText("Hết hạn");
+    await expect(page.getByTestId("agent-rebuy-copilot_inspired")).toBeVisible();
+    await page.screenshot({ path: "/opt/cursor/artifacts/runtime-shop-license-days-expired.png" });
+  });
+
   test("shop AI tab desktop + mobile", async ({ page }) => {
     await bootSeeded(page, { width: 1440, height: 900 });
     const storeBar = page.getByTestId("open-store-bar").or(page.getByRole("button", { name: "Cửa hàng" }));

@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { defaultCareer } from "@/game/career/actions";
 import { SIM_CATALOG } from "@/game/career/content";
-import { agentBuyBlock, buyAgent, filterBugsForAgent, agentSnapshot, retryEnergyCost } from "@/game/agents/logic";
+import {
+  agentBuyBlock,
+  buyAgent,
+  filterBugsForAgent,
+  agentSnapshot,
+  retryEnergyCost,
+  licenseDays,
+} from "@/game/agents/logic";
+import type { AgentId } from "@/game/agents/types";
 import { TASK_RUN } from "@/game/task-run/content";
 import { agentFixTotalSec, buildRemainingSec } from "@/game/task-run/timing";
 import { freshRun } from "@/game/task-run/machine";
@@ -16,8 +24,16 @@ import {
 } from "@/game/task-run/apply";
 import { applyRetry } from "@/game/task-run/machine";
 
+function activeAgents(state: ReturnType<typeof defaultCareer>, ids: AgentId[]) {
+  const day = state.players.game_day;
+  const licenses = Object.fromEntries(
+    ids.map((id) => [id, { bought_day: day, expires_day: day + licenseDays() }]),
+  );
+  return { ...state, agents: { owned: ids, licenses } };
+}
+
 describe("agents shop", () => {
-  it("blocks purchase before gate and duplicate buy", () => {
+  it("blocks purchase before gate and duplicate buy while active", () => {
     let state = defaultCareer(1, 480, "student", SIM_CATALOG);
     const id = "copilot_inspired" as const;
     expect(agentBuyBlock(state, id)).toMatch(/freelance/);
@@ -26,18 +42,20 @@ describe("agents shop", () => {
     const first = buyAgent(state, id);
     expect(first.error).toBeNull();
     const second = buyAgent(first.state, id);
-    expect(second.error).toMatch(/Đã có/);
+    expect(second.error).toMatch(/Còn/);
   });
 });
 
 describe("agent task path", () => {
   it("keeps bug ids on retry after agent code", () => {
     const base = defaultCareer(3, 480, "student", SIM_CATALOG);
-    const withMoney = {
-      ...base,
-      players: { ...base.players, freelance_completed: 2, money: 5_000_000, energy: 80 },
-      agents: { owned: ["copilot_inspired" as const] },
-    };
+    const withMoney = activeAgents(
+      {
+        ...base,
+        players: { ...base.players, freelance_completed: 2, money: 5_000_000, energy: 80 },
+      },
+      ["copilot_inspired"],
+    );
     const board = ensureTodayBoard(withMoney, 3, SIM_CATALOG);
     const names = skillNameMap(SIM_CATALOG.skills);
     const boardJob = board.state.player_jobs.find((row) => {
@@ -92,11 +110,13 @@ describe("combined agent + manual paths", () => {
 
 function seedAgentCodeJob() {
   const base = defaultCareer(3, 480, "student", SIM_CATALOG);
-  const withMoney = {
-    ...base,
-    players: { ...base.players, freelance_completed: 2, money: 2_000_000, energy: 80 },
-    agents: { owned: ["claude_inspired" as const] },
-  };
+  const withMoney = activeAgents(
+    {
+      ...base,
+      players: { ...base.players, freelance_completed: 2, money: 2_000_000, energy: 80 },
+    },
+    ["claude_inspired"],
+  );
   const board = ensureTodayBoard(withMoney, 3, SIM_CATALOG);
   const job = board.state.player_jobs.find((row) => row.status === "offered");
   if (!job) throw new Error("no job");
@@ -146,11 +166,13 @@ describe("payout gating", () => {
   it("charges energy once on begin and pays only on commit", () => {
     const base = defaultCareer(3, 480, "student", SIM_CATALOG);
     const board = ensureTodayBoard(
-      {
-        ...base,
-        players: { ...base.players, energy: 60, freelance_completed: 2, money: 1_000_000 },
-        agents: { owned: ["copilot_inspired"] },
-      },
+      activeAgents(
+        {
+          ...base,
+          players: { ...base.players, energy: 60, freelance_completed: 2, money: 1_000_000 },
+        },
+        ["copilot_inspired"],
+      ),
       3,
       SIM_CATALOG,
     );

@@ -9,7 +9,7 @@ import { MINUTES_PER_DAY } from "@/game/time";
 
 describe("intro video save", () => {
   it("bumps the persist version and keeps the dream line in content", () => {
-    expect(PERSIST_VERSION).toBe(27);
+    expect(PERSIST_VERSION).toBe(28);
     expect(INTRO_SUBTITLE).toContain("Chỉ là giấc mơ thôi");
     expect(INTRO_WAKE_MINUTE).toBe(7 * 60);
   });

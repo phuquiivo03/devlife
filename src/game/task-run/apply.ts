@@ -32,7 +32,7 @@ import {
   type SimCatalog,
 } from "../career/types";
 import { TASK_RUN } from "./content";
-import { anyAgentOwned, retryEnergyCost } from "../agents/logic";
+import { anyAgentActive, retryEnergyCost } from "../agents/logic";
 import { bugCount, rollTaskEvent, taskSeed } from "./formula";
 import { primarySkillId, ticketForSkill } from "./helpers";
 import {
@@ -211,7 +211,7 @@ export function beginTest(state: CareerState, jobId: string): ActionResult {
   }
   if (found.run.step !== "build" || found.run.build === null) return fail(state, "Chưa đóng gói xong");
   let run = applyBeginTest(found.run);
-  if (run.bug_ids.length > 0 && anyAgentOwned(state)) {
+  if (run.bug_ids.length > 0 && anyAgentActive(state)) {
     run = bumpRevision({ ...run, step: "bug_choice" });
     return ok(patchJob(state, jobId, { ...found.job, task_run: run }), []);
   }
@@ -286,7 +286,7 @@ export function retryTask(state: CareerState, jobId: string, catalog: SimCatalog
   if (state.players.energy < cost) return fail(state, "Không đủ năng lượng");
 
   const spent = applyActionStats(state, { energy: -cost });
-  const run = applyRetry(found.run, anyAgentOwned(spent.state));
+  const run = applyRetry(found.run, anyAgentActive(spent.state));
   return {
     ...ok(
       patchJob(spent.state, jobId, { ...found.job, task_run: run }),

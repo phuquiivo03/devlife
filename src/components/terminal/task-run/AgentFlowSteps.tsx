@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AGENTS, agentById, agentIconPath } from "@/game/agents/content";
-import { agentShopUnlocked, ownsAgent } from "@/game/agents/logic";
+import { agentActive, agentDaysLeft, agentShopUnlocked, ownsAgent } from "@/game/agents/logic";
 import type { AgentId } from "@/game/agents/types";
 import { TASK_RUN } from "@/game/task-run/content";
 import { buildRemainingSec, agentFixTotalSec, manualBudgetSec } from "@/game/task-run/timing";
@@ -35,7 +35,10 @@ export function SelectStep({ jobId, pay, energyCost }: { jobId: string; pay: num
   const openStoreAgents = useGameStore((s) => s.openStoreAgents);
   const close = useGameStore((s) => s.closeTask);
   const unlocked = agentShopUnlocked(career);
-  const owned = AGENTS.agents.filter((a) => ownsAgent(career, a.id as AgentId));
+  const activeAgents = AGENTS.agents.filter((a) => agentActive(career, a.id as AgentId));
+  const hadExpired = AGENTS.agents.some(
+    (a) => ownsAgent(career, a.id as AgentId) && !agentActive(career, a.id as AgentId),
+  );
 
   return (
     <div data-testid="task-step-select">
@@ -53,22 +56,29 @@ export function SelectStep({ jobId, pay, energyCost }: { jobId: string; pay: num
       </button>
       {unlocked ? (
         <>
-          <p className="terminal-sage mt-4">Hoặc chọn agent đã mua:</p>
-          {owned.length === 0 ? (
-            <p className="terminal-sage">Chưa có license — mua trong Cửa hàng tab AI Agent.</p>
+          <p className="terminal-sage mt-4">Hoặc chọn agent có license còn hạn:</p>
+          {hadExpired ? (
+            <p className="terminal-sage">Một số license đã hết hạn — gia hạn trong Cửa hàng tab AI Agent.</p>
           ) : null}
-          {owned.map((agent, index) => (
-            <button
-              key={agent.id}
-              type="button"
-              className="terminal-cmd flex items-center gap-2"
-              data-testid={`task-pick-agent-${agent.id}`}
-              onClick={() => begin({ mode: "agent", coderId: agent.id as AgentId })}
-            >
-              <img src={agentIconPath(agent.id as AgentId, 64)} width={32} height={32} alt="" />
-              [{index + 2}] {agent.name} · {agent.chip}
-            </button>
-          ))}
+          {activeAgents.length === 0 ? (
+            <p className="terminal-sage">Chưa có license còn hạn — mua trong Cửa hàng tab AI Agent.</p>
+          ) : null}
+          {activeAgents.map((agent, index) => {
+            const id = agent.id as AgentId;
+            const left = agentDaysLeft(career, id);
+            return (
+              <button
+                key={agent.id}
+                type="button"
+                className="terminal-cmd flex items-center gap-2"
+                data-testid={`task-pick-agent-${agent.id}`}
+                onClick={() => begin({ mode: "agent", coderId: id })}
+              >
+                <img src={agentIconPath(id, 64)} width={32} height={32} alt="" />
+                [{index + 2}] {agent.name} · {agent.chip} · còn {left} ngày
+              </button>
+            );
+          })}
         </>
       ) : (
         <p className="terminal-sage mt-4">Hoàn thành {AGENTS.gate_freelance_completed} việc freelance để mở agent.</p>
@@ -142,7 +152,7 @@ export function BugChoiceStep({ run }: { run: TaskRun }) {
       <button type="button" className="terminal-cmd mt-3" data-testid="task-fix-manual" onClick={() => choose("manual")}>
         [1] Tự bắt bug (manual test)
       </button>
-      {AGENTS.agents.filter((a) => ownsAgent(career, a.id as AgentId)).map((agent, index) => (
+      {AGENTS.agents.filter((a) => agentActive(career, a.id as AgentId)).map((agent, index) => (
         <button
           key={agent.id}
           type="button"
@@ -150,7 +160,7 @@ export function BugChoiceStep({ run }: { run: TaskRun }) {
           data-testid={`task-fix-agent-${agent.id}`}
           onClick={() => choose(agent.id as AgentId)}
         >
-          [{index + 2}] {agent.name} sửa giúp
+          [{index + 2}] {agent.name} sửa giúp · còn {agentDaysLeft(career, agent.id as AgentId)} ngày
         </button>
       ))}
     </div>

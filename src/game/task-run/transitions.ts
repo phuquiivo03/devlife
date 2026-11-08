@@ -1,10 +1,11 @@
 import type { GameEvent } from "../events/types";
 import {
   agentSnapshot,
-  anyAgentOwned,
-  ownsAgent,
+  agentActive,
+  anyAgentActive,
   agentShopUnlocked,
   filterBugsForAgent,
+  ownsAgent,
 } from "../agents/logic";
 import { AGENTS } from "../agents/content";
 import type { AgentId } from "../agents/types";
@@ -177,7 +178,12 @@ export function beginTaskRun(
   }
 
   if (!agentShopUnlocked(spent.state)) return fail(spent.state, "Hoàn thành 1 việc freelance để mở.");
-  if (!ownsAgent(spent.state, choice.coderId)) return fail(spent.state, "Chưa sở hữu agent này.");
+  if (!agentActive(spent.state, choice.coderId)) {
+    return fail(
+      spent.state,
+      ownsAgent(spent.state, choice.coderId) ? "License agent đã hết hạn." : "Chưa có license agent này.",
+    );
+  }
 
   const snapshot = agentSnapshot(choice.coderId);
   const rolled = rollTaskEvent(run.seed, TASK_RUN.event_chance, TASK_RUN.events);
@@ -238,7 +244,7 @@ export function routeManualBuildComplete(state: CareerState, jobId: string): Act
   const job = findJob(state, jobId);
   if (!job?.task_run) return ok(state, []);
   const run = job.task_run;
-  if (run.bug_ids.length > 0 && anyAgentOwned(state)) {
+  if (run.bug_ids.length > 0 && anyAgentActive(state)) {
     return ok(
       patchJob(state, jobId, { ...job, task_run: bumpRevision({ ...run, step: "bug_choice" }) }),
       [],
@@ -264,7 +270,12 @@ export function chooseTaskFixer(
   if (target === "manual") {
     next = { ...next, step: "test", fixer_id: null };
   } else {
-    if (!ownsAgent(state, target)) return fail(state, "Chưa sở hữu agent này.");
+    if (!agentActive(state, target)) {
+      return fail(
+        state,
+        ownsAgent(state, target) ? "License agent đã hết hạn." : "Chưa có license agent này.",
+      );
+    }
     if (remainingFixWork(job.task_run) <= 1e-9) {
       next = { ...next, step: "ready", fixer_id: null };
     } else {

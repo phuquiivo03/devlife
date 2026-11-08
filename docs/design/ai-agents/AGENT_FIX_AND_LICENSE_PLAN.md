@@ -121,7 +121,9 @@ Expected unit baseline: only the 3 known failures from `main`
 
 ---
 
-## P2 — Agent license lasts 1 in-game month (plan only)
+## P2 — Agent license lasts 1 in-game month
+
+**P2 status:** implemented on branch `cursor/ai-agent-trio-stage1-4275` (PERSIST 28, `agents.licenses`, shop/task gating).
 
 ### Calendar convention
 

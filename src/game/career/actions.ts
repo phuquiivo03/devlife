@@ -34,6 +34,7 @@ import {
   scaleXpForMood,
 } from "../life/logic";
 import { defaultAgentsState } from "../agents/content";
+import { applyAgentLicenseExpiryNotices } from "../agents/logic";
 import {
   LOCAL_PLAYER_ID,
   SKILL_IDS,
@@ -259,8 +260,9 @@ export function applyDayStarted(
   const synced = syncPlayerClock(lived.state, day, minuteOfDay, stage);
   const fulltime = fulltimeDayStart(synced, day, minuteOfDay, catalog);
   const board = refreshBoard(fulltime, day, catalog);
+  const noticed = applyAgentLicenseExpiryNotices(board.state, day);
   return {
-    ...ok(board.state, [...lived.events, ...board.events]),
+    ...ok(noticed, [...lived.events, ...board.events]),
     skipDays: lived.skipDays,
   };
 }

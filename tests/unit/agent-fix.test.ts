@@ -35,7 +35,10 @@ function seedAgentFix(
   };
   const state = {
     ...base,
-    agents: { owned: ["copilot_inspired"] },
+    agents: {
+      owned: ["copilot_inspired"],
+      licenses: { copilot_inspired: { bought_day: 3, expires_day: 31 } },
+    },
     player_jobs: [
       {
         id: "j",

@@ -1,6 +1,7 @@
 {
   "version": 1,
   "gate_freelance_completed": 1,
+  "license_days": 28,
   "intro_sec": 5,
   "agents": [
     {
