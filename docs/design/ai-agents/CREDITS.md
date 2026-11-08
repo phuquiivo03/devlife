@@ -1,6 +1,6 @@
 # Credits and provenance — AI agent trio v3
 
-Three original 2D mascot portraits for the in-game AI Agent shop: **Mọt Mơ** (`claude_inspired`), **Vút Vít** (`cursor_inspired`) and **Kính Bay** (`copilot_inspired`).
+Three original 2D mascot portraits for the in-game AI Agent shop: **Cờlốt** (`claude_inspired`), **Củsỏ** (`cursor_inspired`) and **Câupilot** (`copilot_inspired`).
 
 ## Not affiliated
 
@@ -16,7 +16,7 @@ This is a provenance statement, not a legal clearance opinion.
 - References: the superseded v2 3D masters were used only for silhouette and palette. The v3 prompts reject their 3D look. No Blender, `.blend`, GLB or 3D scene was used for v3, and none is needed.
 - The generator returned JPEG RGB 1024×1024 on a magenta chroma background. Those files are kept unchanged as `<id>_generated_original.jpg`.
 - Alpha: chroma segmentation, largest component kept, interior filled, contaminated edge strip removed, antialias colour rebuilt from clean contours, premultiplied-alpha resize. No shadow or matte.
-- Palette hexes are target anchors in the prompts. Shaded pixels are not guaranteed to match them exactly. Kính Bay uses the current GitHub parent-brand green, not a Copilot-specific palette.
+- Palette hexes are target anchors in the prompts. Shaded pixels are not guaranteed to match them exactly. Câupilot uses the current GitHub parent-brand green, not a Copilot-specific palette.
 
 ## Review and validation
 

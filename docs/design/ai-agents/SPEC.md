@@ -4,7 +4,7 @@
 
 **Mục tiêu:** người chơi mua trợ lý phần mềm để bớt thao tác coding, nhưng tự chọn ai sửa bug và tự nhấn **Xong** mới giao bài/nhận thưởng.
 
-- MVP gồm đúng **3 agent**, lấy cảm hứng Claude, Cursor, GitHub Copilot; mỗi agent có giá, thời gian code/fix và tỷ lệ bug khác nhau. Tên hiển thị **Mọt Mơ / Vút Vít / Kính Bay** dùng theo bộ Art đã được PM chấp nhận cho design; **ID ổn định** `claude_inspired`, `cursor_inspired`, `copilot_inspired` dùng ghép asset/config, không đổi theo tên.
+- MVP gồm đúng **3 agent**, lấy cảm hứng Claude, Cursor, GitHub Copilot; mỗi agent có giá, thời gian code/fix và tỷ lệ bug khác nhau. Tên hiển thị **Cờlốt / Củsỏ / Câupilot** dùng theo bộ Art đã được PM chấp nhận cho design; **ID ổn định** `claude_inspired`, `cursor_inspired`, `copilot_inspired` dùng ghép asset/config, không đổi theo tên.
 - Đây là mô phỏng game, không tích hợp sản phẩm/provider thật. Tốc độ, giá và xác suất dưới đây chỉ là **đề xuất cân bằng**, không benchmark/claim về Claude, Cursor hoặc GitHub Copilot. Không token/subscription/phí lượt/API key/tiền thật.
 - Cả 3 đều **code và fix**; không khóa utility theo tier. Mua đứt mỗi license một lần; có thể sở hữu cả 3, chọn một coder mỗi run và một fixer mỗi lần xử lý bug. Không auto-accept/auto-submit, không chạy nền/parallel.
 - Manual luôn dùng được, không cần mua. Người chơi nhận → mở task → chọn tự làm/agent → coding → chọn tự fix/agent fix nếu có bug → **Xong**.
@@ -37,7 +37,7 @@ Mỗi card: avatar 64px, tên vui + loại Coding Agent, giá mua một lần, s
 - **Bug:** “25% / 80% / 60% mỗi bug tiềm năng còn lại” + tooltip định nghĩa ở mục 4.2. Không ghi số này thành xác suất có bug trên mọi task.
 - **Giá:** 900.000đ / 1.200.000đ / 180.000đ; ghi “Cân bằng thử nghiệm”. Chip Nhẹ bug / Chạy lẹ / Dễ mua không thay số.
 
-Đề xuất mở **cả ba** sau một job freelance thành công (`freelance_completed >= 1`); không bắt mua rẻ trước. Kính Bay 180.000đ là entry sớm, bằng mức công job landing-html được ghi trong tài liệu lịch sử; không bảo đảm số dư sau sinh hoạt đủ mua. Đây là lựa chọn giá/gate chờ síp review, không thay gate shop cũ.
+Đề xuất mở **cả ba** sau một job freelance thành công (`freelance_completed >= 1`); không bắt mua rẻ trước. Câupilot 180.000đ là entry sớm, bằng mức công job landing-html được ghi trong tài liệu lịch sử; không bảo đảm số dư sau sinh hoạt đủ mua. Đây là lựa chọn giá/gate chờ síp review, không thay gate shop cũ.
 
 Bấm Mua → “Mua [tên] với [giá hiện tại]?” + số dư trước/sau + mua đứt/không tự giao → Hủy / Xác nhận mua. Chỉ confirm trừ tiền và ghi unique ownership theo ID nguyên tử; thiếu tiền/đã có/lặp click no-op có lý do. Sau mua không tự chạy task. Không discount/upgrade/resale trong MVP.
 
@@ -84,11 +84,11 @@ Chỉ Xong hợp lệ mới commit completed/reward/milestone/cue đúng một l
 
 | ID / cảm hứng | Tên Art / màu asset đã bàn giao | Giá tiền game | m code & fix | q mỗi bug tiềm năng | Lợi / hại |
 | --- | --- | --- | --- | --- | --- |
-| claude_inspired / Claude | Mọt Mơ — cam đất/kem | 900.000đ | 0,90 (tốc độ ≈1,11× nền) | 25% | Ít bug nhất, bớt gánh khi tự fix; code/fix chậm hơn Vút Vít, vốn cao hơn Kính Bay. “Đọc kỹ rồi mới dám Enter”. |
-| cursor_inspired / Cursor | Vút Vít — than đen/trắng, mắt sáng | 1.200.000đ | 0,55 (≈1,82×) | 80% | Nhanh nhất cả code/fix, đắt nhất và nhiều bug hơn nếu chọn tự sửa. “Chạy nhanh, bug chạy theo”. |
-| copilot_inspired / GitHub Copilot | Kính Bay — mây trắng, kính xanh lá/mint | 180.000đ | 1,10 (≈0,91×) | 60% | Mua sớm, ít bug hơn Vút Vít nhưng chậm nhất; vẫn có đủ code/fix. “Ví mỏng có bạn đồng hành”. |
+| claude_inspired / Claude | Cờlốt — cam đất/kem | 900.000đ | 0,90 (tốc độ ≈1,11× nền) | 25% | Ít bug nhất, bớt gánh khi tự fix; code/fix chậm hơn Củsỏ, vốn cao hơn Câupilot. “Đọc kỹ rồi mới dám Enter”. |
+| cursor_inspired / Cursor | Củsỏ — than đen/trắng, mắt sáng | 1.200.000đ | 0,55 (≈1,82×) | 80% | Nhanh nhất cả code/fix, đắt nhất và nhiều bug hơn nếu chọn tự sửa. “Chạy nhanh, bug chạy theo”. |
+| copilot_inspired / GitHub Copilot | Câupilot — mây trắng, kính xanh lá/mint | 180.000đ | 1,10 (≈0,91×) | 60% | Mua sớm, ít bug hơn Củsỏ nhưng chậm nhất; vẫn có đủ code/fix. “Ví mỏng có bạn đồng hành”. |
 
-Không agent nào bị khóa fix/code; không strict tier bắt mua tuần tự. Vút Vít thắng tốc độ nhưng thua chi phí/bug; Mọt Mơ thắng chất lượng, Kính Bay thắng giá. Manual giá 0, không tiêu license, giữ lựa chọn nhanh/ẩu và minigame chủ động; không giảm XP/năng lượng riêng để ép mua.
+Không agent nào bị khóa fix/code; không strict tier bắt mua tuần tự. Củsỏ thắng tốc độ nhưng thua chi phí/bug; Cờlốt thắng chất lượng, Câupilot thắng giá. Manual giá 0, không tiêu license, giữ lựa chọn nhanh/ẩu và minigame chủ động; không giảm XP/năng lượng riêng để ép mua.
 
 ### 4.2. Chỉ một model bug: lọc từng bug tiềm năng
 
@@ -114,9 +114,9 @@ AI fix duration = workRemaining × (test_sec × timeScale) × m_fixer. Cùng m�
 | Cách làm | Code sau intro | Fix nếu có bug | P_any (B=1) | E[T] gồm intro và nhánh bug |
 | --- | --- | --- | --- | --- |
 | Manual correct/careful | 19s | ≤10s nếu tự bắt thành công | 100% theo min nền B=1 | ≤34s nếu thành công lượt đầu, không đoán kỹ năng người chơi |
-| Mọt Mơ | 17,10s | 9s | 25% | 24,35s |
-| Vút Vít | 10,45s | 5,5s | 80% | 19,85s |
-| Kính Bay | 20,90s | 11s | 60% | 32,50s |
+| Cờlốt | 17,10s | 9s | 25% | 24,35s |
+| Củsỏ | 10,45s | 5,5s | 80% | 19,85s |
+| Câupilot | 20,90s | 11s | 60% | 32,50s |
 
 Khi B=4 cùng timing giả định, E[T] lần lượt ≈28,25s / 20,94s / 36,62s. Đây là conditional check B=4, không khẳng định task khó/event luôn giữ cùng timing. Khác coder/fixer: E[T]=5+T_build_base×m_coder+P_any×10×timeScale×m_fixer. AI code + manual fix không có một kỳ vọng tổng chắc chắn vì phụ thuộc thao tác/fail/retry; UI chỉ hiện code duration + timer manual + risk.
 
@@ -227,9 +227,9 @@ Thư mục gốc trên box: `/workspace/devlife-art/ai_agents_trio_v3/`.
 
 | Stable ID / tên | Ảnh minh họa / bảng màu | PNG alpha (relative to root) | Ảnh generate gốc giữ nguyên (relative to root) |
 | --- | --- | --- | --- |
-| claude_inspired / Mọt Mơ | Sách/kính to, nét mực ấm, cam đất/kem | claude_inspired/claude_inspired_512.png; claude_inspired/claude_inspired_256.png; claude_inspired/claude_inspired_64.png | claude_inspired/claude_inspired_generated_original.jpg |
-| cursor_inspired / Vút Vít | Con trỏ tinh nghịch, đen trắng/má cam | cursor_inspired/cursor_inspired_512.png; cursor_inspired/cursor_inspired_256.png; cursor_inspired/cursor_inspired_64.png | cursor_inspired/cursor_inspired_generated_original.jpg |
-| copilot_inspired / Kính Bay | Mây/kính phi công nháy mắt, xanh lá/mint | copilot_inspired/copilot_inspired_512.png; copilot_inspired/copilot_inspired_256.png; copilot_inspired/copilot_inspired_64.png | copilot_inspired/copilot_inspired_generated_original.jpg |
+| claude_inspired / Cờlốt | Sách/kính to, nét mực ấm, cam đất/kem | claude_inspired/claude_inspired_512.png; claude_inspired/claude_inspired_256.png; claude_inspired/claude_inspired_64.png | claude_inspired/claude_inspired_generated_original.jpg |
+| cursor_inspired / Củsỏ | Con trỏ tinh nghịch, đen trắng/má cam | cursor_inspired/cursor_inspired_512.png; cursor_inspired/cursor_inspired_256.png; cursor_inspired/cursor_inspired_64.png | cursor_inspired/cursor_inspired_generated_original.jpg |
+| copilot_inspired / Câupilot | Mây/kính phi công nháy mắt, xanh lá/mint | copilot_inspired/copilot_inspired_512.png; copilot_inspired/copilot_inspired_256.png; copilot_inspired/copilot_inspired_64.png | copilot_inspired/copilot_inspired_generated_original.jpg |
 
 Ảnh gốc thực tế là **JPEG RGB 1024×1024**, không đổi đuôi giả PNG. Mỗi ID còn có cutout_master.png, master_1024.png và alpha_mask.png để chỉnh ảnh; không cần tạo source Blender bổ sung. Generated original theo Art dùng nền chroma magenta, alpha được xử lý sau; không nói generator đã xuất ảnh gốc trong suốt.
 
@@ -247,7 +247,7 @@ Tool validation: đủ 9 PNG runtime đúng 512/256/64, RGBA alpha 0–255 và m
 
 **Preview/mock-up only, chưa triển khai:** sheet và mẫu kích thước là ảnh tĩnh, không screenshot tính năng game. Không bake price/stats/text/logo vào runtime portrait. Code/fix/minigame/picker chưa được triển khai hoặc kiểm thử; PM duyệt art không đồng nghĩa duyệt giá/m/q/gate. Cả ba giữ balance mục 4 nguyên vẹn.
 
-Theo HANDOFF của Art: GenerateImage tạo ba ảnh mới, v2 chỉ dùng tham chiếu nhân vật/palette, không render Blender để làm v3. HANDOFF ghi palettes/reference URLs/exact prompts; màu là target anchors, không hứa mọi pixel shading đúng hex. Kính Bay vẫn dùng GitHub parent-brand green, không claim palette riêng Copilot. Đây là mascot cảm hứng nguyên bản, không official partnership/endorsement, không tự xác nhận pháp lý. PM cung cấp PNG/ZIP trong chat; local path không phải attachment/link tải Notion, không upload external trong bước này.
+Theo HANDOFF của Art: GenerateImage tạo ba ảnh mới, v2 chỉ dùng tham chiếu nhân vật/palette, không render Blender để làm v3. HANDOFF ghi palettes/reference URLs/exact prompts; màu là target anchors, không hứa mọi pixel shading đúng hex. Câupilot vẫn dùng GitHub parent-brand green, không claim palette riêng Copilot. Đây là mascot cảm hứng nguyên bản, không official partnership/endorsement, không tự xác nhận pháp lý. PM cung cấp PNG/ZIP trong chat; local path không phải attachment/link tải Notion, không upload external trong bước này.
 
 ### Brief image-only đã thực hiện / tái sử dụng
 

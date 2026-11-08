@@ -1,4 +1,4 @@
-# Balance đề xuất — Mọt Mơ / Vút Vít / Kính Bay
+# Balance đề xuất — Cờlốt / Củsỏ / Câupilot
 
 Chưa triển khai/chưa cân bằng; PM duyệt asset không phải duyệt các con số.
 
@@ -10,11 +10,11 @@ Chưa triển khai/chưa cân bằng; PM duyệt asset không phải duyệt cá
 
 | ID / cảm hứng | Tên Art / màu asset đã bàn giao | Giá tiền game | m code & fix | q mỗi bug tiềm năng | Lợi / hại |
 | --- | --- | --- | --- | --- | --- |
-| claude_inspired / Claude | Mọt Mơ — cam đất/kem | 900.000đ | 0,90 (tốc độ ≈1,11× nền) | 25% | Ít bug nhất, bớt gánh khi tự fix; code/fix chậm hơn Vút Vít, vốn cao hơn Kính Bay. “Đọc kỹ rồi mới dám Enter”. |
-| cursor_inspired / Cursor | Vút Vít — than đen/trắng, mắt sáng | 1.200.000đ | 0,55 (≈1,82×) | 80% | Nhanh nhất cả code/fix, đắt nhất và nhiều bug hơn nếu chọn tự sửa. “Chạy nhanh, bug chạy theo”. |
-| copilot_inspired / GitHub Copilot | Kính Bay — mây trắng, kính xanh lá/mint | 180.000đ | 1,10 (≈0,91×) | 60% | Mua sớm, ít bug hơn Vút Vít nhưng chậm nhất; vẫn có đủ code/fix. “Ví mỏng có bạn đồng hành”. |
+| claude_inspired / Claude | Cờlốt — cam đất/kem | 900.000đ | 0,90 (tốc độ ≈1,11× nền) | 25% | Ít bug nhất, bớt gánh khi tự fix; code/fix chậm hơn Củsỏ, vốn cao hơn Câupilot. “Đọc kỹ rồi mới dám Enter”. |
+| cursor_inspired / Cursor | Củsỏ — than đen/trắng, mắt sáng | 1.200.000đ | 0,55 (≈1,82×) | 80% | Nhanh nhất cả code/fix, đắt nhất và nhiều bug hơn nếu chọn tự sửa. “Chạy nhanh, bug chạy theo”. |
+| copilot_inspired / GitHub Copilot | Câupilot — mây trắng, kính xanh lá/mint | 180.000đ | 1,10 (≈0,91×) | 60% | Mua sớm, ít bug hơn Củsỏ nhưng chậm nhất; vẫn có đủ code/fix. “Ví mỏng có bạn đồng hành”. |
 
-Không agent nào bị khóa fix/code; không strict tier bắt mua tuần tự. Vút Vít thắng tốc độ nhưng thua chi phí/bug; Mọt Mơ thắng chất lượng, Kính Bay thắng giá. Manual giá 0, không tiêu license, giữ lựa chọn nhanh/ẩu và minigame chủ động; không giảm XP/năng lượng riêng để ép mua.
+Không agent nào bị khóa fix/code; không strict tier bắt mua tuần tự. Củsỏ thắng tốc độ nhưng thua chi phí/bug; Cờlốt thắng chất lượng, Câupilot thắng giá. Manual giá 0, không tiêu license, giữ lựa chọn nhanh/ẩu và minigame chủ động; không giảm XP/năng lượng riêng để ép mua.
 
 ### 4.2. Chỉ một model bug: lọc từng bug tiềm năng
 
@@ -40,9 +40,9 @@ AI fix duration = workRemaining × (test_sec × timeScale) × m_fixer. Cùng m�
 | Cách làm | Code sau intro | Fix nếu có bug | P_any (B=1) | E[T] gồm intro và nhánh bug |
 | --- | --- | --- | --- | --- |
 | Manual correct/careful | 19s | ≤10s nếu tự bắt thành công | 100% theo min nền B=1 | ≤34s nếu thành công lượt đầu, không đoán kỹ năng người chơi |
-| Mọt Mơ | 17,10s | 9s | 25% | 24,35s |
-| Vút Vít | 10,45s | 5,5s | 80% | 19,85s |
-| Kính Bay | 20,90s | 11s | 60% | 32,50s |
+| Cờlốt | 17,10s | 9s | 25% | 24,35s |
+| Củsỏ | 10,45s | 5,5s | 80% | 19,85s |
+| Câupilot | 20,90s | 11s | 60% | 32,50s |
 
 Khi B=4 cùng timing giả định, E[T] lần lượt ≈28,25s / 20,94s / 36,62s. Đây là conditional check B=4, không khẳng định task khó/event luôn giữ cùng timing. Khác coder/fixer: E[T]=5+T_build_base×m_coder+P_any×10×timeScale×m_fixer. AI code + manual fix không có một kỳ vọng tổng chắc chắn vì phụ thuộc thao tác/fail/retry; UI chỉ hiện code duration + timer manual + risk.
 

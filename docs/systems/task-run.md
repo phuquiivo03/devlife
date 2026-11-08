@@ -4,7 +4,7 @@ Freelance **Nhận** opens a CRT terminal over the center column (`TaskRunOverla
 
 Each run is about 30 seconds for the manual path. Agent paths scale with `time_multiplier`. Copy is Vietnamese. Technical words stay in English and have a tap/hover tooltip from `glossary`.
 
-Licensed coding agents live in the store tab **AI Agent** (`config/agents.json`). After `freelance_completed >= 1`, the shop sells Mọt Mơ, Vút Vít, and Kính Bay. Agents can code (careful path, seeded event + bug filter) and optionally fix bugs on step `bug_choice`.
+Licensed coding agents live in the store tab **AI Agent** (`config/agents.json`). After `freelance_completed >= 1`, the shop sells Cờlốt, Củsỏ, and Câupilot. Agents can code (careful path, seeded event + bug filter) and optionally fix bugs on step `bug_choice`.
 
 ## Steps
 

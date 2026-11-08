@@ -5,7 +5,7 @@
   "agents": [
     {
       "id": "claude_inspired",
-      "name": "Mọt Mơ",
+      "name": "Cờlốt",
       "chip": "Nhẹ bug",
       "price": 900000,
       "time_multiplier": 0.9,
@@ -14,7 +14,7 @@
     },
     {
       "id": "cursor_inspired",
-      "name": "Vút Vít",
+      "name": "Củsỏ",
       "chip": "Chạy lẹ",
       "price": 1200000,
       "time_multiplier": 0.55,
@@ -23,7 +23,7 @@
     },
     {
       "id": "copilot_inspired",
-      "name": "Kính Bay",
+      "name": "Câupilot",
       "chip": "Dễ mua",
       "price": 180000,
       "time_multiplier": 1.1,

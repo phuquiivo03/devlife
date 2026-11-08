@@ -105,7 +105,7 @@ export function StorePanel() {
               style={{ gridTemplateColumns: `repeat(${STORE_TABS.length}, minmax(0, 1fr))` }}
             >
               {STORE_TABS.map((tab) => (
-                <TabsTrigger key={tab.id} value={tab.id} className={cn(styles.tab, "text-[length:var(--galmuri-8,11px)] leading-tight")} data-testid={`store-tab-${tab.id}`}>
+                <TabsTrigger key={tab.id} value={tab.id} className={cn(styles.tab, "text-galmuri-small leading-tight")} data-testid={`store-tab-${tab.id}`}>
                   {tab.label}
                 </TabsTrigger>
               ))}

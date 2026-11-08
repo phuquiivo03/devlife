@@ -49,7 +49,7 @@ These resolve gaps between the spec and the code, within the spec's intent. Item
 9. **Agent build takeover.** On resume of an agent build the gate offers `Tiếp tục với [agent]` and `Tự làm tiếp`. Taking over only changes the speed multiplier for the remaining work to 1.00. The coder snapshot and the already-rolled bug set stay, so it is not a reroll. A manual build cannot be handed to an agent coder (fixing can).
 10. **Agent intro is 5s, not scaled.** The read/decide intro is `ticket_sec` (5s) and uses neither `m` nor `timeScale`, as the spec states. Build uses `T_build_base × m_coder`. Agent fix uses `workRemaining × test_sec × timeScale × m_fixer`.
 11. **Price is fixed.** Agents are not `StoreItem`s, do not go through `storePrice`, so no Black Friday discount and no purchase mood. Spend goes through `applyActionStats({ money: -price })` and `notePurse(-price, "shop")` so the sleep diary still counts it.
-12. **Portraits and the CRT.** Portraits show at 64px (256 source for hi-DPI) on shop cards and at 48px on picker cards, which were designed for 48px. Inside the CRT log the agent is text only (`[AI] Mọt Mơ · Đang code`), so the terminal palette in `docs/design/TERMINAL.md` is unchanged.
+12. **Portraits and the CRT.** Portraits show at 64px (256 source for hi-DPI) on shop cards and at 48px on picker cards, which were designed for 48px. Inside the CRT log the agent is text only (`[AI] Cờlốt · Đang code`), so the terminal palette in `docs/design/TERMINAL.md` is unchanged.
 13. **Gate and unlock notice.** The tab is always visible. Before `freelance_completed >= 1` the cards show the reason "Hoàn thành 1 việc freelance để mở" and cannot be bought, and the picker's agent cards are disabled with the same reason. The first freelance Xong that crosses the gate pushes one info notice, "Đã mở AI Agent trong Cửa hàng", with the existing `openStore` action. No modal, no blinking. Migrated saves already past the gate get no notice. Company completions do not unlock it (spec wording).
 14. **FLAG — two-tab single writer is a separate phase.** The game has no cross-tab protection for any action today. Two tabs overwrite each other's save, so the risk is lost updates, not doubled pay. The spec's lease and read-only second tab touch every write in the game, not just agents. It is Phase 9: optional, its own commit, and it can ship in a follow-up PR without blocking the feature.
 15. **Board Nhận stays as is.** The board's accept-without-start path is unchanged. Only the open path is fixed, by decision 1, so a run-less active job now opens to the picker. Moving that inline `setState` into a store action is out of scope.
@@ -64,9 +64,9 @@ These resolve gaps between the spec and the code, within the spec's intent. Item
   "gate_freelance_completed": 1,
   "intro_sec": 5,
   "agents": [
-    { "id": "claude_inspired",  "name": "Mọt Mơ",   "chip": "Nhẹ bug",  "price": 900000,  "time_multiplier": 0.90, "bug_survival": 0.25, "capabilities": ["code", "fix_bug"] },
-    { "id": "cursor_inspired",  "name": "Vút Vít",  "chip": "Chạy lẹ",  "price": 1200000, "time_multiplier": 0.55, "bug_survival": 0.80, "capabilities": ["code", "fix_bug"] },
-    { "id": "copilot_inspired", "name": "Kính Bay", "chip": "Dễ mua",   "price": 180000,  "time_multiplier": 1.10, "bug_survival": 0.60, "capabilities": ["code", "fix_bug"] }
+    { "id": "claude_inspired",  "name": "Cờlốt",   "chip": "Nhẹ bug",  "price": 900000,  "time_multiplier": 0.90, "bug_survival": 0.25, "capabilities": ["code", "fix_bug"] },
+    { "id": "cursor_inspired",  "name": "Củsỏ",  "chip": "Chạy lẹ",  "price": 1200000, "time_multiplier": 0.55, "bug_survival": 0.80, "capabilities": ["code", "fix_bug"] },
+    { "id": "copilot_inspired", "name": "Câupilot", "chip": "Dễ mua",   "price": 180000,  "time_multiplier": 1.10, "bug_survival": 0.60, "capabilities": ["code", "fix_bug"] }
   ]
 }
 ```
@@ -198,7 +198,7 @@ Sanity checks that must hold in a test with timeScale 1, no event, B = 1, correc
 The file is already 532 lines. Move each step into `src/components/terminal/task-run/` (`SelectStep`, `TicketStep`, `BuildStep`, `BugChoiceStep`, `TestStep`, `AgentFixStep`, `ReadyStep`, `ResultStep`, `ResumeGate`, `AgentPickCard`). Keep the existing `data-testid`s.
 
 - **SelectStep**: ticket summary (pay, skill, difficulty, energy) and `[1] Tự làm` / `[2] Dùng Coding Agent`. The agent list shows all three cards (48px portrait, same three rows as the shop), plus the `agentPreview` for this job and a "dự kiến trước event" badge. Unowned or gated cards are disabled with a reason and a "Xem cửa hàng AI" button. That button closes the task (the run stays `select`, unpaid) and opens the store on the AI tab. Selecting nothing auto-picks nothing. `Bắt đầu với [tên]` / `Bắt đầu tự làm` calls `beginTask`.
-- **Agent build**: `[AI] Mọt Mơ · Đang đọc` during the 5s intro, then `Đang code`; the existing bar and logs; progress from `build_progress`; no careful/rushed popup.
+- **Agent build**: `[AI] Cờlốt · Đang đọc` during the 5s intro, then `Đang code`; the existing bar and logs; progress from `build_progress`; no careful/rushed popup.
 - **BugChoiceStep**: "Có N bug. Ai sửa?" with `Tự sửa` (timer left) and the owned fixer cards (time left for remaining work, the note "Chỉ áp dụng khi agent code; đổi fixer không thay bug đã có"). The coder is pre-highlighted but never auto-started.
 - **TestStep**: spawns only unfixed IDs (`spawnBugs` keyed by ID index, not `seed + retries`). The timer starts from `manual_left_sec`. A "Đổi người sửa" button opens `switchTaskFixer`.
 - **AgentFixStep**: bar over the remaining work, live list of fixed IDs, "Đổi người sửa".
@@ -224,7 +224,7 @@ Commit after each phase. Push after the tests of each phase are green.
 5. **Shop UI.** AI Agent tab, cards, confirm, the owned group.
 6. **Overlay UI.** File split, the new steps, the resume gate, checkpoints.
 7. **Docs.** `task-run.md`, `save.md`, `schema.sql`; note the shop tab in `DESIGN_SYSTEM.md` (Store grid section) if the card differs.
-8. **E2E + manual QA.** Playwright: a manual-only run ends at READY, then Xong pays once; buy Kính Bay with debug money; agent run with N = 0 and N > 0; agent code → manual fix; reload mid-fix keeps the work; 320px shop tabs. Record a short demo.
+8. **E2E + manual QA.** Playwright: a manual-only run ends at READY, then Xong pays once; buy Câupilot with debug money; agent run with N = 0 and N > 0; agent code → manual fix; reload mid-fix keeps the work; 320px shop tabs. Record a short demo.
 9. **(Optional, FLAG) Single-writer tab lease.** A `localStorage` lease key plus `storage` events; the second tab is read-only with "Game đang mở ở tab khác"; begin/Xong/buy check the lease. Separate commit, and it may move to a follow-up PR.
 
 ## Test matrix (maps to SPEC §9)
@@ -252,7 +252,7 @@ Commit after each phase. Push after the tests of each phase are green.
 - **Persist churn.** Checkpoints at about 1s, not per frame. Watch for jank on low-end mobile; raise the interval if needed, since the loss on a crash is at most one interval.
 - **Stale timers.** Intervals from an unmounted step, or the StrictMode double effect, could advance a run twice. The revision guard plus monotonic checkpoints cover it, and test 7 pins it.
 - **Manual behavior changes.** The retry keeps fixed bugs (FLAG), the resume gate after reopen, and READY + Xong instead of an instant payout. All are spec-intended; call them out in the PR body.
-- **Balance dominance.** Vút Vít + agent fix is the fastest path once it is bought. Agent fix never fails, so owning any agent removes the fail risk. The spec accepts this pending playtest. Tune price/m/q in `config/agents.json` only.
+- **Balance dominance.** Củsỏ + agent fix is the fastest path once it is bought. Agent fix never fails, so owning any agent removes the fail risk. The spec accepts this pending playtest. Tune price/m/q in `config/agents.json` only.
 - **Test churn.** Every test that expects payment on the last catch must change to "READY, then commit". Keep `applyAccept` as the scripted one-shot helper so the unrelated suites stay small.
 - **Mobile tab width.** Four Galmuri tabs at 320px is tight; verify in Playwright.
 - **Scope creep.** Auto-accept and auto-submit capabilities, upgrades, resale, discounts, offline automation and robots in the room stay out.

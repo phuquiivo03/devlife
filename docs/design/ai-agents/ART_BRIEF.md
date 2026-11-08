@@ -8,9 +8,9 @@ Thư mục gốc trên box: `/workspace/devlife-art/ai_agents_trio_v3/`.
 
 | Stable ID / tên | Ảnh minh họa / bảng màu | PNG alpha (relative to root) | Ảnh generate gốc giữ nguyên (relative to root) |
 | --- | --- | --- | --- |
-| claude_inspired / Mọt Mơ | Sách/kính to, nét mực ấm, cam đất/kem | claude_inspired/claude_inspired_512.png; claude_inspired/claude_inspired_256.png; claude_inspired/claude_inspired_64.png | claude_inspired/claude_inspired_generated_original.jpg |
-| cursor_inspired / Vút Vít | Con trỏ tinh nghịch, đen trắng/má cam | cursor_inspired/cursor_inspired_512.png; cursor_inspired/cursor_inspired_256.png; cursor_inspired/cursor_inspired_64.png | cursor_inspired/cursor_inspired_generated_original.jpg |
-| copilot_inspired / Kính Bay | Mây/kính phi công nháy mắt, xanh lá/mint | copilot_inspired/copilot_inspired_512.png; copilot_inspired/copilot_inspired_256.png; copilot_inspired/copilot_inspired_64.png | copilot_inspired/copilot_inspired_generated_original.jpg |
+| claude_inspired / Cờlốt | Sách/kính to, nét mực ấm, cam đất/kem | claude_inspired/claude_inspired_512.png; claude_inspired/claude_inspired_256.png; claude_inspired/claude_inspired_64.png | claude_inspired/claude_inspired_generated_original.jpg |
+| cursor_inspired / Củsỏ | Con trỏ tinh nghịch, đen trắng/má cam | cursor_inspired/cursor_inspired_512.png; cursor_inspired/cursor_inspired_256.png; cursor_inspired/cursor_inspired_64.png | cursor_inspired/cursor_inspired_generated_original.jpg |
+| copilot_inspired / Câupilot | Mây/kính phi công nháy mắt, xanh lá/mint | copilot_inspired/copilot_inspired_512.png; copilot_inspired/copilot_inspired_256.png; copilot_inspired/copilot_inspired_64.png | copilot_inspired/copilot_inspired_generated_original.jpg |
 
 Ảnh gốc thực tế là **JPEG RGB 1024×1024**, không đổi đuôi giả PNG. Mỗi ID còn có cutout_master.png, master_1024.png và alpha_mask.png để chỉnh ảnh; không cần tạo source Blender bổ sung. Generated original theo Art dùng nền chroma magenta, alpha được xử lý sau; không nói generator đã xuất ảnh gốc trong suốt.
 
@@ -28,7 +28,7 @@ Tool validation: đủ 9 PNG runtime đúng 512/256/64, RGBA alpha 0–255 và m
 
 **Preview/mock-up only, chưa triển khai:** sheet và mẫu kích thước là ảnh tĩnh, không screenshot tính năng game. Không bake price/stats/text/logo vào runtime portrait. Code/fix/minigame/picker chưa được triển khai hoặc kiểm thử; PM duyệt art không đồng nghĩa duyệt giá/m/q/gate. Cả ba giữ balance mục 4 nguyên vẹn.
 
-Theo HANDOFF của Art: GenerateImage tạo ba ảnh mới, v2 chỉ dùng tham chiếu nhân vật/palette, không render Blender để làm v3. HANDOFF ghi palettes/reference URLs/exact prompts; màu là target anchors, không hứa mọi pixel shading đúng hex. Kính Bay vẫn dùng GitHub parent-brand green, không claim palette riêng Copilot. Đây là mascot cảm hứng nguyên bản, không official partnership/endorsement, không tự xác nhận pháp lý. PM cung cấp PNG/ZIP trong chat; local path không phải attachment/link tải Notion, không upload external trong bước này.
+Theo HANDOFF của Art: GenerateImage tạo ba ảnh mới, v2 chỉ dùng tham chiếu nhân vật/palette, không render Blender để làm v3. HANDOFF ghi palettes/reference URLs/exact prompts; màu là target anchors, không hứa mọi pixel shading đúng hex. Câupilot vẫn dùng GitHub parent-brand green, không claim palette riêng Copilot. Đây là mascot cảm hứng nguyên bản, không official partnership/endorsement, không tự xác nhận pháp lý. PM cung cấp PNG/ZIP trong chat; local path không phải attachment/link tải Notion, không upload external trong bước này.
 
 ### Brief image-only đã thực hiện / tái sử dụng
 
@@ -47,9 +47,9 @@ Bạn Code v1, trio v2 3D tại `/workspace/devlife-art/ai_agents_trio_v2/`, cù
 
 | ID / cảm hứng | Tên Art / màu asset đã bàn giao | Giá tiền game | m code & fix | q mỗi bug tiềm năng | Lợi / hại |
 | --- | --- | --- | --- | --- | --- |
-| claude_inspired / Claude | Mọt Mơ — cam đất/kem | 900.000đ | 0,90 (tốc độ ≈1,11× nền) | 25% | Ít bug nhất, bớt gánh khi tự fix; code/fix chậm hơn Vút Vít, vốn cao hơn Kính Bay. “Đọc kỹ rồi mới dám Enter”. |
-| cursor_inspired / Cursor | Vút Vít — than đen/trắng, mắt sáng | 1.200.000đ | 0,55 (≈1,82×) | 80% | Nhanh nhất cả code/fix, đắt nhất và nhiều bug hơn nếu chọn tự sửa. “Chạy nhanh, bug chạy theo”. |
-| copilot_inspired / GitHub Copilot | Kính Bay — mây trắng, kính xanh lá/mint | 180.000đ | 1,10 (≈0,91×) | 60% | Mua sớm, ít bug hơn Vút Vít nhưng chậm nhất; vẫn có đủ code/fix. “Ví mỏng có bạn đồng hành”. |
+| claude_inspired / Claude | Cờlốt — cam đất/kem | 900.000đ | 0,90 (tốc độ ≈1,11× nền) | 25% | Ít bug nhất, bớt gánh khi tự fix; code/fix chậm hơn Củsỏ, vốn cao hơn Câupilot. “Đọc kỹ rồi mới dám Enter”. |
+| cursor_inspired / Cursor | Củsỏ — than đen/trắng, mắt sáng | 1.200.000đ | 0,55 (≈1,82×) | 80% | Nhanh nhất cả code/fix, đắt nhất và nhiều bug hơn nếu chọn tự sửa. “Chạy nhanh, bug chạy theo”. |
+| copilot_inspired / GitHub Copilot | Câupilot — mây trắng, kính xanh lá/mint | 180.000đ | 1,10 (≈0,91×) | 60% | Mua sớm, ít bug hơn Củsỏ nhưng chậm nhất; vẫn có đủ code/fix. “Ví mỏng có bạn đồng hành”. |
 
-Không agent nào bị khóa fix/code; không strict tier bắt mua tuần tự. Vút Vít thắng tốc độ nhưng thua chi phí/bug; Mọt Mơ thắng chất lượng, Kính Bay thắng giá. Manual giá 0, không tiêu license, giữ lựa chọn nhanh/ẩu và minigame chủ động; không giảm XP/năng lượng riêng để ép mua.
+Không agent nào bị khóa fix/code; không strict tier bắt mua tuần tự. Củsỏ thắng tốc độ nhưng thua chi phí/bug; Cờlốt thắng chất lượng, Câupilot thắng giá. Manual giá 0, không tiêu license, giữ lựa chọn nhanh/ẩu và minigame chủ động; không giảm XP/năng lượng riêng để ép mua.
 

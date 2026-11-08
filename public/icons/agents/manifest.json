@@ -14,7 +14,7 @@
  "credits": "docs/design/ai-agents/CREDITS.md",
  "agents": {
   "claude_inspired": {
-   "display_name": "Mọt Mơ",
+   "display_name": "Cờlốt",
    "files": {
     "512": {
      "file": "agent_claude_inspired_512.png",
@@ -32,7 +32,7 @@
    "source": "art/2d/ai_agents_trio_v3/claude_inspired/"
   },
   "cursor_inspired": {
-   "display_name": "Vút Vít",
+   "display_name": "Củsỏ",
    "files": {
     "512": {
      "file": "agent_cursor_inspired_512.png",
@@ -50,7 +50,7 @@
    "source": "art/2d/ai_agents_trio_v3/cursor_inspired/"
   },
   "copilot_inspired": {
-   "display_name": "Kính Bay",
+   "display_name": "Câupilot",
    "files": {
     "512": {
      "file": "agent_copilot_inspired_512.png",
